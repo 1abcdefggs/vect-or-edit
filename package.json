@@ -1,0 +1,49 @@
+{
+  "name": "vect-or-edit",
+  "version": "0.1.0",
+  "description": "Editt - Next Generation Vector-based Knowledge Editor",
+  "keywords": [
+    "electron",
+    "editor",
+    "markdown",
+    "knowledge-base",
+    "rust",
+    "monaco-editor",
+    "vector-search",
+    "offline"
+  ],
+  "main": "out/main/index.js",
+  "author": "1abcdefggs",
+  "homepage": "https://github.com/1abcdefggs/VectOrEditOr#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1abcdefggs/VectOrEditOr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/1abcdefggs/VectOrEditOr/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@electron/get": "^5.1.0",
+    "@vect-or-engine/core": "file:../vect-or-engine",
+    "monaco-editor": "^0.56.0"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-vite": "^2.3.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.3.0",
+    "vitest": "^1.6.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
+  }
+}

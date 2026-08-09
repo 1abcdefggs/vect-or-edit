@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="app_title">VectOrEditOr</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <span class="logo-text">VectOrEditOr</span>
+      </div>
+      <div class="toolbar">
+        <select id="fontFamilySelect" class="setting-select toolbar-select" style="max-width: 120px;">
+          <option value="Georgia, 'Times New Roman', Times, serif" data-i18n="font_serif">Serif</option>
+          <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" data-i18n="font_sans_serif">Sans-serif</option>
+          <option value="monospace" data-i18n="font_mono">Monospace</option>
+        </select>
+        <select id="fontSizeSelect" class="setting-select toolbar-select" style="max-width: 100px;">
+          <option value="14" data-i18n="font_small">14px Small</option>
+          <option value="16" selected data-i18n="font_normal">16px Normal</option>
+          <option value="18" data-i18n="font_large">18px Large</option>
+          <option value="20" data-i18n="font_xlarge">20px XLarge</option>
+        </select>
+        <div class="toolbar-separator"></div>
+        <button id="btnSave" class="toolbar-btn">
+          <span data-i18n="btn_save">Save</span>
+        </button>
+        <button id="btnDiff" class="toolbar-btn">
+          <span data-i18n="btn_diff">Diff</span>
+        </button>
+        <div class="toolbar-separator"></div>
+        <button id="btnToggleEditor" class="toolbar-btn">
+          <span data-i18n="btn_pro_editor">Pro Editor</span>
+        </button>
+        <button id="btnTheme" class="toolbar-btn">
+        </button>
+        <button id="btnLangToggle" class="toolbar-btn" style="font-weight: bold; width: 36px; display: flex; justify-content: center;">EN</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Editor Area -->
+      <section class="editor-section">
+        <div class="section-title" data-i18n="editor_title">Knowledge Editor</div>
+        <textarea id="editorInput" data-i18n="editor_placeholder" placeholder="Start typing here to compose and edit your knowledge base..."></textarea>
+        <div id="monacoContainer" style="display: none; width: 100%; height: 100%;"></div>
+      </section>
+
+      <!-- Vector Suggestion Sidebar -->
+      <aside class="suggestion-sidebar">
+        <div class="sidebar-header">
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <span id="iconNeuroContainer"></span>
+            <span data-i18n="live_vector_recommendation">Real-time Vector Recommendation</span>
+          </h3>
+          <p data-i18n="live_vector_desc">Dynamically maps similar standard definitions based on input context.</p>
+        </div>
+        <div id="vectorResultsList" class="results-list">
+          <div class="empty-state" data-i18n="vector_placeholder">Enter text to receive semantic vector suggestions.</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+
+
+  <script type="module" src="./renderer.js"></script>
+</body>
+</html>

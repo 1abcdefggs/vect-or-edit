@@ -1,0 +1,14 @@
+node_modules/
+out/
+dist/
+release/
+.vite/
+coverage/
+
+# OS / Environment
+.env
+.env.*
+.DS_Store
+Thumbs.db
+*.log
+.agents/
