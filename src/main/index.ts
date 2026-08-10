@@ -8,9 +8,9 @@ import fsPromises from 'fs/promises';
 app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
 app.commandLine.appendSwitch('disable-http-cache');
 
-// Set isolated temporary userData path in development mode to prevent file locks
+// Set isolated temporary userData path in development mode to prevent file locks while keeping AI model cache persistent
 try {
-  const tempUserData = path.join(app.getPath('temp'), `vectoreditor-dev-user-data-${process.pid}`);
+  const tempUserData = path.join(app.getPath('temp'), 'vectoreditor-dev-user-data');
   app.setPath('userData', tempUserData);
 } catch (e) {
   // Ignore error if app is already initialized
@@ -37,11 +37,20 @@ function createWindow(): void {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // Load the knowledge base on startup
+  try {
+    const kbPath = path.resolve(__dirname, '../../../vect-or-data/postcard_knowledge_base.json');
+    await dictClient.loadKnowledgeBase(kbPath);
+    console.log('[App] Successfully loaded knowledge base into Rust Engine');
+  } catch (err) {
+    console.error('[App] Failed to load knowledge base:', err);
+  }
+
   // Safe IPC Handler for Vector Search
-  ipcMain.handle('engine:searchVector', async (_event, query: string) => {
+  ipcMain.handle('engine:searchVector', async (_event, vector: number[]) => {
     try {
-      const results = await dictClient.searchVector(query, 5);
+      const results = await dictClient.searchVector(vector, 5);
       return { success: true, data: results };
     } catch (err: any) {
       return { success: false, error: err.message };
