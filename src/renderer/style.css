@@ -199,7 +199,7 @@ body {
 }
 
 .suggestion-sidebar {
-  width: 360px;
+  width: var(--sidebar-width);
   background: var(--bg-card);
   backdrop-filter: blur(12px);
   border-radius: var(--radius-lg);
