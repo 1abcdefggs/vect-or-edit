@@ -8,7 +8,7 @@
   --text-muted: #94a3b8;
   --border-color: rgba(255, 255, 255, 0.1);
   --success-color: #10b981;
-  
+
   /* Shared Alpha Colors */
   --hover-bg: rgba(255, 255, 255, 0.05);
   --active-bg: rgba(255, 255, 255, 0.1);
@@ -18,7 +18,7 @@
   --item-code-text: #818cf8;
   --modal-overlay-bg: rgba(0, 0, 0, 0.6);
   --modal-shadow: rgba(0, 0, 0, 0.5);
-  
+
   /* Shared Layout Properties */
   --radius-lg: 12px;
   --radius-md: 8px;
@@ -35,7 +35,7 @@
   --text-main: #0f172a;
   --text-muted: #64748b;
   --border-color: rgba(0, 0, 0, 0.1);
-  
+
   /* Shared Alpha Colors (Light) */
   --hover-bg: rgba(0, 0, 0, 0.05);
   --active-bg: rgba(0, 0, 0, 0.1);
@@ -106,8 +106,11 @@ body {
 }
 
 .toolbar-btn {
-  background: transparent;
-  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   color: var(--text-muted);
   font-size: 0.85rem;
   padding: 4px 10px;
@@ -129,18 +132,26 @@ body {
   background: var(--active-bg);
 }
 
+/* Theme-aware select styling */
 .toolbar-select {
   padding: 4px 8px;
   font-size: 0.85rem;
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid transparent;
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.15s ease;
   outline: none;
 }
 
+/* Dropdown option colors */
+.toolbar-select option {
+  background: var(--bg-secondary);
+  color: var(--text-main);
+}
+
+/* Hover styling */
 .toolbar-select:hover {
   background: var(--hover-bg);
   color: var(--text-main);
@@ -180,6 +191,12 @@ body {
   padding: var(--spacing-lg);
 }
 
+/* Editor‑specific vars (fallback to defaults) */
+:root {
+  --editor-bg: transparent;
+  --editor-fg: var(--text-main);
+}
+
 .section-title {
   font-size: 0.9rem;
   color: var(--text-muted);
@@ -189,9 +206,9 @@ body {
 
 #editorInput {
   flex: 1;
-  background: transparent;
+  background: var(--editor-bg, transparent);
   border: none;
-  color: var(--text-main);
+  color: var(--editor-fg, var(--text-main));
   font-size: 1.05rem;
   line-height: 1.6;
   resize: none;

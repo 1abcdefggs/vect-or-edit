@@ -1,7 +1,9 @@
 import { icons } from './icons.js';
 import { changeLanguage, currentLang } from './i18n.js';
+import { loadTheme } from './themeLoader.js';
 
-let isLightTheme = false;
+// Light/Dark mode disabled
+const isLightTheme = false; // placeholder to keep existing references
 let updateEditorOptionsCallback = null;
 
 export function initSettings(updateEditorCb) {
@@ -11,19 +13,74 @@ export function initSettings(updateEditorCb) {
   const fontSizeSelect = document.getElementById('fontSizeSelect');
   const editorInput = document.getElementById('editorInput');
   const btnTheme = document.getElementById('btnTheme');
-  // Initialize theme from localStorage
-  const storedTheme = localStorage.getItem('theme');
-  if (storedTheme === 'light') {
-    isLightTheme = true;
-    document.documentElement.classList.add('light-theme');
-    btnTheme.innerHTML = icons.themeLight;
-  } else {
-    isLightTheme = false;
-    document.documentElement.classList.remove('light-theme');
-    btnTheme.innerHTML = icons.themeDark;
-  }
   const btnLangToggle = document.getElementById('btnLangToggle');
+  const themeSelect = document.getElementById('themeSelect');
 
+// Light/Dark mode initialization removed (handled via theme JSON only)
+
+  // Dynamically load available theme JSON files and populate the selector
+  let availableThemes = [];
+  try {
+    // Vite/Electron dev environment – use import.meta.globEager
+    if (import.meta && typeof import.meta.globEager === 'function') {
+      const themeModules = import.meta.globEager('./themes/*.json');
+      availableThemes = Object.keys(themeModules)
+        .map(p => p.replace(/^\.\/themes\//, '').replace(/\.json$/i, ''))
+        .sort();
+    }
+  } catch (_) {
+    // Fallback for packaged Electron where import.meta may not work
+    try {
+      const fs = window.require ? window.require('fs') : require('fs');
+      const path = window.require ? window.require('path') : require('path');
+      const themeDir = path.join(__dirname, 'themes');
+      availableThemes = fs.readdirSync(themeDir)
+        .filter(f => f.endsWith('.json'))
+        .map(f => f.replace(/\.json$/i, ''))
+        .sort();
+    } catch (e) {
+      console.error('Failed to load theme files:', e);
+    }
+  }
+
+  // Clear any existing options and add a placeholder
+  themeSelect.innerHTML = '';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = 'Select Theme';
+  placeholder.disabled = true;
+  placeholder.hidden = true;
+  themeSelect.appendChild(placeholder);
+
+  // Populate selector with available themes
+  availableThemes.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    themeSelect.appendChild(opt);
+  });
+
+  // Set initial theme from stored name or first available
+  const storedThemeName = localStorage.getItem('themeName');
+  themeSelect.value = (storedThemeName && availableThemes.includes(storedThemeName)) ? storedThemeName : (availableThemes[0] || '');
+  loadTheme(themeSelect.value);
+  availableThemes.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    themeSelect.appendChild(opt);
+  });
+
+
+
+  // Theme selector change handler – update theme and persist mode
+  themeSelect.addEventListener('change', async () => {
+    const selected = themeSelect.value;
+    await loadTheme(selected);
+    localStorage.setItem('themeName', selected);
+  });
+
+  // Language toggle (unchanged)
   if (btnLangToggle) {
     btnLangToggle.textContent = currentLang.toUpperCase();
     btnLangToggle.addEventListener('click', async () => {
@@ -48,29 +105,15 @@ export function initSettings(updateEditorCb) {
   if (fontFamilySelect) fontFamilySelect.addEventListener('change', applySettings);
   if (fontSizeSelect) fontSizeSelect.addEventListener('change', applySettings);
 
-  if (btnTheme) {
-    btnTheme.addEventListener('click', () => {
-      isLightTheme = !isLightTheme;
-      if (isLightTheme) {
-        document.documentElement.classList.add('light-theme');
-        btnTheme.innerHTML = icons.themeLight;
-        if (updateEditorOptionsCallback) updateEditorOptionsCallback({ theme: 'vs' });
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.classList.remove('light-theme');
-        btnTheme.innerHTML = icons.themeDark;
-        if (updateEditorOptionsCallback) updateEditorOptionsCallback({ theme: 'vs-dark' });
-        localStorage.setItem('theme', 'dark');
-      }
-    });
-  }
+
 
   // Initial apply
   applySettings();
 }
 
 export function getTheme() {
-  return isLightTheme ? 'vs' : 'vs-dark';
+  // Editor theme is fixed to dark mode
+  return 'vs-dark';
 }
 
 export function getFontFamily() {

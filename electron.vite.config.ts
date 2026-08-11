@@ -7,5 +7,9 @@ export default defineConfig({
   preload: {
     plugins: [externalizeDepsPlugin()]
   },
-  renderer: {}
+  renderer: {
+  optimizeDeps: {
+    include: ['@xenova/transformers']
+  }
+}
 });
