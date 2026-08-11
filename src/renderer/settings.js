@@ -11,6 +11,17 @@ export function initSettings(updateEditorCb) {
   const fontSizeSelect = document.getElementById('fontSizeSelect');
   const editorInput = document.getElementById('editorInput');
   const btnTheme = document.getElementById('btnTheme');
+  // Initialize theme from localStorage
+  const storedTheme = localStorage.getItem('theme');
+  if (storedTheme === 'light') {
+    isLightTheme = true;
+    document.documentElement.classList.add('light-theme');
+    btnTheme.innerHTML = icons.themeLight;
+  } else {
+    isLightTheme = false;
+    document.documentElement.classList.remove('light-theme');
+    btnTheme.innerHTML = icons.themeDark;
+  }
   const btnLangToggle = document.getElementById('btnLangToggle');
 
   if (btnLangToggle) {
@@ -44,10 +55,12 @@ export function initSettings(updateEditorCb) {
         document.documentElement.classList.add('light-theme');
         btnTheme.innerHTML = icons.themeLight;
         if (updateEditorOptionsCallback) updateEditorOptionsCallback({ theme: 'vs' });
+        localStorage.setItem('theme', 'light');
       } else {
         document.documentElement.classList.remove('light-theme');
         btnTheme.innerHTML = icons.themeDark;
         if (updateEditorOptionsCallback) updateEditorOptionsCallback({ theme: 'vs-dark' });
+        localStorage.setItem('theme', 'dark');
       }
     });
   }
