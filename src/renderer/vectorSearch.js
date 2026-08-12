@@ -12,7 +12,7 @@ document.getElementById('btnCopyAllResults')?.addEventListener('click', () => {
   if (currentResults.length > 0) {
     const rawJsonStr = JSON.stringify(currentResults, null, 2);
     navigator.clipboard.writeText(rawJsonStr);
-    
+
     // Visual feedback
     const btn = document.getElementById('btnCopyAllResults');
     const originalText = btn.innerHTML;
@@ -28,7 +28,7 @@ try {
   embeddingWorker.addEventListener('message', (e) => {
     const resultsList = document.getElementById('vectorResultsList');
     if (!resultsList) return;
-    
+
     if (e.data.status === 'initiate' || e.data.status === 'download' || e.data.status === 'progress') {
       let loadingContainer = resultsList.querySelector('.loading-state');
       if (!loadingContainer) {
@@ -38,7 +38,7 @@ try {
         </div>`;
         loadingContainer = resultsList.querySelector('.loading-state');
       }
-      
+
       const progressText = loadingContainer.querySelector('.progress-text');
       if (progressText) {
         if (e.data.status === 'progress' && e.data.progress !== undefined) {
@@ -49,7 +49,7 @@ try {
       }
     }
   });
-} catch(e) {
+} catch (e) {
   console.error("Worker initialization failed", e);
 }
 
@@ -66,7 +66,7 @@ function getVectorFromWorker(text) {
         reject(new Error(e.data.error));
       }
     };
-    
+
     embeddingWorker.addEventListener('message', messageHandler);
     embeddingWorker.postMessage({ text });
   });
@@ -76,7 +76,7 @@ export function initVectorSearchForBasicEditor(editorInput) {
   // Listen for text selection instead of typing
   editorInput.addEventListener('mouseup', handleBasicEditorSelection);
   editorInput.addEventListener('keyup', handleBasicEditorSelection);
-  
+
   function handleBasicEditorSelection() {
     if (editorInput.selectionStart !== editorInput.selectionEnd) {
       const selectedText = editorInput.value.substring(editorInput.selectionStart, editorInput.selectionEnd).trim();
@@ -89,9 +89,9 @@ export function initVectorSearchForBasicEditor(editorInput) {
 
 export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, monacoInstance) {
   triggerSearchAndRender(query);
-  
+
   if (debounceTimer) clearTimeout(debounceTimer);
-  
+
   debounceTimer = setTimeout(async () => {
     try {
       if (window.engineAPI && window.engineAPI.searchVector) {
@@ -140,7 +140,7 @@ function triggerSearchAndRender(query) {
 function renderResults(results, isPreliminary = false) {
   currentResults = results || [];
   if (!isPreliminary) lastRawResults = currentResults;
-  
+
   if (!results || results.length === 0) {
     resultsList.innerHTML = `<div class="empty-state">${i18n.vector_no_match || "No matching knowledge found."}</div>`;
     return;
@@ -150,8 +150,8 @@ function renderResults(results, isPreliminary = false) {
     // Generate dynamic metadata HTML
     let metadataHtml = '';
     for (const [key, value] of Object.entries(r)) {
-        if (key === 'id' || key === 'score' || key === 'name') continue;
-        metadataHtml += `<div class="item-subtitle" style="margin-top: 4px; font-size: 0.8rem; line-height: 1.3;"><strong>${key}:</strong> ${value}</div>`;
+      if (key === 'id' || key === 'score' || key === 'name') continue;
+      metadataHtml += `<div class="item-subtitle" style="margin-top: 4px; font-size: 0.8rem; line-height: 1.3;"><strong>${key}:</strong> ${value}</div>`;
     }
 
     const rawJsonStr = JSON.stringify(r, null, 2).replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/\n/g, "\\n");
@@ -239,7 +239,7 @@ function showMonacoWidget(results, range, targetEditor, monacoInstance) {
 
     domNode.innerHTML = html;
 
-    // クリックで候補をエディタに挿入
+    // click insert 
     const items = domNode.querySelectorAll('.vector-widget-item');
     items.forEach((item) => {
       item.onmousedown = (e) => {
@@ -259,7 +259,7 @@ function showMonacoWidget(results, range, targetEditor, monacoInstance) {
       };
     });
 
-    // Load More ボタン
+    // Load More button
     const loadMoreBtn = domNode.querySelector('#btnWidgetLoadMore');
     if (loadMoreBtn) {
       loadMoreBtn.onmousedown = (e) => {
@@ -300,7 +300,7 @@ function showMonacoWidget(results, range, targetEditor, monacoInstance) {
   }, 100);
 }
 
-// 設定スライダー変更時に結果を再描画
+// se
 const thresholdSlider = document.getElementById('vectorSearchThreshold');
 const maxResultsSlider = document.getElementById('vectorSearchMaxResults');
 
