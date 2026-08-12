@@ -1,11 +1,12 @@
 import { getQuickMatches } from './dictionary.js';
-import { i18n } from './i18n.js';
+import { i18n, t } from './i18n.js';
 
 let debounceTimer = null;
 let backendTimer = null;
 let monacoContentWidget = null;
 const resultsList = document.getElementById('vectorResultsList');
 let currentResults = [];
+let lastRawResults = [];
 
 document.getElementById('btnCopyAllResults')?.addEventListener('click', () => {
   if (currentResults.length > 0) {
@@ -138,6 +139,7 @@ function triggerSearchAndRender(query) {
 
 function renderResults(results, isPreliminary = false) {
   currentResults = results || [];
+  if (!isPreliminary) lastRawResults = currentResults;
   
   if (!results || results.length === 0) {
     resultsList.innerHTML = `<div class="empty-state">${i18n.vector_no_match || "No matching knowledge found."}</div>`;
@@ -179,18 +181,97 @@ function showMonacoWidget(results, range, targetEditor, monacoInstance) {
     targetEditor.removeContentWidget(monacoContentWidget);
   }
 
-  const topResult = results[0];
-  // Ensure robust rendering even if properties are missing
   const domNode = document.createElement('div');
-  domNode.innerHTML = `
-    <div style="background: var(--bg-card); border: 1px solid var(--accent-color); padding: 8px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 50; display: flex; flex-direction: column; gap: 4px; color: white;">
-      <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center;">
-        <span class="item-code" style="background: var(--item-code-bg); color: var(--item-code-text); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">${topResult.id || ''}</span>
-        <span style="color: var(--success-color); font-size: 0.75rem;">${(topResult.score * 100).toFixed(1)}%</span>
+  domNode.style.cssText = "background: var(--bg-secondary); border: 1px solid var(--accent-color); border-radius: 6px; box-shadow: 0 4px 12px var(--modal-shadow); z-index: 50; display: flex; flex-direction: column; color: var(--text-main); min-width: 350px; max-width: 500px;";
+
+  let isExpanded = false;
+  const topN = 3;
+
+  function renderWidgetContent() {
+    const visibleResults = isExpanded ? results : results.slice(0, topN);
+    const hiddenCount = Math.max(0, results.length - topN);
+
+    let html = `
+      <div style="padding: 8px 12px; background: var(--hover-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">
+          🔍 Vector Suggest (${isExpanded ? results.length : Math.min(topN, results.length)} items)
+        </span>
       </div>
-      <div style="font-weight: bold; font-size: 0.9rem;">${topResult.name || ''}</div>
-    </div>
-  `;
+      <div style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column;">
+    `;
+
+    visibleResults.forEach((r, index) => {
+      const scorePct = (r.score * 100).toFixed(1);
+      const code = r.icd10_code || r.id || 'N/A';
+
+      let tooltipParts = [];
+      for (let k in r) {
+        if (k !== 'score' && k !== 'id' && k !== 'name' && r[k]) {
+          tooltipParts.push(`${k}: ${r[k]}`);
+        }
+      }
+      const tooltip = tooltipParts.join('\n').replace(/"/g, '&quot;');
+
+      html += `
+        <div class="vector-widget-item" data-index="${index}" title="${tooltip}" style="position: relative; padding: 10px 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; flex-direction: column; gap: 4px; overflow: hidden; transition: background 0.2s;" onmouseover="this.style.background='var(--hover-bg)'" onmouseout="this.style.background='transparent'">
+          <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${scorePct}%; background: var(--accent-color); opacity: 0.12; z-index: 0; pointer-events: none;"></div>
+          <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+              <span style="background: var(--item-code-bg); color: var(--item-code-text); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; flex-shrink: 0;">${code}</span>
+              <span style="font-weight: bold; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.name || ''}</span>
+              <span style="color: var(--text-muted); font-size: 0.7rem; margin-left: 4px;">(i)</span>
+            </div>
+            <span style="color: var(--success-color); font-size: 0.75rem; font-weight: bold; flex-shrink: 0;">${scorePct}%</span>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+
+    if (!isExpanded && hiddenCount > 0) {
+      html += `
+        <div id="btnWidgetLoadMore" style="padding: 8px; text-align: center; font-size: 0.8rem; font-weight: bold; color: var(--accent-color); cursor: pointer; background: var(--hover-bg);" onmouseover="this.style.background='var(--active-bg)'" onmouseout="this.style.background='var(--hover-bg)'">
+          ${t('loadMoreLabel', { hiddenCount })}
+        </div>
+      `;
+    }
+
+    domNode.innerHTML = html;
+
+    // クリックで候補をエディタに挿入
+    const items = domNode.querySelectorAll('.vector-widget-item');
+    items.forEach((item) => {
+      item.onmousedown = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const idx = parseInt(item.getAttribute('data-index'), 10);
+        const selectedResult = visibleResults[idx];
+        targetEditor.executeEdits('vectorSearch', [{
+          range: range,
+          text: selectedResult.name,
+          forceMoveMarkers: true
+        }]);
+        if (monacoContentWidget) {
+          targetEditor.removeContentWidget(monacoContentWidget);
+          monacoContentWidget = null;
+        }
+      };
+    });
+
+    // Load More ボタン
+    const loadMoreBtn = domNode.querySelector('#btnWidgetLoadMore');
+    if (loadMoreBtn) {
+      loadMoreBtn.onmousedown = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isExpanded = true;
+        renderWidgetContent();
+      };
+    }
+  }
+
+  renderWidgetContent();
 
   monacoContentWidget = {
     getId: () => 'vector.suggestion.widget',
@@ -201,7 +282,7 @@ function showMonacoWidget(results, range, targetEditor, monacoInstance) {
           lineNumber: range.startLineNumber,
           column: range.startColumn
         },
-        preference: [monacoInstance.editor.ContentWidgetPositionPreference.ABOVE, monacoInstance.editor.ContentWidgetPositionPreference.BELOW]
+        preference: [monacoInstance.editor.ContentWidgetPositionPreference.BELOW, monacoInstance.editor.ContentWidgetPositionPreference.ABOVE]
       };
     }
   };
@@ -217,4 +298,19 @@ function showMonacoWidget(results, range, targetEditor, monacoInstance) {
       disposable.dispose();
     });
   }, 100);
+}
+
+// 設定スライダー変更時に結果を再描画
+const thresholdSlider = document.getElementById('vectorSearchThreshold');
+const maxResultsSlider = document.getElementById('vectorSearchMaxResults');
+
+function reRenderWithCurrentResults() {
+  renderResults(lastRawResults, false);
+}
+
+if (thresholdSlider) {
+  thresholdSlider.addEventListener('input', reRenderWithCurrentResults);
+}
+if (maxResultsSlider) {
+  maxResultsSlider.addEventListener('input', reRenderWithCurrentResults);
 }

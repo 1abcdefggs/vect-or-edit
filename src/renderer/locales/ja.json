@@ -31,5 +31,6 @@
   "theme_dark": "ダーク",
   "alert_file_saved": "保存完了: {path}",
   "alert_version_saved": "現状態を新バージョンとして保存完了 以降の変更と比較可能",
-  "linter_error": "Linter 実行エラー:"
+  "linter_error": "Linter 実行エラー:",
+  "loadMoreLabel": "さらに {{hiddenCount}} 件表示..."
 }

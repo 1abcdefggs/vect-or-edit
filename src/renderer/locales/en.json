@@ -31,5 +31,6 @@
   "theme_dark": "Dark",
   "alert_file_saved": "Saved: {path}",
   "alert_version_saved": "Version saved. Ready for diff compare",
-  "linter_error": "Linter error:"
+  "linter_error": "Linter error:",
+  "loadMoreLabel": "Show {{hiddenCount}} more..."
 }

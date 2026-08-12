@@ -64,13 +64,6 @@ export function initSettings(updateEditorCb) {
   const storedThemeName = localStorage.getItem('themeName');
   themeSelect.value = (storedThemeName && availableThemes.includes(storedThemeName)) ? storedThemeName : (availableThemes[0] || '');
   loadTheme(themeSelect.value);
-  availableThemes.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = name;
-    themeSelect.appendChild(opt);
-  });
-
 
 
   // Theme selector change handler – update theme and persist mode

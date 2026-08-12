@@ -30,6 +30,12 @@ export async function changeLanguage(langCode) {
   await loadLocales();
 }
 
+export function t(key, params = {}) {
+  const template = i18n[key] ?? key;
+  return template.replace(/{{\s*(\w+)\s*}}/g, (_, p) => {
+    return params[p] !== undefined ? params[p] : '';
+  });
+}
 
 export function applyI18n() {
   document.querySelectorAll('[data-i18n]').forEach(el => {

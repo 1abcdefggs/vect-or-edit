@@ -1,8 +1,8 @@
-import { pipeline, env } from '@xenova/transformers';
+import { pipeline, env } from '@huggingface/transformers';
 
-// Skip local model check since we are running in Electron and fetching from HuggingFace
 env.allowLocalModels = false;
-env.useBrowserCache = true; // Cache the model in IndexedDB
+env.useBrowserCache = true;
+
 
 class PipelineSingleton {
     static task = 'feature-extraction';
