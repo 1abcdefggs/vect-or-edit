@@ -8,8 +8,13 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
-  optimizeDeps: {
-    include: ['@xenova/transformers']
+    optimizeDeps: {
+      exclude: ['@huggingface/transformers']
+    },
+    build: {
+      rollupOptions: {
+        external: []
+      }
+    }
   }
-}
 });
