@@ -29,8 +29,6 @@ pub fn ping(name: String) -> String {
 #[napi(object)]
 pub struct JsValidationMarker {
   pub line: u32,
-  pub cols: Vec<u32>,
-  pub rule_id: String,
   pub message: String,
 }
 
@@ -43,7 +41,7 @@ pub struct JsValidationResult {
 #[napi(object)]
 pub struct JsSearchResult {
     pub idx: u32,
-    pub score: f32,
+    pub score: f64, // JavaScript number
     pub id: Option<String>,
     pub metadata: serde_json::Value,
 }
@@ -52,7 +50,7 @@ impl From<&SearchResult> for JsSearchResult {
     fn from(r: &SearchResult) -> Self {
         Self {
             idx: r.idx as u32,
-            score: r.score,
+            score: r.score as f64,
             id: r.id.clone(),
             metadata: serde_json::Value::Object(r.metadata.clone()),
         }
@@ -75,8 +73,6 @@ impl From<ValidationMarker> for JsValidationMarker {
         Self {
             // Safe cast, line numbers won't exceed u32::MAX
             line: marker.line as u32,
-            cols: marker.cols.iter().map(|&c| c as u32).collect(),
-            rule_id: marker.rule_id,
             message: marker.message,
         }
     }
@@ -102,7 +98,7 @@ pub fn validate_sync(text: String) -> Result<JsValidationResult> {
     Ok(result.into())
 }
 
-#[napi(task)]
+#[napi]
 pub async fn load_knowledge_base(path: String) -> Result<u32> {
     let mut store = ENGINE.write().await;
     let count = store
@@ -111,7 +107,7 @@ pub async fn load_knowledge_base(path: String) -> Result<u32> {
     Ok(count as u32)
 }
 
-#[napi(task)]
+#[napi]
 pub async fn load_kb_cache(path: String) -> Result<u32> {
     let mut store = ENGINE.write().await;
     let count = store
@@ -120,7 +116,7 @@ pub async fn load_kb_cache(path: String) -> Result<u32> {
     Ok(count as u32)
 }
 
-#[napi(task)]
+#[napi]
 pub async fn save_kb_cache(path: String) -> Result<()> {
     let store = ENGINE.read().await;
     store
@@ -128,7 +124,7 @@ pub async fn save_kb_cache(path: String) -> Result<()> {
         .map_err(|e| Error::new(Status::GenericFailure, e.to_string()))
 }
 
-#[napi(task)]
+#[napi]
 pub async fn build_index() -> Result<u32> {
     // Clone Arc to move it into the blocking task for CPU-intensive work.
     let engine = ENGINE.clone();
@@ -142,19 +138,18 @@ pub async fn build_index() -> Result<u32> {
         Ok(store.len() as u32)
     })
     .await
-    .map_err(|e| Error::new(Status::JoinError, e.to_string()))? // Handle task join error
+    .map_err(|e| Error::new(Status::GenericFailure, e.to_string()))? // Handle task join error
     .map_err(|e| Error::new(Status::GenericFailure, e)) // Handle our custom error
 }
 
 #[napi(ts_args_type = "query: Float32Array, topK: number")]
-#[napi(task)]
 pub async fn search(query: Float32Array, top_k: u32) -> Result<Vec<JsSearchResult>> {
     let store = ENGINE.read().await;
     let results = store.search(&query.to_vec(), top_k as usize);
     Ok(results.iter().map(Into::into).collect())
 }
 
-#[napi(task)]
+#[napi]
 pub async fn kb_info() -> Result<JsKbInfo> {
     let store = ENGINE.read().await;
     Ok(JsKbInfo {
