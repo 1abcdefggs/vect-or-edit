@@ -97,6 +97,7 @@ export interface EngineAPI {
   getEngineStatus: () => Promise<EngineStatus>;
   onEngineStatus: (callback: (status: EngineStatus) => void) => () => void;
   onSystemLog: (callback: (log: SystemLogEntry) => void) => () => void;
+  claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   importKnowledgeBase: () => Promise<ImportKnowledgeBaseResponse>;
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => Promise<{ success: boolean; error?: string }>;
   getSemanticState: () => Promise<SemanticState>;
@@ -129,6 +130,7 @@ const engineAPI: EngineAPI = {
       ipcRenderer.removeListener('app:systemLog', handler);
     };
   },
+  claudeSemanticSuggest: (payload) => ipcRenderer.invoke('app:claudeSemanticSuggest', payload),
   importKnowledgeBase: () => ipcRenderer.invoke('engine:importKnowledgeBase'),
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => ipcRenderer.invoke('app:setTitleBarOverlay', options),
   getSemanticState: () => ipcRenderer.invoke('engine:getSemanticState'),

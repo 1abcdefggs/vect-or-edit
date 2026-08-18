@@ -517,26 +517,6 @@ body {
   gap: 12px;
 }
 
-.led-matrix-container {
-  flex: 1;
-  max-width: 320px;
-  height: 20px;
-  background: #05080e;
-  border-radius: 4px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  padding: 2px 4px;
-  overflow: hidden;
-}
-
-.led-matrix-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
 .live-log-dot {
   width: 7px;
   height: 7px;

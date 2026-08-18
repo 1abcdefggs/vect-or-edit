@@ -1,7 +1,7 @@
 {
   "name": "vect-or-edit",
-  "version": "0.1.0",
-  "description": "Editt - Next Generation Vector-based Knowledge Editor",
+  "version": "0.2.0",
+  "description": "VectOrEditOr - Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
     "editor",

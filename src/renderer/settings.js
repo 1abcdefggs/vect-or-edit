@@ -125,7 +125,8 @@ export function initSettings(updateEditorCb) {
 
   // Editor Options 2-way Sync & Apply
   function applyEditorSettings() {
-    const fontFamily = fontFamilySelect?.value || modalFontFamilySelect?.value || "Georgia, 'Times New Roman', Times, serif";
+    const defaultFont = "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif";
+    const fontFamily = fontFamilySelect?.value || modalFontFamilySelect?.value || defaultFont;
     const fontSize = parseInt(fontSizeSelect?.value || modalFontSizeSelect?.value || '16', 10);
     const lineHeight = parseInt(modalLineHeightSelect?.value || '26', 10);
     const wordWrap = modalWordWrapSelect?.value || 'on';
@@ -222,6 +223,53 @@ export function initSettings(updateEditorCb) {
   if (chkShowFullMetadata) chkShowFullMetadata.addEventListener('change', () => syncSearchSettings('front'));
   if (modalShowFullMetadataChk) modalShowFullMetadataChk.addEventListener('change', () => syncSearchSettings('modal'));
 
+    // Tab 3 AI Provider & Claude Settings
+    const modalAiProviderSelect = document.getElementById('modalAiProviderSelect');
+    const localAiSettingsBlock = document.getElementById('localAiSettingsBlock');
+    const claudeSettingsBlock = document.getElementById('claudeSettingsBlock');
+    const modalClaudeKeyInput = document.getElementById('modalClaudeKeyInput');
+    const modalClaudeModelSelect = document.getElementById('modalClaudeModelSelect');
+    const btnInitLocalAi = document.getElementById('btnInitLocalAi');
+
+    const storedAiProvider = localStorage.getItem('ai_provider') || 'local';
+    const storedClaudeKey = localStorage.getItem('claude_api_key') || '';
+    const storedClaudeModel = localStorage.getItem('claude_model') || 'claude-3-5-sonnet-20241022';
+
+    if (modalAiProviderSelect) {
+      modalAiProviderSelect.value = storedAiProvider;
+      updateAiProviderVisibility(storedAiProvider);
+      modalAiProviderSelect.addEventListener('change', () => {
+        const val = modalAiProviderSelect.value;
+        localStorage.setItem('ai_provider', val);
+        updateAiProviderVisibility(val);
+      });
+    }
+
+    function updateAiProviderVisibility(provider) {
+      if (localAiSettingsBlock) localAiSettingsBlock.style.display = provider === 'local' ? 'flex' : 'none';
+      if (claudeSettingsBlock) claudeSettingsBlock.style.display = provider === 'claude' ? 'flex' : 'none';
+    }
+
+    if (modalClaudeKeyInput) {
+      modalClaudeKeyInput.value = storedClaudeKey;
+      modalClaudeKeyInput.addEventListener('input', () => {
+        localStorage.setItem('claude_api_key', modalClaudeKeyInput.value.trim());
+      });
+    }
+
+    if (modalClaudeModelSelect) {
+      modalClaudeModelSelect.value = storedClaudeModel;
+      modalClaudeModelSelect.addEventListener('change', () => {
+        localStorage.setItem('claude_model', modalClaudeModelSelect.value);
+      });
+    }
+
+    if (btnInitLocalAi) {
+      btnInitLocalAi.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('app:requestLocalAiInit'));
+      });
+    }
+
   // Restore Search Settings
   const savedFullMeta = localStorage.getItem('vect_show_full_metadata') === 'true';
   if (chkShowFullMetadata) chkShowFullMetadata.checked = savedFullMeta;
@@ -304,7 +352,8 @@ export function getTheme() {
 }
 
 export function getFontFamily() {
-  return document.getElementById('fontFamilySelect')?.value || localStorage.getItem('editor_fontFamily') || "Georgia, 'Times New Roman', Times, serif";
+  const defaultFont = "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif";
+  return document.getElementById('fontFamilySelect')?.value || localStorage.getItem('editor_fontFamily') || defaultFont;
 }
 
 export function getFontSize() {
