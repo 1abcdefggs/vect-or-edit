@@ -39,60 +39,103 @@ document.getElementById('btnCopyAllResults')?.addEventListener('click', () => {
   }
 });
 
+let isLocalAiReady = false;
+let isLocalAiDownloading = false;
+
+window.addEventListener('app:requestLocalAiInit', () => {
+  if (isLocalAiReady || isLocalAiDownloading) return;
+  isLocalAiDownloading = true;
+  if (embeddingWorker) {
+    embeddingWorker.postMessage({ type: 'init' });
+  }
+});
+
 // Initialize Transformers.js Worker
 let embeddingWorker = null;
 try {
   embeddingWorker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
   embeddingWorker.addEventListener('message', (e) => {
     const resultsList = document.getElementById('vectorResultsList');
-    if (!resultsList) return;
+    const modalDownloadProgress = document.getElementById('modalAiDownloadProgress');
+    const modalDownloadFile = document.getElementById('modalAiDownloadFile');
+    const modalDownloadPct = document.getElementById('modalAiDownloadPct');
+    const modalDownloadBar = document.getElementById('modalAiDownloadBar');
+    const localAiStatusBadge = document.getElementById('localAiStatusBadge');
+    const btnInitLocalAi = document.getElementById('btnInitLocalAi');
 
     if (e.data.status === 'initiate' || e.data.status === 'download' || e.data.status === 'progress') {
       const pct = e.data.progress !== undefined ? Math.round(e.data.progress) : 0;
       const fileName = e.data.file || 'AI Model Weights';
       setLedStatus('ai', false, `AI Model: Downloading ${pct}%`);
       
-      let progressCard = resultsList.querySelector('.model-progress-card');
-      if (!progressCard) {
-        resultsList.innerHTML = `
-          <div class="model-progress-card">
-            <div class="model-progress-header">
-              <span class="progress-file">Downloading AI Model...</span>
-              <span class="model-progress-pct">${pct}%</span>
-            </div>
-            <div class="model-progress-track">
-              <div class="model-progress-fill" style="width: ${pct}%"></div>
-            </div>
-          </div>
-          <div class="skeleton-card">
-            <div class="skeleton-header">
-              <div class="skeleton-pill"></div>
-              <div class="skeleton-pill-sm"></div>
-            </div>
-            <div class="skeleton-title"></div>
-            <div class="skeleton-subtitle"></div>
-          </div>
-        `;
-        progressCard = resultsList.querySelector('.model-progress-card');
+      if (modalDownloadProgress) modalDownloadProgress.style.display = 'block';
+      if (modalDownloadFile) modalDownloadFile.textContent = `Downloading ${fileName}`;
+      if (modalDownloadPct) modalDownloadPct.textContent = `${pct}%`;
+      if (modalDownloadBar) modalDownloadBar.style.width = `${pct}%`;
+      if (btnInitLocalAi) {
+        btnInitLocalAi.disabled = true;
+        btnInitLocalAi.style.opacity = '0.6';
       }
 
-      if (progressCard) {
-        const fileEl = progressCard.querySelector('.progress-file');
-        const pctEl = progressCard.querySelector('.model-progress-pct');
-        const fillEl = progressCard.querySelector('.model-progress-fill');
-        if (fileEl) fileEl.textContent = `Downloading ${fileName}`;
-        if (pctEl) pctEl.textContent = `${pct}%`;
-        if (fillEl) fillEl.style.width = `${pct}%`;
+      if (resultsList) {
+        let progressCard = resultsList.querySelector('.model-progress-card');
+        if (!progressCard) {
+          resultsList.innerHTML = `
+            <div class="model-progress-card">
+              <div class="model-progress-header">
+                <span class="progress-file">Downloading AI Model...</span>
+                <span class="model-progress-pct">${pct}%</span>
+              </div>
+              <div class="model-progress-track">
+                <div class="model-progress-fill" style="width: ${pct}%"></div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-header">
+                <div class="skeleton-pill"></div>
+                <div class="skeleton-pill-sm"></div>
+              </div>
+              <div class="skeleton-title"></div>
+              <div class="skeleton-subtitle"></div>
+            </div>
+          `;
+          progressCard = resultsList.querySelector('.model-progress-card');
+        }
+
+        if (progressCard) {
+          const fileEl = progressCard.querySelector('.progress-file');
+          const pctEl = progressCard.querySelector('.model-progress-pct');
+          const fillEl = progressCard.querySelector('.model-progress-fill');
+          if (fileEl) fileEl.textContent = `Downloading ${fileName}`;
+          if (pctEl) pctEl.textContent = `${pct}%`;
+          if (fillEl) fillEl.style.width = `${pct}%`;
+        }
       }
     } else if (e.data.status === 'done' || e.data.status === 'ready') {
-      // Model download is complete! Light up AI LED
+      isLocalAiReady = true;
+      isLocalAiDownloading = false;
       setLedStatus('ai', true, '7. AI Model (multilingual-e5-small): Ready');
+      
+      if (modalDownloadProgress) modalDownloadProgress.style.display = 'none';
+      if (localAiStatusBadge) {
+        localAiStatusBadge.textContent = 'Local AI: Ready (100% Offline)';
+        localAiStatusBadge.style.color = 'var(--success-color, #10b981)';
+      }
+      if (btnInitLocalAi) {
+        btnInitLocalAi.style.display = 'none';
+      }
+
       if (currentResults && currentResults.length > 0) {
         renderResults(currentResults, false);
       }
     } else if (e.data.status === 'error') {
+      isLocalAiDownloading = false;
       console.warn("Embedding worker reported error:", e.data.error);
       setLedStatus('ai', false, `AI Model Error: ${e.data.error}`);
+      if (btnInitLocalAi) {
+        btnInitLocalAi.disabled = false;
+        btnInitLocalAi.style.opacity = '1';
+      }
       if (currentResults && currentResults.length > 0) {
         renderResults(currentResults, false);
       }
@@ -337,6 +380,7 @@ function getMinScore() {
 function triggerSearchAndRender(query) {
   const limit = getSearchLimit();
   const minScore = getMinScore();
+  const provider = localStorage.getItem('ai_provider') || 'local';
 
   const quickResults = getQuickMatches(query, limit).filter(r => (r.score || 0) >= minScore);
   if (quickResults.length > 0) {
@@ -348,8 +392,31 @@ function triggerSearchAndRender(query) {
   if (backendTimer) clearTimeout(backendTimer);
   backendTimer = setTimeout(async () => {
     try {
+      // 1. Claude AI Provider Flow
+      if (provider === 'claude') {
+        const apiKey = localStorage.getItem('claude_api_key');
+        const model = localStorage.getItem('claude_model') || 'claude-3-5-sonnet-20241022';
+        if (window.engineAPI && window.engineAPI.claudeSemanticSuggest && apiKey) {
+          const prompt = `Analyze this query/phrase and suggest the best matching domain definitions or structured draft:\nQuery: "${query}"`;
+          const claudeRes = await window.engineAPI.claudeSemanticSuggest({ prompt, apiKey, model });
+          if (claudeRes && claudeRes.success && claudeRes.text) {
+            // Render Claude intelligent suggestion as top card
+            const claudeCardItem = {
+              id: 'claude-ai-suggestion',
+              name: `Claude (${model.includes('haiku') ? 'Haiku' : 'Sonnet'}) Suggestion`,
+              score: 0.99,
+              description: claudeRes.text,
+              provider: 'Anthropic Claude'
+            };
+            renderResults([claudeCardItem, ...quickResults], false);
+            return;
+          }
+        }
+      }
+
+      // 2. Local Embeddings + Rust HNSW Flow
       if (window.engineAPI && window.engineAPI.searchVector) {
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500));
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 2000));
         const vector = await Promise.race([getVectorFromWorker(query), timeoutPromise]);
         const response = await window.engineAPI.searchVector(vector, limit);
         if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
@@ -360,7 +427,7 @@ function triggerSearchAndRender(query) {
       }
       renderResults(quickResults, false);
     } catch (err) {
-      console.warn('Vector computation skipped/timed out, using fast results:', err);
+      console.warn('AI suggestion fallback used:', err);
       renderResults(quickResults, false);
     }
   }, 200);

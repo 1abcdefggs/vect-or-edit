@@ -1,7 +1,8 @@
 import { pipeline, env } from '@huggingface/transformers';
 
 env.allowLocalModels = false;
-env.useBrowserCache = true;
+env.useBrowserCache = false;
+env.useCustomCache = false;
 
 class PipelineSingleton {
     static task = 'feature-extraction';
@@ -21,13 +22,7 @@ class PipelineSingleton {
     }
 }
 
-// Automatically warm up / load the AI model in the background on startup
-PipelineSingleton.getInstance(progress => {
-    self.postMessage(progress);
-}).catch(err => {
-    self.postMessage({ status: 'error', error: err.message });
-});
-
+// Model will only be initialized when explicitly requested by the user
 self.addEventListener('message', async (event) => {
     const { text, type } = event.data;
     if (type === 'init' || !text) {

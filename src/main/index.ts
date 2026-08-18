@@ -239,6 +239,57 @@ app.whenReady().then(async () => {
     }
   });
 
+  ipcMain.handle('app:claudeSemanticSuggest', async (_event, payload: { prompt: string; apiKey?: string; model?: string }) => {
+    const apiKey = payload.apiKey?.trim();
+    if (!apiKey) {
+      return { success: false, error: 'Anthropic API key is not configured in Settings.' };
+    }
+
+    const model = payload.model || 'claude-3-5-sonnet-20241022';
+    
+    // Prepare knowledge context from active profile & slots
+    let systemContext = 'You are a precise semantic knowledge assistant and editor linter.';
+    if (activeProfile) {
+      systemContext += `\nDomain Profile: ${activeProfile.domain_name || activeProfile.profile_id}.\nRules: ${JSON.stringify(activeProfile.rules || [])}`;
+    }
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 1000,
+          system: systemContext,
+          messages: [
+            {
+              role: 'user',
+              content: payload.prompt
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return { 
+          success: false, 
+          error: (errorData as any)?.error?.message || `Anthropic API error (${response.status})` 
+        };
+      }
+
+      const data: any = await response.json();
+      const contentText = data.content?.[0]?.text || '';
+      return { success: true, text: contentText };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  });
+
   ipcMain.handle('app:validateDocument', async (_event, text: string) => {
     const markers: any[] = [];
     let is_valid = true;
