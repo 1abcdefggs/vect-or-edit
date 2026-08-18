@@ -7,5 +7,20 @@ export default defineConfig({
   preload: {
     plugins: [externalizeDepsPlugin()]
   },
-  renderer: {}
+  renderer: {
+    optimizeDeps: {
+      exclude: ['@huggingface/transformers']
+    },
+    build: {
+      target: 'esnext',
+      chunkSizeWarningLimit: 3000,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            monaco: ['monaco-editor']
+          }
+        }
+      }
+    }
+  }
 });

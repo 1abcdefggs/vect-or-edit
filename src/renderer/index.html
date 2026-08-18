@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co https://cdnjs.cloudflare.com; connect-src 'self' data: blob: https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co ws://localhost:* http://localhost:*; worker-src 'self' blob: data:; img-src 'self' data: blob:;">
   <title data-i18n="app_title">VectOrEditOr</title>
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -11,63 +12,461 @@
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <span class="logo-text">VectOrEditOr</span>
+        <img src="./assets/icon.png" alt="VectOrEditOr" class="logo-icon">
       </div>
       <div class="toolbar">
-        <select id="fontFamilySelect" class="setting-select toolbar-select" style="max-width: 120px;">
-          <option value="Georgia, 'Times New Roman', Times, serif" data-i18n="font_serif">Serif</option>
-          <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" data-i18n="font_sans_serif">Sans-serif</option>
-          <option value="monospace" data-i18n="font_mono">Monospace</option>
+        <select id="themeSelect" class="toolbar-select" style="max-width:130px;">
         </select>
-        <select id="fontSizeSelect" class="setting-select toolbar-select" style="max-width: 100px;">
-          <option value="14" data-i18n="font_small">14px Small</option>
-          <option value="16" selected data-i18n="font_normal">16px Normal</option>
-          <option value="18" data-i18n="font_large">18px Large</option>
-          <option value="20" data-i18n="font_xlarge">20px XLarge</option>
-        </select>
-        <div class="toolbar-separator"></div>
-        <button id="btnSave" class="toolbar-btn">
-          <span data-i18n="btn_save">Save</span>
+        <button id="btnLangToggle" class="toolbar-btn btn-lang-outline" style="font-weight: bold; width: 36px; display: flex; justify-content: center;">EN</button>
+        <button id="btnToggleConsole" class="toolbar-btn" style="padding: 6px 10px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 5px;" title="Toggle System Logs / Console" data-i18n-title="btn_console">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <span data-i18n="btn_console">Logs</span>
+          <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 8px; font-size: 0.65rem;">0</span>
         </button>
-        <button id="btnDiff" class="toolbar-btn">
-          <span data-i18n="btn_diff">Diff</span>
+        <button id="btnSettings" class="toolbar-btn" style="padding: 6px; display: flex; align-items: center; justify-content: center;" title="Settings" data-i18n-title="btn_settings">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
         </button>
-        <div class="toolbar-separator"></div>
-        <button id="btnToggleEditor" class="toolbar-btn">
-          <span data-i18n="btn_pro_editor">Pro Editor</span>
-        </button>
-        <button id="btnTheme" class="toolbar-btn">
-        </button>
-        <button id="btnLangToggle" class="toolbar-btn" style="font-weight: bold; width: 36px; display: flex; justify-content: center;">EN</button>
       </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="workspace">
+    <!-- Main Workspace with Top Live Terminal Ticker -->
+    <div class="workspace-wrapper" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+      <!-- Real-time Live Log Monitor with Pipeline Status Meter -->
+      <div class="live-log-ticker" id="liveLogTicker">
+        <div class="live-log-ticker-header">
+          <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+            <span class="live-log-dot pulse"></span>
+            <span style="font-weight: 800; font-size: 0.68rem; letter-spacing: 0.6px; color: #38bdf8;">SYSTEM LOG RUNTIME</span>
+            <span style="font-size: 0.65rem; color: #94a3b8;">(Process Stream)</span>
+          </div>
+
+          <!-- 7-Stage Pipeline Status LED Meter with Integrated Flow Direction -->
+          <div class="system-status-panel">
+            <div id="badgeLedBin" class="status-pill" title="1. Rust Binary (DLL): Initializing...">
+              <span class="status-led-dot status-loading"></span>
+              <span class="status-pill-label">1.RUST</span>
+            </div>
+            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+            <div id="badgeLedKb" class="status-pill" title="2. Knowledge Base & HNSW: Loading...">
+              <span class="status-led-dot status-loading"></span>
+              <span class="status-pill-label">2.HNSW</span>
+            </div>
+            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+            <div id="badgeLedConf" class="status-pill" title="3. User Settings: Loading...">
+              <span class="status-led-dot status-loading"></span>
+              <span class="status-pill-label">3.CONFIG</span>
+            </div>
+            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+            <div id="badgeLedThm" class="status-pill" title="4. Theme Palette: Loading...">
+              <span class="status-led-dot status-loading"></span>
+              <span class="status-pill-label">4.THEME</span>
+            </div>
+            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+            <div id="badgeLedI18n" class="status-pill" title="5. Locale i18n: Loading...">
+              <span class="status-led-dot status-loading"></span>
+              <span class="status-pill-label">5.LOCALE</span>
+            </div>
+            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+            <div id="badgeLedMonaco" class="status-pill" title="6. Monaco Editor: Initializing...">
+              <span class="status-led-dot status-loading"></span>
+              <span class="status-pill-label">6.EDITOR</span>
+            </div>
+            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+            <div id="badgeLedAi" class="status-pill" title="7. AI Embeddings Model: Initializing...">
+              <span class="status-led-dot status-loading"></span>
+              <span class="status-pill-label">7.AI-MODEL</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: auto;">
+            <button id="btnToggleLiveTicker" class="ticker-btn" style="display: flex; align-items: center; justify-content: center; padding: 2px 4px;" title="Toggle Compact View">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+        </div>
+        <div class="live-log-ticker-body" id="liveLogTickerBody">
+          <!-- 3-line live stream will be inserted here -->
+        </div>
+      </div>
+
+      <main class="workspace">
       <!-- Editor Area -->
-      <section class="editor-section">
-        <div class="section-title" data-i18n="editor_title">Knowledge Editor</div>
-        <textarea id="editorInput" data-i18n="editor_placeholder" placeholder="Start typing here to compose and edit your knowledge base..."></textarea>
-        <div id="monacoContainer" style="display: none; width: 100%; height: 100%;"></div>
+      <section class="editor-section" style="display: flex; flex-direction: column;">
+        <div class="section-title" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span data-i18n="editor_title" style="font-weight: 700;">Knowledge Editor</span>
+            <select id="fontFamilySelect" class="editor-toolbar-select">
+              <option value="Georgia, 'Times New Roman', Times, serif" data-i18n="font_serif">Serif</option>
+              <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" data-i18n="font_sans_serif">Sans-serif</option>
+              <option value="monospace" data-i18n="font_mono">Monospace</option>
+            </select>
+            <select id="fontSizeSelect" class="editor-toolbar-select">
+              <option value="14" data-i18n="font_small">14px Small</option>
+              <option value="16" selected data-i18n="font_normal">16px Normal</option>
+              <option value="18" data-i18n="font_large">18px Large</option>
+              <option value="20" data-i18n="font_xlarge">20px XLarge</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button id="btnOpen" class="editor-header-btn" title="Open File (Ctrl+O)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span style="font-size: 0.75rem; font-weight: 600;" data-i18n="btn_open">Open</span>
+            </button>
+            <button id="btnSave" class="editor-header-btn" title="Save (Ctrl+S)">
+              <span style="font-size: 0.75rem; font-weight: 600;" data-i18n="btn_save">Save</span>
+            </button>
+          </div>
+        </div>
+        <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
+        <!-- Editor Status Bar -->
+        <div class="editor-status-bar" id="editorStatusBar">
+          <div class="status-bar-left">
+            <span id="statusDocName" class="status-bar-item">Untitled.txt</span>
+            <span class="status-bar-separator">|</span>
+            <span id="statusCharCount" class="status-bar-item">0 chars</span>
+            <span class="status-bar-separator">|</span>
+            <span id="statusLineCount" class="status-bar-item">1 lines</span>
+          </div>
+          <div class="status-bar-right">
+            <span class="status-bar-item">UTF-8</span>
+            <span class="status-bar-separator">|</span>
+            <span class="status-bar-item">Markdown</span>
+          </div>
+        </div>
       </section>
 
       <!-- Vector Suggestion Sidebar -->
-      <aside class="suggestion-sidebar">
+      <aside id="suggestionSidebar" class="suggestion-sidebar">
         <div class="sidebar-header">
-          <h3 style="display: flex; align-items: center; gap: 8px;">
-            <span id="iconNeuroContainer"></span>
-            <span data-i18n="live_vector_recommendation">Real-time Vector Recommendation</span>
-          </h3>
-          <p data-i18n="live_vector_desc">Dynamically maps similar standard definitions based on input context.</p>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+            <h3 style="display: flex; align-items: center; gap: 8px; margin: 0;">
+              <span id="iconNeuroContainer"></span>
+              <span data-i18n="live_vector_recommendation">Real-time Vector Recommendation</span>
+            </h3>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button id="btnCopyAllResults" class="toolbar-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 0.72rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; cursor: pointer;" title="Copy all results as RAW JSON">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                <span>JSON</span>
+              </button>
+              <button id="btnToggleSidebar" class="toolbar-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Toggle Sidebar">
+                <span id="sidebarToggleIcon" style="display: flex; align-items: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+              </button>
+            </div>
+          </div>
+          <p data-i18n="live_vector_desc" style="margin-bottom: 8px;">Dynamically maps similar standard definitions based on input context.</p>
+          
+          <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
+            <!-- 1. Guideline & Preset Profile Section -->
+            <div class="profile-control-card" style="background: var(--bg-primary); padding: 8px 10px; border-radius: var(--radius-md, 6px); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                  <span id="profileIcon"></span> <span id="profileHeaderLabel" data-i18n="active_guideline_preset_label">Guideline & Preset:</span>
+                </span>
+                <div style="display: flex; gap: 4px;">
+                  <button id="btnInsertTemplate" class="toolbar-btn" style="padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; display: none; align-items: center; gap: 3px; cursor: pointer; color: var(--accent-color);" title="Insert Template into Editor">
+                    <span data-i18n="btn_insert_template">Template</span>
+                  </button>
+                  <button id="btnChangeGoal" class="toolbar-btn" style="padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; display: flex; align-items: center; gap: 3px; cursor: pointer;" title="Select Guideline or Preset Profile JSON">
+                    <span data-i18n="btn_change_profile">Select</span>
+                  </button>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden;">
+                <span id="activeProfileName" style="font-size: 0.8rem; font-weight: bold; color: var(--success-color, #10b981); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Default Profile">Default Profile</span>
+                <span id="activeGoalRuleCount" style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;">0 rules</span>
+              </div>
+            </div>
+
+            <!-- 2. Multi Knowledge Slots Section -->
+            <div class="slots-control-card" style="background: var(--bg-primary); padding: 8px 10px; border-radius: var(--radius-md, 6px); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                  <span data-i18n="knowledge_slots_label">Knowledge Slots:</span>
+                </span>
+                <button id="btnAddSlot" class="toolbar-btn" style="padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; display: flex; align-items: center; gap: 3px; cursor: pointer; color: var(--accent-color);" title="Add Knowledge Base File">
+                  <span data-i18n="btn_add_slot">Add Slot</span>
+                </button>
+              </div>
+              
+              <!-- Dynamic Slots List -->
+              <div id="knowledgeSlotsList" style="display: flex; flex-direction: column; gap: 4px; max-height: 120px; overflow-y: auto;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); padding: 2px 0;">No slots loaded</div>
+              </div>
+
+              <!-- Filter options -->
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 0.72rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; margin-top: 2px;">
+                <label style="display: flex; align-items: center; gap: 4px;">
+                  <span data-i18n="label_min_score">Min:</span>
+                  <input type="number" id="numMinScore" min="50" max="99" value="70" style="width: 38px; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">%
+                </label>
+                <label style="display: flex; align-items: center; gap: 4px;">
+                  <span data-i18n="label_limit">Limit:</span>
+                  <select id="selSearchLimit" style="background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                  </select>
+                </label>
+              </div>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+                <input type="checkbox" id="chkShowFullMetadata" style="accent-color: var(--accent-color, #818cf8); cursor: pointer;">
+                <span data-i18n="opt_show_full_metadata">Show Full Metadata</span>
+              </label>
+            </div>
+          </div>
         </div>
         <div id="vectorResultsList" class="results-list">
           <div class="empty-state" data-i18n="vector_placeholder">Enter text to receive semantic vector suggestions.</div>
         </div>
       </aside>
     </main>
+    </div>
+
+    <!-- Bottom Collapsible System Logs Console Panel -->
+    <div id="systemLogPanel" class="system-log-panel" style="display: none;">
+      <div class="log-panel-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="log-panel-title" style="display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            <span>SYSTEM LOGS / OUTPUT</span>
+          </span>
+          <span id="logFilterStatus" style="font-size: 0.7rem; color: #94a3b8;">Real-time stream</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button id="btnClearLogs" class="log-panel-btn">Clear</button>
+          <button id="btnCopyLogs" class="log-panel-btn">Copy</button>
+          <button id="btnCloseLogs" class="log-panel-btn" style="padding: 3px 6px; display: flex; align-items: center; justify-content: center;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+      <div id="logEntriesContainer" class="log-entries-container"></div>
+    </div>
+
+    <!-- Comprehensive Application Settings Modal -->
+    <div id="settingsModal" class="modal-backdrop" style="display: none;">
+      <div class="modal-dialog settings-modal-dialog">
+        <div class="modal-header">
+          <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span data-i18n="settings_title">Application Settings</span>
+          </h3>
+          <button id="btnCloseSettingsModal" class="log-panel-btn" style="padding: 2px 8px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <div class="settings-modal-tabs">
+          <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance">Appearance & Font</button>
+          <button class="settings-tab-btn" data-tab="tabEditor" data-i18n="tab_editor">Editor Behavior</button>
+          <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n="tab_ai_search">AI & Vector Search</button>
+          <button class="settings-tab-btn" data-tab="tabSystem" data-i18n="tab_system">System & Logs</button>
+        </div>
+
+        <div class="modal-body settings-modal-body">
+          <!-- Tab 1: Appearance & Font -->
+          <div id="tabAppearance" class="settings-tab-content active">
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="font_family_label">Font Family</div>
+                <div class="setting-desc" data-i18n="setting_font_family_desc">Select typeface for text rendering.</div>
+              </div>
+              <select id="modalFontFamilySelect" class="toolbar-select">
+                <option value="Georgia, 'Times New Roman', Times, serif" data-i18n="font_serif">Serif</option>
+                <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" data-i18n="font_sans_serif">Sans-serif</option>
+                <option value="monospace" data-i18n="font_mono">Monospace</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="font_size_label">Font Size</div>
+                <div class="setting-desc" data-i18n="setting_font_size_desc">Adjust editor font scaling.</div>
+              </div>
+              <select id="modalFontSizeSelect" class="toolbar-select">
+                <option value="14" data-i18n="font_small">14px Small</option>
+                <option value="16" data-i18n="font_normal">16px Normal</option>
+                <option value="18" data-i18n="font_large">18px Large</option>
+                <option value="20" data-i18n="font_xlarge">20px XLarge</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_line_height">Line Height</div>
+                <div class="setting-desc" data-i18n="setting_line_height_desc">Adjust vertical pitch between lines.</div>
+              </div>
+              <select id="modalLineHeightSelect" class="toolbar-select">
+                <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
+                <option value="26" selected data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
+                <option value="30" data-i18n="opt_lh_relaxed">1.8 Relaxed (30px)</option>
+                <option value="34" data-i18n="opt_lh_spacious">2.0 Spacious (34px)</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="theme_label">Color Theme</div>
+                <div class="setting-desc" data-i18n="setting_theme_desc">Switch color palette and titlebar theme.</div>
+              </div>
+              <select id="modalThemeSelect" class="toolbar-select">
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="language_label">UI Language</div>
+                <div class="setting-desc" data-i18n="setting_language_desc">Switch application locale.</div>
+              </div>
+              <select id="modalLangSelect" class="toolbar-select">
+                <option value="en" data-i18n="lang_en">English (EN)</option>
+                <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tab 2: Editor Behavior -->
+          <div id="tabEditor" class="settings-tab-content">
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_line_highlight">Current Line Highlight</div>
+                <div class="setting-desc" data-i18n="setting_line_highlight_desc">Configure cursor highlight style.</div>
+              </div>
+              <select id="modalLineHighlightSelect" class="toolbar-select">
+                <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
+                <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
+                <option value="none" data-i18n="opt_highlight_none">Disabled</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_word_wrap">Word Wrap</div>
+                <div class="setting-desc" data-i18n="setting_word_wrap_desc">Toggle automatic text wrapping.</div>
+              </div>
+              <select id="modalWordWrapSelect" class="toolbar-select">
+                <option value="on" selected data-i18n="opt_wrap_on">On (Wrap at view)</option>
+                <option value="off" data-i18n="opt_wrap_off">Off (Horizontal scroll)</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_line_numbers">Line Numbers</div>
+                <div class="setting-desc" data-i18n="setting_line_numbers_desc">Configure visibility of line numbers.</div>
+              </div>
+              <select id="modalLineNumbersSelect" class="toolbar-select">
+                <option value="on" selected data-i18n="opt_numbers_on">On (Visible)</option>
+                <option value="off" data-i18n="opt_numbers_off">Off (Minimalist)</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_sticky_scroll">Sticky Scroll</div>
+                <div class="setting-desc" data-i18n="setting_sticky_scroll_desc">Keep parent headings visible at top.</div>
+              </div>
+              <select id="modalStickyScrollSelect" class="toolbar-select">
+                <option value="on" selected data-i18n="opt_sticky_on">On (Enabled)</option>
+                <option value="off" data-i18n="opt_sticky_off">Off (Disabled)</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_whitespace">Render Whitespace</div>
+                <div class="setting-desc" data-i18n="setting_whitespace_desc">Show visible marks for spaces and tabs.</div>
+              </div>
+              <select id="modalWhitespaceSelect" class="toolbar-select">
+                <option value="none" selected data-i18n="opt_ws_none">None (Hidden)</option>
+                <option value="boundary" data-i18n="opt_ws_boundary">Boundary (Leading/Trailing)</option>
+                <option value="all" data-i18n="opt_ws_all">All (Show everywhere)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tab 3: AI & Vector Search -->
+          <div id="tabAiSearch" class="settings-tab-content">
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_suggest_trigger">Suggestion Trigger Mode</div>
+                <div class="setting-desc" data-i18n="setting_suggest_trigger_desc">Control how vector suggestions are invoked.</div>
+              </div>
+              <select id="modalSuggestTriggerSelect" class="toolbar-select">
+                <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse Release)</option>
+                <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
+                <option value="manual" data-i18n="opt_trigger_manual">Manual (Alt+S Shortcut Only)</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_min_score">Minimum Similarity Score (%)</div>
+                <div class="setting-desc" data-i18n="setting_min_score_desc">Ignore results below this similarity threshold.</div>
+              </div>
+              <input type="number" id="modalMinScoreInput" min="50" max="99" value="70" class="toolbar-select" style="width: 70px;">
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_limit">Search Results Limit</div>
+                <div class="setting-desc" data-i18n="setting_limit_desc">Maximum number of suggestions returned.</div>
+              </div>
+              <select id="modalLimitSelect" class="toolbar-select">
+                <option value="5" selected data-i18n="opt_limit_5">5 results</option>
+                <option value="10" data-i18n="opt_limit_10">10 results</option>
+                <option value="20" data-i18n="opt_limit_20">20 results</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="opt_show_full_metadata">Show Full Metadata / Attributes</div>
+                <div class="setting-desc" data-i18n="setting_full_meta_desc">Auto-expand key-value attributes in suggestion cards.</div>
+              </div>
+              <input type="checkbox" id="modalShowFullMetadataChk" style="accent-color: var(--accent-color, #818cf8); width: 18px; height: 18px; cursor: pointer;">
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_linter_enabled">Real-time Validation (Linter)</div>
+                <div class="setting-desc" data-i18n="setting_linter_enabled_desc">Enable background document validation.</div>
+              </div>
+              <select id="modalLinterSelect" class="toolbar-select">
+                <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
+                <option value="off" data-i18n="opt_linter_off">Disabled</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tab 4: System & Logs -->
+          <div id="tabSystem" class="settings-tab-content">
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_log_position">System Log Display Position</div>
+                <div class="setting-desc" data-i18n="setting_log_position_desc">Choose where to display the real-time system log monitor.</div>
+              </div>
+              <select id="selLogDisplayPosition" class="toolbar-select" style="min-width: 150px;">
+                <option value="top" selected data-i18n="opt_log_top">Top (Header Bar)</option>
+                <option value="bottom" data-i18n="opt_log_bottom">Bottom (Console Panel)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-
 
   <script type="module" src="./renderer.js"></script>
 </body>
