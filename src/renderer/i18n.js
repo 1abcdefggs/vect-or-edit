@@ -1,3 +1,5 @@
+import { setLedStatus } from './statusManager.js';
+
 export let i18n = {};
 export let currentLang = 'en';
 
@@ -12,6 +14,7 @@ export async function loadLocales() {
     if (!res.ok) throw new Error(`Locale ${lang} not found`);
     i18n = await res.json();
     applyI18n();
+    setLedStatus('i18n', true, `5. Locale: ${lang}.json loaded`);
   } catch (err) {
     console.warn(`Preferred locale not found, falling back to English.`, err);
     try {
@@ -19,6 +22,7 @@ export async function loadLocales() {
       const resFallback = await fetch('./locales/en.json');
       i18n = await resFallback.json();
       applyI18n();
+      setLedStatus('i18n', true, `5. Locale: en.json (fallback)`);
     } catch (e) {
       console.error('Failed to load fallback locale:', e);
     }
@@ -46,6 +50,13 @@ export function applyI18n() {
       } else {
         el.textContent = i18n[key];
       }
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    if (i18n[key]) {
+      el.title = i18n[key];
     }
   });
 }

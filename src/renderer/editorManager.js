@@ -1,9 +1,9 @@
 import { getTheme, getFontFamily, getFontSize } from './settings.js';
-import { triggerMonacoVectorSearch } from './vectorSearch.js';
+import { triggerMonacoVectorSearch, showSelectionPopoverMenu } from './vectorSearch.js';
 import { allDictEntries } from './dictionary.js';
 import { i18n } from './i18n.js';
+import { setLedStatus } from './statusManager.js';
 
-let isProMode = false;
 let isDiffMode = false;
 let monacoEditorInstance = null;
 let monacoDiffEditorInstance = null;
@@ -11,66 +11,183 @@ let savedVersionText = '';
 let linterTimeout = null;
 let monaco = null;
 
-const editorInput = document.getElementById('editorInput');
+// Configure Monaco WebWorker environment safely for Vite & Electron
+if (typeof window !== 'undefined') {
+  window.MonacoEnvironment = {
+    getWorkerUrl: function (_moduleId, _label) {
+      const workerCode = `
+        self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/'
+        };
+        importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/base/worker/workerMain.js');
+      `;
+      return `data:text/javascript;charset=utf-8,${encodeURIComponent(
+        `self.onmessage = () => {};`
+      )}`;
+    }
+  };
+}
+
 const monacoContainer = document.getElementById('monacoContainer');
-const btnToggleEditor = document.getElementById('btnToggleEditor');
-const btnDiff = document.getElementById('btnDiff');
 
-export async function toggleEditor(iconsObj) {
-  isProMode = !isProMode;
+export async function initEditor() {
+  if (!monaco) monaco = await import('monaco-editor');
 
-  if (isProMode) {
-    editorInput.style.display = 'none';
-    monacoContainer.style.display = 'block';
-    btnToggleEditor.innerHTML = `${iconsObj.editor} <span data-i18n="btn_basic_editor">${i18n.btn_basic_editor || 'Basic Editor'}</span>`;
+  monacoEditorInstance = monaco.editor.create(monacoContainer, {
+    value: '',
+    language: 'markdown',
+    theme: getTheme(),
+    fontSize: getFontSize(),
+    fontFamily: getFontFamily(),
+    wordWrap: 'on',
+    minimap: { enabled: false },
+    automaticLayout: true,
+    lineNumbersMinChars: 3,
+    renderLineHighlight: 'line'
+  });
 
-    if (!monacoEditorInstance && !isDiffMode) {
-      if (!monaco) monaco = await import('monaco-editor');
+  registerMonacoSuggestAction(monacoEditorInstance, monaco);
+  initializeKnowledgeExtensions(monacoEditorInstance, monaco);
 
-      monacoEditorInstance = monaco.editor.create(monacoContainer, {
-        value: editorInput.value,
-        language: 'markdown',
-        theme: getTheme(),
-        fontSize: getFontSize(),
-        fontFamily: getFontFamily(),
-        wordWrap: 'on',
-        minimap: { enabled: false },
-        automaticLayout: true
-      });
+  // Hook mouseup on Monaco Editor for auto-selection popover menu
+  monacoEditorInstance.onMouseUp((e) => {
+    const mode = localStorage.getItem('vect_suggest_trigger_mode') || 'selection';
+    if (mode !== 'selection') return;
 
-      monacoEditorInstance.onDidChangeCursorSelection(async (e) => {
-        const selection = monacoEditorInstance.getModel().getValueInRange(e.selection).trim();
-        if (selection.length > 2) {
-          triggerMonacoVectorSearch(selection, e.selection, monacoEditorInstance, monaco);
+    setTimeout(() => {
+      const selection = monacoEditorInstance.getSelection();
+      if (selection && !selection.isEmpty()) {
+        const text = monacoEditorInstance.getModel().getValueInRange(selection).trim();
+        if (text.length > 0) {
+          // Get the start position of selection to place menu cleanly above/below
+          const startPos = monacoEditorInstance.getScrolledVisiblePosition({
+            lineNumber: selection.startLineNumber,
+            column: selection.startColumn
+          });
+          
+          if (startPos) {
+            const containerRect = monacoContainer.getBoundingClientRect();
+            const posX = containerRect.left + startPos.left;
+            const posY = containerRect.top + startPos.top;
+            showSelectionPopoverMenu(posX, posY, text);
+          } else if (e.event && e.event.posx && e.event.posy) {
+            showSelectionPopoverMenu(e.event.posx, e.event.posy, text);
+          }
         }
-      });
+      }
+    }, 60);
+  });
 
-      initializeKnowledgeExtensions(monacoEditorInstance, monaco);
-    } else if (monacoEditorInstance) {
-      monacoEditorInstance.setValue(editorInput.value);
-    } else if (isDiffMode && monacoDiffEditorInstance) {
-      monacoDiffEditorInstance.getModifiedEditor().setValue(editorInput.value);
-    }
-  } else {
-    monacoContainer.style.display = 'none';
-    editorInput.style.display = 'block';
-    btnToggleEditor.innerHTML = `${iconsObj.editor} <span data-i18n="btn_pro_editor">${i18n.btn_pro_editor || 'Pro Editor'}</span>`;
+  // Hook model change for status bar updates
+  monacoEditorInstance.onDidChangeModelContent(() => {
+    updateStatusBar();
+  });
+  updateStatusBar();
 
-    if (isDiffMode && monacoDiffEditorInstance) {
-      editorInput.value = monacoDiffEditorInstance.getModifiedEditor().getValue();
-    } else if (monacoEditorInstance) {
-      editorInput.value = monacoEditorInstance.getValue();
-    }
+  setLedStatus('monaco', true, `6. Monaco Editor: Mounted & Ready`);
+}
+
+export function updateStatusBar(fileName = null) {
+  if (fileName) {
+    const docNameEl = document.getElementById('statusDocName');
+    if (docNameEl) docNameEl.textContent = fileName;
+  }
+  if (!monacoEditorInstance) return;
+  const val = monacoEditorInstance.getValue();
+  const charCountEl = document.getElementById('statusCharCount');
+  const lineCountEl = document.getElementById('statusLineCount');
+  if (charCountEl) charCountEl.textContent = `${val.length.toLocaleString()} chars`;
+  if (lineCountEl) {
+    const lineCount = monacoEditorInstance.getModel() ? monacoEditorInstance.getModel().getLineCount() : 1;
+    lineCountEl.textContent = `${lineCount.toLocaleString()} lines`;
   }
 }
 
-export async function toggleDiffMode() {
-  if (!isProMode) {
-    btnToggleEditor.click();
+export function focusEditor() {
+  if (monacoEditorInstance) {
+    monacoEditorInstance.focus();
+  } else if (monacoDiffEditorInstance) {
+    const mod = monacoDiffEditorInstance.getModifiedEditor();
+    if (mod) mod.focus();
   }
+}
+
+export function getEditorInstance() {
+  return monacoEditorInstance || (monacoDiffEditorInstance ? monacoDiffEditorInstance.getModifiedEditor() : null);
+}
+
+export function insertTextIntoEditor(text) {
+  const ed = getEditorInstance();
+  if (!ed) return;
+
+  const selection = ed.getSelection();
+  if (selection) {
+    ed.executeEdits('vectorInsert', [{
+      range: selection,
+      text: text,
+      forceMoveMarkers: true
+    }]);
+  } else {
+    const position = ed.getPosition();
+    if (position) {
+      ed.executeEdits('vectorInsert', [{
+        range: new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column),
+        text: text,
+        forceMoveMarkers: true
+      }]);
+    }
+  }
+  ed.focus();
+}
+
+export function setEditorContent(text, fileName = null) {
+  if (monacoEditorInstance) {
+    monacoEditorInstance.setValue(text);
+    updateStatusBar(fileName);
+    monacoEditorInstance.focus();
+  }
+}
+
+function registerMonacoSuggestAction(editor, monacoRef) {
+  editor.addAction({
+    id: 'action-vector-suggest',
+    label: i18n.suggest_context_menu || 'AI Suggest (Vector Search)',
+    keybindings: [
+      monacoRef.KeyMod.Alt | monacoRef.KeyCode.KeyS,
+      monacoRef.KeyMod.CtrlCmd | monacoRef.KeyMod.Shift | monacoRef.KeyCode.KeyS
+    ],
+    contextMenuGroupId: 'navigation',
+    contextMenuOrder: 1.5,
+    run: function (ed) {
+      let selection = ed.getSelection();
+      let text = '';
+      
+      if (!selection || selection.isEmpty()) {
+        const position = ed.getPosition();
+        const word = ed.getModel().getWordAtPosition(position);
+        if (word) {
+          text = word.word;
+          selection = new monacoRef.Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn);
+          ed.setSelection(selection);
+        } else {
+          return;
+        }
+      } else {
+        text = ed.getModel().getValueInRange(selection).trim();
+      }
+      
+      if (text.length > 0) {
+        triggerMonacoVectorSearch(text, selection, ed, monacoRef);
+      }
+    }
+  });
+}
+
+export async function toggleDiffMode() {
+  const btnDiff = document.getElementById('btnDiff');
 
   if (!isDiffMode) {
-    savedVersionText = monacoEditorInstance ? monacoEditorInstance.getValue() : editorInput.value;
+    savedVersionText = monacoEditorInstance ? monacoEditorInstance.getValue() : '';
 
     if (monacoEditorInstance) {
       monacoEditorInstance.dispose();
@@ -94,20 +211,18 @@ export async function toggleDiffMode() {
     monacoDiffEditorInstance.setModel({ original: originalModel, modified: modifiedModel });
 
     const modifiedEditor = monacoDiffEditorInstance.getModifiedEditor();
-    modifiedEditor.onDidChangeCursorSelection(async (e) => {
-      const selection = modifiedEditor.getModel().getValueInRange(e.selection).trim();
-      if (selection.length > 2) {
-        triggerMonacoVectorSearch(selection, e.selection, modifiedEditor, monaco);
-      }
-    });
+    registerMonacoSuggestAction(modifiedEditor, monaco);
 
     isDiffMode = true;
-    btnDiff.style.background = 'rgba(99, 102, 241, 0.3)';
-    btnDiff.style.borderColor = 'rgba(99, 102, 241, 0.8)';
+    if (btnDiff) {
+      btnDiff.style.background = 'rgba(99, 102, 241, 0.3)';
+      btnDiff.style.borderColor = 'rgba(99, 102, 241, 0.8)';
+    }
   } else {
     savedVersionText = monacoDiffEditorInstance.getModifiedEditor().getValue();
     monacoDiffEditorInstance.getModel().original.setValue(savedVersionText);
     alert(i18n.alert_version_saved || "Current state saved as a new version. Subsequent changes will be compared.");
+    focusEditor();
   }
 }
 
@@ -117,10 +232,7 @@ export function updateEditorOptions(options) {
 }
 
 export function getCurrentContent() {
-  if (isProMode) {
-    return isDiffMode ? monacoDiffEditorInstance.getModifiedEditor().getValue() : monacoEditorInstance.getValue();
-  }
-  return editorInput.value;
+  return isDiffMode ? monacoDiffEditorInstance.getModifiedEditor().getValue() : monacoEditorInstance.getValue();
 }
 
 function runEngineLinter(editor, monacoRef) {
@@ -187,4 +299,16 @@ function initializeKnowledgeExtensions(editor, monacoRef) {
   editor.onDidChangeModelContent(() => {
     runEngineLinter(editor, monacoRef);
   });
+}
+
+export function refreshLinter() {
+  if (monacoEditorInstance && monaco) {
+    runEngineLinter(monacoEditorInstance, monaco);
+  }
+  if (monacoDiffEditorInstance && monaco) {
+    const modifiedEditor = monacoDiffEditorInstance.getModifiedEditor();
+    if (modifiedEditor) {
+      runEngineLinter(modifiedEditor, monaco);
+    }
+  }
 }

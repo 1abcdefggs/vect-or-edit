@@ -12,8 +12,14 @@ export default defineConfig({
       exclude: ['@huggingface/transformers']
     },
     build: {
+      target: 'esnext',
+      chunkSizeWarningLimit: 3000,
       rollupOptions: {
-        external: []
+        output: {
+          manualChunks: {
+            monaco: ['monaco-editor']
+          }
+        }
       }
     }
   }
