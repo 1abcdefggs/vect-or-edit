@@ -14,27 +14,29 @@
   ],
   "main": "out/main/index.js",
   "author": "1abcdefggs",
-  "homepage": "https://github.com/1abcdefggs/VectOrEditOr#readme",
+  "homepage": "https://github.com/1abcdefggs/vect-or-edit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1abcdefggs/VectOrEditOr.git"
+    "url": "git+https://github.com/1abcdefggs/vect-or-edit.git"
   },
   "bugs": {
-    "url": "https://github.com/1abcdefggs/VectOrEditOr/issues"
+    "url": "https://github.com/1abcdefggs/vect-or-edit/issues"
   },
   "license": "MIT",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "electron-vite preview",
     "test": "vitest run"
   },
   "dependencies": {
-    "@electron/get": "^5.1.0",
-    "@vect-or-engine/core": "file:../vect-or-engine",
+    "monaco-editor": "^0.56.0",
     "@huggingface/transformers": "^3.0.0",
-    "monaco-editor": "^0.56.0"
+    "@vect-or-engine/core": "file:../vect-or-engine"
   },
   "devDependencies": {
+    "@electron/get": "^5.1.0",
     "electron": "^31.7.7",
     "electron-vite": "^2.3.0",
     "typescript": "^5.4.0",
