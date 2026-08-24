@@ -1,0 +1,181 @@
+{
+  "base": "vs",
+  "inherit": true,
+  "rules": [
+    {
+      "background": "ffffff",
+      "token": ""
+    },
+    {
+      "foreground": "6a737d",
+      "token": "comment"
+    },
+    {
+      "foreground": "6a737d",
+      "token": "punctuation.definition.comment"
+    },
+    {
+      "foreground": "6a737d",
+      "token": "string.comment"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "constant"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "entity.name.constant"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "variable.other.constant"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "variable.language"
+    },
+    {
+      "foreground": "6f42c1",
+      "token": "entity"
+    },
+    {
+      "foreground": "6f42c1",
+      "token": "entity.name"
+    },
+    {
+      "foreground": "24292e",
+      "token": "variable.parameter.function"
+    },
+    {
+      "foreground": "22863a",
+      "token": "entity.name.tag"
+    },
+    {
+      "foreground": "d73a49",
+      "token": "keyword"
+    },
+    {
+      "foreground": "d73a49",
+      "token": "storage"
+    },
+    {
+      "foreground": "d73a49",
+      "token": "storage.type"
+    },
+    {
+      "foreground": "24292e",
+      "token": "storage.modifier.package"
+    },
+    {
+      "foreground": "24292e",
+      "token": "storage.modifier.import"
+    },
+    {
+      "foreground": "24292e",
+      "token": "storage.type.java"
+    },
+    {
+      "foreground": "032f62",
+      "token": "string"
+    },
+    {
+      "foreground": "032f62",
+      "token": "punctuation.definition.string"
+    },
+    {
+      "foreground": "032f62",
+      "token": "string punctuation.section.embedded source"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "support"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "support.type"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "support.class"
+    },
+    {
+      "foreground": "005cc5",
+      "token": "support.variable"
+    },
+    {
+      "foreground": "24292e",
+      "token": "variable"
+    },
+    {
+      "foreground": "24292e",
+      "token": "variable.other"
+    },
+    {
+      "foreground": "b31d28",
+      "fontStyle": "bold italic underline",
+      "token": "invalid.broken"
+    },
+    {
+      "foreground": "b31d28",
+      "fontStyle": "bold italic underline",
+      "token": "invalid.deprecated"
+    },
+    {
+      "foreground": "fafbfc",
+      "background": "b31d28",
+      "fontStyle": "italic underline",
+      "token": "invalid.illegal"
+    },
+    {
+      "foreground": "b31d28",
+      "fontStyle": "bold italic underline",
+      "token": "invalid.unimplemented"
+    },
+    {
+      "foreground": "d73a49",
+      "token": "sublimelinter.mark.error"
+    },
+    {
+      "foreground": "e36209",
+      "token": "sublimelinter.mark.warning"
+    },
+    {
+      "foreground": "959da5",
+      "token": "sublimelinter.gutter-mark"
+    },
+    {
+      "foreground": "0366d6",
+      "fontStyle": "underline",
+      "token": "constant.other.reference.link"
+    },
+    {
+      "foreground": "0366d6",
+      "fontStyle": "underline",
+      "token": "string.other.link"
+    }
+  ],
+  "colors": {
+    "editor.foreground": "#24292e",
+    "editor.background": "#ffffff",
+    "editor.selectionBackground": "#c8e1ff",
+    "editor.inactiveSelectionBackground": "#e1e4e8",
+    "editor.selectionHighlightBackground": "#c8e1ff80",
+    "editor.findMatchHighlightBackground": "#fff5b1",
+    "editor.lineHighlightBackground": "#f6f8fa",
+    "editor.lineHighlightBorder": "#00000000",
+    "editorCursor.foreground": "#044289",
+    "editorLineNumber.foreground": "#1b1f234d",
+    "editorWhitespace.foreground": "#6a737d40",
+    "editorIndentGuide.background": "#d1d5da",
+    "editorIndentGuide.activeBackground": "#0366d680",
+    "editor.selectionHighlightBorder": "#c8e1ff",
+    "sideBar.background": "#f6f8fa",
+    "titleBar.activeBackground": "#f6f8fa",
+    "editorWidget.background": "#ffffff",
+    "editorGroup.border": "#e1e4e8",
+    "button.background": "#2ea44f",
+    "button.foreground": "#ffffff",
+    "dropdown.background": "#ffffff",
+    "dropdown.foreground": "#24292e"
+  }
+}

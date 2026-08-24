@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron';
 import path from 'node:path';
 import * as fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
@@ -8,22 +8,63 @@ import fsPromises from 'node:fs/promises';
 let engine: any = null;
 let rustBinaryLoaded = false;
 
-try {
-  engine = require('../../../vect-or-engine/index.js');
-  rustBinaryLoaded = true;
-} catch (e) {
-  console.error('[App] Failed to bind Rust N-API engine binary:', e);
+const candidateEnginePaths = [
+  // 1. Packaged Electron app (unpacked asar resources)
+  path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+  path.join(process.resourcesPath || '', 'vect-or-engine-napi.win32-x64-msvc.node'),
+  // 2. Development relative workspace paths
+  path.join(__dirname, '../../../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+  path.join(process.cwd(), '../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+  path.join(__dirname, '../../../vect-or-engine/index.js'),
+  path.join(process.cwd(), '../vect-or-engine/index.js'),
+  path.join(__dirname, '../../vect-or-engine/index.js'),
+  path.join(process.cwd(), 'node_modules/@1abcdefggs/vect-or-engine/index.js'),
+  path.join(process.cwd(), 'node_modules/@vect-or-engine/core/index.js')
+];
+
+for (const candidate of candidateEnginePaths) {
+  try {
+    if (fs.existsSync(candidate)) {
+      engine = require(candidate);
+      if (engine) {
+        rustBinaryLoaded = true;
+        console.log(`[App] Successfully bound Rust N-API engine from: ${candidate}`);
+        break;
+      }
+    }
+  } catch (e) {
+    // Continue searching other candidates
+  }
+}
+
+if (!rustBinaryLoaded) {
+  try {
+    engine = require('@1abcdefggs/vect-or-engine');
+    rustBinaryLoaded = true;
+    console.log('[App] Successfully bound Rust N-API engine from package @1abcdefggs/vect-or-engine');
+  } catch (e1) {
+    try {
+      engine = require('@vect-or-engine/core');
+      rustBinaryLoaded = true;
+      console.log('[App] Successfully bound Rust N-API engine from legacy package @vect-or-engine/core');
+    } catch (e2) {
+      console.error('[App] Failed to bind Rust N-API engine binary:', e1);
+    }
+  }
 }
 
 // Disable GPU shader disk cache and HTTP disk cache to avoid Windows cache permission conflicts
 app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
 app.commandLine.appendSwitch('disable-http-cache');
 
-// Set isolated temporary userData path in development mode to prevent file locks while keeping AI model cache persistent
+// Set isolated persistent userData path in development mode to preserve AI model cache across runs
 if (!app.isPackaged) {
   try {
-    const tempUserData = path.join(app.getPath('temp'), 'vectoreditor-dev-user-data');
-    app.setPath('userData', tempUserData);
+    const devUserData = path.join(app.getPath('appData'), 'vectoreditor-dev-user-data');
+    if (!fs.existsSync(devUserData)) {
+      fs.mkdirSync(devUserData, { recursive: true });
+    }
+    app.setPath('userData', devUserData);
   } catch (e) {
     // Ignore error if app is already initialized
   }
@@ -37,7 +78,7 @@ let activeProfile: any = null;
 function resolveProfilePathForKb(kbPath: string): string | null {
   const dir = path.dirname(kbPath);
   const baseName = path.basename(kbPath);
-  
+
   // Strip prefixes & suffixes to get core domain identifier
   const core = baseName
     .replace(/^kb_/, '')
@@ -66,7 +107,24 @@ async function loadProfileFile(profilePath: string): Promise<any> {
   try {
     if (fs.existsSync(profilePath)) {
       const text = await fsPromises.readFile(profilePath, 'utf-8');
-      const data = JSON.parse(text);
+      let data = JSON.parse(text);
+      if (Array.isArray(data)) {
+        // Convert clinical array templates into a rich profile object
+        const firstItem = data[0];
+        const defaultDoc = firstItem?.formal_medical_output?.clinical_history_and_findings 
+          || firstItem?.template?.default_text 
+          || firstItem?.description 
+          || '';
+        data = {
+          profile_id: path.basename(profilePath, '.json'),
+          domain_name: `${path.basename(profilePath, '.json')} (${data.length} models)`,
+          description: `Loaded ${data.length} clinical templates`,
+          template: {
+            default_text: defaultDoc
+          },
+          rules: []
+        };
+      }
       console.log(`[App] Loaded Lint Profile from ${path.basename(profilePath)}: ${data.domain_name || data.profile_id || 'OK'}`);
       return data;
     }
@@ -106,9 +164,9 @@ function createWindow(): void {
     icon: iconPath,
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#87abdb',
-      symbolColor: '#111111',
-      height: 48
+      color: '#080c16',
+      symbolColor: '#f8fafc',
+      height: 38
     },
     autoHideMenuBar: true,
     webPreferences: {
@@ -203,6 +261,32 @@ app.whenReady().then(async () => {
     };
   });
 
+  // Window Control Handlers (Zero Overhead & Seamless Custom Frame)
+  ipcMain.handle('window:minimize', () => {
+    mainWindow?.minimize();
+    return true;
+  });
+
+  ipcMain.handle('window:toggleMaximize', () => {
+    if (!mainWindow) return false;
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+      return false;
+    } else {
+      mainWindow.maximize();
+      return true;
+    }
+  });
+
+  ipcMain.handle('window:close', () => {
+    mainWindow?.close();
+    return true;
+  });
+
+  ipcMain.handle('window:isMaximized', () => {
+    return mainWindow?.isMaximized() || false;
+  });
+
   ipcMain.handle('app:saveFile', async (_event, content: string, defaultName: string) => {
     if (!mainWindow) return { success: false, error: 'No main window' };
     try {
@@ -239,6 +323,18 @@ app.whenReady().then(async () => {
     }
   });
 
+  ipcMain.handle('app:openExternal', async (_event, url: string) => {
+    try {
+      if (url && (url.startsWith('https://') || url.startsWith('http://'))) {
+        await shell.openExternal(url);
+        return { success: true };
+      }
+      return { success: false, error: 'Invalid URL scheme' };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  });
+
   ipcMain.handle('app:claudeSemanticSuggest', async (_event, payload: { prompt: string; apiKey?: string; model?: string }) => {
     const apiKey = payload.apiKey?.trim();
     if (!apiKey) {
@@ -246,7 +342,7 @@ app.whenReady().then(async () => {
     }
 
     const model = payload.model || 'claude-3-5-sonnet-20241022';
-    
+
     // Prepare knowledge context from active profile & slots
     let systemContext = 'You are a precise semantic knowledge assistant and editor linter.';
     if (activeProfile) {
@@ -276,15 +372,99 @@ app.whenReady().then(async () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        return { 
-          success: false, 
-          error: (errorData as any)?.error?.message || `Anthropic API error (${response.status})` 
+        return {
+          success: false,
+          error: (errorData as any)?.error?.message || `Anthropic API error (${response.status})`
         };
       }
 
       const data: any = await response.json();
       const contentText = data.content?.[0]?.text || '';
       return { success: true, text: contentText };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  });
+
+  ipcMain.handle('app:geminiSemanticSuggest', async (_event, payload: { prompt: string; apiKey?: string; model?: string }) => {
+    const apiKey = payload.apiKey?.trim();
+    if (!apiKey) {
+      return { success: false, error: 'Google Gemini API key is not configured in Settings.' };
+    }
+
+    const model = payload.model || 'gemini-1.5-flash';
+    let systemContext = 'You are a precise semantic knowledge assistant and editor linter.';
+    if (activeProfile) {
+      systemContext += `\nDomain Profile: ${activeProfile.domain_name || activeProfile.profile_id}.\nRules: ${JSON.stringify(activeProfile.rules || [])}`;
+    }
+
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: payload.prompt }] }],
+          systemInstruction: { parts: [{ text: systemContext }] }
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return {
+          success: false,
+          error: (errorData as any)?.error?.message || `Google Gemini API error (${response.status})`
+        };
+      }
+
+      const data: any = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      return { success: true, text };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  });
+
+  ipcMain.handle('app:openaiSemanticSuggest', async (_event, payload: { prompt: string; apiKey?: string; model?: string }) => {
+    const apiKey = payload.apiKey?.trim();
+    if (!apiKey) {
+      return { success: false, error: 'OpenAI API key is not configured in Settings.' };
+    }
+
+    const model = payload.model || 'gpt-4o-mini';
+    let systemContext = 'You are a precise semantic knowledge assistant and editor linter.';
+    if (activeProfile) {
+      systemContext += `\nDomain Profile: ${activeProfile.domain_name || activeProfile.profile_id}.\nRules: ${JSON.stringify(activeProfile.rules || [])}`;
+    }
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: systemContext },
+            { role: 'user', content: payload.prompt }
+          ],
+          max_tokens: 1000
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return {
+          success: false,
+          error: (errorData as any)?.error?.message || `OpenAI API error (${response.status})`
+        };
+      }
+
+      const data: any = await response.json();
+      const text = data.choices?.[0]?.message?.content || '';
+      return { success: true, text };
     } catch (err: any) {
       return { success: false, error: err.message };
     }
@@ -336,62 +516,62 @@ app.whenReady().then(async () => {
     return { is_valid, markers };
   });
 
-// Multi-Slot Knowledge & Goal Profile State Management
-interface KnowledgeSlot {
-  id: string;
-  name: string;
-  filePath: string;
-  itemCount: number;
-}
-
-const knowledgeSlots: KnowledgeSlot[] = [];
-let slotItemsCache: Map<string, any[]> = new Map();
-
-async function reloadCombinedKnowledgeIndex(): Promise<number> {
-  if (!engine) return 0;
-  
-  if (knowledgeSlots.length === 0) {
-    rustEngineReady = false;
-    rustEngineItemCount = 0;
-    return 0;
+  // Multi-Slot Knowledge & Goal Profile State Management
+  interface KnowledgeSlot {
+    id: string;
+    name: string;
+    filePath: string;
+    itemCount: number;
   }
 
-  // Combine items from all slots into a temporary combined file or load the primary one
-  const allItems: any[] = [];
-  for (const slot of knowledgeSlots) {
-    try {
-      if (fs.existsSync(slot.filePath)) {
-        const raw = await fsPromises.readFile(slot.filePath, 'utf-8');
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          allItems.push(...parsed);
-          slotItemsCache.set(slot.id, parsed.map((it: any) => {
-            const { vector, ...rest } = it;
-            return rest;
-          }));
+  const knowledgeSlots: KnowledgeSlot[] = [];
+  let slotItemsCache: Map<string, any[]> = new Map();
+
+  async function reloadCombinedKnowledgeIndex(): Promise<number> {
+    if (!engine) return 0;
+
+    if (knowledgeSlots.length === 0) {
+      rustEngineReady = false;
+      rustEngineItemCount = 0;
+      return 0;
+    }
+
+    // Combine items from all slots into a temporary combined file or load the primary one
+    const allItems: any[] = [];
+    for (const slot of knowledgeSlots) {
+      try {
+        if (fs.existsSync(slot.filePath)) {
+          const raw = await fsPromises.readFile(slot.filePath, 'utf-8');
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            allItems.push(...parsed);
+            slotItemsCache.set(slot.id, parsed.map((it: any) => {
+              const { vector, ...rest } = it;
+              return rest;
+            }));
+          }
         }
+      } catch (e) {
+        console.warn(`[App] Error reading slot ${slot.id} (${slot.name}):`, e);
       }
-    } catch (e) {
-      console.warn(`[App] Error reading slot ${slot.id} (${slot.name}):`, e);
+    }
+
+    // Save temporary merged knowledge base for Rust HNSW indexer
+    const tempCombinedPath = path.join(app.getPath('userData'), 'combined_knowledge_base.json');
+    await fsPromises.writeFile(tempCombinedPath, JSON.stringify(allItems), 'utf-8');
+
+    try {
+      const count = await engine.loadKnowledgeBase(tempCombinedPath);
+      await engine.buildIndex();
+      rustEngineReady = true;
+      rustEngineItemCount = count;
+      console.log(`[App] Successfully rebuilt combined HNSW index across ${knowledgeSlots.length} slot(s) with ${count} total items`);
+      return count;
+    } catch (err) {
+      console.error("[App] Failed to rebuild combined HNSW index:", err);
+      return 0;
     }
   }
-
-  // Save temporary merged knowledge base for Rust HNSW indexer
-  const tempCombinedPath = path.join(app.getPath('userData'), 'combined_knowledge_base.json');
-  await fsPromises.writeFile(tempCombinedPath, JSON.stringify(allItems), 'utf-8');
-
-  try {
-    const count = await engine.loadKnowledgeBase(tempCombinedPath);
-    await engine.buildIndex();
-    rustEngineReady = true;
-    rustEngineItemCount = count;
-    console.log(`[App] Successfully rebuilt combined HNSW index across ${knowledgeSlots.length} slot(s) with ${count} total items`);
-    return count;
-  } catch (err) {
-    console.error("[App] Failed to rebuild combined HNSW index:", err);
-    return 0;
-  }
-}
 
   // --- Multi-Slot Knowledge & Goal Profile IPC Handlers ---
 
@@ -467,7 +647,7 @@ async function reloadCombinedKnowledgeIndex(): Promise<number> {
         if (canceled || !filePaths || filePaths.length === 0) {
           return { success: false, canceled: true };
         }
-        
+
         for (const fp of filePaths) {
           if (fp.includes('profile') && !activeProfile) {
             activeProfile = await loadProfileFile(fp);
@@ -475,7 +655,7 @@ async function reloadCombinedKnowledgeIndex(): Promise<number> {
           }
           const base = path.basename(fp);
           const slotId = `slot_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-          
+
           let count = 0;
           try {
             const raw = await fsPromises.readFile(fp, 'utf-8');
@@ -541,7 +721,7 @@ async function reloadCombinedKnowledgeIndex(): Promise<number> {
       slotItemsCache.delete(slotId);
       console.log(`[App] Removed knowledge slot: ${removed.name}`);
       const totalCount = await reloadCombinedKnowledgeIndex();
-      
+
       const allStripped: any[] = [];
       for (const items of slotItemsCache.values()) {
         allStripped.push(...items);
@@ -555,6 +735,36 @@ async function reloadCombinedKnowledgeIndex(): Promise<number> {
       };
     }
     return { success: false, error: 'Slot not found' };
+  });
+
+  ipcMain.handle('engine:clearAllKnowledgeSlots', async () => {
+    knowledgeSlots.length = 0;
+    slotItemsCache.clear();
+    const totalCount = await reloadCombinedKnowledgeIndex();
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('engine:status', {
+        binReady: rustBinaryLoaded,
+        kbReady: rustEngineReady,
+        count: totalCount,
+        fileName: 'No Knowledge Base',
+        profileName: activeProfile?.domain_name || null
+      });
+    }
+    return { success: true, slots: [], totalCount: 0, data: [] };
+  });
+
+  ipcMain.handle('engine:resetGoalProfile', () => {
+    activeProfile = null;
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('engine:status', {
+        binReady: rustBinaryLoaded,
+        kbReady: rustEngineReady,
+        count: rustEngineItemCount,
+        fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
+        profileName: null
+      });
+    }
+    return { success: true, goal: null };
   });
 
   ipcMain.handle('engine:getActiveDictName', () => {
@@ -610,7 +820,7 @@ async function reloadCombinedKnowledgeIndex(): Promise<number> {
           const raw = await fsPromises.readFile(fp, 'utf-8');
           const arr = JSON.parse(raw);
           count = Array.isArray(arr) ? arr.length : 0;
-        } catch (e) {}
+        } catch (e) { }
 
         knowledgeSlots.push({
           id: slotId,
@@ -635,7 +845,7 @@ async function reloadCombinedKnowledgeIndex(): Promise<number> {
       }
 
       console.log(`[App] Multi-import completed with ${knowledgeSlots.length} slots (${totalCount} items), Profile: ${activeProfile?.domain_name || 'Default'}`);
-      
+
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send('engine:status', {
           binReady: rustBinaryLoaded,
@@ -682,7 +892,7 @@ async function reloadCombinedKnowledgeIndex(): Promise<number> {
         mainWindow.setTitleBarOverlay({
           color: options.color,
           symbolColor: options.symbolColor,
-          height: options.height ?? 48
+          height: options.height ?? 38
         });
       }
       return { success: true };

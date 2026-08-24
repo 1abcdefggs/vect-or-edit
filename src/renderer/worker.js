@@ -1,22 +1,34 @@
 import { pipeline, env } from '@huggingface/transformers';
 
 env.allowLocalModels = false;
-env.useBrowserCache = false;
+env.useBrowserCache = true;
 env.useCustomCache = false;
+
+// Configure WASM SIMD for CPU acceleration without crossOriginIsolated warnings
+if (env.backends?.onnx?.wasm) {
+    env.backends.onnx.wasm.numThreads = 1;
+    env.backends.onnx.wasm.simd = true;
+    env.backends.onnx.wasm.proxy = false;
+}
 
 class PipelineSingleton {
     static task = 'feature-extraction';
     static model = 'Xenova/multilingual-e5-small';
     static instance = null;
+    static activeDevice = 'CPU (WebAssembly SIMD)';
 
     static async getInstance(progress_callback = null) {
         if (this.instance === null) {
+            // Use ultra-fast, robust, low-memory (45MB) Int8 quantized WASM SIMD
             this.instance = await pipeline(this.task, this.model, { 
                 progress_callback,
-                quantized: true, // Use int8 quantized model for smaller size/faster speed
-                dtype: 'q8',    // Explicitly specify int8 precision for WebAssembly device
+                device: 'wasm',
+                quantized: true,
+                dtype: 'q8'
             });
-            self.postMessage({ status: 'ready' });
+            this.activeDevice = 'CPU (WebAssembly SIMD)';
+            console.log('[Worker] Running on CPU (WebAssembly SIMD, int8 quantized)');
+            self.postMessage({ status: 'ready', device: this.activeDevice });
         }
         return this.instance;
     }

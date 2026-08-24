@@ -10,6 +10,8 @@
  * 7. AI-MODEL (Embeddings Transformers Worker)
  */
 
+import { icons } from './icons.js';
+
 // Track all 7 subsystem readiness states
 const subsystemState = {
   bin: false,    // 1. Rust Binary
@@ -66,29 +68,11 @@ export function setLedStatus(type, status, tooltipText) {
       } else {
         // Pending / Processing (Yellow)
         dot.classList.add('status-pending');
-        badge.classList.add('pill-pending');
       }
     }
     if (tooltipText) {
       badge.title = tooltipText;
     }
-  }
-
-  // Check if all 7 subsystems are ready
-  const allReady = Object.values(subsystemState).every(Boolean);
-  if (allReady) {
-    const liveLogTicker = document.getElementById('liveLogTicker');
-    const btnToggleLiveTicker = document.getElementById('btnToggleLiveTicker');
-    // Auto-compact to 1-line after 1.5 seconds if fully healthy
-    setTimeout(() => {
-      if (liveLogTicker && !liveLogTicker.classList.contains('collapsed')) {
-        liveLogTicker.classList.add('compact-1line');
-        if (btnToggleLiveTicker) {
-          btnToggleLiveTicker.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
-          btnToggleLiveTicker.title = 'Switch to Full View / Hide';
-        }
-      }
-    }, 1500);
   }
 }
 

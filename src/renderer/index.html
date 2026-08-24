@@ -1,260 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://fonts.googleapis.com https://fonts.gstatic.com https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co https://cdnjs.cloudflare.com; font-src 'self' data: blob: https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' data: blob: https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co ws://localhost:* http://localhost:*; worker-src 'self' blob: data:; img-src 'self' data: blob:;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://fonts.googleapis.com https://fonts.gstatic.com https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co https://cdnjs.cloudflare.com; font-src 'self' data: blob: https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' data: blob: https://api.github.com https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co ws://localhost:* http://localhost:*; worker-src 'self' blob: data:; img-src 'self' data: blob:;">
   <title data-i18n="app_title">VectOrEditOr</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600;700&family=Source+Code+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600;700&family=Source+Code+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
+  <!-- Modern Wave Bouncing Startup Loader -->
+  <div id="appStartupLoader" class="app-startup-loader">
+    <div class="startup-bouncing-logo">
+      <span style="--i:0;">V</span>
+      <span style="--i:1;">e</span>
+      <span style="--i:2;">c</span>
+      <span style="--i:3;">t</span>
+      <span style="--i:4;">O</span>
+      <span style="--i:5;">r</span>
+      <span style="--i:6;">E</span>
+      <span style="--i:7;">d</span>
+      <span style="--i:8;">i</span>
+      <span style="--i:9;">t</span>
+      <span style="--i:10;">O</span>
+      <span style="--i:11;">r</span>
+    </div>
+    <div id="loaderStatusText" class="startup-status-text" data-i18n="loader_initializing">
+      Initializing Monaco & Core Engine...
+    </div>
+
+    <!-- Startup AI Model Choice Dialog Card -->
+    <div id="startupAiChoiceCard"
+      style="display: none; flex-direction: column; align-items: center; gap: 12px; margin-top: 24px; padding: 18px 24px; background: rgba(8, 12, 22, 0.9); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 12px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6); max-width: 440px; text-align: center; backdrop-filter: blur(16px); z-index: 10; animation: fadeIn 0.3s ease;">
+      <div style="font-size: 0.92rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-color, #38bdf8);">
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <rect x="9" y="9" width="6" height="6" />
+          <path d="M9 1v3" />
+          <path d="M15 1v3" />
+          <path d="M9 20v3" />
+          <path d="M15 20v3" />
+          <path d="M20 9h3" />
+          <path d="M20 14h3" />
+          <path d="M1 9h3" />
+          <path d="M1 14h3" />
+        </svg>
+        <span id="startupChoiceTitle" data-i18n="startup_choice_title">Local AI Inference Model (e5-small)</span>
+      </div>
+      <p id="startupChoiceDesc" style="font-size: 0.76rem; color: #94a3b8; line-height: 1.5; margin: 0;"
+        data-i18n="startup_choice_desc">
+        e5-small is a text embedding model (~45MB) used for semantic vector matching against Knowledge Slots. Download and activate now? (Can be skipped for lightweight start).
+      </p>
+      <div id="startupChoiceActions"
+        style="display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 4px;">
+        <button id="btnStartupDownloadAi"
+          style="flex: 1; padding: 8px 12px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; background: var(--accent-color, #38bdf8); color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 0 12px rgba(56,189,248,0.35);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          <span id="startupBtnDownloadText" data-i18n="startup_btn_download">Download & Activate</span>
+        </button>
+        <button id="btnStartupSkipAi"
+          style="flex: 1; padding: 8px 12px; font-size: 0.78rem; font-weight: 600; border-radius: 6px; background: rgba(255,255,255,0.08); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); cursor: pointer;">
+          <span id="startupBtnSkipText" data-i18n="startup_btn_skip">Skip (Lightweight)</span>
+        </button>
+      </div>
+      <!-- Download Progress Bar (Shown during download) -->
+      <div id="startupAiProgressBar"
+        style="display: none; width: 100%; flex-direction: column; gap: 6px; margin-top: 6px;">
+        <div
+          style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--accent-color, #38bdf8); font-weight: 600;">
+          <span id="startupDownloadStatusText">Downloading e5-small weights...</span>
+          <span id="startupDownloadPctText">0%</span>
+        </div>
+        <div style="height: 6px; background: rgba(255,255,255,0.12); border-radius: 3px; overflow: hidden;">
+          <div id="startupDownloadFill"
+            style="width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8); transition: width 0.2s ease;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="app-container">
     <!-- Header -->
     <header class="app-header">
-      <div class="header-left">
+      <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
         <img src="./assets/icon.png" alt="VectOrEditOr" class="logo-icon">
+        <!-- Master AI Power Switch: Clean borderless style with Active Model Info -->
+        <div id="masterAiContainer"
+          style="display: flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: var(--radius-md, 8px); background: rgba(56, 189, 248, 0.08); -webkit-app-region: no-drag;">
+          <span
+            style="font-size: 0.72rem; font-weight: 700; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 4px;">
+            <span id="masterAiStatusDot" style="color: #ef4444; font-size: 0.65rem;">●</span>
+            Master AI
+          </span>
+          <button id="btnMasterAiToggle" class="toolbar-btn"
+            style="height: 22px; padding: 0 8px; font-size: 0.68rem; font-weight: 800; border-radius: 4px; background: rgba(255,255,255,0.15); color: var(--text-muted); cursor: pointer; border: none;">OFF</button>
+          <!-- Active Model Name / Setup Call-to-action Badge -->
+          <span id="masterAiModelNameBadge"
+            style="font-size: 0.66rem; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: #f59e0b; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 3px; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none;"
+            data-i18n-title="ai_model_badge_tooltip">
+            <span id="masterAiModelNameText" data-i18n="ai_model_unset">No Model (Click to set)</span>
+          </span>
+        </div>
       </div>
-      <div class="toolbar">
-        <select id="themeSelect" class="toolbar-select" style="max-width:130px;">
-        </select>
-        <button id="btnLangToggle" class="toolbar-btn btn-lang-outline" style="font-weight: bold; width: 36px; display: flex; justify-content: center;">EN</button>
-        <button id="btnToggleConsole" class="toolbar-btn" style="padding: 6px 10px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 5px;" title="Toggle System Logs / Console" data-i18n-title="btn_console">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="4 17 10 11 4 5"></polyline>
-            <line x1="12" y1="19" x2="20" y2="19"></line>
-          </svg>
-          <span data-i18n="btn_console">Logs</span>
-          <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 8px; font-size: 0.65rem;">0</span>
-        </button>
-        <button id="btnSettings" class="toolbar-btn" style="padding: 6px; display: flex; align-items: center; justify-content: center;" title="Settings" data-i18n-title="btn_settings">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="toolbar app-header-toolbar" style="display: flex; align-items: center; gap: 5px; flex-shrink: 0; margin-left: auto;">
+        <select id="themeSelect" class="toolbar-select header-theme-select" style="max-width: 80px; height: 26px; font-size: 0.72rem; padding: 1px 4px; flex-shrink: 0;" data-i18n-title="label_theme"></select>
+        <button id="btnLangToggle" class="toolbar-btn btn-lang-outline"
+          style="font-weight: bold; width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;">EN</button>
+        <button id="btnSettings" class="toolbar-btn header-action-btn"
+          style="width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
+          data-i18n-title="btn_settings">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+          </svg>
+        </button>
+        <!-- Top-level Sidebar Toggle Button -->
+        <button id="btnHeaderToggleSidebar" class="toolbar-btn header-action-btn"
+          style="width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
+          data-i18n-title="btn_toggle_sidebar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="15" y1="3" x2="15" y2="21"></line>
           </svg>
         </button>
       </div>
     </header>
+    <!-- Seamless Full-Width Header Border Line -->
+    <div id="headerFullBorderLine" class="header-full-border-line"></div>
 
-    <!-- Main Workspace with Top Live Terminal Ticker -->
+    <!-- Main Workspace -->
     <div class="workspace-wrapper" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-      <!-- Real-time Live Log Monitor with Pipeline Status Meter -->
-      <div class="live-log-ticker" id="liveLogTicker">
-        <div class="live-log-ticker-header">
-          <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-            <span class="live-log-dot pulse"></span>
-            <span style="font-weight: 800; font-size: 0.68rem; letter-spacing: 0.6px; color: #38bdf8;">SYSTEM LOG RUNTIME</span>
-            <span style="font-size: 0.65rem; color: #94a3b8;">(Process Stream)</span>
-          </div>
-
-          <!-- 7-Stage Pipeline Status LED Meter with Integrated Flow Direction -->
-          <div class="system-status-panel">
-            <div id="badgeLedBin" class="status-pill" title="1. Rust Binary (DLL): Initializing...">
-              <span class="status-led-dot status-loading"></span>
-              <span class="status-pill-label">1.RUST</span>
-            </div>
-            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-            <div id="badgeLedKb" class="status-pill" title="2. Knowledge Base & HNSW: Loading...">
-              <span class="status-led-dot status-loading"></span>
-              <span class="status-pill-label">2.HNSW</span>
-            </div>
-            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-            <div id="badgeLedConf" class="status-pill" title="3. User Settings: Loading...">
-              <span class="status-led-dot status-loading"></span>
-              <span class="status-pill-label">3.CONFIG</span>
-            </div>
-            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-            <div id="badgeLedThm" class="status-pill" title="4. Theme Palette: Loading...">
-              <span class="status-led-dot status-loading"></span>
-              <span class="status-pill-label">4.THEME</span>
-            </div>
-            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-            <div id="badgeLedI18n" class="status-pill" title="5. Locale i18n: Loading...">
-              <span class="status-led-dot status-loading"></span>
-              <span class="status-pill-label">5.LOCALE</span>
-            </div>
-            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-            <div id="badgeLedMonaco" class="status-pill" title="6. Monaco Editor: Initializing...">
-              <span class="status-led-dot status-loading"></span>
-              <span class="status-pill-label">6.EDITOR</span>
-            </div>
-            <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-            <div id="badgeLedAi" class="status-pill" title="7. AI Embeddings Model: Initializing...">
-              <span class="status-led-dot status-loading"></span>
-              <span class="status-pill-label">7.AI-MODEL</span>
-            </div>
-          </div>
-
-          <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: auto;">
-            <button id="btnToggleLiveTicker" class="ticker-btn" style="display: flex; align-items: center; justify-content: center; padding: 2px 4px;" title="Toggle Compact View">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-          </div>
-        </div>
-        <div class="live-log-ticker-body" id="liveLogTickerBody">
-          <!-- 3-line live stream will be inserted here -->
-        </div>
-      </div>
-
       <main class="workspace">
-      <!-- Editor Area -->
-      <section class="editor-section" style="display: flex; flex-direction: column;">
-        <div class="section-title" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span data-i18n="editor_title" style="font-weight: 700;">Knowledge Editor</span>
-            <select id="fontFamilySelect" class="editor-toolbar-select">
-              <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">Source Serif 4</option>
-              <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" data-i18n="font_sans_serif">Source Sans 3</option>
-              <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">Source Code Pro</option>
-            </select>
-            <select id="fontSizeSelect" class="editor-toolbar-select">
-              <option value="14" data-i18n="font_small">14px Small</option>
-              <option value="16" selected data-i18n="font_normal">16px Normal</option>
-              <option value="18" data-i18n="font_large">18px Large</option>
-              <option value="20" data-i18n="font_xlarge">20px XLarge</option>
-            </select>
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <button id="btnOpen" class="editor-header-btn" title="Open File (Ctrl+O)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-              </svg>
-              <span style="font-size: 0.75rem; font-weight: 600;" data-i18n="btn_open">Open</span>
-            </button>
-            <button id="btnSave" class="editor-header-btn" title="Save (Ctrl+S)">
-              <span style="font-size: 0.75rem; font-weight: 600;" data-i18n="btn_save">Save</span>
-            </button>
-          </div>
-        </div>
-        <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
-        <!-- Editor Status Bar -->
-        <div class="editor-status-bar" id="editorStatusBar">
-          <div class="status-bar-left">
-            <span id="statusDocName" class="status-bar-item">Untitled.txt</span>
-            <span class="status-bar-separator">|</span>
-            <span id="statusCharCount" class="status-bar-item">0 chars</span>
-            <span class="status-bar-separator">|</span>
-            <span id="statusLineCount" class="status-bar-item">1 lines</span>
-          </div>
-          <div class="status-bar-right">
-            <span class="status-bar-item">UTF-8</span>
-            <span class="status-bar-separator">|</span>
-            <span class="status-bar-item">Markdown</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Vector Suggestion Sidebar -->
-      <aside id="suggestionSidebar" class="suggestion-sidebar">
-        <div class="sidebar-header">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
-            <h3 style="display: flex; align-items: center; gap: 8px; margin: 0;">
-              <span id="iconNeuroContainer"></span>
-              <span data-i18n="live_vector_recommendation">Real-time Vector Recommendation</span>
-            </h3>
+        <!-- Editor Area -->
+        <section class="editor-section" style="display: flex; flex-direction: column;">
+          <div class="section-title"
+            style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px;">
+            <!-- Left: Folder Open Button (Margin removed, clean icon fit) -->
             <div style="display: flex; align-items: center; gap: 6px;">
-              <button id="btnCopyAllResults" class="toolbar-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 0.72rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; cursor: pointer;" title="Copy all results as RAW JSON">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                </svg>
-                <span>JSON</span>
-              </button>
-              <button id="btnToggleSidebar" class="toolbar-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Toggle Sidebar">
-                <span id="sidebarToggleIcon" style="display: flex; align-items: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-              </button>
+              <button id="btnOpen" class="editor-header-btn"
+                style="height: 30px; width: 32px; padding: 0; display: flex; align-items: center; justify-content: center;"
+                data-i18n-title="btn_open"></button>
+              <span
+                style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.7;"></span>
             </div>
-          </div>
-          <p data-i18n="live_vector_desc" style="margin-bottom: 8px;">Dynamically maps similar standard definitions based on input context.</p>
-          
-          <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
-            <!-- 1. Guideline & Preset Profile Section -->
-            <div class="profile-control-card" style="background: var(--bg-primary); padding: 8px 10px; border-radius: var(--radius-md, 6px); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px;">
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 4px;">
-                  <span id="profileIcon"></span> <span id="profileHeaderLabel" data-i18n="active_guideline_preset_label">Guideline & Preset:</span>
-                </span>
-                <div style="display: flex; gap: 4px;">
-                  <button id="btnInsertTemplate" class="toolbar-btn" style="padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; display: none; align-items: center; gap: 3px; cursor: pointer; color: var(--accent-color);" title="Insert Template into Editor">
-                    <span data-i18n="btn_insert_template">Template</span>
-                  </button>
-                  <button id="btnChangeGoal" class="toolbar-btn" style="padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; display: flex; align-items: center; gap: 3px; cursor: pointer;" title="Select Guideline or Preset Profile JSON">
-                    <span data-i18n="btn_change_profile">Select</span>
-                  </button>
-                </div>
+
+            <!-- Center: Integrated Typography Group (T icon + Font Family + Font Size) & Tone -->
+            <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
+              <div class="font-control-integrated-group"
+                style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px;">
+                <span class="font-group-icon"
+                  style="display: flex; align-items: center; justify-content: center; width: 20px; font-family: serif; font-weight: 900; font-size: 0.95rem; color: var(--accent-color, #38bdf8); user-select: none;"
+                  title="Typography">T</span>
+                <select id="fontFamilySelect" class="editor-toolbar-select"
+                  style="border: none; background: transparent; height: 28px; padding: 0 16px 0 2px;">
+                  <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
+                    data-i18n="font_serif">Source Serif 4</option>
+                  <option
+                    value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                    data-i18n="font_sans_serif">Source Sans 3</option>
+                  <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">
+                    Source Code Pro</option>
+                </select>
+                <span
+                  style="display: inline-block; width: 1px; height: 14px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
+                <select id="fontSizeSelect" class="editor-toolbar-select"
+                  style="border: none; background: transparent; height: 28px; max-width: 85px; padding: 0 16px 0 2px;">
+                  <option value="14" data-i18n="font_small">14px</option>
+                  <option value="16" selected data-i18n="font_normal">16px</option>
+                  <option value="18" data-i18n="font_large">18px</option>
+                  <option value="20" data-i18n="font_xlarge">20px</option>
+                </select>
               </div>
-              <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden;">
-                <span id="activeProfileName" style="font-size: 0.8rem; font-weight: bold; color: var(--success-color, #10b981); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Default Profile">Default Profile</span>
-                <span id="activeGoalRuleCount" style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;">0 rules</span>
+              <select id="quickEditorToneSelect" class="editor-toolbar-select" style="max-width: 125px;"
+                data-i18n-title="setting_editor_bg">
+                <option value="default" selected data-i18n="tone_default">Tone: Default</option>
+                <option value="dark_oled" data-i18n="tone_dark_oled">Dark: OLED Black</option>
+                <option value="dark_obsidian" data-i18n="tone_dark_obsidian">Dark: Obsidian</option>
+                <option value="dark_charcoal" data-i18n="tone_dark_charcoal">Dark: Charcoal</option>
+                <option value="dark_slate" data-i18n="tone_dark_slate">Dark: Slate</option>
+                <option value="light_snow" data-i18n="tone_light_snow">Light: Pure Snow</option>
+                <option value="light_ivory" data-i18n="tone_light_ivory">Light: Warm Ivory</option>
+                <option value="light_warm" data-i18n="tone_light_warm">Light: Soft Cream</option>
+                <option value="light_paper" data-i18n="tone_light_paper">Light: Paper</option>
+                <option value="custom" data-i18n="tone_custom">🎨 Custom Color</option>
+              </select>
+              <div id="quickCustomColorGroup" style="display: none; align-items: center; gap: 4px;">
+                <input type="color" id="quickCustomBgPicker" value="#1e1e2e" data-i18n-title="label_bg"
+                  style="width: 22px; height: 22px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+                <input type="color" id="quickCustomFgPicker" value="#cdd6f4" data-i18n-title="label_text"
+                  style="width: 22px; height: 22px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
               </div>
             </div>
 
-            <!-- 2. Multi Knowledge Slots Section -->
-            <div class="slots-control-card" style="background: var(--bg-primary); padding: 8px 10px; border-radius: var(--radius-md, 6px); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px;">
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 4px;">
-                  <span data-i18n="knowledge_slots_label">Knowledge Slots:</span>
-                </span>
-                <button id="btnAddSlot" class="toolbar-btn" style="padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; display: flex; align-items: center; gap: 3px; cursor: pointer; color: var(--accent-color);" title="Add Knowledge Base File">
-                  <span data-i18n="btn_add_slot">Add Slot</span>
+            <!-- Right: Editor Live Assist Switch + Save Capsule -->
+            <div class="editor-header-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+              <!-- Editor Child AI Switch -->
+              <button id="btnEditorAiToggle" class="toolbar-btn responsive-pill-btn"
+                style="height: 26px; padding: 0 8px; font-size: 0.68rem; font-weight: 700; border-radius: 4px; background: rgba(56, 189, 248, 0.12); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; gap: 4px; white-space: nowrap;"
+                data-i18n-title="editor_ai_toggle_tooltip">
+                <span id="editorAiStatusDot" style="color: var(--success-color, #10b981); font-size: 0.6rem;">●</span>
+                <span id="editorAiLabel" class="responsive-btn-label">Live Assist: ON</span>
+              </button>
+
+              <span class="editor-header-sep"
+                style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.7;"></span>
+
+              <!-- Integrated Capsule Save Group -->
+              <div class="save-capsule-group" style="display: flex; align-items: center; white-space: nowrap;">
+                <button id="btnToggleAutoSave" class="save-capsule-btn-auto responsive-pill-btn"
+                  style="background: rgba(16, 185, 129, 0.12); color: var(--success-color, #10b981);"
+                  data-i18n-title="tooltip_autosave">
+                  <span id="autoSaveIcon" style="font-size: 0.65rem;">●</span>
+                  <span id="autoSaveLabel" class="responsive-btn-label">Auto-Save: ON</span>
+                </button>
+                <button id="btnSave" class="save-capsule-btn-save" data-i18n-title="btn_save"></button>
+              </div>
+            </div>
+          </div>
+          <!-- Chrome-style Multi-Document Tab Bar -->
+          <div class="editor-tab-bar" id="editorTabBar">
+            <div class="editor-tabs-list" id="editorTabsList"></div>
+          </div>
+          <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
+          <!-- Editor Status Bar: Clean minimal design without redundant doc name / autosave -->
+          <div class="editor-status-bar" id="editorStatusBar">
+            <div class="status-bar-left">
+              <span id="statusCharCount" class="status-bar-item">0 chars</span>
+              <span class="status-bar-separator">|</span>
+              <span id="statusLineCount" class="status-bar-item">1 lines</span>
+            </div>
+            <div class="status-bar-right" style="display: flex; align-items: center; gap: 6px;">
+              <span class="status-bar-item">UTF-8</span>
+              <span class="status-bar-separator">|</span>
+              <span class="status-bar-item">Markdown</span>
+              <span class="status-bar-separator">|</span>
+              <span id="statusMemoryUsage" class="status-bar-item"
+                style="color: var(--accent-color, #38bdf8); font-weight: 600;">RAM: ~45 MB</span>
+              <span class="status-bar-separator">|</span>
+              <!-- Logs Console Toggle Button (Bottom Area Placement) -->
+              <button id="btnToggleConsole" class="status-bar-btn toolbar-btn"
+                style="padding: 1px 6px; height: 20px; font-size: 0.68rem; font-weight: 700; display: flex; align-items: center; gap: 4px; border-radius: 3px; cursor: pointer;"
+                data-i18n-title="btn_console">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="4 17 10 11 4 5"></polyline>
+                  <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+                <span data-i18n="btn_console">Logs</span>
+                <span id="logCountBadge"
+                  style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: 0.6rem;">0</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Dynamic Drag-to-Resize Splitter Bar -->
+        <div id="sidebarResizer" class="workspace-resizer" title="Drag to resize sidebar"></div>
+
+        <!-- Vector Suggestion Sidebar -->
+        <aside id="suggestionSidebar" class="suggestion-sidebar">
+          <div class="sidebar-header">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+              <h3 style="display: flex; align-items: center; gap: 6px; margin: 0; min-width: 0;">
+                <span id="iconNeuroContainer" class="icon-vector-active"
+                  data-i18n-title="live_vector_recommendation"></span>
+                <!-- Sidebar Child AI Switch -->
+                <button id="btnSidebarAiToggle" class="toolbar-btn"
+                  style="height: 24px; padding: 0 8px; font-size: 0.68rem; font-weight: 700; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); color: var(--accent-color, #38bdf8); cursor: pointer;"
+                  data-i18n-title="ai_model_badge_tooltip">
+                  <span id="activeAiModelStatusDot"
+                    style="color: var(--success-color, #10b981); font-size: 0.65rem;">●</span>
+                  <span id="activeAiModelBadge">Suggestions: ON</span>
+                </button>
+              </h3>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <!-- JSON Copy Button: Smartly displayed only when results exist -->
+                <button id="btnCopyAllResults" class="toolbar-btn"
+                  style="display: none; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 0.72rem; font-weight: 700; color: var(--text-main); align-items: center; gap: 4px; cursor: pointer;"
+                  data-i18n-title="btn_copy_json">
+                  <span id="copyAllIcon" style="display: flex; align-items: center;"></span>
+                  <span data-i18n="btn_copy_json_short">JSON</span>
                 </button>
               </div>
-              
-              <!-- Dynamic Slots List -->
-              <div id="knowledgeSlotsList" style="display: flex; flex-direction: column; gap: 4px; max-height: 120px; overflow-y: auto;">
-                <div style="font-size: 0.75rem; color: var(--text-muted); padding: 2px 0;">No slots loaded</div>
+            </div>
+
+            <div class="semantic-control-container"
+              style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
+              <!-- 1. Guidelines & Presets Section (Active) -->
+              <div class="profile-control-card semantic-module-card">
+                <div class="semantic-module-header">
+                  <span class="semantic-module-title">
+                    <span id="profileIcon"
+                      style="display: flex; align-items: center; color: var(--accent-color, #38bdf8);">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <line x1="9" y1="7" x2="15" y2="7"></line>
+                        <line x1="9" y1="11" x2="13" y2="11"></line>
+                      </svg>
+                    </span>
+                    <span id="profileHeaderLabel" data-i18n="active_guideline_preset_label">Guideline</span>
+                  </span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <button id="btnInsertTemplate" class="toolbar-btn"
+                      style="padding: 2px 7px; font-size: 0.68rem; font-weight: 600; border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color);"
+                      data-i18n-title="btn_insert_template">
+                      <span data-i18n="btn_insert_template">Template</span>
+                    </button>
+                    <button id="btnImportDictionary" class="toolbar-btn semantic-btn-add"
+                      data-i18n-title="btn_import_preset">
+                      <span style="font-size: 0.85rem; font-weight: 900;">＋</span>
+                      <span>Preset</span>
+                    </button>
+                    <button id="btnResetGoal" class="toolbar-btn semantic-btn-clear" style="display: none;"
+                      data-i18n-title="btn_reset_profile">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                      <span data-i18n="btn_unload_profile">Unload</span>
+                    </button>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden;">
+                  <span id="activeProfileName"
+                    style="font-size: 0.8rem; font-weight: bold; color: var(--success-color, #10b981); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                    data-i18n="default_profile">Default Profile (Unrestricted)</span>
+                  <span id="activeGoalRuleCount" style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;"
+                    data-i18n="rule_count_zero">0 rules</span>
+                </div>
               </div>
 
-              <!-- Filter options -->
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 0.72rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; margin-top: 2px;">
-                <label style="display: flex; align-items: center; gap: 4px;">
-                  <span data-i18n="label_min_score">Min:</span>
-                  <input type="number" id="numMinScore" min="50" max="99" value="70" style="width: 38px; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">%
-                </label>
-                <label style="display: flex; align-items: center; gap: 4px;">
-                  <span data-i18n="label_limit">Limit:</span>
-                  <select id="selSearchLimit" style="background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">
-                    <option value="5" selected>5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                  </select>
-                </label>
+              <!-- 2. Knowledge Section -->
+              <div class="slots-control-card semantic-module-card">
+                <div class="semantic-module-header">
+                  <span class="semantic-module-title">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-color, #38bdf8);">
+                      <path
+                        d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
+                    </svg>
+                    <span data-i18n="knowledge_slots_label">Knowledge</span>
+                    <span id="knowledgeSlotsCountBadge"
+                      style="font-size: 0.62rem; padding: 1px 4px; border-radius: 3px; background: rgba(56,189,248,0.12); color: var(--accent-color, #38bdf8); font-weight: 600;">0
+                      Slots</span>
+                  </span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <button id="btnClearAllSlots" class="toolbar-btn semantic-btn-clear" style="display: none;"
+                      data-i18n-title="btn_clear_all_slots">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                      <span data-i18n="btn_clear_slots">Clear</span>
+                    </button>
+                    <button id="btnAddSlot" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_add_slot">
+                      <span style="font-size: 0.85rem; font-weight: 900;">＋</span>
+                      <span>Slot</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Dynamic Slots List (SLOT 1, SLOT 2, ...) -->
+                <div id="knowledgeSlotsList"
+                  style="display: flex; flex-direction: column; gap: 4px; max-height: 140px; overflow-y: auto;">
+                  <div style="font-size: 0.72rem; color: var(--text-muted); padding: 2px 0;"
+                    data-i18n="slots_empty_placeholder">No knowledge base loaded. Click ＋ Add Slot to load JSON.</div>
+                </div>
+
+                <!-- 3. Search Filters: Smartly displayed only when knowledge is loaded -->
+                <div id="searchFiltersContainer"
+                  style="display: none; flex-direction: column; gap: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; margin-top: 2px;">
+                  <div
+                    style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 0.72rem; color: var(--text-muted);">
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                      <span data-i18n="label_min_score">Min:</span>
+                      <input type="number" id="numMinScore" min="50" max="99" value="70"
+                        style="width: 42px; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">%
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                      <span data-i18n="label_limit">Limit:</span>
+                      <select id="selSearchLimit"
+                        style="background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                      </select>
+                    </label>
+                    <label
+                      style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+                      <input type="checkbox" id="chkShowFullMetadata"
+                        style="accent-color: var(--accent-color, #818cf8); cursor: pointer;">
+                      <span data-i18n="opt_show_full_metadata">Full Meta</span>
+                    </label>
+                  </div>
+                </div>
               </div>
-              <label style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; user-select: none;">
-                <input type="checkbox" id="chkShowFullMetadata" style="accent-color: var(--accent-color, #818cf8); cursor: pointer;">
-                <span data-i18n="opt_show_full_metadata">Show Full Metadata</span>
-              </label>
             </div>
           </div>
-        </div>
-        <div id="vectorResultsList" class="results-list">
-          <div class="empty-state" data-i18n="vector_placeholder">Enter text to receive semantic vector suggestions.</div>
-        </div>
-      </aside>
-    </main>
+          <div id="vectorResultsList" class="results-list" style="flex: 1; overflow-y: auto; padding: 6px;"></div>
+        </aside>
+      </main>
     </div>
 
     <!-- Bottom Collapsible System Logs Console Panel -->
-    <div id="systemLogPanel" class="system-log-panel" style="display: none;">
-      <div class="log-panel-header">
-        <div style="display: flex; align-items: center; gap: 8px;">
+    <div id="systemLogPanel" class="system-log-panel" style="display: flex;">
+      <div class="log-panel-header" style="justify-content: flex-start; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+          <span class="live-log-dot pulse"></span>
           <span class="log-panel-title" style="display: flex; align-items: center; gap: 6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-            <span>SYSTEM LOGS / OUTPUT</span>
+            <span data-i18n="log_panel_title"
+              style="font-weight: 800; font-size: 0.72rem; letter-spacing: 0.6px; color: var(--accent-color, #38bdf8);">SYSTEM
+              RUNTIME PROCESS STREAM</span>
           </span>
-          <span id="logFilterStatus" style="font-size: 0.7rem; color: #94a3b8;">Real-time stream</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <button id="btnClearLogs" class="log-panel-btn">Clear</button>
-          <button id="btnCopyLogs" class="log-panel-btn">Copy</button>
-          <button id="btnCloseLogs" class="log-panel-btn" style="padding: 3px 6px; display: flex; align-items: center; justify-content: center;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+
+        <!-- Integrated 7-Stage Pipeline Status LED Meter: Left-aligned and enlarged -->
+        <div class="system-status-panel" style="margin: 0; display: flex; align-items: center; gap: 4px;">
+          <div id="badgeLedBin" class="status-pill" title="1. Rust Binary (DLL): Initializing...">
+            <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+            <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">1.RUST</span>
+          </div>
+          <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg></span>
+          <div id="badgeLedKb" class="status-pill" title="2. Knowledge Base & HNSW: Loading...">
+            <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+            <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">2.HNSW</span>
+          </div>
+          <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg></span>
+          <div id="badgeLedConf" class="status-pill" title="3. User Settings: Loading...">
+            <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+            <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">3.CONFIG</span>
+          </div>
+          <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg></span>
+          <div id="badgeLedThm" class="status-pill" title="4. Theme Palette: Loading...">
+            <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+            <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">4.THEME</span>
+          </div>
+          <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg></span>
+          <div id="badgeLedI18n" class="status-pill" title="5. Locale i18n: Loading...">
+            <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+            <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">5.LOCALE</span>
+          </div>
+          <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg></span>
+          <div id="badgeLedMonaco" class="status-pill" title="6. Monaco Editor: Initializing...">
+            <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+            <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">6.EDITOR</span>
+          </div>
+          <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg></span>
+          <div id="badgeLedAi" class="status-pill" title="7. AI Embeddings Model: Initializing...">
+            <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+            <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">7.AI-MODEL</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+          <button id="btnClearLogs" class="log-panel-btn"
+            style="padding: 2px 8px; font-size: 0.72rem; font-weight: 600;">Clear</button>
+          <button id="btnCopyLogs" class="log-panel-btn"
+            style="padding: 2px 8px; font-size: 0.72rem; font-weight: 600;">Copy Logs</button>
+          <!-- Active Colored Toggle Button -->
+          <button id="btnCloseLogs" class="log-panel-btn"
+            style="padding: 3px 8px; display: flex; align-items: center; justify-content: center; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.35);"
+            title="Toggle Console Panel">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </button>
         </div>
       </div>
-      <div id="logEntriesContainer" class="log-entries-container"></div>
+
+      <!-- System Log Output Window -->
+      <div id="logEntriesContainer" class="log-entries-container" style="flex: 1; max-height: 160px;"></div>
+
+      <!-- Direct AI Command Console Input Bar (Level 2-C) -->
+      <div id="consoleAiInputGroup"
+        style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--bg-primary); border-top: 1px solid var(--border-color);">
+        <span
+          style="font-family: var(--font-mono, monospace); font-size: 0.75rem; font-weight: 700; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 4px;">
+          <span>❯</span>
+          <span id="consoleAiStatusBadge"
+            style="font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; background: rgba(56,189,248,0.15); color: var(--accent-color, #38bdf8);">AI
+            Direct</span>
+        </span>
+        <input type="text" id="consoleAiInput"
+          placeholder="Enter command or natural query... (e.g. /search keyword, /lint, /stats, /clear-slots)"
+          style="flex: 1; height: 26px; padding: 0 10px; font-size: 0.75rem; font-family: var(--font-mono, monospace); background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; outline: none;">
+        <button id="btnConsoleAiRun" class="toolbar-btn"
+          style="height: 26px; padding: 0 12px; font-size: 0.72rem; font-weight: 700; background: var(--accent-color, #38bdf8); color: #000; border-radius: 4px; cursor: pointer;">Execute</button>
+      </div>
     </div>
 
     <!-- Comprehensive Application Settings Modal -->
@@ -262,16 +534,28 @@
       <div class="modal-dialog settings-modal-dialog">
         <div class="modal-header">
           <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+              </path>
+            </svg>
             <span data-i18n="settings_title">Application Settings</span>
           </h3>
-          <button id="btnCloseSettingsModal" class="log-panel-btn" style="padding: 2px 8px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <button id="btnCloseSettingsModal" class="log-panel-btn"
+            style="padding: 2px 8px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
 
         <div class="settings-modal-tabs">
-          <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance">Appearance & Font</button>
+          <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance">Appearance &
+            Font</button>
           <button class="settings-tab-btn" data-tab="tabEditor" data-i18n="tab_editor">Editor Behavior</button>
           <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n="tab_ai_search">AI & Vector Search</button>
           <button class="settings-tab-btn" data-tab="tabSystem" data-i18n="tab_system">System & Logs</button>
@@ -286,9 +570,13 @@
                 <div class="setting-desc" data-i18n="setting_font_family_desc">Select typeface for text rendering.</div>
               </div>
               <select id="modalFontFamilySelect" class="toolbar-select">
-                <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">Source Serif 4 (Serif)</option>
-                <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
-                <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">Source Code Pro (Monospace)</option>
+                <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
+                  data-i18n="font_serif">Source Serif 4 (Serif)</option>
+                <option
+                  value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                  data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
+                <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">
+                  Source Code Pro (Monospace)</option>
               </select>
             </div>
 
@@ -308,7 +596,8 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_line_height">Line Height</div>
-                <div class="setting-desc" data-i18n="setting_line_height_desc">Adjust vertical pitch between lines.</div>
+                <div class="setting-desc" data-i18n="setting_line_height_desc">Adjust vertical pitch between lines.
+                </div>
               </div>
               <select id="modalLineHeightSelect" class="toolbar-select">
                 <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
@@ -339,12 +628,60 @@
             </div>
           </div>
 
-          <!-- Tab 2: Editor Behavior -->
+          <!-- Tab 2: Editor Behavior & Canvas Tone -->
           <div id="tabEditor" class="settings-tab-content">
             <div class="setting-item">
               <div>
+                <div class="setting-label" data-i18n="setting_editor_bg">Editor Canvas Tone (Dark & Light Variations)
+                </div>
+                <div class="setting-desc" data-i18n="setting_editor_bg_desc">Customize background color inside Monaco
+                  editor independently.</div>
+              </div>
+              <select id="modalEditorBgSelect" class="toolbar-select">
+                <option value="default" selected data-i18n="opt_bg_default">Theme Match (Default)</option>
+                <optgroup label="Dark Variations">
+                  <option value="oled" data-i18n="opt_bg_oled">OLED Pitch Black (#000000)</option>
+                  <option value="obsidian" data-i18n="opt_bg_obsidian">Obsidian Dark (#090d16)</option>
+                  <option value="charcoal" data-i18n="opt_bg_charcoal">Midnight Charcoal (#111827)</option>
+                  <option value="slate" data-i18n="opt_bg_slate">Deep Slate Navy (#0f172a)</option>
+                </optgroup>
+                <optgroup label="Light Variations">
+                  <option value="snow" data-i18n="opt_bg_snow">Pure Snow White (#FFFFFF)</option>
+                  <option value="ivory" data-i18n="opt_bg_ivory">Ivory Cream (#FFFFF0)</option>
+                  <option value="warmWhite" data-i18n="opt_bg_warm">Warm Off-White (#FAFAF9)</option>
+                  <option value="paper" data-i18n="opt_bg_paper">Japanese Paper Light (#FDFBF7)</option>
+                </optgroup>
+                <option value="custom" data-i18n="opt_bg_custom">Arbitrary Custom Colors</option>
+              </select>
+            </div>
+
+            <!-- Arbitrary Custom Editor Colors Settings Item -->
+            <div id="modalCustomColorSettings" class="setting-item"
+              style="display: none; background: rgba(56,189,248,0.06); border-left: 3px solid var(--accent-color, #38bdf8); padding: 10px 14px; border-radius: 6px;">
+              <div>
+                <div class="setting-label" data-i18n="setting_custom_colors">Custom Background & Text Color</div>
+                <div class="setting-desc" data-i18n="setting_custom_colors_desc">Pick any custom HEX color for the
+                  Monaco canvas background and font text.</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+                  <span data-i18n="label_bg">Background:</span>
+                  <input type="color" id="modalCustomBgPicker" value="#1e1e2e"
+                    style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+                  <span data-i18n="label_text">Text:</span>
+                  <input type="color" id="modalCustomFgPicker" value="#cdd6f4"
+                    style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div>
                 <div class="setting-label" data-i18n="setting_line_highlight">Current Line Highlight</div>
-                <div class="setting-desc" data-i18n="setting_line_highlight_desc">Configure cursor highlight style.</div>
+                <div class="setting-desc" data-i18n="setting_line_highlight_desc">Configure cursor highlight style.
+                </div>
               </div>
               <select id="modalLineHighlightSelect" class="toolbar-select">
                 <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
@@ -367,7 +704,8 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_line_numbers">Line Numbers</div>
-                <div class="setting-desc" data-i18n="setting_line_numbers_desc">Configure visibility of line numbers.</div>
+                <div class="setting-desc" data-i18n="setting_line_numbers_desc">Configure visibility of line numbers.
+                </div>
               </div>
               <select id="modalLineNumbersSelect" class="toolbar-select">
                 <option value="on" selected data-i18n="opt_numbers_on">On (Visible)</option>
@@ -378,7 +716,8 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_sticky_scroll">Sticky Scroll</div>
-                <div class="setting-desc" data-i18n="setting_sticky_scroll_desc">Keep parent headings visible at top.</div>
+                <div class="setting-desc" data-i18n="setting_sticky_scroll_desc">Keep parent headings visible at top.
+                </div>
               </div>
               <select id="modalStickyScrollSelect" class="toolbar-select">
                 <option value="on" selected data-i18n="opt_sticky_on">On (Enabled)</option>
@@ -389,7 +728,8 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_whitespace">Render Whitespace</div>
-                <div class="setting-desc" data-i18n="setting_whitespace_desc">Show visible marks for spaces and tabs.</div>
+                <div class="setting-desc" data-i18n="setting_whitespace_desc">Show visible marks for spaces and tabs.
+                </div>
               </div>
               <select id="modalWhitespaceSelect" class="toolbar-select">
                 <option value="none" selected data-i18n="opt_ws_none">None (Hidden)</option>
@@ -404,49 +744,131 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_ai_provider">AI Engine / Provider</div>
-                <div class="setting-desc" data-i18n="setting_ai_provider_desc">Select between 100% Offline Local Model or Claude (Anthropic API).</div>
+                <div class="setting-desc" data-i18n="setting_ai_provider_desc">Select between 100% Offline Local Model,
+                  Google Gemini, OpenAI, or Claude.</div>
               </div>
               <select id="modalAiProviderSelect" class="toolbar-select">
-                <option value="local" selected data-i18n="opt_provider_local">Local Embeddings (100% Offline / Transformers.js)</option>
+                <option value="local" selected data-i18n="opt_provider_local">Local Embeddings (100% Offline /
+                  Transformers.js)</option>
+                <option value="gemini" data-i18n="opt_provider_gemini">Google Gemini API (Cloud AI)</option>
+                <option value="openai" data-i18n="opt_provider_openai">OpenAI API (Cloud AI)</option>
                 <option value="claude" data-i18n="opt_provider_claude">Claude API (Anthropic Cloud AI)</option>
               </select>
             </div>
 
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_ai_scope">AI Role / Inference Scope</div>
+                <div class="setting-desc" data-i18n="setting_ai_scope_desc">Choose what AI is permitted to assist with
+                  in your workflow.</div>
+              </div>
+              <select id="modalAiScopeSelect" class="toolbar-select">
+                <option value="suggestion_only" selected data-i18n="opt_scope_suggestion_only">Suggestions Only (Human
+                  Writes Text)</option>
+                <option value="lint_assist" data-i18n="opt_scope_lint_assist">Suggestions + Lint Rule Assistance
+                </option>
+                <option value="full_assist" data-i18n="opt_scope_full_assist">Full Assistance (Suggestions + Lint +
+                  Drafting)</option>
+              </select>
+            </div>
+
             <!-- Local Model Opt-in Control -->
-            <div id="localAiSettingsBlock" class="setting-item" style="flex-direction: column; align-items: stretch; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+            <div id="localAiSettingsBlock" class="setting-item"
+              style="flex-direction: column; align-items: stretch; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span id="localAiStatusBadge" style="font-size: 0.75rem; color: #94a3b8; font-weight: bold;" data-i18n="local_ai_status_standby">Local AI: Standby (Offline Mode)</span>
-                <button id="btnInitLocalAi" class="toolbar-btn" style="padding: 4px 10px; font-size: 0.75rem; background: var(--accent-color, #6366f1); color: #fff; border-radius: 4px; cursor: pointer;">
+                <span id="localAiStatusBadge" style="font-size: 0.75rem; color: #94a3b8; font-weight: bold;"
+                  data-i18n="local_ai_status_standby">Local AI: Standby (Offline Mode)</span>
+                <button id="btnInitLocalAi" class="toolbar-btn"
+                  style="padding: 4px 10px; font-size: 0.75rem; background: var(--accent-color, #6366f1); color: #fff; border-radius: 4px; cursor: pointer;">
                   <span data-i18n="btn_init_local_ai">Download & Enable Local AI (~45MB)</span>
                 </button>
               </div>
-              <div class="setting-desc" data-i18n="local_ai_prompt_desc" style="font-size: 0.72rem; color: var(--text-muted);">
+              <div class="setting-desc" data-i18n="local_ai_prompt_desc"
+                style="font-size: 0.72rem; color: var(--text-muted);">
                 Fetches lightweight multilingual embedding model (multilingual-e5-small) for offline vector indexing.
               </div>
               <div id="modalAiDownloadProgress" style="display: none; margin-top: 4px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px;">
+                <div
+                  style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px;">
                   <span id="modalAiDownloadFile">Downloading...</span>
                   <span id="modalAiDownloadPct">0%</span>
                 </div>
                 <div style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
-                  <div id="modalAiDownloadBar" style="width: 0%; height: 100%; background: var(--accent-color, #6366f1); transition: width 0.2s ease;"></div>
+                  <div id="modalAiDownloadBar"
+                    style="width: 0%; height: 100%; background: var(--accent-color, #6366f1); transition: width 0.2s ease;">
+                  </div>
                 </div>
               </div>
             </div>
 
+            <!-- Google Gemini API Configuration Block -->
+            <div id="geminiSettingsBlock"
+              style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+              <div class="setting-item" style="border: none; padding: 0;">
+                <div>
+                  <div class="setting-label" data-i18n="setting_gemini_key">Gemini API Key</div>
+                  <div class="setting-desc" data-i18n="setting_gemini_key_desc">Enter your Google AI Studio API Key.
+                    Stored securely on your local device.</div>
+                </div>
+                <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." class="toolbar-select"
+                  style="width: 190px;">
+              </div>
+              <div class="setting-item" style="border: none; padding: 0;">
+                <div>
+                  <div class="setting-label" data-i18n="setting_gemini_model">Gemini Model</div>
+                  <div class="setting-desc" data-i18n="setting_gemini_model_desc">Select Google Gemini model for vector
+                    reasoning and validation.</div>
+                </div>
+                <select id="modalGeminiModelSelect" class="toolbar-select">
+                  <option value="gemini-1.5-flash" selected>Gemini 1.5 Flash (Fast & Recommended)</option>
+                  <option value="gemini-2.0-flash">Gemini 2.0 Flash (Next-Gen)</option>
+                  <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Reasoning)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- OpenAI API Configuration Block -->
+            <div id="openaiSettingsBlock"
+              style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+              <div class="setting-item" style="border: none; padding: 0;">
+                <div>
+                  <div class="setting-label" data-i18n="setting_openai_key">OpenAI API Key</div>
+                  <div class="setting-desc" data-i18n="setting_openai_key_desc">Enter your OpenAI secret API key
+                    (sk-...). Stored locally.</div>
+                </div>
+                <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." class="toolbar-select"
+                  style="width: 190px;">
+              </div>
+              <div class="setting-item" style="border: none; padding: 0;">
+                <div>
+                  <div class="setting-label" data-i18n="setting_openai_model">OpenAI Model</div>
+                  <div class="setting-desc" data-i18n="setting_openai_model_desc">Select OpenAI model for semantic
+                    inference.</div>
+                </div>
+                <select id="modalOpenAiModelSelect" class="toolbar-select">
+                  <option value="gpt-4o-mini" selected>GPT-4o Mini (Fast & Cost Effective)</option>
+                  <option value="gpt-4o">GPT-4o (High Performance)</option>
+                </select>
+              </div>
+            </div>
+
             <!-- Claude API Configuration Block -->
-            <div id="claudeSettingsBlock" style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+            <div id="claudeSettingsBlock"
+              style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
               <div class="setting-item" style="border: none; padding: 0;">
                 <div>
                   <div class="setting-label" data-i18n="setting_claude_key">Anthropic API Key</div>
-                  <div class="setting-desc" data-i18n="setting_claude_key_desc">Enter your sk-ant-... secret key. Stored securely on your local device.</div>
+                  <div class="setting-desc" data-i18n="setting_claude_key_desc">Enter your sk-ant-... secret key. Stored
+                    securely on your local device.</div>
                 </div>
-                <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." class="toolbar-select" style="width: 180px;">
+                <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." class="toolbar-select"
+                  style="width: 190px;">
               </div>
               <div class="setting-item" style="border: none; padding: 0;">
                 <div>
                   <div class="setting-label" data-i18n="setting_claude_model">Claude Model</div>
-                  <div class="setting-desc" data-i18n="setting_claude_model_desc">Select the model for semantic drafting and validation.</div>
+                  <div class="setting-desc" data-i18n="setting_claude_model_desc">Select the model for semantic drafting
+                    and validation.</div>
                 </div>
                 <select id="modalClaudeModelSelect" class="toolbar-select">
                   <option value="claude-3-5-sonnet-20241022" selected>Claude 3.5 Sonnet (Recommended)</option>
@@ -458,10 +880,12 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_suggest_trigger">Suggestion Trigger Mode</div>
-                <div class="setting-desc" data-i18n="setting_suggest_trigger_desc">Control how vector suggestions are invoked.</div>
+                <div class="setting-desc" data-i18n="setting_suggest_trigger_desc">Control how vector suggestions are
+                  invoked.</div>
               </div>
               <select id="modalSuggestTriggerSelect" class="toolbar-select">
-                <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse Release)</option>
+                <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse
+                  Release)</option>
                 <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
                 <option value="manual" data-i18n="opt_trigger_manual">Manual (Alt+S Shortcut Only)</option>
               </select>
@@ -470,9 +894,11 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_min_score">Minimum Similarity Score (%)</div>
-                <div class="setting-desc" data-i18n="setting_min_score_desc">Ignore results below this similarity threshold.</div>
+                <div class="setting-desc" data-i18n="setting_min_score_desc">Ignore results below this similarity
+                  threshold.</div>
               </div>
-              <input type="number" id="modalMinScoreInput" min="50" max="99" value="70" class="toolbar-select" style="width: 70px;">
+              <input type="number" id="modalMinScoreInput" min="50" max="99" value="70" class="toolbar-select"
+                style="width: 70px;">
             </div>
 
             <div class="setting-item">
@@ -490,15 +916,30 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="opt_show_full_metadata">Show Full Metadata / Attributes</div>
-                <div class="setting-desc" data-i18n="setting_full_meta_desc">Auto-expand key-value attributes in suggestion cards.</div>
+                <div class="setting-desc" data-i18n="setting_full_meta_desc">Auto-expand key-value attributes in
+                  suggestion cards.</div>
               </div>
-              <input type="checkbox" id="modalShowFullMetadataChk" style="accent-color: var(--accent-color, #818cf8); width: 18px; height: 18px; cursor: pointer;">
+              <input type="checkbox" id="modalShowFullMetadataChk"
+                style="accent-color: var(--accent-color, #818cf8); width: 18px; height: 18px; cursor: pointer;">
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="btn_import_dict">Import Dictionary / Knowledge (.json)</div>
+                <div class="setting-desc" data-i18n="import_dict_desc">Load custom domain terms, schema rules, or vector
+                  definitions into HNSW index.</div>
+              </div>
+              <button id="btnModalImportDict" class="toolbar-btn"
+                style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-weight: 600; cursor: pointer;">
+                <span data-i18n="btn_import_dict">Import Dictionary</span>
+              </button>
             </div>
 
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_linter_enabled">Real-time Validation (Linter)</div>
-                <div class="setting-desc" data-i18n="setting_linter_enabled_desc">Enable background document validation.</div>
+                <div class="setting-desc" data-i18n="setting_linter_enabled_desc">Enable background document validation.
+                </div>
               </div>
               <select id="modalLinterSelect" class="toolbar-select">
                 <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
@@ -512,12 +953,42 @@
             <div class="setting-item">
               <div>
                 <div class="setting-label" data-i18n="setting_log_position">System Log Display Position</div>
-                <div class="setting-desc" data-i18n="setting_log_position_desc">Choose where to display the real-time system log monitor.</div>
+                <div class="setting-desc" data-i18n="setting_log_position_desc">Choose where to display the real-time
+                  system log monitor.</div>
               </div>
               <select id="selLogDisplayPosition" class="toolbar-select" style="min-width: 150px;">
-                <option value="top" selected data-i18n="opt_log_top">Top (Header Bar)</option>
-                <option value="bottom" data-i18n="opt_log_bottom">Bottom (Console Panel)</option>
+                <option value="bottom" selected data-i18n="opt_log_bottom">Bottom (Console Panel)</option>
+                <option value="top" data-i18n="opt_log_top">Top (Header Bar)</option>
               </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_log_startup_collapse">Start with Logs Closed</div>
+                <div class="setting-desc" data-i18n="setting_log_startup_collapse_desc">Automatically collapse the
+                  bottom log console when the application starts.</div>
+              </div>
+              <input type="checkbox" id="chkLogCollapsedOnStartup"
+                style="accent-color: var(--accent-color, #38bdf8); width: 18px; height: 18px; cursor: pointer;">
+            </div>
+
+            <!-- Workspace Session (.vectorspace) Backup & Restore -->
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="setting_workspace_bundle">Workspace Session (.vectorspace)</div>
+                <div class="setting-desc" data-i18n="setting_workspace_bundle_desc">Save or restore all active
+                  documents, tabs, and layout state in a single bundle.</div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button id="btnExportWorkspace" class="toolbar-btn"
+                  style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-weight: 600; cursor: pointer;">
+                  <span data-i18n="btn_export_workspace">Save Workspace</span>
+                </button>
+                <button id="btnImportWorkspace" class="toolbar-btn"
+                  style="padding: 6px 12px; background: var(--accent-color, #38bdf8); color: #000; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">
+                  <span data-i18n="btn_import_workspace">Open Workspace</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -525,6 +996,67 @@
     </div>
   </div>
 
+  <!-- Major/Minor Version Update Notification Modal -->
+  <div id="updateModal" class="settings-modal-overlay" style="display: none;">
+    <div class="settings-modal-dialog" style="width: 520px; height: auto; max-height: 80vh;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color, #38bdf8)"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+          <span class="modal-title" data-i18n="update_available_title">New Update Available</span>
+        </div>
+        <button id="btnCloseUpdateModal" class="toolbar-btn" style="padding: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="settings-modal-body" style="display: flex; flex-direction: column; gap: 14px; padding: 20px 24px;">
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); padding: 10px 14px; border-radius: 8px;">
+          <div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);" data-i18n="label_current_version">Current Version
+            </div>
+            <div id="updateCurrentVersion" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">v0.2.0
+            </div>
+          </div>
+          <div style="font-size: 1.2rem; color: var(--accent-color, #38bdf8);">➜</div>
+          <div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);" data-i18n="label_latest_version">Latest Version
+            </div>
+            <div id="updateLatestVersion"
+              style="font-size: 0.95rem; font-weight: 700; color: var(--accent-color, #38bdf8);">v0.3.0</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main);"
+            data-i18n="label_whats_new">What's New in this Release:</div>
+          <div id="updateChangelog"
+            style="font-size: 0.78rem; color: var(--text-muted); background: var(--bg-primary); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); max-height: 140px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;">
+            - Enhanced Rust N-API Engine and Offline Vector Search
+            - Unified System Log Stream and Theme Token Refactoring
+            - Direct Text & Markdown Export from Monaco Editor
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;">
+          <button id="btnRemindLater" class="toolbar-btn"
+            style="padding: 8px 14px; border-radius: 6px; font-weight: 600;" data-i18n="btn_remind_later">Remind Me
+            Later</button>
+          <button id="btnOpenRelease" class="toolbar-btn"
+            style="padding: 8px 16px; background: var(--accent-color, #38bdf8); color: #000; font-weight: 700; border-radius: 6px;"
+            data-i18n="btn_view_release">View Release / Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="./renderer.js"></script>
 </body>
+
 </html>

@@ -1,10 +1,11 @@
 import { icons } from './icons.js';
-import { changeLanguage, currentLang } from './i18n.js';
-import { loadTheme, availableThemes } from './themeLoader.js';
+import { changeLanguage, currentLang, i18n } from './i18n.js';
+import { loadTheme, availableThemes, getResolvedThemeName } from './themeLoader.js';
 import { setLedStatus } from './statusManager.js';
+import { STORAGE_KEYS, DEFAULTS } from './constants.js';
+import { importDictionary } from './dictionary.js';
+import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, updateAutoSaveUI } from './editorManager.js';
 
-// Light/Dark mode disabled
-const isLightTheme = false; // placeholder to keep existing references
 let updateEditorOptionsCallback = null;
 
 export function initSettings(updateEditorCb) {
@@ -50,24 +51,36 @@ export function initSettings(updateEditorCb) {
   // Theme list population
   const themeList = (availableThemes && availableThemes.length > 0)
     ? availableThemes
-    : ['Dracula', 'GitHub Dark', 'Monokai', 'Night Owl'];
+    : ['Dracula', 'GitHub Dark', 'GitHub Light', 'Monokai', 'Night Owl'];
 
   function populateThemeDropdown(selectEl) {
     if (!selectEl) return;
+    const currentVal = selectEl.value;
     selectEl.innerHTML = '';
+
+    // Add System (Auto) option first
+    const autoOpt = document.createElement('option');
+    autoOpt.value = 'auto';
+    autoOpt.textContent = i18n.theme_system_auto || 'System (Auto)';
+    selectEl.appendChild(autoOpt);
+
     themeList.forEach(name => {
       const opt = document.createElement('option');
       opt.value = name;
       opt.textContent = name;
       selectEl.appendChild(opt);
     });
+
+    if (currentVal) {
+      selectEl.value = currentVal;
+    }
   }
 
   populateThemeDropdown(themeSelect);
   populateThemeDropdown(modalThemeSelect);
 
-  const storedThemeName = localStorage.getItem('themeName');
-  const initialTheme = (storedThemeName && themeList.includes(storedThemeName)) ? storedThemeName : (themeList[0] || 'Dracula');
+  const storedThemeName = localStorage.getItem(STORAGE_KEYS.LEGACY_THEME) || localStorage.getItem(STORAGE_KEYS.THEME) || 'auto';
+  const initialTheme = (storedThemeName === 'auto' || themeList.includes(storedThemeName)) ? storedThemeName : 'auto';
   if (themeSelect) themeSelect.value = initialTheme;
   if (modalThemeSelect) modalThemeSelect.value = initialTheme;
   loadTheme(initialTheme);
@@ -77,7 +90,8 @@ export function initSettings(updateEditorCb) {
     if (themeSelect) themeSelect.value = themeName;
     if (modalThemeSelect) modalThemeSelect.value = themeName;
     await loadTheme(themeName);
-    localStorage.setItem('themeName', themeName);
+    localStorage.setItem(STORAGE_KEYS.LEGACY_THEME, themeName);
+    localStorage.setItem(STORAGE_KEYS.THEME, themeName);
   }
 
   if (themeSelect) {
@@ -93,10 +107,11 @@ export function initSettings(updateEditorCb) {
 
   if (btnTheme) {
     btnTheme.addEventListener('click', async () => {
-      if (themeList.length === 0) return;
-      const currentIndex = themeList.indexOf(themeSelect.value);
-      const nextIndex = (currentIndex + 1) % themeList.length;
-      const nextTheme = themeList[nextIndex];
+      const allChoices = ['auto', ...themeList];
+      if (allChoices.length === 0) return;
+      const currentIndex = allChoices.indexOf(themeSelect.value);
+      const nextIndex = (currentIndex + 1) % allChoices.length;
+      const nextTheme = allChoices[nextIndex];
       await applyTheme(nextTheme);
     });
   }
@@ -106,6 +121,9 @@ export function initSettings(updateEditorCb) {
     await changeLanguage(lang);
     if (btnLangToggle) btnLangToggle.textContent = lang.toUpperCase();
     if (modalLangSelect) modalLangSelect.value = lang;
+    populateThemeDropdown(themeSelect);
+    populateThemeDropdown(modalThemeSelect);
+    updateAutoSaveUI();
   }
 
   if (btnLangToggle) {
@@ -125,15 +143,36 @@ export function initSettings(updateEditorCb) {
 
   // Editor Options 2-way Sync & Apply
   function applyEditorSettings() {
-    const defaultFont = "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif";
+    const defaultFont = DEFAULTS.FONT_FAMILY;
     const fontFamily = fontFamilySelect?.value || modalFontFamilySelect?.value || defaultFont;
-    const fontSize = parseInt(fontSizeSelect?.value || modalFontSizeSelect?.value || '16', 10);
-    const lineHeight = parseInt(modalLineHeightSelect?.value || '26', 10);
+    const fontSize = parseInt(fontSizeSelect?.value || modalFontSizeSelect?.value || String(DEFAULTS.FONT_SIZE), 10);
+    const lineHeight = parseInt(modalLineHeightSelect?.value || String(DEFAULTS.LINE_HEIGHT), 10);
     const wordWrap = modalWordWrapSelect?.value || 'on';
     const lineNumbers = modalLineNumbersSelect?.value || 'on';
     const renderLineHighlight = modalLineHighlightSelect?.value || 'line';
     const stickyScroll = (modalStickyScrollSelect?.value || 'on') === 'on';
     const renderWhitespace = modalWhitespaceSelect?.value || 'none';
+    const quickEditorToneSelect = document.getElementById('quickEditorToneSelect');
+    const editorBgTone = quickEditorToneSelect?.value || modalEditorBgSelect?.value || 'default';
+
+    const quickCustomColorGroup = document.getElementById('quickCustomColorGroup');
+    const modalCustomColorSettings = document.getElementById('modalCustomColorSettings');
+    const quickCustomBgPicker = document.getElementById('quickCustomBgPicker');
+    const quickCustomFgPicker = document.getElementById('quickCustomFgPicker');
+    const modalCustomBgPicker = document.getElementById('modalCustomBgPicker');
+    const modalCustomFgPicker = document.getElementById('modalCustomFgPicker');
+
+    const customBg = quickCustomBgPicker?.value || modalCustomBgPicker?.value || '#1e1e2e';
+    const customFg = quickCustomFgPicker?.value || modalCustomFgPicker?.value || '#cdd6f4';
+
+    // Show or hide custom color picker controls
+    if (editorBgTone === 'custom') {
+      if (quickCustomColorGroup) quickCustomColorGroup.style.display = 'inline-flex';
+      if (modalCustomColorSettings) modalCustomColorSettings.style.display = 'flex';
+    } else {
+      if (quickCustomColorGroup) quickCustomColorGroup.style.display = 'none';
+      if (modalCustomColorSettings) modalCustomColorSettings.style.display = 'none';
+    }
 
     // Sync Front & Modal
     if (fontFamilySelect && modalFontFamilySelect) {
@@ -144,16 +183,25 @@ export function initSettings(updateEditorCb) {
       fontSizeSelect.value = String(fontSize);
       modalFontSizeSelect.value = String(fontSize);
     }
+    if (quickEditorToneSelect && modalEditorBgSelect) {
+      quickEditorToneSelect.value = editorBgTone;
+      modalEditorBgSelect.value = editorBgTone;
+    }
 
     // Save preferences
-    localStorage.setItem('editor_fontFamily', fontFamily);
-    localStorage.setItem('editor_fontSize', String(fontSize));
-    localStorage.setItem('editor_lineHeight', String(lineHeight));
-    localStorage.setItem('editor_wordWrap', wordWrap);
-    localStorage.setItem('editor_lineNumbers', lineNumbers);
-    localStorage.setItem('editor_lineHighlight', renderLineHighlight);
-    localStorage.setItem('editor_stickyScroll', String(stickyScroll));
-    localStorage.setItem('editor_renderWhitespace', renderWhitespace);
+    localStorage.setItem(STORAGE_KEYS.FONT_FAMILY, fontFamily);
+    localStorage.setItem(STORAGE_KEYS.FONT_SIZE, String(fontSize));
+    localStorage.setItem(STORAGE_KEYS.LINE_HEIGHT, String(lineHeight));
+    localStorage.setItem(STORAGE_KEYS.WORD_WRAP, wordWrap);
+    localStorage.setItem(STORAGE_KEYS.LINE_NUMBERS, lineNumbers);
+    localStorage.setItem(STORAGE_KEYS.LINE_HIGHLIGHT, renderLineHighlight);
+    localStorage.setItem(STORAGE_KEYS.STICKY_SCROLL, String(stickyScroll));
+    localStorage.setItem(STORAGE_KEYS.RENDER_WHITESPACE, renderWhitespace);
+    localStorage.setItem(STORAGE_KEYS.EDITOR_BG_TONE, editorBgTone);
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_EDITOR_BG, customBg);
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_EDITOR_FG, customFg);
+
+    applyEditorCanvasTone(editorBgTone, customBg, customFg);
 
     if (updateEditorOptionsCallback) {
       updateEditorOptionsCallback({
@@ -170,34 +218,95 @@ export function initSettings(updateEditorCb) {
   }
 
   // Restore saved editor settings
-  const savedFont = localStorage.getItem('editor_fontFamily');
+  const modalEditorBgSelect = document.getElementById('modalEditorBgSelect');
+  const quickEditorToneSelect = document.getElementById('quickEditorToneSelect');
+  const quickCustomBgPicker = document.getElementById('quickCustomBgPicker');
+  const quickCustomFgPicker = document.getElementById('quickCustomFgPicker');
+  const modalCustomBgPicker = document.getElementById('modalCustomBgPicker');
+  const modalCustomFgPicker = document.getElementById('modalCustomFgPicker');
+
+  const savedBgTone = localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE);
+  if (savedBgTone) {
+    if (modalEditorBgSelect) modalEditorBgSelect.value = savedBgTone;
+    if (quickEditorToneSelect) quickEditorToneSelect.value = savedBgTone;
+  }
+
+  const savedCustomBg = localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
+  const savedCustomFg = localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
+  if (quickCustomBgPicker) quickCustomBgPicker.value = savedCustomBg;
+  if (modalCustomBgPicker) modalCustomBgPicker.value = savedCustomBg;
+  if (quickCustomFgPicker) quickCustomFgPicker.value = savedCustomFg;
+  if (modalCustomFgPicker) modalCustomFgPicker.value = savedCustomFg;
+
+  const savedFont = localStorage.getItem(STORAGE_KEYS.FONT_FAMILY);
   if (savedFont) {
     if (fontFamilySelect) fontFamilySelect.value = savedFont;
     if (modalFontFamilySelect) modalFontFamilySelect.value = savedFont;
   }
-  const savedSize = localStorage.getItem('editor_fontSize');
+  const savedSize = localStorage.getItem(STORAGE_KEYS.FONT_SIZE);
   if (savedSize) {
     if (fontSizeSelect) fontSizeSelect.value = savedSize;
     if (modalFontSizeSelect) modalFontSizeSelect.value = savedSize;
   }
-  const savedLineHeight = localStorage.getItem('editor_lineHeight');
+  const savedLineHeight = localStorage.getItem(STORAGE_KEYS.LINE_HEIGHT);
   if (savedLineHeight && modalLineHeightSelect) modalLineHeightSelect.value = savedLineHeight;
-  const savedWordWrap = localStorage.getItem('editor_wordWrap');
+  const savedWordWrap = localStorage.getItem(STORAGE_KEYS.WORD_WRAP);
   if (savedWordWrap && modalWordWrapSelect) modalWordWrapSelect.value = savedWordWrap;
-  const savedLineNumbers = localStorage.getItem('editor_lineNumbers');
+  const savedLineNumbers = localStorage.getItem(STORAGE_KEYS.LINE_NUMBERS);
   if (savedLineNumbers && modalLineNumbersSelect) modalLineNumbersSelect.value = savedLineNumbers;
-  const savedLineHighlight = localStorage.getItem('editor_lineHighlight');
+  const savedLineHighlight = localStorage.getItem(STORAGE_KEYS.LINE_HIGHLIGHT);
   if (savedLineHighlight && modalLineHighlightSelect) modalLineHighlightSelect.value = savedLineHighlight;
-  const savedStickyScroll = localStorage.getItem('editor_stickyScroll');
+  const savedStickyScroll = localStorage.getItem(STORAGE_KEYS.STICKY_SCROLL);
   if (savedStickyScroll !== null && modalStickyScrollSelect) modalStickyScrollSelect.value = savedStickyScroll === 'true' ? 'on' : 'off';
-  const savedWhitespace = localStorage.getItem('editor_renderWhitespace');
+  const savedWhitespace = localStorage.getItem(STORAGE_KEYS.RENDER_WHITESPACE);
   if (savedWhitespace && modalWhitespaceSelect) modalWhitespaceSelect.value = savedWhitespace;
+
+  // Custom Color Pickers 2-Way Event Listeners
+  [quickCustomBgPicker, modalCustomBgPicker].forEach(p => {
+    if (p) p.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (quickCustomBgPicker) quickCustomBgPicker.value = val;
+      if (modalCustomBgPicker) modalCustomBgPicker.value = val;
+      applyEditorSettings();
+    });
+  });
+
+  [quickCustomFgPicker, modalCustomFgPicker].forEach(p => {
+    if (p) p.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (quickCustomFgPicker) quickCustomFgPicker.value = val;
+      if (modalCustomFgPicker) modalCustomFgPicker.value = val;
+      applyEditorSettings();
+    });
+  });
 
   // Event Listeners for Editor settings
   [fontFamilySelect, modalFontFamilySelect, fontSizeSelect, modalFontSizeSelect,
    modalLineHeightSelect, modalWordWrapSelect, modalLineNumbersSelect,
-   modalLineHighlightSelect, modalStickyScrollSelect, modalWhitespaceSelect].forEach(el => {
-    if (el) el.addEventListener('change', applyEditorSettings);
+   modalLineHighlightSelect, modalStickyScrollSelect, modalWhitespaceSelect,
+   modalEditorBgSelect, quickEditorToneSelect].forEach(el => {
+    if (el) el.addEventListener('change', (e) => {
+      if (e.target === fontFamilySelect && modalFontFamilySelect) {
+        modalFontFamilySelect.value = fontFamilySelect.value;
+      } else if (e.target === modalFontFamilySelect && fontFamilySelect) {
+        fontFamilySelect.value = modalFontFamilySelect.value;
+      }
+      if (e.target === fontSizeSelect && modalFontSizeSelect) {
+        modalFontSizeSelect.value = fontSizeSelect.value;
+      } else if (e.target === modalFontSizeSelect && fontSizeSelect) {
+        fontSizeSelect.value = modalFontSizeSelect.value;
+      }
+      if (e.target === quickEditorToneSelect && modalEditorBgSelect) {
+        modalEditorBgSelect.value = quickEditorToneSelect.value;
+      } else if (e.target === modalEditorBgSelect && quickEditorToneSelect) {
+        quickEditorToneSelect.value = modalEditorBgSelect.value;
+      }
+      applyEditorSettings();
+    });
+  });
+
+  [quickCustomBgPicker, quickCustomFgPicker, modalCustomBgPicker, modalCustomFgPicker].forEach(el => {
+    if (el) el.addEventListener('input', () => applyEditorSettings());
   });
 
   // AI & Search Settings 2-Way Sync
@@ -223,7 +332,7 @@ export function initSettings(updateEditorCb) {
   if (chkShowFullMetadata) chkShowFullMetadata.addEventListener('change', () => syncSearchSettings('front'));
   if (modalShowFullMetadataChk) modalShowFullMetadataChk.addEventListener('change', () => syncSearchSettings('modal'));
 
-    // Tab 3 AI Provider & Claude Settings
+    // Tab 3 AI Provider & Model Settings
     const modalAiProviderSelect = document.getElementById('modalAiProviderSelect');
     const localAiSettingsBlock = document.getElementById('localAiSettingsBlock');
     const claudeSettingsBlock = document.getElementById('claudeSettingsBlock');
@@ -231,36 +340,92 @@ export function initSettings(updateEditorCb) {
     const modalClaudeModelSelect = document.getElementById('modalClaudeModelSelect');
     const btnInitLocalAi = document.getElementById('btnInitLocalAi');
 
-    const storedAiProvider = localStorage.getItem('ai_provider') || 'local';
-    const storedClaudeKey = localStorage.getItem('claude_api_key') || '';
-    const storedClaudeModel = localStorage.getItem('claude_model') || 'claude-3-5-sonnet-20241022';
+    const geminiSettingsBlock = document.getElementById('geminiSettingsBlock');
+    const modalGeminiKeyInput = document.getElementById('modalGeminiKeyInput');
+    const modalGeminiModelSelect = document.getElementById('modalGeminiModelSelect');
+
+    const openaiSettingsBlock = document.getElementById('openaiSettingsBlock');
+    const modalOpenAiKeyInput = document.getElementById('modalOpenAiKeyInput');
+    const modalOpenAiModelSelect = document.getElementById('modalOpenAiModelSelect');
+
+    const modalAiScopeSelect = document.getElementById('modalAiScopeSelect');
+
+    const storedAiProvider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
+    const storedClaudeKey = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
+    const storedClaudeModel = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+    const storedGeminiKey = localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY) || '';
+    const storedGeminiModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+    const storedOpenAiKey = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
+    const storedOpenAiModel = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
+    const storedAiScope = localStorage.getItem(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
+
+    if (modalAiScopeSelect) {
+      modalAiScopeSelect.value = storedAiScope;
+      modalAiScopeSelect.addEventListener('change', () => {
+        localStorage.setItem(STORAGE_KEYS.AI_INFERENCE_SCOPE, modalAiScopeSelect.value);
+      });
+    }
 
     if (modalAiProviderSelect) {
       modalAiProviderSelect.value = storedAiProvider;
       updateAiProviderVisibility(storedAiProvider);
       modalAiProviderSelect.addEventListener('change', () => {
         const val = modalAiProviderSelect.value;
-        localStorage.setItem('ai_provider', val);
+        localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, val);
         updateAiProviderVisibility(val);
+        updateAiModelBadge();
       });
     }
 
     function updateAiProviderVisibility(provider) {
       if (localAiSettingsBlock) localAiSettingsBlock.style.display = provider === 'local' ? 'flex' : 'none';
+      if (geminiSettingsBlock) geminiSettingsBlock.style.display = provider === 'gemini' ? 'flex' : 'none';
+      if (openaiSettingsBlock) openaiSettingsBlock.style.display = provider === 'openai' ? 'flex' : 'none';
       if (claudeSettingsBlock) claudeSettingsBlock.style.display = provider === 'claude' ? 'flex' : 'none';
+    }
+
+    if (modalGeminiKeyInput) {
+      modalGeminiKeyInput.value = storedGeminiKey;
+      modalGeminiKeyInput.addEventListener('input', () => {
+        localStorage.setItem(STORAGE_KEYS.GEMINI_API_KEY, modalGeminiKeyInput.value.trim());
+      });
+    }
+
+    if (modalGeminiModelSelect) {
+      modalGeminiModelSelect.value = storedGeminiModel;
+      modalGeminiModelSelect.addEventListener('change', () => {
+        localStorage.setItem(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
+        updateAiModelBadge();
+      });
+    }
+
+    if (modalOpenAiKeyInput) {
+      modalOpenAiKeyInput.value = storedOpenAiKey;
+      modalOpenAiKeyInput.addEventListener('input', () => {
+        localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, modalOpenAiKeyInput.value.trim());
+      });
+    }
+
+    if (modalOpenAiModelSelect) {
+      modalOpenAiModelSelect.value = storedOpenAiModel;
+      modalOpenAiModelSelect.addEventListener('change', () => {
+        localStorage.setItem(STORAGE_KEYS.OPENAI_MODEL, modalOpenAiModelSelect.value);
+        updateAiModelBadge();
+      });
     }
 
     if (modalClaudeKeyInput) {
       modalClaudeKeyInput.value = storedClaudeKey;
       modalClaudeKeyInput.addEventListener('input', () => {
-        localStorage.setItem('claude_api_key', modalClaudeKeyInput.value.trim());
+        localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, modalClaudeKeyInput.value.trim());
       });
     }
 
     if (modalClaudeModelSelect) {
       modalClaudeModelSelect.value = storedClaudeModel;
       modalClaudeModelSelect.addEventListener('change', () => {
-        localStorage.setItem('claude_model', modalClaudeModelSelect.value);
+        localStorage.setItem(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
+        updateAiModelBadge();
       });
     }
 
@@ -270,16 +435,95 @@ export function initSettings(updateEditorCb) {
       });
     }
 
+    const btnModalImportDict = document.getElementById('btnModalImportDict');
+    if (btnModalImportDict) {
+      btnModalImportDict.addEventListener('click', async () => {
+        await importDictionary();
+      });
+    }
+
   // Restore Search Settings
-  const savedFullMeta = localStorage.getItem('vect_show_full_metadata') === 'true';
+  const savedFullMeta = localStorage.getItem(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true';
   if (chkShowFullMetadata) chkShowFullMetadata.checked = savedFullMeta;
   if (modalShowFullMetadataChk) modalShowFullMetadataChk.checked = savedFullMeta;
 
-  const savedTriggerMode = localStorage.getItem('vect_suggest_trigger_mode') || 'selection';
+  const savedTriggerMode = localStorage.getItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
   if (modalSuggestTriggerSelect) {
     modalSuggestTriggerSelect.value = savedTriggerMode;
     modalSuggestTriggerSelect.addEventListener('change', (e) => {
-      localStorage.setItem('vect_suggest_trigger_mode', e.target.value);
+      localStorage.setItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE, e.target.value);
+    });
+  }
+
+  // AI Model Badge updater & switcher
+  // AI Model Badge updater & switcher
+  function updateAiModelBadge() {
+    const badgeEl = document.getElementById('activeAiModelBadge');
+    const dotEl = document.getElementById('activeAiModelStatusDot');
+    if (!badgeEl) return;
+    const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
+    
+    if (provider === 'none') {
+      if (dotEl) dotEl.style.color = 'var(--text-muted, #94a3b8)';
+      badgeEl.textContent = 'OFF: Disabled';
+      badgeEl.parentElement?.setAttribute('title', 'AI Suggestion is currently disabled. Click to enable in Settings.');
+      return;
+    }
+
+    if (dotEl) dotEl.style.color = 'var(--success-color, #10b981)';
+
+    if (provider === 'gemini') {
+      const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+      const modelShort = model.replace('gemini-', '');
+      badgeEl.textContent = `ON: Cloud (Gemini ${modelShort})`;
+      badgeEl.parentElement?.setAttribute('title', `Active: Cloud AI (Gemini ${modelShort}). Click to configure.`);
+    } else if (provider === 'openai') {
+      const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
+      badgeEl.textContent = `ON: Cloud (OpenAI ${model})`;
+      badgeEl.parentElement?.setAttribute('title', `Active: Cloud AI (OpenAI ${model}). Click to configure.`);
+    } else if (provider === 'claude') {
+      const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+      const shortName = model.includes('haiku') ? 'Haiku' : 'Sonnet';
+      badgeEl.textContent = `ON: Cloud (Claude ${shortName})`;
+      badgeEl.parentElement?.setAttribute('title', `Active: Cloud AI (Claude ${shortName}). Click to configure.`);
+    } else {
+      badgeEl.textContent = `ON: Local (E5-Small ONNX)`;
+      badgeEl.parentElement?.setAttribute('title', 'Active: Local On-Device AI (E5-Small ONNX / Zero Cloud Leak). Click to configure.');
+    }
+  }
+
+  updateAiModelBadge();
+
+  function openSettingsTab(tabId) {
+    if (!settingsModal) return;
+    settingsModal.style.display = 'flex';
+    modalTabs.forEach(b => {
+      if (b.getAttribute('data-tab') === tabId) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+    modalTabContents.forEach(c => {
+      if (c.id === tabId) {
+        c.classList.add('active');
+      } else {
+        c.classList.remove('active');
+      }
+    });
+  }
+
+  const btnChangeAiModel = document.getElementById('btnChangeAiModel');
+  if (btnChangeAiModel) {
+    btnChangeAiModel.addEventListener('click', () => {
+      openSettingsTab('tabAiSearch');
+    });
+  }
+
+  const btnOpenAiSettingsQuick = document.getElementById('btnOpenAiSettingsQuick');
+  if (btnOpenAiSettingsQuick) {
+    btnOpenAiSettingsQuick.addEventListener('click', () => {
+      openSettingsTab('tabAiSearch');
     });
   }
 
@@ -293,6 +537,7 @@ export function initSettings(updateEditorCb) {
   if (btnCloseSettingsModal && settingsModal) {
     btnCloseSettingsModal.addEventListener('click', () => {
       settingsModal.style.display = 'none';
+      updateAiModelBadge();
     });
   }
 
@@ -300,6 +545,7 @@ export function initSettings(updateEditorCb) {
     settingsModal.addEventListener('click', (e) => {
       if (e.target === settingsModal) {
         settingsModal.style.display = 'none';
+        updateAiModelBadge();
       }
     });
   }
@@ -315,29 +561,57 @@ export function initSettings(updateEditorCb) {
     });
   });
 
-  // Log Display Position
+  // Log Display Position & Startup Visibility
+  const chkLogCollapsedOnStartup = document.getElementById('chkLogCollapsedOnStartup');
+  if (chkLogCollapsedOnStartup) {
+    const isCollapsedOnStart = localStorage.getItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP) === 'true';
+    chkLogCollapsedOnStartup.checked = isCollapsedOnStart;
+    chkLogCollapsedOnStartup.addEventListener('change', (e) => {
+      localStorage.setItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP, String(e.target.checked));
+    });
+  }
+
   if (selLogDisplayPosition) {
-    const storedPos = localStorage.getItem('logDisplayPosition') || 'top';
+    const storedPos = localStorage.getItem(STORAGE_KEYS.LOG_DISPLAY_POSITION) || DEFAULTS.LOG_DISPLAY_POSITION || 'bottom';
     selLogDisplayPosition.value = storedPos;
     applyLogDisplayPosition(storedPos);
 
     selLogDisplayPosition.addEventListener('change', () => {
       const pos = selLogDisplayPosition.value;
-      localStorage.setItem('logDisplayPosition', pos);
+      localStorage.setItem(STORAGE_KEYS.LOG_DISPLAY_POSITION, pos);
       applyLogDisplayPosition(pos);
     });
   }
 
-  function applyLogDisplayPosition(pos) {
-    const liveLogTicker = document.getElementById('liveLogTicker');
+  function applyLogDisplayPosition() {
     const systemLogPanel = document.getElementById('systemLogPanel');
-    if (pos === 'bottom') {
-      if (liveLogTicker) liveLogTicker.classList.add('hidden');
-      if (systemLogPanel) systemLogPanel.style.display = 'flex';
-    } else {
-      if (liveLogTicker) liveLogTicker.classList.remove('hidden');
-      if (systemLogPanel) systemLogPanel.style.display = 'none';
+    const isCollapsedOnStart = localStorage.getItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP) === 'true';
+    if (systemLogPanel) {
+      systemLogPanel.style.display = isCollapsedOnStart ? 'none' : 'flex';
     }
+  }
+
+  // Workspace Session (.vectorspace) Export & Import Handlers
+  const btnExportWorkspace = document.getElementById('btnExportWorkspace');
+  if (btnExportWorkspace) {
+    btnExportWorkspace.addEventListener('click', async () => {
+      await exportWorkspaceBundle();
+    });
+  }
+
+  const btnImportWorkspace = document.getElementById('btnImportWorkspace');
+  if (btnImportWorkspace) {
+    btnImportWorkspace.addEventListener('click', async () => {
+      if (window.engineAPI?.openFile) {
+        const res = await window.engineAPI.openFile();
+        if (res && res.success && res.content) {
+          const importRes = await importWorkspaceBundle(res.content);
+          if (importRes.success && settingsModal) {
+            settingsModal.style.display = 'none';
+          }
+        }
+      }
+    });
   }
 
   // Initial apply
@@ -346,16 +620,18 @@ export function initSettings(updateEditorCb) {
 }
 
 export function getTheme() {
-  const themeSelect = document.getElementById('themeSelect');
-  const storedThemeName = localStorage.getItem('themeName');
-  return (themeSelect && themeSelect.value) || storedThemeName || 'Dracula';
+  const themeSelect = typeof document !== 'undefined' ? document.getElementById('themeSelect') : null;
+  const storedThemeName = typeof localStorage !== 'undefined' ? (localStorage.getItem(STORAGE_KEYS.LEGACY_THEME) || localStorage.getItem(STORAGE_KEYS.THEME)) : null;
+  const currentChoice = (themeSelect && themeSelect.value) || storedThemeName || 'auto';
+  const resolved = getResolvedThemeName(currentChoice);
+  return resolved ? resolved.replace(/[^a-zA-Z0-9_-]/g, '-') : 'vs-dark';
 }
 
 export function getFontFamily() {
-  const defaultFont = "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif";
-  return document.getElementById('fontFamilySelect')?.value || localStorage.getItem('editor_fontFamily') || defaultFont;
+  const defaultFont = DEFAULTS.FONT_FAMILY;
+  return document.getElementById('fontFamilySelect')?.value || localStorage.getItem(STORAGE_KEYS.FONT_FAMILY) || defaultFont;
 }
 
 export function getFontSize() {
-  return parseInt(document.getElementById('fontSizeSelect')?.value || localStorage.getItem('editor_fontSize') || '16', 10);
+  return parseInt(document.getElementById('fontSizeSelect')?.value || localStorage.getItem(STORAGE_KEYS.FONT_SIZE) || String(DEFAULTS.FONT_SIZE), 10);
 }

@@ -9,15 +9,18 @@ export default defineConfig({
   },
   renderer: {
     optimizeDeps: {
-      exclude: ['@huggingface/transformers']
+      exclude: ['@huggingface/transformers', 'onnxruntime-web']
     },
     build: {
       target: 'esnext',
-      chunkSizeWarningLimit: 3000,
+      minify: false,
+      chunkSizeWarningLimit: 10000,
       rollupOptions: {
         output: {
-          manualChunks: {
-            monaco: ['monaco-editor']
+          manualChunks(id) {
+            if (id.includes('monaco-editor')) {
+              return 'monaco';
+            }
           }
         }
       }

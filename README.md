@@ -3,7 +3,7 @@
 > **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
 <p align="center">
-  <img src="docs/assets/repository-ui.png" alt="VectOrEditOr UI Preview" width="100%" style="border-radius: 8px;" />
+  <img src="docs/assets/repository-ui-v020.gif" alt="VectOrEditOr v0.2.0 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -23,13 +23,14 @@
 
 ## ✨ Features
 
-- **⚡ Native Rust HNSW Engine**: Blazing-fast vector similarity search and validation via N-API native bindings.
-- **🔒 100% Offline & Private (Local Mode)**: Zero external telemetry. Embeddings, vector search, and linting run entirely on your local machine using WebAssembly ONNX transformers upon user opt-in.
-- **🤖 Dual AI Engine (Local & Claude API)**: Switch freely between 100% offline local embeddings and Anthropic Claude 3.5 (Sonnet / Haiku) for intelligent drafting and semantic suggestions.
-- **🎨 Modern Dark UI & Native TitleBar Integration**: Pre-bundled with curated open-source themes (`Dracula`, `GitHub Dark`, `Monokai`, `Night Owl`) with seamless Windows `TitleBarOverlay` color synchronization.
-- **🧩 Schema-Driven Multi-Slot Knowledge Base**: Dynamically load, combine, and inspect multiple domain JSON knowledge slots on-demand.
-- **🌐 Full Dynamic Internationalization (i18n)**: Instant language switching (English / Japanese) without reloading.
-- **📏 Real-Time Diagnostic Status Pipeline**: 7-stage runtime indicators monitoring Rust Binary, Knowledge Base, Config, Theme, Locale, Monaco Editor, and AI Model readiness.
+- **⚡ Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting via N-API native bindings.
+- **🔒 100% Offline & Private (Local Mode)**: Zero external telemetry. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
+- **⌨️ Monaco IntelliSense Integration**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and classification codes (e.g., ICD-10) with instant docs preview.
+- **🔍 Streamlined Selection Mini-Bar**: Select any text to immediately trigger semantic vector matching or external search with mutual context-menu exclusion.
+- **🧩 Dynamic Multi-Slot Knowledge & Clinical Presets**: Load, merge, and inspect multiple domain JSON slots (`kb_*.json`) or clinical drafting templates (`preset_*.json`) dynamically.
+- **🎨 Curated Modern Themes & Windows TitleBar Overlay**: Bundled with `Dracula`, `GitHub Dark`, `GitHub Light`, `Monokai`, `Night Owl`, syncing with Windows native control buttons.
+- **🌐 Dynamic Bilingual UI (i18n)**: Seamless English & Japanese live switching without restart.
+- **📏 Real-Time Diagnostic Pipeline**: 7-stage LED status indicators monitoring Rust DLL, Knowledge Base, Config, Theme, Locale, Monaco, and AI Engine.
 
 ---
 
@@ -55,14 +56,14 @@ npm install
 npm run dev
 ```
 
-> **Note on Local AI Embeddings**:
-> On the first run, the lightweight multilingual embedding model (`multilingual-e5-small`, ~45MB) is automatically fetched in the background. After this one-time initial download, all vector search and linting operations run completely offline with zero network requests.
-
-### Building for Production
+### Building for Production & Windows `.exe`
 
 ```bash
-# Build standalone bundle
+# Compile and build standalone bundle
 npm run build
+
+# Package Windows Standalone Installer (.exe) & Portable Executable
+npm run build:win
 ```
 
 ---
