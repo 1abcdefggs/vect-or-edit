@@ -8,7 +8,6 @@ export interface ValidationMarker {
 
 export interface ValidationResponse {
   is_valid: boolean;
-  has_allergy_conflict?: boolean;
   markers: ValidationMarker[];
 }
 
@@ -98,12 +97,21 @@ export interface EngineAPI {
   onEngineStatus: (callback: (status: EngineStatus) => void) => () => void;
   onSystemLog: (callback: (log: SystemLogEntry) => void) => () => void;
   claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
+  geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
+  openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   importKnowledgeBase: () => Promise<ImportKnowledgeBaseResponse>;
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => Promise<{ success: boolean; error?: string }>;
   getSemanticState: () => Promise<SemanticState>;
+  openExternal: (url: string) => Promise<{ success: boolean; error?: string }>;
   setGoalProfile: (customPath?: string) => Promise<{ success: boolean; goal?: any; filePath?: string; error?: string }>;
+  resetGoalProfile: () => Promise<{ success: boolean; goal?: null; error?: string }>;
   addKnowledgeSlot: (customPath?: string) => Promise<{ success: boolean; slots?: KnowledgeSlot[]; totalCount?: number; data?: any[]; activeGoal?: any; error?: string }>;
   removeKnowledgeSlot: (slotId: string) => Promise<{ success: boolean; slots?: KnowledgeSlot[]; totalCount?: number; data?: any[]; error?: string }>;
+  clearAllKnowledgeSlots: () => Promise<{ success: boolean; slots?: KnowledgeSlot[]; totalCount?: number; data?: any[]; error?: string }>;
+  minimizeWindow: () => Promise<boolean>;
+  maximizeWindow: () => Promise<boolean>;
+  closeWindow: () => Promise<boolean>;
+  isWindowMaximized: () => Promise<boolean>;
 }
 
 const engineAPI: EngineAPI = {
@@ -131,12 +139,21 @@ const engineAPI: EngineAPI = {
     };
   },
   claudeSemanticSuggest: (payload) => ipcRenderer.invoke('app:claudeSemanticSuggest', payload),
+  geminiSemanticSuggest: (payload) => ipcRenderer.invoke('app:geminiSemanticSuggest', payload),
+  openaiSemanticSuggest: (payload) => ipcRenderer.invoke('app:openaiSemanticSuggest', payload),
   importKnowledgeBase: () => ipcRenderer.invoke('engine:importKnowledgeBase'),
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => ipcRenderer.invoke('app:setTitleBarOverlay', options),
   getSemanticState: () => ipcRenderer.invoke('engine:getSemanticState'),
+  openExternal: (url: string) => ipcRenderer.invoke('app:openExternal', url),
   setGoalProfile: (customPath?: string) => ipcRenderer.invoke('engine:setGoalProfile', customPath),
+  resetGoalProfile: () => ipcRenderer.invoke('engine:resetGoalProfile'),
   addKnowledgeSlot: (customPath?: string) => ipcRenderer.invoke('engine:addKnowledgeSlot', customPath),
-  removeKnowledgeSlot: (slotId: string) => ipcRenderer.invoke('engine:removeKnowledgeSlot', slotId)
+  removeKnowledgeSlot: (slotId: string) => ipcRenderer.invoke('engine:removeKnowledgeSlot', slotId),
+  clearAllKnowledgeSlots: () => ipcRenderer.invoke('engine:clearAllKnowledgeSlots'),
+  minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
+  maximizeWindow: () => ipcRenderer.invoke('window:toggleMaximize'),
+  closeWindow: () => ipcRenderer.invoke('window:close'),
+  isWindowMaximized: () => ipcRenderer.invoke('window:isMaximized')
 };
 
 contextBridge.exposeInMainWorld('engineAPI', engineAPI);

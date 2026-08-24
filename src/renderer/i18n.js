@@ -1,12 +1,13 @@
 import { setLedStatus } from './statusManager.js';
+import { STORAGE_KEYS, DEFAULTS } from './constants.js';
 
 export let i18n = {};
-export let currentLang = 'en';
+export let currentLang = DEFAULTS.APP_LANG;
 
 export async function loadLocales() {
   try {
-    const savedLang = localStorage.getItem('app_lang');
-    const systemLang = (navigator.language || 'en').split('-')[0];
+    const savedLang = localStorage.getItem(STORAGE_KEYS.APP_LANG);
+    const systemLang = (navigator.language || DEFAULTS.APP_LANG).split('-')[0];
     const lang = savedLang || systemLang;
     currentLang = lang;
     
@@ -30,13 +31,13 @@ export async function loadLocales() {
 }
 
 export async function changeLanguage(langCode) {
-  localStorage.setItem('app_lang', langCode);
+  localStorage.setItem(STORAGE_KEYS.APP_LANG, langCode);
   await loadLocales();
 }
 
 export function t(key, params = {}) {
   const template = i18n[key] ?? key;
-  return template.replace(/{{\s*(\w+)\s*}}/g, (_, p) => {
+  return String(template).replace(/\{{1,2}\s*(\w+)\s*\}{1,2}/g, (_, p) => {
     return params[p] !== undefined ? params[p] : '';
   });
 }
@@ -57,6 +58,13 @@ export function applyI18n() {
     const key = el.getAttribute('data-i18n-title');
     if (i18n[key]) {
       el.title = i18n[key];
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (i18n[key]) {
+      el.placeholder = i18n[key];
     }
   });
 }

@@ -1,8 +1,17 @@
 import { resetVectorSearchResults } from './vectorSearch.js';
 import { refreshLinter } from './editorManager.js';
+import { icons } from './icons.js';
+import { i18n } from './i18n.js';
 
 export const allKnowledgeItems = [];
 export const allDictEntries = [];
+
+function katakanaToHiragana(src) {
+  return typeof src === 'string' ? src.replace(/[\u30a1-\u30f6]/g, m => String.fromCharCode(m.charCodeAt(0) - 0x60)) : '';
+}
+function hiraganaToKatakana(src) {
+  return typeof src === 'string' ? src.replace(/[\u3041-\u3096]/g, m => String.fromCharCode(m.charCodeAt(0) + 0x60)) : '';
+}
 
 export function setKnowledgeItems(kbItems) {
   allKnowledgeItems.length = 0;
@@ -11,9 +20,12 @@ export function setKnowledgeItems(kbItems) {
   if (Array.isArray(kbItems)) {
     allKnowledgeItems.push(...kbItems);
     for (const item of kbItems) {
-      const title = item.name || item.title || item.label || item.prefLabel || item.term || item.text || item.id || '';
-      const code = item.icd10_code || item.metadata?.icd10_code || item.code || item.id || item.key || item['@id'] || '';
+      const title = item.title || item.name || item.label || item.prefLabel || item.term || item.text || item.id || '';
+      const code = item.code || item.id || item.key || item['@id'] || '';
       const desc = item.description || item.comment || item.summary || item.definition || '';
+      const kana = item.name_kana || item.metadata?.name_kana || '';
+      const hira = katakanaToHiragana(kana || title);
+      const kata = hiraganaToKatakana(kana || title);
 
       allDictEntries.push({
         item: {
@@ -21,7 +33,9 @@ export function setKnowledgeItems(kbItems) {
           title: title,
           subtitle: desc || code,
           code: code,
-          icd10_code: item.icd10_code || ''
+          kana: kana,
+          hira: hira,
+          kata: kata
         },
         note: desc,
         isQuick: true
@@ -58,6 +72,10 @@ export async function updateSemanticStateDisplay() {
         profileHeaderLabelEl.textContent = isGuideline ? 'Guideline / Rule:' : 'Document Preset:';
       }
 
+      const btnResetGoal = document.getElementById('btnResetGoal');
+      if (btnResetGoal) {
+        btnResetGoal.style.display = 'inline-flex';
+      }
       if (activeProfileEl) {
         activeProfileEl.textContent = g.domain_name || g.profile_id || 'Custom Profile';
         activeProfileEl.title = `${g.domain_name || g.profile_id}\n${g.description || ''}`;
@@ -69,44 +87,89 @@ export async function updateSemanticStateDisplay() {
         btnInsertTemplate.style.display = hasTemplate ? 'inline-flex' : 'none';
       }
     } else {
-      if (activeProfileEl) activeProfileEl.textContent = 'Default Profile';
-      if (activeRuleCountEl) activeRuleCountEl.textContent = '0 rules';
+      const btnResetGoal = document.getElementById('btnResetGoal');
+      if (btnResetGoal) btnResetGoal.style.display = 'none';
+      if (activeProfileEl) activeProfileEl.textContent = i18n.default_profile || 'Default Profile (Unrestricted)';
+      if (activeRuleCountEl) activeRuleCountEl.textContent = i18n.rule_count_zero || '0 rules';
       if (btnInsertTemplate) btnInsertTemplate.style.display = 'none';
     }
 
-    // 2. Render Knowledge Slots
+    // Toggle Clear All Slots button & Search Filters Container
+    const btnClearAllSlots = document.getElementById('btnClearAllSlots');
+    const searchFiltersContainer = document.getElementById('searchFiltersContainer');
+    const hasSlots = (state?.slots && state.slots.length > 0);
+
+    if (btnClearAllSlots) {
+      btnClearAllSlots.style.display = hasSlots ? 'inline-flex' : 'none';
+    }
+    if (searchFiltersContainer) {
+      searchFiltersContainer.style.display = hasSlots ? 'flex' : 'none';
+    }
+
+    // 2. Render Knowledge Slots (Matching Guideline UI/UX)
     if (slotsListEl) {
       slotsListEl.innerHTML = '';
       if (!state?.slots || state.slots.length === 0) {
-        slotsListEl.innerHTML = '<div style="font-size: 0.72rem; color: var(--text-muted); padding: 4px 2px;" data-i18n="no_slots_loaded">No slots loaded. Click [+ Add Slot] to load.</div>';
+        slotsListEl.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden; padding: 2px 0;">
+            <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              No Knowledge Base (Standard Mode)
+            </span>
+            <span style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;">0 items</span>
+          </div>
+        `;
       } else {
-        for (const slot of state.slots) {
+        state.slots.forEach((slot, idx) => {
           const itemEl = document.createElement('div');
-          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-color); font-size: 0.75rem; gap: 6px;';
+          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: 1px solid var(--border-color); font-size: 0.75rem; gap: 6px;';
           
+          const leftContainer = document.createElement('div');
+          leftContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;';
+
+          const slotIndexBadge = document.createElement('span');
+          slotIndexBadge.style.cssText = 'font-size: 0.62rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--accent-color, #38bdf8); background: rgba(56, 189, 248, 0.12); padding: 1px 4px; border-radius: 3px; flex-shrink: 0;';
+          slotIndexBadge.textContent = `SLOT ${idx + 1}`;
+
           const infoSpan = document.createElement('span');
-          infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; color: var(--text-main); font-weight: 500;';
+          infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981); font-weight: 700; font-size: 0.76rem;';
           infoSpan.textContent = slot.name;
-          infoSpan.title = `${slot.filePath} (${slot.itemCount.toLocaleString()} items)`;
+          infoSpan.title = `[SLOT ${idx + 1}] ${slot.filePath}\nItems: ${slot.itemCount.toLocaleString()}\nMulti-slot indexing active.`;
+
+          leftContainer.appendChild(slotIndexBadge);
+          leftContainer.appendChild(infoSpan);
+
+          const rightContainer = document.createElement('div');
+          rightContainer.style.cssText = 'display: flex; align-items: center; gap: 4px; flex-shrink: 0;';
 
           const countBadge = document.createElement('span');
-          countBadge.style.cssText = 'font-size: 0.65rem; color: var(--accent-color, #818cf8); font-weight: 600; flex-shrink: 0;';
-          countBadge.textContent = `${slot.itemCount}`;
+          countBadge.style.cssText = 'font-size: 0.65rem; color: var(--text-muted); font-weight: 600;';
+          countBadge.textContent = `${slot.itemCount.toLocaleString()} items`;
 
           const btnDel = document.createElement('button');
-          btnDel.style.cssText = 'background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 2px; font-size: 0.75rem; line-height: 1; display: flex; align-items: center; justify-content: center;';
-          btnDel.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+          btnDel.className = 'toolbar-btn';
+          btnDel.style.cssText = 'background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 2px 4px; font-size: 0.75rem; line-height: 1; display: flex; align-items: center; justify-content: center; border-radius: 3px; transition: color 0.15s ease, background 0.15s ease;';
+          btnDel.innerHTML = icons.delete || '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
           btnDel.title = `Unload ${slot.name}`;
+          btnDel.addEventListener('mouseenter', () => {
+            btnDel.style.color = '#ef4444';
+            btnDel.style.background = 'rgba(239, 68, 68, 0.12)';
+          });
+          btnDel.addEventListener('mouseleave', () => {
+            btnDel.style.color = 'var(--text-muted)';
+            btnDel.style.background = 'transparent';
+          });
           btnDel.addEventListener('click', async (e) => {
             e.stopPropagation();
             await removeKnowledgeSlot(slot.id);
           });
 
-          itemEl.appendChild(infoSpan);
-          itemEl.appendChild(countBadge);
-          itemEl.appendChild(btnDel);
+          rightContainer.appendChild(countBadge);
+          rightContainer.appendChild(btnDel);
+
+          itemEl.appendChild(leftContainer);
+          itemEl.appendChild(rightContainer);
           slotsListEl.appendChild(itemEl);
-        }
+        });
       }
     }
   } catch (err) {
@@ -161,6 +224,36 @@ export async function changeGoalProfile() {
       }
     } catch (err) {
       console.error("Failed to change goal profile:", err);
+    }
+  }
+  return null;
+}
+
+export async function resetGoalProfile() {
+  if (window.engineAPI && window.engineAPI.resetGoalProfile) {
+    try {
+      await window.engineAPI.resetGoalProfile();
+    } catch (e) {
+      console.warn("resetGoalProfile failed:", e);
+    }
+  }
+  await updateSemanticStateDisplay();
+  refreshLinter();
+}
+
+export async function clearAllKnowledgeSlots() {
+  if (window.engineAPI && window.engineAPI.clearAllKnowledgeSlots) {
+    try {
+      const res = await window.engineAPI.clearAllKnowledgeSlots();
+      if (res && res.success) {
+        setKnowledgeItems([]);
+        await updateSemanticStateDisplay();
+        resetVectorSearchResults();
+        refreshLinter();
+        return res;
+      }
+    } catch (err) {
+      console.error("Failed to clear all knowledge slots:", err);
     }
   }
   return null;
