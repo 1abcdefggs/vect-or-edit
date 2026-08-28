@@ -1,0 +1,209 @@
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  height: 38px;
+  background-color: var(--header-bg, #080c16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 152px 0 12px;
+  -webkit-app-region: drag;
+  position: relative;
+  z-index: 50;
+  transition: background-color 0.2s ease;
+  overflow: hidden;
+}
+
+/* Master AI Active Window Frame Glow */
+body.master-ai-active .header-full-border-line {
+  background-color: var(--accent-color, #38bdf8) !important;
+  box-shadow: 0 1px 12px rgba(56, 189, 248, 0.35) !important;
+}
+
+body.master-ai-standby .header-full-border-line {
+  background-color: var(--border-color) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
+}
+
+.app-header .toolbar,
+.app-header-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0 !important;
+  margin-left: auto;
+}
+
+.app-header .toolbar button,
+.app-header .toolbar select {
+  -webkit-app-region: no-drag !important;
+}
+
+.app-header .toolbar-btn {
+  border: none !important;
+  background: transparent;
+  box-shadow: none !important;
+}
+
+.app-header .toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.app-header .toolbar-select {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-header .toolbar-select:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.app-header .btn-lang-outline {
+  border: none !important;
+}
+
+.live-log-ticker-body {
+  padding: 4px 12px;
+  font-family: 'Cascadia Code', Consolas, monospace;
+  font-size: 0.68rem;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #040812;
+  transition: all 0.2s ease;
+}
+
+/* 3-State Ticker View: Compact 1-line mode */
+.live-log-ticker.compact-1line .live-log-ticker-body {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+/* 3-State Ticker View: Fully collapsed body mode */
+.live-log-ticker.collapsed .live-log-ticker-body {
+  display: none;
+}
+
+.live-log-ticker.collapsed .live-log-ticker-body {
+  display: none;
+}
+
+.live-log-ticker-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'Cascadia Code', Consolas, Monaco, monospace;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+.inspector-section-body {
+  display: none;
+  padding: 8px;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.inspector-collapsible-section.open .inspector-section-body {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.suggestion-sidebar.collapsed .sidebar-header h3 span:last-child,
+.suggestion-sidebar.collapsed .sidebar-header p,
+.suggestion-sidebar.collapsed .dict-control-bar,
+.suggestion-sidebar.collapsed .results-list,
+.suggestion-sidebar.collapsed #btnCopyAllResults {
+  display: none !important;
+}
+
+.suggestion-sidebar.collapsed .sidebar-header {
+  padding: 8px 4px;
+}
+
+.suggestion-sidebar.collapsed .sidebar-header > div {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sidebar-header {
+  padding: 10px 14px 10px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--header-bg, var(--bg-secondary));
+  flex-shrink: 0;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.sidebar-header h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-header p {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.settings-modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Custom Sleek Scrollbar for Scrollable Areas */
+.results-list::-webkit-scrollbar,
+.sidebar-header::-webkit-scrollbar,
+#knowledgeSlotsList::-webkit-scrollbar,
+.inspector-collapsible-section::-webkit-scrollbar,
+.system-log-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.results-list::-webkit-scrollbar-track,
+.sidebar-header::-webkit-scrollbar-track,
+#knowledgeSlotsList::-webkit-scrollbar-track,
+.inspector-collapsible-section::-webkit-scrollbar-track,
+.system-log-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb,
+.sidebar-header::-webkit-scrollbar-thumb,
+#knowledgeSlotsList::-webkit-scrollbar-thumb,
+.inspector-collapsible-section::-webkit-scrollbar-thumb,
+.system-log-body::-webkit-scrollbar-thumb {
+  background: rgba(129, 140, 248, 0.35);
+  border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb:hover,
+.sidebar-header::-webkit-scrollbar-thumb:hover,
+#knowledgeSlotsList::-webkit-scrollbar-thumb:hover,
+.inspector-collapsible-section::-webkit-scrollbar-thumb:hover,
+.system-log-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(129, 140, 248, 0.6);
+}

@@ -1,0 +1,16 @@
+      <!-- Major/Minor Version Update Notification Modal -->
+      <div id="workspaceSetupModal" class="settings-modal-overlay" style="display: none;">
+        <div class="settings-modal-dialog" style="width: 480px; height: auto;">
+          <div class="modal-header">
+            <h2 data-i18n="workspace_setup_title">Set Default Workspace</h2>
+          </div>
+          <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; color: var(--text-main);">
+            <p data-i18n="workspace_setup_desc">To use VectOrEditOr optimally, a default workspace folder is recommended. It will be used to store your knowledge base, generated files, and notes.</p>
+            <p><span data-i18n="workspace_setup_prompt_p1">Would you like to automatically create the folder</span> <strong>VectOrFoldEr</strong> <span data-i18n="workspace_setup_prompt_p2">in your Documents folder?</span></p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+              <button id="btnCancelWorkspace" class="toolbar-btn" style="padding: 8px 16px; border-radius: 4px; border: 1px solid var(--border-color); color: var(--text-muted);" data-i18n="btn_cancel">Cancel</button>
+              <button id="btnCreateWorkspace" class="toolbar-btn" style="padding: 8px 16px; border-radius: 4px; background: var(--accent-color, #38bdf8); color: #000; font-weight: bold;" data-i18n="btn_create">Create Workspace</button>
+            </div>
+          </div>
+        </div>
+      </div>

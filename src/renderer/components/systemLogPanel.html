@@ -1,0 +1,105 @@
+  <!-- Bottom Collapsible System Logs Console Panel -->
+  <div id="systemLogPanel" class="system-log-panel" style="display: flex;">
+    <div class="log-panel-header" style="justify-content: flex-start; gap: 14px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+        <span class="live-log-dot pulse"></span>
+        <span class="log-panel-title" style="display: flex; align-items: center; gap: 6px;">
+          <span data-i18n="log_panel_title"
+            style="font-weight: 800; font-size: 0.72rem; letter-spacing: 0.6px; color: var(--accent-color, #38bdf8);">SYSTEM
+            RUNTIME PROCESS STREAM</span>
+        </span>
+      </div>
+
+      <!-- Integrated 7-Stage Pipeline Status LED Meter: Left-aligned and enlarged -->
+      <div class="system-status-panel" style="margin: 0; display: flex; align-items: center; gap: 4px;">
+        <div id="badgeLedConf" class="status-pill" title="1. User Settings: Loading...">
+          <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+          <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">1.CONFIG</span>
+        </div>
+        <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg></span>
+        <div id="badgeLedThm" class="status-pill" title="2. Theme Palette: Loading...">
+          <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+          <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">2.THEME</span>
+        </div>
+        <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg></span>
+        <div id="badgeLedI18n" class="status-pill" title="3. Locale i18n: Loading...">
+          <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+          <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">3.LOCALE</span>
+        </div>
+        <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg></span>
+        <div id="badgeLedMonaco" class="status-pill" title="4. Monaco Editor: Initializing...">
+          <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+          <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">4.EDITOR</span>
+        </div>
+        <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg></span>
+        <div id="badgeLedBin" class="status-pill" title="5. Rust Binary (DLL): Initializing...">
+          <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+          <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">5.RUST</span>
+        </div>
+        <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg></span>
+        <div id="badgeLedAi" class="status-pill" title="6. AI Embeddings Model: Initializing...">
+          <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+          <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">6.AI-MODEL</span>
+        </div>
+        <span class="flow-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg></span>
+        <div id="badgeLedKb" class="status-pill" title="7. Knowledge Base & HNSW: Loading...">
+          <span class="status-led-dot status-loading" style="width: 8px; height: 8px;"></span>
+          <span class="status-pill-label" style="font-size: 0.68rem; font-weight: 700;">7.HNSW</span>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+        <button id="btnClearLogs" class="log-panel-btn"
+          style="padding: 2px 8px; font-size: 0.72rem; font-weight: 600;" data-i18n="btn_clear_logs">Clear</button>
+        <button id="btnCopyLogs" class="log-panel-btn"
+          style="padding: 2px 8px; font-size: 0.72rem; font-weight: 600;" data-i18n="btn_copy_logs">Copy Logs</button>
+        <!-- Active Colored Toggle Button -->
+        <button id="btnCloseLogs" class="log-panel-btn"
+          style="padding: 3px 8px; display: flex; align-items: center; justify-content: center; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.35);"
+          data-i18n-title="btn_toggle_console_panel">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- System Log Output Window -->
+    <div id="logEntriesContainer" class="log-entries-container" style="flex: 1; max-height: 160px;"></div>
+
+    <!-- Direct AI Command Console Input Bar (Level 2-C) -->
+    <div id="consoleAiInputGroup"
+      style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--bg-primary); border-top: 1px solid var(--border-color);">
+      <span
+        style="font-family: var(--font-mono, monospace); font-size: 0.75rem; font-weight: 700; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 4px;">
+        <span>❯</span>
+        <span id="consoleAiStatusBadge"
+          style="font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; background: rgba(56,189,248,0.15); color: var(--accent-color, #38bdf8);" data-i18n="label_ai_direct">AI
+          Direct</span>
+      </span>
+      <input type="text" id="consoleAiInput"
+        data-i18n-placeholder="console_ai_placeholder" placeholder="Enter command or natural query... (e.g. /search keyword, /lint, /stats, /clear-slots)"
+        style="flex: 1; height: 26px; padding: 0 10px; font-size: 0.75rem; font-family: var(--font-mono, monospace); background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; outline: none;">
+      <button id="btnConsoleAiRun" class="toolbar-btn"
+        style="height: 26px; padding: 0 12px; font-size: 0.72rem; font-weight: 700; background: var(--accent-color, #38bdf8); color: #000; border-radius: 4px; cursor: pointer;" data-i18n="btn_console_execute">Execute</button>
+    </div>
+  </div>

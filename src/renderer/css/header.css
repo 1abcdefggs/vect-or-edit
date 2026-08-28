@@ -1,0 +1,128 @@
+/* Theme-aware select styling */
+.toolbar-select {
+  background: var(--bg-card);
+  border: 1px solid var(--accent-color);
+  color: var(--text-main);
+  height: 32px;
+  line-height: 30px;
+  padding: 0 24px 0 8px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px auto;
+  transition: all 0.2s ease;
+}
+
+/* Dropdown option colors */
+.toolbar-select option {
+  background: var(--bg-secondary);
+  color: var(--text-main);
+}
+
+/* Hover styling */
+.toolbar-select:hover {
+  background: var(--hover-bg);
+  color: var(--text-main);
+  border-color: var(--accent-color);
+}
+
+.toolbar-select:focus {
+  border-color: var(--accent-color);
+}
+
+.titlebar {
+  -webkit-app-region: drag;
+}
+
+.logo-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Instant Tooltip (Zero Delay) */
+[data-instant-tooltip] {
+  position: relative;
+}
+[data-instant-tooltip]:hover::after {
+  content: attr(data-instant-tooltip);
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card, rgba(15, 23, 42, 0.95));
+  color: var(--text-main, #f8fafc);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  z-index: 99999;
+  pointer-events: none;
+  border: 1px solid var(--accent-color, rgba(56, 189, 248, 0.4));
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  min-width: 200px;
+  text-align: left;
+}
+
+/* Master AI Toggle Pill */
+.master-ai-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 12px;
+  width: 52px;
+  height: 20px;
+  cursor: pointer;
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.2));
+  overflow: hidden;
+  user-select: none;
+}
+
+.master-ai-pill .pill-slider {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 24px;
+  height: 16px;
+  background: #ef4444;
+  border-radius: 10px;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), background-color 0.3s ease;
+  z-index: 1;
+}
+
+.master-ai-pill.active .pill-slider {
+  transform: translateX(24px);
+  background: var(--success-color, #10b981);
+}
+
+.master-ai-pill .pill-label {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  text-align: center;
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.master-ai-pill.active .pill-on {
+  color: #fff;
+}
+
+.master-ai-pill:not(.active) .pill-off {
+  color: #fff;
+}
+
+.master-ai-pill.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.master-ai-pill.disabled .pill-slider {
+  background: #64748b;
+}

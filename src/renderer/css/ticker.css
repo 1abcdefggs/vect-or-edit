@@ -1,0 +1,474 @@
+/* Real-time System Log Runtime Ticker (Clean Cyber Panel) */
+.live-log-ticker {
+  position: relative;
+  background: #03060d;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.live-log-ticker.hidden {
+  display: none !important;
+}
+
+.live-log-ticker-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 12px;
+  background: #080d1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.live-log-ticker.compact-1line .live-log-ticker-body .live-log-item:not(:last-child) {
+  display: none;
+}
+
+.live-log-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+}
+
+.live-log-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #cbd5e1;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.live-log-time {
+  color: #64748b;
+  font-size: 0.64rem;
+  flex-shrink: 0;
+}
+
+.live-log-tag {
+  font-weight: bold;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+}
+
+.live-log-text {
+  color: #e2e8f0;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  flex: 1;
+}
+
+/* 7-Stage Pipeline Hardware Status Indicator in Ticker (Clean Borderless Layout) */
+.system-status-panel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  flex-shrink: 0;
+}
+
+.flow-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  color: rgba(56, 189, 248, 0.45);
+  user-select: none;
+  line-height: 1;
+  padding: 0 1px;
+}
+
+.flow-arrow svg {
+  width: 9px;
+  height: 9px;
+  stroke: rgba(56, 189, 248, 0.5);
+  display: block;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 3px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-family: 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  cursor: default;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.status-pill:hover {
+  color: #e2e8f0;
+}
+
+/* Micro LED Square Pixel Matrix Cell */
+.status-led-dot {
+  position: relative;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: #1a2333;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Loading / Unready: Deep Cyber Blue Standby Pulse */
+.status-led-dot.status-loading {
+  background: #0284c7;
+  box-shadow: 0 0 4px #0284c7;
+  animation: matrix-pulse 1.2s infinite alternate;
+}
+
+/* Ready State: Electric Neon Matrix Lit Block (#0080FF / #38bdf8) */
+.status-led-dot.status-ready {
+  background: #00e5ff;
+  box-shadow: 0 0 4px #00e5ff, 0 0 8px #0080ff;
+  border-radius: 1px;
+  animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.status-pill.pill-ready {
+  color: #38bdf8 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.status-pill.pill-ready:hover {
+  color: #ffffff !important;
+}
+
+/* 1. Pending / Processing State: Warning Amber/Yellow Pulsing (#f59e0b / #fbbf24) */
+.status-led-dot.status-loading,
+.status-led-dot.status-pending {
+  background: #f59e0b;
+  box-shadow: 0 0 5px rgba(245, 158, 11, 0.8), 0 0 8px rgba(251, 191, 36, 0.5);
+  animation: matrix-pulse-yellow 1.2s infinite alternate;
+}
+
+.status-pill.pill-pending {
+  color: #fbbf24 !important;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+/* 2. Ready / Completed State: Electric Neon Matrix Lit Block (#00e5ff / #38bdf8) */
+.status-led-dot.status-ready {
+  background: #00e5ff;
+  box-shadow: 0 0 4px #00e5ff, 0 0 8px #0080ff;
+  border-radius: 1px;
+  animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.status-pill.pill-ready {
+  color: #38bdf8 !important;
+  background: rgba(0, 128, 255, 0.22);
+  border-color: rgba(0, 128, 255, 0.55);
+  box-shadow: 0 0 6px rgba(0, 128, 255, 0.3), inset 0 0 4px rgba(0, 128, 255, 0.15);
+}
+
+.status-pill.pill-ready:hover {
+  background: rgba(0, 128, 255, 0.35);
+  border-color: #38bdf8;
+  color: #ffffff !important;
+}
+
+/* 3. Error State: Intense Warning Red (#ef4444 / #f87171) */
+.status-led-dot.status-error {
+  background: #ef4444;
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
+  animation: matrix-pulse-red 0.8s infinite alternate;
+}
+
+.status-pill.pill-error {
+  color: #f87171 !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Compact Top Live Log Ticker / Process Monitor */
+.live-log-ticker {
+  background: #090d16;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 16px 6px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.25s ease;
+  user-select: text;
+  box-shadow: inset 0 -1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.live-log-ticker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.live-log-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  display: inline-block;
+}
+
+.live-log-dot.pulse {
+  animation: pulse-glow 1.5s infinite alternate;
+}
+
+/* Unified Semantic Module Cards (Guideline & Knowledge Shared Components) */
+.semantic-module-card {
+  background: var(--bg-primary);
+  padding: 8px 10px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+/* Slide-up System Logs Console Panel */
+.system-log-panel {
+  position: relative;
+  flex-shrink: 0;
+  height: 180px;
+  max-height: 35vh;
+  background: #0b0f19;
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  color: #f1f5f9;
+  z-index: 40;
+  transition: height 0.2s ease;
+}
+
+.log-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #151d2f;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.log-panel-title {
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.log-entries-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-family: 'Cascadia Code', Consolas, Monaco, monospace;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  user-select: text;
+}
+
+.log-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  word-break: break-all;
+}
+
+.log-time {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.log-badge {
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.log-badge.badge-info {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.log-badge.badge-warn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.log-badge.badge-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.log-source {
+  color: #94a3b8;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.log-msg {
+  color: #e2e8f0;
+}
+
+/* Editor Status Bar */
+.editor-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 0 12px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  user-select: none;
+  z-index: 10;
+}
+
+.status-bar-left, .status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-bar-separator {
+  color: rgba(255, 255, 255, 0.15);
+}
+
+.status-bar-item {
+  font-family: var(--font-family, sans-serif);
+}
+
+/* ==========================================================================
+   Pipeline Flow Status Meter (Seamless Stream Flow)
+   ========================================================================== */
+.live-log-ticker {
+  background: var(--bg-secondary, #080c14);
+  border-bottom: 1px solid var(--border-color);
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.live-log-ticker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.system-status-panel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+/* Borderless, seamless pipeline stage pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 1px 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.status-pill-label {
+  font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+  letter-spacing: 0.3px;
+  opacity: 0.85;
+}
+
+.status-pill.ready .status-pill-label {
+  color: var(--text-main);
+  opacity: 1;
+}
+
+.status-led-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #64748b;
+  display: inline-block;
+}
+
+.status-led-dot.status-ready {
+  background: #10b981;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
+}
+
+.status-led-dot.status-loading {
+  background: #f59e0b;
+  animation: pulse-dot 1.2s infinite ease-in-out;
+}
+
+.status-led-dot.status-error {
+  background: #ef4444;
+}
+
+/* Flow Arrow between pipeline stages */
+.flow-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color, #38bdf8);
+  opacity: 0.6;
+  padding: 0 1px;
+}
+
+.flow-arrow svg {
+  stroke-width: 3;
+}
+
+.startup-status-text {
+  font-size: 0.78rem;
+  color: var(--accent-color, #38bdf8);
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.6px;
+  opacity: 0.85;
+}

@@ -2,8 +2,12 @@ node_modules/
 out/
 dist/
 release/
+build-dist/
+bin-release/
+installer-release/
 .vite/
 coverage/
+*pre/
 
 # OS / Environment
 .env
@@ -12,3 +16,5 @@ coverage/
 Thumbs.db
 *.log
 .agents/
+docs/
+ARCHITECTURE_DECISIONS.md
