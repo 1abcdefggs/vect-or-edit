@@ -1,685 +1,185 @@
-import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron';
+import { app, ipcMain, BrowserWindow, shell, dialog } from 'electron';
+
 import path from 'node:path';
-import * as fs from 'node:fs';
+import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 
-// Import N-API engine bindings
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-let engine: any = null;
-let rustBinaryLoaded = false;
+import { initLogger } from './logger';
+import { initRustEngine, getEngine, getVault, isRustBinaryLoaded } from './engine/rustEngine';
+import { 
+  knowledgeSlots, 
+  slotItemsCache, 
+  getActiveProfile, 
+  isRustEngineReady, 
+  getRustEngineItemCount,
+  loadProfileFile,
+  resolveProfilePathForKb,
+  readStrippedKnowledgeItems,
+  reloadCombinedKnowledgeIndex,
+  setActiveProfile,
+  resetActiveProfile,
+  clearKnowledgeSlots
+} from './engine/knowledgeManager';
+import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
+import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest } from './ai/aiServices';
+import { createWindow, getMainWindow } from './windowManager';
+import { saveFile, openFile, openWorkspace, getDefaultWorkspace } from './fileSystem';
 
-const candidateEnginePaths = [
-  // 1. Packaged Electron app (unpacked asar resources)
-  path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
-  path.join(process.resourcesPath || '', 'vect-or-engine-napi.win32-x64-msvc.node'),
-  // 2. Development relative workspace paths
-  path.join(__dirname, '../../../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
-  path.join(process.cwd(), '../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
-  path.join(__dirname, '../../../vect-or-engine/index.js'),
-  path.join(process.cwd(), '../vect-or-engine/index.js'),
-  path.join(__dirname, '../../vect-or-engine/index.js'),
-  path.join(process.cwd(), 'node_modules/@1abcdefggs/vect-or-engine/index.js'),
-  path.join(process.cwd(), 'node_modules/@vect-or-engine/core/index.js')
-];
+let customEmbedderPath: string | null = null;
+let currentKbPath: string = ""; // Default empty
 
-for (const candidate of candidateEnginePaths) {
-  try {
-    if (fs.existsSync(candidate)) {
-      engine = require(candidate);
-      if (engine) {
-        rustBinaryLoaded = true;
-        console.log(`[App] Successfully bound Rust N-API engine from: ${candidate}`);
-        break;
-      }
-    }
-  } catch (e) {
-    // Continue searching other candidates
-  }
-}
-
-if (!rustBinaryLoaded) {
-  try {
-    engine = require('@1abcdefggs/vect-or-engine');
-    rustBinaryLoaded = true;
-    console.log('[App] Successfully bound Rust N-API engine from package @1abcdefggs/vect-or-engine');
-  } catch (e1) {
-    try {
-      engine = require('@vect-or-engine/core');
-      rustBinaryLoaded = true;
-      console.log('[App] Successfully bound Rust N-API engine from legacy package @vect-or-engine/core');
-    } catch (e2) {
-      console.error('[App] Failed to bind Rust N-API engine binary:', e1);
-    }
-  }
-}
-
-// Disable GPU shader disk cache and HTTP disk cache to avoid Windows cache permission conflicts
-app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
-app.commandLine.appendSwitch('disable-http-cache');
-
-// Set isolated persistent userData path in development mode to preserve AI model cache across runs
-if (!app.isPackaged) {
-  try {
-    const devUserData = path.join(app.getPath('appData'), 'vectoreditor-dev-user-data');
-    if (!fs.existsSync(devUserData)) {
-      fs.mkdirSync(devUserData, { recursive: true });
-    }
-    app.setPath('userData', devUserData);
-  } catch (e) {
-    // Ignore error if app is already initialized
-  }
-}
-
-let mainWindow: BrowserWindow | null = null;
-let rustEngineReady = false;
-let rustEngineItemCount = 0;
-let activeProfile: any = null;
-
-function resolveProfilePathForKb(kbPath: string): string | null {
-  const dir = path.dirname(kbPath);
-  const baseName = path.basename(kbPath);
-
-  // Strip prefixes & suffixes to get core domain identifier
-  const core = baseName
-    .replace(/^kb_/, '')
-    .replace(/_knowledge_base\.json$/i, '')
-    .replace(/\.json$/i, '');
-
-  const candidateNames = [
-    `guideline_${core}.json`,
-    `preset_${core}.json`,
-    `${core}_guideline.json`,
-    `${core}_preset.json`,
-    `${core}_profile.json`,
-    'guideline.json',
-    'preset.json',
-    'profile.json'
-  ];
-
-  for (const name of candidateNames) {
-    const p = path.join(dir, name);
-    if (fs.existsSync(p)) return p;
-  }
-  return null;
-}
-
-async function loadProfileFile(profilePath: string): Promise<any> {
-  try {
-    if (fs.existsSync(profilePath)) {
-      const text = await fsPromises.readFile(profilePath, 'utf-8');
-      let data = JSON.parse(text);
-      if (Array.isArray(data)) {
-        // Convert clinical array templates into a rich profile object
-        const firstItem = data[0];
-        const defaultDoc = firstItem?.formal_medical_output?.clinical_history_and_findings 
-          || firstItem?.template?.default_text 
-          || firstItem?.description 
-          || '';
-        data = {
-          profile_id: path.basename(profilePath, '.json'),
-          domain_name: `${path.basename(profilePath, '.json')} (${data.length} models)`,
-          description: `Loaded ${data.length} clinical templates`,
-          template: {
-            default_text: defaultDoc
-          },
-          rules: []
-        };
-      }
-      console.log(`[App] Loaded Lint Profile from ${path.basename(profilePath)}: ${data.domain_name || data.profile_id || 'OK'}`);
-      return data;
-    }
-  } catch (err) {
-    console.warn(`[App] Failed to read profile at ${profilePath}:`, err);
-  }
-  return null;
-}
-async function readStrippedKnowledgeItems(targetPath: string): Promise<any[]> {
-  if (!targetPath || !fs.existsSync(targetPath)) return [];
-  try {
-    const content = await fsPromises.readFile(targetPath, 'utf-8');
-    const list = JSON.parse(content);
-    if (!Array.isArray(list)) return [];
-    return list.map((item: any) => {
-      const { vector, ...rest } = item;
-      return rest;
-    });
-  } catch {
-    return [];
-  }
-}
-
-function resolveAppIconPath(): string {
-  const iconPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'icon.png')
-    : path.join(__dirname, '../../public/icon.png');
-  return fs.existsSync(iconPath) ? iconPath : path.join(process.cwd(), 'public/icon.png');
-}
-
-function createWindow(): void {
-  const iconPath = resolveAppIconPath();
-
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    icon: iconPath,
-    titleBarStyle: 'hidden',
-    titleBarOverlay: {
-      color: '#080c16',
-      symbolColor: '#f8fafc',
-      height: 38
-    },
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
-      sandbox: true,
-      contextIsolation: true
-    }
-  });
-
-  // Explicitly set window icon for Windows taskbar
-  if (iconPath && fs.existsSync(iconPath)) {
-    try {
-      mainWindow.setIcon(iconPath);
-    } catch (err) {
-      console.warn('[App] Failed to set window icon:', err);
-    }
-  }
-
-  // Forward renderer & AI worker console logs directly to the IDE terminal and renderer log panel
-  mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
-    const levelLabel = level === 3 ? 'ERROR' : (level === 2 ? 'WARN' : 'INFO');
-    const source = path.basename(sourceId || 'renderer');
-    console.log(`[Renderer:${levelLabel}:${source}:${line}] ${message}`);
-
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('app:systemLog', {
-        time: new Date().toLocaleTimeString(),
-        source: `Renderer:${source}:${line}`,
-        level: levelLabel,
-        message: message
-      });
-    }
-  });
-
-  if (process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
-  }
-}
+initLogger();
+app.commandLine.appendSwitch('disable-logging');
 
 app.whenReady().then(async () => {
-  // Set App User Model ID for Windows Taskbar icon grouping and branding
-  if (process.platform === 'win32') {
-    app.setAppUserModelId('com.vectoreditor.app');
+  if (app.isPackaged) {
+    app.setAppUserModelId('com.electron');
   }
 
-  createWindow();
 
-  // For clean Open Source standalone editor: start with empty knowledge slots (no hardcoded domain files)
-  let currentKbPath = '';
-  activeProfile = null;
-  rustEngineReady = rustBinaryLoaded;
-  rustEngineItemCount = 0;
+  await initRustEngine();
 
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.send('engine:status', {
-      binReady: rustBinaryLoaded,
-      kbReady: true,
-      count: 0,
-      fileName: '',
-      profileName: null
-    });
-  }
+  createWindow(
+    path.join(__dirname, '../preload/index.cjs'),
+    process.env['ELECTRON_RENDERER_URL'] || '',
+    path.join(__dirname, '../renderer/index.html')
+  );
 
-  // Safe IPC Handler for Vector Search via N-API with dynamic limit
+  // --- File System IPC ---
+  ipcMain.handle('app:saveFile', (_event, content, defaultName) => saveFile(content, defaultName));
+  ipcMain.handle('app:openFile', () => openFile());
+  ipcMain.handle('app:openWorkspace', () => openWorkspace());
+  ipcMain.handle('app:getDefaultWorkspace', (_event, createIfMissing) => getDefaultWorkspace(createIfMissing));
+
+  // --- AI Suggest IPC ---
+  ipcMain.handle('app:claudeSemanticSuggest', (_event, payload) => fetchClaudeSemanticSuggest(payload.prompt, payload.apiKey, payload.model));
+  ipcMain.handle('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, payload.apiKey, payload.model));
+  ipcMain.handle('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, payload.apiKey, payload.model));
+
+  // --- Engine IPC ---
   ipcMain.handle('engine:searchVector', async (_event, vector: number[], limit = 5) => {
-    if (!engine) return { success: false, error: 'Engine not loaded' };
-    try {
-      const floatArray = new Float32Array(vector);
-      const searchLimit = typeof limit === 'number' && limit > 0 ? limit : 5;
-      const rawResults = await engine.search(floatArray, searchLimit);
-      // Flatten metadata into result items for renderer
-      const results = rawResults.map((r: any) => ({
-        id: r.id,
-        score: r.score,
-        ...(typeof r.metadata === 'object' && r.metadata !== null ? r.metadata : { metadata: r.metadata })
-      }));
-      return { success: true, data: results };
-    } catch (err: any) {
-      return { success: false, error: err.message };
-    }
+    if (!isRustEngineReady()) return { success: false, error: 'Knowledge base not ready' };
+    return handleSearchVector({ vector, topK: limit });
   });
 
-  ipcMain.handle('engine:getEngineStatus', () => {
-    return {
-      binReady: rustBinaryLoaded,
-      kbReady: rustEngineReady,
-      count: rustEngineItemCount,
-      fileName: path.basename(currentKbPath),
-      profileName: activeProfile?.domain_name || null
-    };
+  ipcMain.handle('embedder:getPath', () => {
+    return customEmbedderPath || path.join(process.cwd(), 'node_modules/@vect-or-engine/core/models/onnx');
   });
 
-  // Window Control Handlers (Zero Overhead & Seamless Custom Frame)
-  ipcMain.handle('window:minimize', () => {
-    mainWindow?.minimize();
-    return true;
+  ipcMain.handle('embedder:setPath', async (_event, newPath: string) => {
+    customEmbedderPath = newPath;
+    return { success: true };
   });
-
-  ipcMain.handle('window:toggleMaximize', () => {
-    if (!mainWindow) return false;
-    if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
-      return false;
-    } else {
-      mainWindow.maximize();
-      return true;
-    }
-  });
-
-  ipcMain.handle('window:close', () => {
-    mainWindow?.close();
-    return true;
-  });
-
-  ipcMain.handle('window:isMaximized', () => {
-    return mainWindow?.isMaximized() || false;
-  });
-
-  ipcMain.handle('app:saveFile', async (_event, content: string, defaultName: string) => {
-    if (!mainWindow) return { success: false, error: 'No main window' };
-    try {
-      const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
-        defaultPath: defaultName,
-        filters: [{ name: 'Text/Markdown', extensions: ['txt', 'md'] }, { name: 'All Files', extensions: ['*'] }]
-      });
-      if (!canceled && filePath) {
-        await fsPromises.writeFile(filePath, content, 'utf-8');
-        return { success: true, filePath };
-      }
-      return { success: false, canceled: true };
-    } catch (err: any) {
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('app:openFile', async () => {
-    if (!mainWindow) return { success: false, error: 'No main window' };
-    try {
-      const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-        title: 'Open Document',
-        filters: [{ name: 'Text/Markdown', extensions: ['txt', 'md', 'json', 'csv'] }, { name: 'All Files', extensions: ['*'] }],
-        properties: ['openFile']
-      });
-      if (!canceled && filePaths && filePaths.length > 0) {
-        const filePath = filePaths[0];
-        const content = await fsPromises.readFile(filePath, 'utf-8');
-        return { success: true, filePath, content, fileName: path.basename(filePath) };
-      }
-      return { success: false, canceled: true };
-    } catch (err: any) {
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('app:openExternal', async (_event, url: string) => {
-    try {
-      if (url && (url.startsWith('https://') || url.startsWith('http://'))) {
-        await shell.openExternal(url);
-        return { success: true };
-      }
-      return { success: false, error: 'Invalid URL scheme' };
-    } catch (err: any) {
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('app:claudeSemanticSuggest', async (_event, payload: { prompt: string; apiKey?: string; model?: string }) => {
-    const apiKey = payload.apiKey?.trim();
-    if (!apiKey) {
-      return { success: false, error: 'Anthropic API key is not configured in Settings.' };
-    }
-
-    const model = payload.model || 'claude-3-5-sonnet-20241022';
-
-    // Prepare knowledge context from active profile & slots
-    let systemContext = 'You are a precise semantic knowledge assistant and editor linter.';
-    if (activeProfile) {
-      systemContext += `\nDomain Profile: ${activeProfile.domain_name || activeProfile.profile_id}.\nRules: ${JSON.stringify(activeProfile.rules || [])}`;
-    }
-
-    try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: model,
-          max_tokens: 1000,
-          system: systemContext,
-          messages: [
-            {
-              role: 'user',
-              content: payload.prompt
-            }
-          ]
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        return {
-          success: false,
-          error: (errorData as any)?.error?.message || `Anthropic API error (${response.status})`
-        };
-      }
-
-      const data: any = await response.json();
-      const contentText = data.content?.[0]?.text || '';
-      return { success: true, text: contentText };
-    } catch (err: any) {
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('app:geminiSemanticSuggest', async (_event, payload: { prompt: string; apiKey?: string; model?: string }) => {
-    const apiKey = payload.apiKey?.trim();
-    if (!apiKey) {
-      return { success: false, error: 'Google Gemini API key is not configured in Settings.' };
-    }
-
-    const model = payload.model || 'gemini-1.5-flash';
-    let systemContext = 'You are a precise semantic knowledge assistant and editor linter.';
-    if (activeProfile) {
-      systemContext += `\nDomain Profile: ${activeProfile.domain_name || activeProfile.profile_id}.\nRules: ${JSON.stringify(activeProfile.rules || [])}`;
-    }
-
-    try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: payload.prompt }] }],
-          systemInstruction: { parts: [{ text: systemContext }] }
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        return {
-          success: false,
-          error: (errorData as any)?.error?.message || `Google Gemini API error (${response.status})`
-        };
-      }
-
-      const data: any = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      return { success: true, text };
-    } catch (err: any) {
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('app:openaiSemanticSuggest', async (_event, payload: { prompt: string; apiKey?: string; model?: string }) => {
-    const apiKey = payload.apiKey?.trim();
-    if (!apiKey) {
-      return { success: false, error: 'OpenAI API key is not configured in Settings.' };
-    }
-
-    const model = payload.model || 'gpt-4o-mini';
-    let systemContext = 'You are a precise semantic knowledge assistant and editor linter.';
-    if (activeProfile) {
-      systemContext += `\nDomain Profile: ${activeProfile.domain_name || activeProfile.profile_id}.\nRules: ${JSON.stringify(activeProfile.rules || [])}`;
-    }
-
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model,
-          messages: [
-            { role: 'system', content: systemContext },
-            { role: 'user', content: payload.prompt }
-          ],
-          max_tokens: 1000
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        return {
-          success: false,
-          error: (errorData as any)?.error?.message || `OpenAI API error (${response.status})`
-        };
-      }
-
-      const data: any = await response.json();
-      const text = data.choices?.[0]?.message?.content || '';
-      return { success: true, text };
-    } catch (err: any) {
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('app:validateDocument', async (_event, text: string) => {
-    const markers: any[] = [];
-    let is_valid = true;
-
-    // 1. Dynamic Lint Profile validation if loaded
-    if (activeProfile && Array.isArray(activeProfile.rules)) {
-      const lines = text.split('\n');
-      for (const rule of activeProfile.rules) {
-        if (Array.isArray(rule.trigger_keywords)) {
-          for (const kw of rule.trigger_keywords) {
-            lines.forEach((lineText, lineIdx) => {
-              if (lineText.includes(kw)) {
-                markers.push({
-                  severity: rule.severity || 'Warning',
-                  message: rule.message || `Triggered rule: ${rule.id}`,
-                  line: lineIdx + 1
-                });
-                if (rule.severity === 'Error') is_valid = false;
-              }
-            });
-          }
-        }
-      }
-    }
-
-    // 2. Rust Engine validation (fallback / core rules)
-    if (engine) {
-      try {
-        let rustResult: any = null;
-        if (engine.validate) {
-          rustResult = await engine.validate(text);
-        } else if (engine.validateSync) {
-          rustResult = engine.validateSync(text);
-        }
-        if (rustResult && Array.isArray(rustResult.markers)) {
-          markers.push(...rustResult.markers);
-          if (!rustResult.is_valid) is_valid = false;
-        }
-      } catch (err: any) {
-        console.error('Validation error from Rust Engine:', err);
-      }
-    }
-
-    return { is_valid, markers };
-  });
-
-  // Multi-Slot Knowledge & Goal Profile State Management
-  interface KnowledgeSlot {
-    id: string;
-    name: string;
-    filePath: string;
-    itemCount: number;
-  }
-
-  const knowledgeSlots: KnowledgeSlot[] = [];
-  let slotItemsCache: Map<string, any[]> = new Map();
-
-  async function reloadCombinedKnowledgeIndex(): Promise<number> {
-    if (!engine) return 0;
-
-    if (knowledgeSlots.length === 0) {
-      rustEngineReady = false;
-      rustEngineItemCount = 0;
-      return 0;
-    }
-
-    // Combine items from all slots into a temporary combined file or load the primary one
-    const allItems: any[] = [];
-    for (const slot of knowledgeSlots) {
-      try {
-        if (fs.existsSync(slot.filePath)) {
-          const raw = await fsPromises.readFile(slot.filePath, 'utf-8');
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) {
-            allItems.push(...parsed);
-            slotItemsCache.set(slot.id, parsed.map((it: any) => {
-              const { vector, ...rest } = it;
-              return rest;
-            }));
-          }
-        }
-      } catch (e) {
-        console.warn(`[App] Error reading slot ${slot.id} (${slot.name}):`, e);
-      }
-    }
-
-    // Save temporary merged knowledge base for Rust HNSW indexer
-    const tempCombinedPath = path.join(app.getPath('userData'), 'combined_knowledge_base.json');
-    await fsPromises.writeFile(tempCombinedPath, JSON.stringify(allItems), 'utf-8');
-
-    try {
-      const count = await engine.loadKnowledgeBase(tempCombinedPath);
-      await engine.buildIndex();
-      rustEngineReady = true;
-      rustEngineItemCount = count;
-      console.log(`[App] Successfully rebuilt combined HNSW index across ${knowledgeSlots.length} slot(s) with ${count} total items`);
-      return count;
-    } catch (err) {
-      console.error("[App] Failed to rebuild combined HNSW index:", err);
-      return 0;
-    }
-  }
 
   // --- Multi-Slot Knowledge & Goal Profile IPC Handlers ---
-
   ipcMain.handle('engine:getSemanticState', () => {
     return {
-      activeGoal: activeProfile,
+      activeGoal: getActiveProfile(),
       slots: knowledgeSlots,
-      totalItems: rustEngineItemCount
+      totalItems: getRustEngineItemCount()
     };
   });
 
   ipcMain.handle('engine:setGoalProfile', async (_event, customPath?: string) => {
+    const mainWindow = getMainWindow();
     if (!mainWindow) return { success: false, error: 'No main window' };
     try {
       let targetPath = customPath;
       if (!targetPath) {
         const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
           title: 'Select Goal & Lint Profile JSON',
-          filters: [
-            { name: 'Profile JSON Files', extensions: ['json'] },
-            { name: 'All Files', extensions: ['*'] }
-          ],
+          filters: [{ name: 'Profile JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
           properties: ['openFile']
         });
-        if (canceled || !filePaths || filePaths.length === 0) {
-          return { success: false, canceled: true };
-        }
+        if (canceled || !filePaths || filePaths.length === 0) return { success: false, canceled: true };
         targetPath = filePaths[0];
       }
 
       const loaded = await loadProfileFile(targetPath);
-      if (!loaded) {
-        return { success: false, error: 'Failed to parse profile JSON' };
-      }
+      if (!loaded) return { success: false, error: 'Failed to parse profile JSON' };
 
-      activeProfile = loaded;
-      console.log(`[App] Active Goal Profile set to: ${activeProfile.domain_name || activeProfile.profile_id}`);
+      setActiveProfile(loaded);
 
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send('engine:status', {
-          binReady: rustBinaryLoaded,
-          kbReady: rustEngineReady,
-          count: rustEngineItemCount,
+          binReady: isRustBinaryLoaded(),
+          kbReady: isRustEngineReady(),
+          count: getRustEngineItemCount(),
           fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
-          profileName: activeProfile?.domain_name || activeProfile?.profile_id || null
+          profileName: getActiveProfile()?.domain_name || getActiveProfile()?.profile_id || null
         });
       }
 
-      return {
-        success: true,
-        goal: activeProfile,
-        filePath: targetPath
-      };
+      return { success: true, goal: getActiveProfile(), filePath: targetPath };
     } catch (err: any) {
       console.error('[App] Failed to set goal profile:', err);
       return { success: false, error: err.message };
     }
   });
 
-  ipcMain.handle('engine:addKnowledgeSlot', async (_event, customPath?: string) => {
+  ipcMain.handle('engine:addKnowledgeSlot', async (_event, customPath?: string, vencPassword?: string) => {
+    const mainWindow = getMainWindow();
     if (!mainWindow) return { success: false, error: 'No main window' };
     try {
       let targetPath = customPath;
+      const filePathsToProcess: string[] = [];
+
       if (!targetPath) {
         const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-          title: 'Add Knowledge Base JSON (Slot)',
+          title: 'Add Knowledge Base (Slot)',
           filters: [
-            { name: 'Knowledge JSON Files', extensions: ['json'] },
+            { name: 'Knowledge Base Files', extensions: ['json', 'venc'] },
+            { name: 'Encrypted Knowledge Base (.venc)', extensions: ['venc'] },
+            { name: 'JSON Knowledge Base', extensions: ['json'] },
             { name: 'All Files', extensions: ['*'] }
           ],
           properties: ['openFile', 'multiSelections']
         });
-        if (canceled || !filePaths || filePaths.length === 0) {
-          return { success: false, canceled: true };
+        if (canceled || !filePaths || filePaths.length === 0) return { success: false, canceled: true };
+        filePathsToProcess.push(...filePaths);
+      } else {
+        filePathsToProcess.push(targetPath);
+      }
+
+      const _vault = getVault();
+
+      for (const fp of filePathsToProcess) {
+        if (fp.includes('profile') && !fp.endsWith('.venc') && !getActiveProfile()) {
+          const profile = await loadProfileFile(fp);
+          setActiveProfile(profile);
+          continue;
         }
 
-        for (const fp of filePaths) {
-          if (fp.includes('profile') && !activeProfile) {
-            activeProfile = await loadProfileFile(fp);
-            continue;
-          }
-          const base = path.basename(fp);
-          const slotId = `slot_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+        const base = path.basename(fp);
+        const slotId = `slot_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+        const isVenc = fp.endsWith('.venc');
 
-          let count = 0;
-          try {
+        let resolvedPassword = vencPassword;
+        if (isVenc && !resolvedPassword) {
+          return { success: false, requiresPassword: true, filePath: fp, error: 'Password required for encrypted file' };
+        }
+
+        let count = 0;
+        try {
+          if (isVenc && _vault && resolvedPassword) {
+            const rawBuf = await fsPromises.readFile(fp);
+            const arr = await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword);
+            count = Array.isArray(arr) ? arr.length : 0;
+          } else if (!isVenc) {
             const raw = await fsPromises.readFile(fp, 'utf-8');
             const arr = JSON.parse(raw);
             count = Array.isArray(arr) ? arr.length : 0;
-          } catch (e) {
-            count = 0;
           }
-
-          knowledgeSlots.push({
-            id: slotId,
-            name: base,
-            filePath: fp,
-            itemCount: count
-          });
+        } catch (e) {
+          count = 0;
         }
-      } else {
-        const base = path.basename(targetPath);
-        const slotId = `slot_${Date.now()}`;
+
         knowledgeSlots.push({
           id: slotId,
           name: base,
-          filePath: targetPath,
-          itemCount: 0
+          filePath: fp,
+          itemCount: count,
+          ...(isVenc && resolvedPassword ? { vencPassword: resolvedPassword } : {})
         });
       }
 
@@ -687,27 +187,18 @@ app.whenReady().then(async () => {
 
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send('engine:status', {
-          binReady: rustBinaryLoaded,
-          kbReady: rustEngineReady,
+          binReady: isRustBinaryLoaded(),
+          kbReady: isRustEngineReady(),
           count: totalCount,
           fileName: knowledgeSlots.map(s => s.name).join(', '),
-          profileName: activeProfile?.domain_name || null
+          profileName: getActiveProfile()?.domain_name || null
         });
       }
 
-      // Return all stripped items across all slots
       const allStripped: any[] = [];
-      for (const items of slotItemsCache.values()) {
-        allStripped.push(...items);
-      }
+      for (const items of slotItemsCache.values()) allStripped.push(...items);
 
-      return {
-        success: true,
-        slots: knowledgeSlots,
-        totalCount,
-        data: allStripped,
-        activeGoal: activeProfile
-      };
+      return { success: true, slots: knowledgeSlots, totalCount, data: allStripped, activeGoal: getActiveProfile() };
     } catch (err: any) {
       console.error('[App] Failed to add knowledge slot:', err);
       return { success: false, error: err.message };
@@ -721,45 +212,37 @@ app.whenReady().then(async () => {
       slotItemsCache.delete(slotId);
       console.log(`[App] Removed knowledge slot: ${removed.name}`);
       const totalCount = await reloadCombinedKnowledgeIndex();
-
       const allStripped: any[] = [];
-      for (const items of slotItemsCache.values()) {
-        allStripped.push(...items);
-      }
-
-      return {
-        success: true,
-        slots: knowledgeSlots,
-        totalCount,
-        data: allStripped
-      };
+      for (const items of slotItemsCache.values()) allStripped.push(...items);
+      return { success: true, slots: knowledgeSlots, totalCount, data: allStripped };
     }
     return { success: false, error: 'Slot not found' };
   });
 
   ipcMain.handle('engine:clearAllKnowledgeSlots', async () => {
-    knowledgeSlots.length = 0;
-    slotItemsCache.clear();
+    clearKnowledgeSlots();
     const totalCount = await reloadCombinedKnowledgeIndex();
+    const mainWindow = getMainWindow();
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('engine:status', {
-        binReady: rustBinaryLoaded,
-        kbReady: rustEngineReady,
+        binReady: isRustBinaryLoaded(),
+        kbReady: isRustEngineReady(),
         count: totalCount,
         fileName: 'No Knowledge Base',
-        profileName: activeProfile?.domain_name || null
+        profileName: getActiveProfile()?.domain_name || null
       });
     }
     return { success: true, slots: [], totalCount: 0, data: [] };
   });
 
   ipcMain.handle('engine:resetGoalProfile', () => {
-    activeProfile = null;
+    resetActiveProfile();
+    const mainWindow = getMainWindow();
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('engine:status', {
-        binReady: rustBinaryLoaded,
-        kbReady: rustEngineReady,
-        count: rustEngineItemCount,
+        binReady: isRustBinaryLoaded(),
+        kbReady: isRustEngineReady(),
+        count: getRustEngineItemCount(),
         fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
         profileName: null
       });
@@ -772,15 +255,11 @@ app.whenReady().then(async () => {
     return knowledgeSlots.map(s => s.name).join(', ');
   });
 
-  ipcMain.handle('engine:getActiveProfile', () => {
-    return activeProfile;
-  });
+  ipcMain.handle('engine:getActiveProfile', () => getActiveProfile());
 
   ipcMain.handle('engine:getKnowledgeBase', async () => {
     const allStripped: any[] = [];
-    for (const items of slotItemsCache.values()) {
-      allStripped.push(...items);
-    }
+    for (const items of slotItemsCache.values()) allStripped.push(...items);
     if (allStripped.length > 0) return allStripped;
     try {
       return await readStrippedKnowledgeItems(currentKbPath);
@@ -791,26 +270,30 @@ app.whenReady().then(async () => {
   });
 
   ipcMain.handle('engine:importKnowledgeBase', async () => {
+    const mainWindow = getMainWindow();
     if (!mainWindow) return { success: false, error: 'No main window' };
+    const engine = getEngine();
     if (!engine) return { success: false, error: 'Engine not loaded' };
     try {
+      const docsPath = app.getPath('documents');
+      const defaultWorkspace = path.join(docsPath, 'VectOrFoldEr');
+      await fsPromises.mkdir(defaultWorkspace, { recursive: true }).catch(() => {});
+
       const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
         title: 'Import Knowledge Base / Dictionary JSON',
+        defaultPath: defaultWorkspace,
         filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
         properties: ['openFile', 'multiSelections']
       });
 
-      if (canceled || !filePaths || filePaths.length === 0) {
-        return { success: false, canceled: true };
-      }
+      if (canceled || !filePaths || filePaths.length === 0) return { success: false, canceled: true };
 
-      // Reset existing slots and import new selected files as slots
-      knowledgeSlots.length = 0;
-      slotItemsCache.clear();
+      clearKnowledgeSlots();
 
       for (const fp of filePaths) {
         if (fp.includes('profile')) {
-          activeProfile = await loadProfileFile(fp);
+          const profile = await loadProfileFile(fp);
+          setActiveProfile(profile);
           continue;
         }
         const base = path.basename(fp);
@@ -822,44 +305,35 @@ app.whenReady().then(async () => {
           count = Array.isArray(arr) ? arr.length : 0;
         } catch (e) { }
 
-        knowledgeSlots.push({
-          id: slotId,
-          name: base,
-          filePath: fp,
-          itemCount: count
-        });
+        knowledgeSlots.push({ id: slotId, name: base, filePath: fp, itemCount: count });
 
-        // Auto-discover companion profile if not yet loaded
-        if (!activeProfile) {
+        if (!getActiveProfile()) {
           const companionProf = resolveProfilePathForKb(fp);
           if (companionProf) {
-            activeProfile = await loadProfileFile(companionProf);
+            const profile = await loadProfileFile(companionProf);
+            setActiveProfile(profile);
           }
         }
       }
 
       const totalCount = await reloadCombinedKnowledgeIndex();
       const allStripped: any[] = [];
-      for (const items of slotItemsCache.values()) {
-        allStripped.push(...items);
-      }
-
-      console.log(`[App] Multi-import completed with ${knowledgeSlots.length} slots (${totalCount} items), Profile: ${activeProfile?.domain_name || 'Default'}`);
+      for (const items of slotItemsCache.values()) allStripped.push(...items);
 
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send('engine:status', {
-          binReady: rustBinaryLoaded,
+          binReady: isRustBinaryLoaded(),
           kbReady: true,
           count: totalCount,
           fileName: knowledgeSlots.map(s => s.name).join(', '),
-          profileName: activeProfile?.domain_name || null
+          profileName: getActiveProfile()?.domain_name || null
         });
       }
 
       return {
         success: true,
         fileName: knowledgeSlots.map(s => s.name).join(', '),
-        profileName: activeProfile?.domain_name || null,
+        profileName: getActiveProfile()?.domain_name || null,
         count: totalCount,
         data: allStripped,
         slots: knowledgeSlots
@@ -875,9 +349,7 @@ app.whenReady().then(async () => {
       const dictPath = app.isPackaged
         ? path.join(process.resourcesPath, 'custom-ime-dict.txt')
         : path.join(__dirname, '../../public/custom-ime-dict.txt');
-      if (fs.existsSync(dictPath)) {
-        return await fsPromises.readFile(dictPath, 'utf-8');
-      }
+      if (fs.existsSync(dictPath)) return await fsPromises.readFile(dictPath, 'utf-8');
       return "";
     } catch (err: any) {
       console.warn("IME dict file not present:", err);
@@ -885,9 +357,9 @@ app.whenReady().then(async () => {
     }
   });
 
-  // Dynamic TitleBarOverlay Handler for theme changes (Windows only)
   ipcMain.handle('app:setTitleBarOverlay', async (_event, options: { color: string; symbolColor: string; height?: number }) => {
     try {
+      const mainWindow = getMainWindow();
       if (mainWindow && process.platform === 'win32') {
         mainWindow.setTitleBarOverlay({
           color: options.color,
@@ -901,12 +373,34 @@ app.whenReady().then(async () => {
       return { success: false, error: err.message };
     }
   });
+
+  ipcMain.handle('app:validateDocument', async (_event, text: string) => {
+    return handleValidateDocument({ text });
+  });
+
+  ipcMain.handle('app:openExternal', async (_event, url) => {
+    try {
+      await shell.openExternal(url);
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  });
+
+  ipcMain.handle('engine:getEngineStatus', async () => {
+    return {
+      binReady: isRustBinaryLoaded(),
+      kbReady: isRustEngineReady(),
+      count: getRustEngineItemCount(),
+      fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
+      profileName: getActiveProfile()?.domain_name || null
+    }
+  });
+
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-})
-
-
+});

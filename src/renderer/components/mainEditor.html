@@ -1,0 +1,102 @@
+<section class="editor-section" style="display: flex; flex-direction: column;">
+  <div class="section-title"
+    style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px;">
+    <!-- Center: Editor Header Actions (Save, AutoSave, Typography, Tone) -->
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
+      <!-- Save / AutoSave Integrated Group -->
+      <div class="font-control-integrated-group" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px;">
+        <button id="btnSave" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 8px; display: flex; align-items: center; gap: 4px; border-radius: 4px; cursor: pointer; color: var(--text-main);" data-i18n-title="btn_save">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          <span style="font-size: 0.72rem; font-weight: 600;" data-i18n="btn_save">Save</span>
+        </button>
+        <span style="display: inline-block; width: 1px; height: 14px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
+        <button id="btnSaveAll" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 8px; display: flex; align-items: center; gap: 4px; border-radius: 4px; cursor: pointer; color: var(--accent-color, #38bdf8);" data-i18n-title="btn_save_all">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline><path d="M19 13V5a2 2 0 0 1-2-2H5a2 2 0 0 1-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"></path></svg>
+          <span style="font-size: 0.72rem; font-weight: 600;" data-i18n="btn_save_all">All</span>
+        </button>
+        <span style="display: inline-block; width: 1px; height: 14px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
+        <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; color: var(--text-muted); cursor: pointer; padding: 0 6px;">
+          <input type="checkbox" id="chkAutoSaveToggle" style="accent-color: var(--accent-color, #38bdf8);">
+          <span data-i18n="label_autosave">AutoSave</span>
+        </label>
+      </div>
+      
+      <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.7; margin: 0 4px;"></span>
+
+      <!-- Editor Tone -->
+      <select id="quickEditorToneSelect" class="editor-toolbar-select" style="max-width: 125px; height: 28px;"
+        data-i18n-title="setting_editor_bg">
+        <option value="default" selected data-i18n="tone_default">Tone: Default</option>
+        <option value="dark_oled" data-i18n="tone_dark_oled">Dark: OLED Black</option>
+        <option value="dark_obsidian" data-i18n="tone_dark_obsidian">Dark: Obsidian</option>
+        <option value="dark_charcoal" data-i18n="tone_dark_charcoal">Dark: Charcoal</option>
+        <option value="dark_slate" data-i18n="tone_dark_slate">Dark: Slate</option>
+      </select>
+
+      <!-- Typography Group (Font Family + Font Size) -->
+      <div class="font-control-integrated-group"
+        style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px;">
+        <span class="font-group-icon"
+          style="display: flex; align-items: center; justify-content: center; width: 20px; font-family: serif; font-weight: 900; font-size: 0.95rem; color: var(--accent-color, #38bdf8); user-select: none;"
+          title="Typography">T</span>
+        <select id="fontFamilySelect" class="editor-toolbar-select"
+          style="border: none; background: transparent; height: 28px; padding: 0 16px 0 2px;">
+          <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
+            data-i18n="font_serif">Source Serif 4</option>
+          <option
+            value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+            data-i18n="font_sans_serif">Source Sans 3</option>
+          <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">
+            Source Code Pro</option>
+        </select>
+        <span
+          style="display: inline-block; width: 1px; height: 14px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
+        <select id="fontSizeSelect" class="editor-toolbar-select"
+          style="border: none; background: transparent; height: 28px; max-width: 85px; padding: 0 16px 0 2px;">
+          <option value="14" data-i18n="font_small">14px</option>
+          <option value="16" selected data-i18n="font_normal">16px</option>
+          <option value="18" data-i18n="font_large">18px</option>
+          <option value="20" data-i18n="font_xlarge">20px</option>
+        </select>
+      </div>
+
+      <!-- Right: Editor AI Toggle -->
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button id="btnEditorAiToggle" class="editor-header-btn"
+          style="height: 28px; min-width: 120px; padding: 0 12px; font-size: 0.72rem; font-weight: 700; color: #10b981; border: 1px solid rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; flex-shrink: 0; line-height: 1;">
+          <span id="editorAiLabel" style="white-space: nowrap; display: inline-block; text-align: center; letter-spacing: 0.3px;" data-i18n="editor_ai_off">Editor AI OFF</span>
+        </button>
+      </div>
+
+      <div id="quickCustomColorGroup" style="display: none; align-items: center; gap: 4px;">
+        <input type="color" id="quickCustomBgPicker" value="#1e1e2e" data-i18n-title="label_bg"
+          style="width: 22px; height: 22px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+        <input type="color" id="quickCustomFgPicker" value="#cdd6f4" data-i18n-title="label_text"
+          style="width: 22px; height: 22px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+      </div>
+    </div>
+
+    <!-- Right: Vector Generation Assist -->
+    <div class="editor-header-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+      <!-- Editor AI is now handled in the center group -->
+    </div>
+  </div>
+  <!-- Chrome-style Multi-Document Tab Bar -->
+  <div class="editor-tab-bar" id="editorTabBar" style="display: flex; align-items: center;">
+    <div class="editor-tabs-list" id="editorTabsList" style="flex: 1;"></div>
+  </div>
+  <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
+  <!-- Editor Status Bar: Clean minimal design without redundant doc name / autosave -->
+  <div class="editor-status-bar" id="editorStatusBar">
+    <div class="status-bar-left">
+      <span id="statusCharCount" class="status-bar-item">0 chars</span>
+      <span class="status-bar-separator">|</span>
+      <span id="statusLineCount" class="status-bar-item">1 lines</span>
+    </div>
+    <div class="status-bar-right" style="display: flex; align-items: center; gap: 6px;">
+      <span class="status-bar-item">UTF-8</span>
+      <span class="status-bar-separator">|</span>
+      <span class="status-bar-item">Markdown</span>
+    </div>
+  </div>
+</section>

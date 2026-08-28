@@ -1,0 +1,407 @@
+.header-action-btn {
+  width: 28px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+.ticker-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.ticker-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.toolbar-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+  height: 32px;
+  min-width: 32px;
+  padding: 0 8px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+}
+
+.toolbar-btn:active {
+  background: var(--active-bg);
+}
+
+/* Dynamic Drag-to-Resize Splitter Bar */
+.workspace-resizer {
+  width: 8px;
+  margin: 0;
+  cursor: col-resize;
+  background: transparent;
+  position: relative;
+  z-index: 30;
+  border-radius: 4px;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+body.resizing-sidebar {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+body.resizing-sidebar * {
+  user-select: none !important;
+  pointer-events: none !important;
+}
+
+.ticker-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ticker-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* Utility Classes */
+
+.btn-lang-outline {
+  background: transparent !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-color) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease;
+}
+
+.btn-lang-outline:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.1)) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+}
+
+.inspector-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-primary, #0f172a);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.editor-toolbar-select {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: var(--radius-sm);
+  height: 26px;
+  line-height: 24px;
+  padding: 0 20px 0 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 8px auto;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.editor-toolbar-select:hover, .editor-toolbar-select:focus {
+  border-color: var(--accent-color);
+  background-color: var(--hover-bg);
+}
+
+.editor-toolbar-select option {
+  background: var(--bg-secondary);
+  color: var(--text-main);
+}
+
+#editorInput {
+  flex: 1;
+  background: var(--editor-bg, transparent);
+  border: none;
+  color: var(--editor-fg, var(--text-main));
+  font-size: 1.05rem;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+}
+
+.setting-select {
+  background: var(--bg-primary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.setting-select:focus {
+  border-color: var(--accent-color);
+}
+
+.floating-selection-menu {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-color);
+  animation: popIn 0.15s ease-out;
+}
+
+.log-panel-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.log-panel-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+}
+
+.log-panel-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Chrome-style Multi-Document Tab Bar */
+.editor-tab-bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary, #080c14);
+  border-bottom: 1px solid var(--border-color);
+  padding: 4px 8px 0 8px;
+  gap: 4px;
+  overflow-x: auto;
+  user-select: none;
+  min-height: 32px;
+}
+
+.btn-tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  margin-left: 2px;
+  opacity: 0.7;
+  transition: all 0.15s ease;
+}
+
+.btn-tab-close:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  opacity: 1;
+}
+
+.btn-new-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.btn-new-tab:hover {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-color, #38bdf8);
+  border-color: rgba(56, 189, 248, 0.35);
+  transform: scale(1.08);
+}
+
+.startup-bouncing-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  user-select: none;
+}
+
+/* Header Logs Button Dynamic State (Blue when Bottom Panel is Closed) */
+.btn-logs-closed {
+  background: rgba(56, 189, 248, 0.16) !important;
+  border: 1px solid var(--accent-color, #38bdf8) !important;
+  color: var(--accent-color, #38bdf8) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-logs-closed:hover {
+  background: rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+}
+
+.toolbar-btn-active {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: var(--text-main, #f8fafc) !important;
+}
+
+/* Clean Open Folder Button without excess margin */
+.editor-header-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  transition: all 0.2s ease;
+}
+
+.font-control-integrated-group select {
+  outline: none !important;
+  cursor: pointer;
+}
+
+/* Status Bar Logs Button (Bottom Area Placement) */
+.status-bar-btn {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border: 1px solid var(--accent-color, #38bdf8) !important;
+  color: var(--accent-color, #38bdf8) !important;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.25);
+  transition: all 0.2s ease;
+}
+
+.status-bar-btn:hover {
+  background: rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Highly Visible Active Frame Toast Notifications (Bottom-Right) */
+.app-toast {
+  position: fixed;
+  bottom: 32px;
+  right: 24px;
+  background: rgba(8, 12, 22, 0.95);
+  color: #f8fafc;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.35);
+  border: 1.5px solid var(--accent-color, #38bdf8);
+  backdrop-filter: blur(16px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  user-select: none;
+  animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-width: 480px;
+}
+
+/* --- Responsive Editor Header & Pill Button Auto-Compaction --- */
+.section-title {
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+  gap: 6px !important;
+}
+
+#fontFamilySelect {
+  flex-shrink: 1 !important;
+  min-width: 90px !important;
+  max-width: 140px !important;
+}
+
+#quickEditorToneSelect {
+  flex-shrink: 2 !important;
+  min-width: 60px !important;
+  max-width: 110px !important;
+}
+
+/* Medium viewport width: Compact labels */
+@media (max-width: 1050px) {
+  #fontFamilySelect {
+    max-width: 110px !important;
+  }
+  #quickEditorToneSelect {
+    max-width: 80px !important;
+  }
+  .responsive-pill-btn {
+    font-size: 0.65rem !important;
+    padding: 0 6px !important;
+  }
+}
+
+/* Narrow viewport width: Minimalist badge mode */
+@media (max-width: 880px) {
+  #fontFamilySelect {
+    max-width: 95px !important;
+  }
+  #fontSizeSelect {
+    max-width: 65px !important;
+  }
+  #quickEditorToneSelect {
+    display: none !important;
+  }
+  .editor-header-sep {
+    display: none !important;
+  }
+}

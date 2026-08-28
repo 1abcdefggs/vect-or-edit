@@ -1,7 +1,8 @@
 {
+  "type": "module",
   "name": "vect-or-edit",
-  "version": "0.2.0",
-  "description": "VectOrEditOr - Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
+  "version": "0.3.0",
+  "description": "VectOrEdit - Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
     "editor",
@@ -24,17 +25,25 @@
   },
   "license": "MIT",
   "scripts": {
+    "clean": "node -e \"const fs=require('fs'); ['dist','out','release','bin-release','build-dist','installer-release'].forEach(d => fs.rmSync(d, {recursive:true, force:true}));\"",
+    "prebuild": "npm run clean",
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "build:win": "electron-vite build && electron-builder --win",
     "dist": "electron-builder",
     "typecheck": "tsc --noEmit",
     "preview": "electron-vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "init:secret": "node scripts/init-secret.js",
+    "postinstall": "npm run init:secret",
+    "dev:debug": "electron-vite dev -- --inspect=5858 --remote-debugging-port=9222"
   },
   "dependencies": {
     "@1abcdefggs/vect-or-engine": "file:../vect-or-engine",
+    "@google/genai": "^2.19.0",
     "@huggingface/transformers": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "hash-wasm": "^4.11.0",
     "monaco-editor": "^0.56.0"
   },
   "devDependencies": {
@@ -48,7 +57,7 @@
   },
   "build": {
     "appId": "com.vectoreditor.app",
-    "productName": "VectOrEditOr",
+    "productName": "VectOrEdit",
     "directories": {
       "output": "dist"
     },
@@ -70,7 +79,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "VectOrEditOr"
+      "shortcutName": "VectOrEdit",
+      "differentialPackage": false
     }
   }
 }

@@ -1,0 +1,100 @@
+import { editorEvents } from '../core/editorEvents.js';
+import { getEditorInstance, getMonaco } from '../core/editorCore.js';
+import { triggerAdaptiveAutoSave } from '../ui/autoSaveManager.js';
+
+export let tabs = [];
+export let activeTabId = null;
+let tabCounter = 1;
+
+export function getActiveTab() {
+  return tabs.find(t => t.id === activeTabId) || null;
+}
+
+function generateDefaultDocumentTitle() {
+  const num = tabCounter++;
+  return `Doc-${num}.md`;
+}
+
+export function createNewTab(title = null, initialContent = '', filePath = null) {
+  const monaco = getMonaco();
+  if (!monaco) return null;
+
+  const id = `tab_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+  const tabTitle = title || generateDefaultDocumentTitle();
+  const model = monaco.editor.createModel(initialContent, 'markdown');
+
+  model.onDidChangeContent((e) => {
+    const tab = tabs.find(t => t.id === id);
+    if (tab && !tab.isDirty) {
+      tab.isDirty = true;
+      editorEvents.emit('onTabRenderNeeded');
+    }
+    const hasLineBreak = e?.changes ? e.changes.some(c => c.text && c.text.includes('\n')) : false;
+    if (tab) {
+      triggerAdaptiveAutoSave(tab, hasLineBreak);
+    }
+    if (activeTabId === id) {
+      editorEvents.emit('onStatusBarUpdateNeeded', tab ? tab.title : null);
+    }
+  });
+
+  const tabObj = {
+    id,
+    title: tabTitle,
+    model,
+    filePath,
+    isDirty: false
+  };
+
+  tabs.push(tabObj);
+  editorEvents.emit('onTabRenderNeeded');
+  switchTab(id);
+  return tabObj;
+}
+
+export function switchTab(tabId) {
+  const tab = tabs.find(t => t.id === tabId);
+  const monacoEditorInstance = getEditorInstance();
+  if (!tab || !monacoEditorInstance) return;
+
+  activeTabId = tabId;
+  monacoEditorInstance.setModel(tab.model);
+  editorEvents.emit('onStatusBarUpdateNeeded', tab.title);
+  editorEvents.emit('onTabRenderNeeded');
+  monacoEditorInstance.focus();
+}
+
+export function closeTab(tabId, e) {
+  if (e) e.stopPropagation();
+  const index = tabs.findIndex(t => t.id === tabId);
+  if (index === -1) return;
+
+  const [closingTab] = tabs.splice(index, 1);
+  if (closingTab && closingTab.model) {
+    closingTab.model.dispose();
+  }
+
+  if (tabs.length === 0) {
+    createNewTab();
+  } else if (activeTabId === tabId) {
+    const nextIndex = Math.max(0, index - 1);
+    switchTab(tabs[nextIndex].id);
+  } else {
+    editorEvents.emit('onTabRenderNeeded');
+  }
+}
+
+export function markActiveTabSaved(savedFilePath) {
+  const tab = getActiveTab();
+  if (tab) {
+    tab.isDirty = false;
+    if (savedFilePath) {
+      tab.filePath = savedFilePath;
+      const baseName = savedFilePath.split(/[/\\]/).pop();
+      if (baseName) tab.title = baseName;
+    }
+    editorEvents.emit('onTabRenderNeeded');
+    editorEvents.emit('triggerRpgSavedExpFloat', tab.id);
+    editorEvents.emit('onStatusBarUpdateNeeded', tab.title);
+  }
+}
