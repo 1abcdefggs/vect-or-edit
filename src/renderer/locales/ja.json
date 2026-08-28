@@ -27,6 +27,7 @@
   "toggle_master_ai": "Master AIの切り替え",
   "btn_save_all": "All",
   "label_autosave": "AutoSave",
+  "editor_ai_label": "Editor AI",
   "editor_ai_on": "Editor AI ON",
   "editor_ai_off": "Editor AI OFF",
   "sidebar_ai_on": "SUGGEST AI ON",
