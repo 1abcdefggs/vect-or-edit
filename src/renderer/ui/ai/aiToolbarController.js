@@ -11,6 +11,7 @@ export function initAiControls() {
   const masterAiStatusDot = document.getElementById('masterAiStatusDot');
   const btnEditorAiToggle = document.getElementById('btnEditorAiToggle');
   const editorAiStatusDot = document.getElementById('editorAiStatusDot');
+  const editorAiLabel = document.getElementById('editorAiLabel');
   const btnSidebarAiToggle = document.getElementById('btnSidebarAiToggle');
   const activeAiModelStatusDot = document.getElementById('activeAiModelStatusDot');
   const activeAiModelBadge = document.getElementById('activeAiModelBadge');
@@ -43,8 +44,18 @@ export function initAiControls() {
     const monacoContainerEl = document.getElementById('monacoContainer');
     if (btnEditorAiToggle) {
       btnEditorAiToggle.style.opacity = state.master ? '1' : '0.5';
-      const label = document.getElementById('editorAiLabel');
-      if (label) label.textContent = state.editor ? (t('editor_ai_on') || 'Editor AI ON') : (t('editor_ai_off') || 'Editor AI OFF');
+      if (state.editor) {
+        btnEditorAiToggle.style.background = 'rgba(16, 185, 129, 0.12)';
+        btnEditorAiToggle.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        btnEditorAiToggle.style.color = '#10b981';
+      } else {
+        btnEditorAiToggle.style.background = 'rgba(255, 255, 255, 0.05)';
+        btnEditorAiToggle.style.borderColor = 'var(--border-color, rgba(148, 163, 184, 0.2))';
+        btnEditorAiToggle.style.color = 'var(--text-muted, #94a3b8)';
+      }
+      if (editorAiLabel) {
+        editorAiLabel.textContent = state.editor ? (t('editor_ai_on') || 'Editor AI ON') : (t('editor_ai_off') || 'Editor AI OFF');
+      }
     }
     if (editorAiStatusDot) editorAiStatusDot.style.color = state.editor ? 'var(--success-color, #10b981)' : '#ef4444';
     if (monacoContainerEl) {
