@@ -1,10 +1,10 @@
 import { icons } from './core/icons.js';
 import { initStartupFlow } from './core/startupManager.js';
 import { loadLocales } from './core/i18n.js';
-import { initSettings } from './ui/settings.js';
+import { initSettings, loadSettingsFromBackend } from './ui/settings.js';
 import { initQuickDictionary } from './search/dictionary.js';
 import { initEditor, updateEditorOptions, initMemoryMonitor, applyEditorCanvasTone } from './editor/editorManager.js';
-import { setLedStatus } from './core/statusManager.js';
+import { setLedStatus, initAllLedTooltips } from './core/statusManager.js';
 import { initVectorSearch } from './search/vectorSearch.js';
 import { initUpdateChecker } from './ui/updateChecker.js';
 import { initSidebarResizer } from './ui/layout/sidebarResizer.js';
@@ -12,6 +12,7 @@ import { initTopBarRenderer, bindTopLevelUIEvents } from './ui/layout/topBarRend
 import { initAiControls } from './ui/ai/aiToolbarController.js';
 import { initSystemConsole } from './ui/console/systemConsoleManager.js';
 import { bindAppActionEvents } from './ui/actions/appActionEvents.js';
+import { initZoomControls } from './ui/zoomController.js';
 
 import { injectLazyUIComponents } from './core/uiLoader.js';
 
@@ -22,6 +23,9 @@ window.__icons__ = icons;
 document.addEventListener('DOMContentLoaded', async () => {
   // 0. Inject lazy HTML components (Modals, System Logs)
   injectLazyUIComponents();
+  
+  // 0.5. Initialize LED tooltips consistently
+  initAllLedTooltips();
 
   // 1. Initialize UI Layout & Elements
   initTopBarRenderer();
@@ -31,8 +35,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 2. Setup Engine & Knowledge Base IPC Listeners
   if (window.engineAPI?.onEngineStatus) {
     window.engineAPI.onEngineStatus((status) => {
-      if (status.binReady) setLedStatus('bin', true, '1. Rust Binary (DLL): Bound via N-API');
-      if (status.kbReady) setLedStatus('kb', true, `2. Knowledge Base & HNSW: Indexed (${status.count.toLocaleString()} items)`);
+      if (status.binReady) setLedStatus('bin', true, '5. RUST: Bound via N-API');
+      if (status.kbReady) setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
       if (status.profileName) {
         const activeProfileEl = document.getElementById('activeProfileName');
         if (activeProfileEl) activeProfileEl.textContent = status.profileName;
@@ -42,8 +46,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (window.engineAPI?.getEngineStatus) {
     window.engineAPI.getEngineStatus().then((status) => {
-      if (status?.binReady) setLedStatus('bin', true, '1. Rust Binary (DLL): Bound via N-API');
-      if (status?.kbReady) setLedStatus('kb', true, `2. Knowledge Base & HNSW: Indexed (${status.count.toLocaleString()} items)`);
+      if (status?.binReady) setLedStatus('bin', true, '5. RUST: Bound via N-API');
+      if (status?.kbReady) setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
       if (status?.profileName) {
         const activeProfileEl = document.getElementById('activeProfileName');
         if (activeProfileEl) activeProfileEl.textContent = status.profileName;
@@ -55,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const editorPromise = initEditor();
   const initModulesPromise = (async () => {
     await loadLocales();
+    await loadSettingsFromBackend();
     initSettings(updateEditorOptions);
   })();
 
@@ -77,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initQuickDictionary();
   initVectorSearch();
   initAiControls();
+  initZoomControls();
   initSystemConsole();
   bindAppActionEvents();
 

@@ -96,10 +96,12 @@ export interface EngineAPI {
   getEmbedderPath: () => Promise<string>;
   setEmbedderPath: (path: string) => Promise<{ success: boolean; error?: string }>;
   searchVector: (vector: number[], limit?: number) => Promise<SearchVectorResponse>;
-  saveFile: (content: string, defaultName: string) => Promise<SaveFileResponse>;
-  openFile: () => Promise<OpenFileResponse>;
-  openWorkspace: () => Promise<OpenWorkspaceResponse>;
-  getDefaultWorkspace: (createIfMissing?: boolean) => Promise<{ success: boolean; path?: string; exists?: boolean; error?: string }>;
+  saveFile: (content: string, defaultName?: string) => Promise<{success: boolean, path?: string, error?: string}>;
+  openFile: () => Promise<{success: boolean, path?: string, content?: string, error?: string}>;
+  openWorkspace: () => Promise<{success: boolean, path?: string, error?: string}>;
+  getDefaultWorkspace: (createIfMissing?: boolean) => Promise<{success: boolean, path?: string, exists?: boolean, error?: string}>;
+  loadSettings: () => Promise<{success: boolean, settings?: any, error?: string}>;
+  saveSettings: (settings: any) => Promise<{success: boolean, error?: string}>;
   validateDocument: (text: string) => Promise<ValidationResponse>;
   loadImeDict: () => Promise<string>;
   getKnowledgeBase: () => Promise<any[]>;
@@ -124,6 +126,8 @@ export interface EngineAPI {
   maximizeWindow: () => Promise<boolean>;
   closeWindow: () => Promise<boolean>;
   isWindowMaximized: () => Promise<boolean>;
+  setZoomFactor: (factor: number) => void;
+  getZoomFactor: () => number;
   checkUpdate: () => Promise<{ hasUpdate: boolean; version?: string; releaseDate?: string }>;
   installUpdate: () => Promise<void>;
 }

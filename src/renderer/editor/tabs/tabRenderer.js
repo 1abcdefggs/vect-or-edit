@@ -21,6 +21,16 @@ export function triggerRpgSavedExpFloat(tabId = activeTabId) {
   }, 950);
 }
 
+function updateSaveAllButtonState() {
+  const btnSaveAll = document.getElementById('btnSaveAll');
+  if (!btnSaveAll) return;
+  if (tabs.length >= 2) {
+    btnSaveAll.classList.remove('disabled');
+  } else {
+    btnSaveAll.classList.add('disabled');
+  }
+}
+
 export function renderTabs() {
   const tabsContainer = document.getElementById('editorTabsList');
   if (!tabsContainer) return;
@@ -90,18 +100,26 @@ export function renderTabs() {
   });
 
   const btnInlineNewTab = document.createElement('button');
-  btnInlineNewTab.className = 'btn-new-tab';
+  btnInlineNewTab.className = 'toolbar-btn';
   btnInlineNewTab.id = 'btnNewTabInline';
-  btnInlineNewTab.title = 'New Document (Ctrl+T)';
-  btnInlineNewTab.style.display = 'inline-flex';
+  btnInlineNewTab.title = 'New Tab (Ctrl+T)';
+  btnInlineNewTab.style.height = '28px';
+  btnInlineNewTab.style.width = '28px';
+  btnInlineNewTab.style.padding = '0';
+  btnInlineNewTab.style.display = 'flex';
   btnInlineNewTab.style.alignItems = 'center';
-  btnInlineNewTab.style.gap = '3px';
-  btnInlineNewTab.style.padding = '2px 8px';
-  btnInlineNewTab.style.fontSize = '0.72rem';
-  btnInlineNewTab.style.fontWeight = '600';
-  btnInlineNewTab.innerHTML = `<span style="font-size:0.85rem;line-height:1;margin-top:-1px;">＋</span><span>add</span>`;
+  btnInlineNewTab.style.justifyContent = 'center';
+  btnInlineNewTab.style.border = 'none';
+  btnInlineNewTab.style.background = 'transparent';
+  btnInlineNewTab.style.color = 'var(--text-muted)';
+  btnInlineNewTab.style.cursor = 'pointer';
+  btnInlineNewTab.style.flexShrink = '0';
+  btnInlineNewTab.style.marginLeft = '4px';
+  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined" style="font-size: 1.2rem;">&#xf741;</span>`;
   btnInlineNewTab.addEventListener('click', () => createNewTab());
   tabsContainer.appendChild(btnInlineNewTab);
+
+  updateSaveAllButtonState();
 }
 
 // Bind event bus listeners

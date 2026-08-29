@@ -23,7 +23,7 @@ export function showMonacoWidget(results, range, targetEditor, monacoInstance) {
 
     let html = `
       <div style="padding: 8px 12px; background: var(--hover-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+        <span style="font-size: 0.8rem;  color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
           ${icons.search}
           <span>${headerTitle}</span>
         </span>
@@ -50,11 +50,11 @@ export function showMonacoWidget(results, range, targetEditor, monacoInstance) {
           <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${scorePct}%; background: var(--accent-color); opacity: 0.12; z-index: 0; pointer-events: none;"></div>
           <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
             <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
-              ${code ? `<span style="background: var(--item-code-bg); color: var(--item-code-text); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; flex-shrink: 0;">${code}</span>` : ''}
-              <span style="font-weight: bold; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${title}</span>
+              ${code ? `<span style="background: var(--item-code-bg); color: var(--item-code-text); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;  flex-shrink: 0;">${code}</span>` : ''}
+              <span style=" font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${title}</span>
               ${tooltipParts.length > 0 ? `<span style="color: var(--text-muted); font-size: 0.7rem; margin-left: 4px;">(i)</span>` : ''}
             </div>
-            <span style="color: var(--success-color); font-size: 0.75rem; font-weight: bold; flex-shrink: 0;">${scorePct}%</span>
+            <span style="color: var(--success-color); font-size: 0.75rem;  flex-shrink: 0;">${scorePct}%</span>
           </div>
         </div>
       `;
@@ -64,7 +64,7 @@ export function showMonacoWidget(results, range, targetEditor, monacoInstance) {
 
     if (!isExpanded && hiddenCount > 0) {
       html += `
-        <div id="btnWidgetLoadMore" style="padding: 8px; text-align: center; font-size: 0.8rem; font-weight: bold; color: var(--accent-color); cursor: pointer; background: var(--hover-bg);" onmouseover="this.style.background='var(--active-bg)'" onmouseout="this.style.background='var(--hover-bg)'">
+        <div id="btnWidgetLoadMore" style="padding: 8px; text-align: center; font-size: 0.8rem;  color: var(--accent-color); cursor: pointer; background: var(--hover-bg);" onmouseover="this.style.background='var(--active-bg)'" onmouseout="this.style.background='var(--hover-bg)'">
           ${t('loadMoreLabel', { hiddenCount })}
         </div>
       `;

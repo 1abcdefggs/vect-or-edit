@@ -11,7 +11,7 @@
 
 .workspace-resizer:hover,
 .workspace-resizer.is-dragging {
-  background: var(--accent-color, #38bdf8);
+  background: var(--accent-color, #66f);
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 

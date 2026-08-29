@@ -1,89 +1,78 @@
 <header class="app-header">
   <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
-    <img src="./assets/icon.png" alt="VectOrEditOr" class="logo-icon">
+    <div class="window-controls-left" style="display: flex; align-items: center; gap: 6px;">
+      <img src="./assets/icon.png" alt="VectOrEditOr" class="logo-icon">
+      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">VectOrEditOr</span>
+    </div>
+    <!-- Workspace Folder Button (Native Frame) -->
+    <button id="btnOpen" class="toolbar-btn"
+      style="height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; transition: color 0.2s ease; -webkit-app-region: no-drag; color: var(--text-main); white-space: nowrap;"
+      data-i18n-title="btn_open"
+      onmouseover="this.style.color='var(--accent-color, #38bdf8)'"
+      onmouseout="this.style.color='var(--text-main)'">
+      <span id="iconFolderClosed" class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-main); flex-shrink: 0; display: block;">&#xe2cc;</span>
+      <span id="iconFolderOpen" class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8); flex-shrink: 0; display: none;">&#xe2cc;</span>
+      <span class="icon-label-text" style="font-size: 0.75rem; font-weight: 600;" data-i18n="label_workspace">Workspace</span>
+    </button>
+
     <!-- Master AI Power Switch: Clean borderless style with Active Model Info -->
     <div id="masterAiContainer"
-      style="display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 10px; border-radius: 14px; background: rgba(15, 23, 42, 0.4); -webkit-app-region: no-drag; transition: all 0.3s ease; border: 1px solid rgba(56, 189, 248, 0.15); box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);">
+      style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 0; background: transparent; -webkit-app-region: no-drag; border: none; box-shadow: none; flex-shrink: 0;">
       
       <span
-        style="font-size: 0.72rem; font-weight: 700; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 4px;">
-        <span id="masterAiStatusDot" style="color: #ef4444; font-size: 0.65rem; transition: color 0.3s ease;">&#9679;</span>
-        <span data-i18n="master_ai_label">Master AI</span>
+        style="font-size: 0.72rem;  color: var(--text-main); display: flex; align-items: center; gap: 4px;">
+        <span id="masterAiStatusDot" class="material-symbols-outlined" style="color: #ef4444; font-size: 1.1rem; transition: color 0.3s ease;">&#xe989;</span>
+        <span class="icon-label-text" data-i18n="master_ai_label">Master AI</span>
       </span>
 
       <!-- Seamless ON/OFF Toggle Pill -->
-      <div id="masterAiTogglePill" class="master-ai-pill" title="Toggle Master AI">
+      <div id="masterAiTogglePill" class="master-ai-pill" title="Toggle Master AI" style="flex-shrink: 0;">
         <div class="pill-slider"></div>
-        <span class="pill-label pill-on" style="font-weight: 800;">ON</span>
-        <span class="pill-label pill-off active" style="font-weight: 800;">OFF</span>
+        <span class="pill-label pill-on" style="">ON</span>
+        <span class="pill-label pill-off" style="">OFF</span>
       </div>
 
       <div style="width: 1px; height: 14px; background: rgba(255,255,255,0.1); margin: 0 2px;"></div>
 
-      <!-- Model Label -->
-      <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600;" data-i18n="label_model">Model:</span>
-      
-      <!-- Active Model Name / Setup Call-to-action Badge -->
-      <span id="masterAiModelNameBadge"
-        style="font-size: 0.66rem; padding: 2px 8px; border-radius: 10px; background: rgba(0,0,0,0.2); color: #f59e0b; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; transition: background 0.2s ease;"
-        data-i18n-title="ai_model_badge_tooltip"
-        onmouseover="this.style.background='rgba(255,255,255,0.08)'"
-        onmouseout="this.style.background='rgba(0,0,0,0.2)'">
-        <!-- Badges for environment -->
-        <span id="masterAiModelEnvBadge" style="font-size: 0.55rem; padding: 1px 4px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-weight: bold; margin-right: 2px; display: none;" data-i18n="badge_local">LOCAL</span>
-        <span id="masterAiModelNameText" data-i18n="ai_model_unset">Not set (click to select)</span>
-      </span>
-
-      <!-- Reload Icon -->
-      <button id="btnMasterAiReload" class="toolbar-btn" style="height: 22px; width: 22px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: transparent; color: var(--text-muted); border: none; cursor: pointer; transition: color 0.2s ease, background 0.2s ease;" data-i18n-title="btn_reload_ai" title="Reload AI State" onmouseover="this.style.color='var(--text-main)'; this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.color='var(--text-muted)'; this.style.background='transparent'">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+      <!-- Model Settings Button -->
+      <button id="btnHeaderModelSettings" class="toolbar-btn header-action-btn"
+        style="height: 22px; padding: 0 4px; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; white-space: nowrap;"
+        data-i18n-title="label_model" title="Select Model">
+        <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">&#xf3aa;</span>
+        <span class="icon-label-text" style="font-size: 0.72rem; white-space: nowrap;">Model</span>
       </button>
     </div>
-    
-    <!-- Workspace Folder Button (Native Frame) -->
-    <button id="btnOpen" class="toolbar-btn"
-      style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; background: rgba(15, 23, 42, 0.3); cursor: pointer; margin-left: 4px; transition: background 0.2s ease, border 0.2s ease; -webkit-app-region: no-drag;"
-      data-i18n-title="btn_open"
-      onmouseover="this.style.background='rgba(15, 23, 42, 0.6)'; this.style.border='1px solid rgba(255,255,255,0.1)'"
-      onmouseout="this.style.background='rgba(15, 23, 42, 0.3)'; this.style.border='1px solid rgba(255,255,255,0.05)'">
-      <svg id="iconFolderClosed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
-        <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path>
-        <path d="M2 10h20"></path>
-      </svg>
-      <svg id="iconFolderOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color, #38bdf8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-        <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path>
-        <path d="M2 10h20"></path>
-      </svg>
-    </button>
+
   </div>
   <div class="toolbar app-header-toolbar"
     style="display: flex; align-items: center; gap: 5px; flex-shrink: 0; margin-left: auto;">
+    
+    <div style="width: 1px; height: 14px; background: rgba(255,255,255,0.1); margin: 0 2px;"></div>
+
     <!-- Global Theme Selector -->
-    <select id="themeSelect" class="toolbar-select header-theme-select"
-      style="min-width: 100px; height: 26px; font-size: 0.72rem; padding: 1px 26px 1px 8px; flex-shrink: 0; text-overflow: ellipsis; white-space: nowrap;"
-      data-i18n-title="label_theme"></select>
+    <div style="display: flex; align-items: center; gap: 2px;">
+      <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-muted);">&#xe40a;</span>
+      <select id="themeSelect" class="toolbar-select header-theme-select"
+        style="min-width: 100px; height: 26px; font-size: 0.72rem; padding: 1px 26px 1px 8px; flex-shrink: 0; text-overflow: ellipsis; white-space: nowrap;"
+        data-i18n-title="label_theme"></select>
+    </div>
+    
+    <!-- Language Toggle -->
     <button id="btnLangToggle" class="toolbar-btn btn-lang-outline"
-      style="font-weight: bold; width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;">EN</button>
-    <button id="btnSettings" class="toolbar-btn header-action-btn"
-      style="width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
-      data-i18n-title="btn_settings">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path
-          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-        </path>
-      </svg>
+      style="height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.7rem; flex-shrink: 0; border: none; background: transparent;">
+      <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
+      <span class="icon-label-text" id="langToggleLabel">EN</span>
     </button>
     <!-- Top-level Sidebar Toggle Button -->
     <button id="btnHeaderToggleSidebar" class="toolbar-btn header-action-btn"
       style="width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
       data-i18n-title="btn_toggle_sidebar">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="15" y1="3" x2="15" y2="21"></line>
-      </svg>
+      <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="font-size: 1.1rem;">&#xf705;</span>
+    </button>
+    <button id="btnSettings" class="toolbar-btn header-action-btn"
+      style="width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
+      data-i18n-title="btn_settings">
+      <span class="material-symbols-outlined" style="font-size: 1.1rem;">settings</span>
     </button>
   </div>
 </header>

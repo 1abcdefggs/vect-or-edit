@@ -28,14 +28,38 @@ export function initAiControls() {
       if (state.master) masterAiTogglePill.classList.add('active');
       else masterAiTogglePill.classList.remove('active');
 
+      const btnHeaderModelSettings = document.getElementById('btnHeaderModelSettings');
+      
       if (!state.modelConfigured) {
         masterAiTogglePill.classList.add('disabled');
         masterAiTogglePill.setAttribute('data-instant-tooltip', t('ai_model_unset_toast') || 'AI Model is not set.\nPlease select a model from settings.');
         masterAiTogglePill.removeAttribute('title');
+        
+        if (btnHeaderModelSettings) {
+          const icon = btnHeaderModelSettings.querySelector('.material-symbols-outlined');
+          const text = btnHeaderModelSettings.querySelector('.icon-label-text');
+          if (icon) { icon.innerHTML = 'error'; icon.style.color = '#ef4444'; }
+          if (text) { text.textContent = 'No Model'; text.style.color = '#ef4444'; text.style.fontWeight = 'bold'; }
+        }
       } else {
         masterAiTogglePill.classList.remove('disabled');
         masterAiTogglePill.removeAttribute('data-instant-tooltip');
         masterAiTogglePill.title = t('toggle_master_ai') || 'Toggle Master AI';
+        
+        if (btnHeaderModelSettings) {
+          const icon = btnHeaderModelSettings.querySelector('.material-symbols-outlined');
+          const text = btnHeaderModelSettings.querySelector('.icon-label-text');
+          
+          let modelName = 'Model';
+          const provider = localStorage.getItem('ai_provider') || 'local';
+          if (provider === 'local') modelName = 'e5-small (Local)';
+          else if (provider === 'gemini') modelName = localStorage.getItem('gemini_model') || 'Gemini';
+          else if (provider === 'openai') modelName = localStorage.getItem('openai_model') || 'GPT-4o';
+          else if (provider === 'claude') modelName = localStorage.getItem('claude_model') || 'Claude';
+
+          if (icon) { icon.innerHTML = '&#xf3aa;'; icon.style.color = 'var(--accent-color, #38bdf8)'; }
+          if (text) { text.textContent = modelName; text.style.color = ''; text.style.fontWeight = ''; }
+        }
       }
     }
 
@@ -65,6 +89,15 @@ export function initAiControls() {
 
     if (btnSidebarAiToggle) {
       btnSidebarAiToggle.style.opacity = state.master ? '1' : '0.5';
+      if (state.sidebar) {
+        btnSidebarAiToggle.style.background = 'rgba(16, 185, 129, 0.12)';
+        btnSidebarAiToggle.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        btnSidebarAiToggle.style.color = '#10b981';
+      } else {
+        btnSidebarAiToggle.style.background = 'rgba(255, 255, 255, 0.05)';
+        btnSidebarAiToggle.style.borderColor = 'var(--border-color, rgba(148, 163, 184, 0.2))';
+        btnSidebarAiToggle.style.color = 'var(--text-muted, #94a3b8)';
+      }
       if (activeAiModelBadge) activeAiModelBadge.textContent = state.sidebar ? (t('sidebar_ai_on') || 'SUGGEST AI ON') : (t('sidebar_ai_off') || 'SUGGEST AI OFF');
     }
     if (activeAiModelStatusDot) activeAiModelStatusDot.style.color = state.sidebar ? 'var(--success-color, #10b981)' : '#ef4444';
@@ -127,7 +160,8 @@ export function initAiControls() {
   }
 
   if (masterAiModelNameBadge) masterAiModelNameBadge.addEventListener('click', openAiSettingsTab);
-  if (btnMasterAiReload) btnMasterAiReload.addEventListener('click', openAiSettingsTab);
+  const btnHeaderModelSettings = document.getElementById('btnHeaderModelSettings');
+  if (btnHeaderModelSettings) btnHeaderModelSettings.addEventListener('click', openAiSettingsTab);
 
   updateMasterAiModelBadge();
   window.addEventListener('app:settingsChanged', () => {

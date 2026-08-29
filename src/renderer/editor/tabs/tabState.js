@@ -1,6 +1,7 @@
 import { editorEvents } from '../core/editorEvents.js';
 import { getEditorInstance, getMonaco } from '../core/editorCore.js';
 import { triggerAdaptiveAutoSave } from '../ui/autoSaveManager.js';
+import { t } from '../../core/i18n.js';
 
 export let tabs = [];
 export let activeTabId = null;
@@ -64,12 +65,26 @@ export function switchTab(tabId) {
   monacoEditorInstance.focus();
 }
 
-export function closeTab(tabId, e) {
+export async function closeTab(tabId, e) {
   if (e) e.stopPropagation();
   const index = tabs.findIndex(t => t.id === tabId);
   if (index === -1) return;
 
-  const [closingTab] = tabs.splice(index, 1);
+  const closingTab = tabs[index];
+  
+  // Always prompt to save
+  const shouldSave = window.confirm(t('prompt_save_on_close') || "Closing the tab. Do you want to save the content?\n\n[OK] Save and close\n[Cancel] Close without saving");
+
+  if (shouldSave) {
+    const text = closingTab.model.getValue();
+    const { saveTextToFile } = await import('../io/fileIO.js');
+    const res = await saveTextToFile(text, closingTab.title, 'md');
+    if (!res.success) {
+      return; // Abort close if saving fails or is cancelled
+    }
+  }
+
+  tabs.splice(index, 1);
   if (closingTab && closingTab.model) {
     closingTab.model.dispose();
   }

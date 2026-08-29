@@ -1,8 +1,9 @@
-import { setEditorContent, getCurrentContent, getActiveTab, markActiveTabSaved, focusEditor } from '../../editor/editorManager.js';
+import { setEditorContent, getCurrentContent, getActiveTab, markActiveTabSaved, focusEditor, tabs, getEditorInstance, insertTextIntoEditor } from '../../editor/editorManager.js';
 import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledgeSlot, clearAllKnowledgeSlots } from '../../search/dictionary.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
 import { t } from '../../core/i18n.js';
+import { showWorkspaceModal } from '../layout/topBarRenderer.js';
 
 export function bindAppActionEvents() {
   const btnSave = document.getElementById('btnSave');
@@ -99,7 +100,7 @@ export function bindAppActionEvents() {
       const res = await addKnowledgeSlot();
       if (res?.success) {
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
-        setLedStatus('kb', true, `2. Knowledge Base & HNSW: Indexed (${res.totalCount?.toLocaleString()} items)`);
+        setLedStatus('kb', true, `7. HNSW: Indexed (${res.totalCount?.toLocaleString()} items)`);
       }
     });
   }
@@ -108,7 +109,7 @@ export function bindAppActionEvents() {
     btnClearAllSlots.addEventListener('click', async () => {
       await clearAllKnowledgeSlots();
       showToast(t('toast_all_slots_unloaded'), 'info');
-      setLedStatus('kb', false, '2. Knowledge Base: Unloaded (Standard editor mode)');
+      setLedStatus('kb', false, '7. HNSW: Unloaded');
     });
   }
 
@@ -124,20 +125,138 @@ export function bindAppActionEvents() {
     });
   }
 
+  const btnSaveAs = document.getElementById('btnSaveAs');
+  const btnSaveAll = document.getElementById('btnSaveAll');
+  const btnMarkdownCopy = document.getElementById('btnMarkdownCopy');
+  const btnMarkdownPaste = document.getElementById('btnMarkdownPaste');
+
+  // Save current active tab
   if (btnSave) {
-    btnSave.addEventListener('click', async () => {
-      const content = getCurrentContent();
+    btnSave.addEventListener('click', async (e) => {
+      // If click originated from the inner autosave checkbox, don't trigger manual save
+      if (e.target && e.target.id === 'chkAutoSaveToggle') return;
+
       const currentTab = getActiveTab();
-      const defaultName = currentTab?.title || `vectoreditor_${Date.now()}.txt`;
+      if (!currentTab) return;
+      const content = getCurrentContent();
+      const defaultName = currentTab.filePath || currentTab.title || 'untitled.md';
+
+      const executeSave = async (forceDialog = false) => {
+        if (window.engineAPI?.saveFile) {
+          const res = await window.engineAPI.saveFile(content, defaultName, forceDialog);
+          if (res?.success && res.filePath) {
+            markActiveTabSaved(res.filePath);
+            showToast(t('alert_file_saved', { path: res.filePath }) || `Saved: ${res.filePath}`, 'success');
+          }
+          setTimeout(() => focusEditor(), 50);
+        }
+      };
+
+      // Check if this is the first save (no file path)
+      if (!currentTab.filePath) {
+        let hasWorkspace = false;
+        if (window.engineAPI?.getDefaultWorkspace) {
+          const wsRes = await window.engineAPI.getDefaultWorkspace(false);
+          hasWorkspace = Boolean(wsRes?.success && wsRes?.exists);
+        }
+
+        if (!hasWorkspace) {
+          showWorkspaceModal('save', () => executeSave(true));
+          return;
+        }
+        // If workspace exists, show save dialog for initial save
+        await executeSave(true);
+      } else {
+        // Overwrite directly without dialog
+        await executeSave(false);
+      }
+    });
+  }
+
+  // Save As (always force save dialog)
+  if (btnSaveAs) {
+    btnSaveAs.addEventListener('click', async () => {
+      const currentTab = getActiveTab();
+      if (!currentTab) return;
+      const content = getCurrentContent();
+      const defaultName = currentTab.title || 'untitled.md';
 
       if (window.engineAPI?.saveFile) {
-        const res = await window.engineAPI.saveFile(content, defaultName);
-        if (res.success && res.filePath) {
+        const res = await window.engineAPI.saveFile(content, defaultName, true);
+        if (res?.success && res.filePath) {
           markActiveTabSaved(res.filePath);
-          showToast(t('alert_file_saved', { path: res.filePath }), 'success');
+          showToast(t('alert_file_saved', { path: res.filePath }) || `Saved as: ${res.filePath}`, 'success');
         }
         setTimeout(() => focusEditor(), 50);
       }
+    });
+  }
+
+  // Save All
+  if (btnSaveAll) {
+    btnSaveAll.addEventListener('click', async () => {
+      const currentTabs = tabs || [];
+      let savedCount = 0;
+      for (const tab of currentTabs) {
+        if (tab.model) {
+          const tabContent = tab.model.getValue();
+          const targetPath = tab.filePath || tab.title || 'untitled.md';
+          if (window.engineAPI?.saveFile) {
+            const res = await window.engineAPI.saveFile(tabContent, targetPath, !tab.filePath);
+            if (res?.success && res.filePath) {
+              tab.isDirty = false;
+              tab.filePath = res.filePath;
+              savedCount++;
+            }
+          }
+        }
+      }
+      showToast(`Saved ${savedCount} document(s)`, 'success');
+      setTimeout(() => focusEditor(), 50);
+    });
+  }
+
+  // Copy Markdown
+  if (btnMarkdownCopy) {
+    btnMarkdownCopy.addEventListener('click', async () => {
+      const editor = getEditorInstance();
+      let textToCopy = '';
+      if (editor) {
+        const selection = editor.getSelection();
+        if (selection && !selection.isEmpty()) {
+          textToCopy = editor.getModel().getValueInRange(selection);
+        } else {
+          textToCopy = getCurrentContent();
+        }
+      } else {
+        textToCopy = getCurrentContent();
+      }
+
+      if (textToCopy) {
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          showToast('Copied to clipboard', 'info');
+        } catch (err) {
+          console.warn('Clipboard write failed:', err);
+        }
+      }
+      setTimeout(() => focusEditor(), 50);
+    });
+  }
+
+  // Paste Markdown
+  if (btnMarkdownPaste) {
+    btnMarkdownPaste.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          insertTextIntoEditor(text);
+          showToast('Pasted from clipboard', 'info');
+        }
+      } catch (err) {
+        console.warn('Clipboard read failed:', err);
+      }
+      setTimeout(() => focusEditor(), 50);
     });
   }
 }

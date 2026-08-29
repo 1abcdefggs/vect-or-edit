@@ -6,7 +6,7 @@ import { updateNativeTitleBarOverlay } from '../io/nativeTitleBar.js';
 let monaco = null;
 
 // Use Vite's standard import.meta.glob with eager loading
-const themeModules = import.meta.glob('../themes/*.json', { eager: true });
+const themeModules = import.meta.glob('../../themes/*.json', { eager: true });
 
 export const availableThemes = Object.keys(themeModules)
   .map(path => path.replace(/^.*\/themes\//, '').replace(/\.json$/i, ''))
@@ -90,7 +90,7 @@ export async function loadTheme(themeName) {
   // 3. Update native OS window title bar overlay
   updateNativeTitleBarOverlay(theme);
 
-  setLedStatus('thm', true, `4. Theme: ${actualThemeName} Applied`);
+  setLedStatus('thm', true, `2. THEME: ${actualThemeName} Applied`);
 
   return theme;
 }

@@ -50,6 +50,11 @@ export function focusEditor() {
 
 export function updateOptions(options) {
   updateEditorOptions(options, [monacoEditorInstance, getDiffEditorInstance()]);
+  if (monaco && monaco.editor && typeof monaco.editor.remeasureFonts === 'function') {
+    setTimeout(() => {
+      monaco.editor.remeasureFonts();
+    }, 50);
+  }
 }
 
 export function applyCanvasTone(tone, customBg = null, customFg = null) {
@@ -160,7 +165,7 @@ export async function initEditor() {
   });
   editorEvents.emit('onStatusBarUpdateNeeded');
 
-  setLedStatus('monaco', true, `6. Monaco Editor: Mounted & Ready`);
+  setLedStatus('monaco', true, `4. EDITOR: Mounted & Ready`);
 
   window.__monacoEditorInstance = monacoEditorInstance;
 

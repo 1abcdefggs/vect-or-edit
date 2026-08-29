@@ -64,8 +64,16 @@ function getCachedBadges(type) {
  * @param {boolean|string} status - true/'ready', false/'pending', or 'error'
  * @param {string} [tooltipText] - Detailed tooltip info
  */
+const lastTooltips = {};
+
 export function setLedStatus(type, status, tooltipText) {
   if (typeof document === 'undefined') return;
+
+  if (tooltipText !== undefined) {
+    lastTooltips[type] = tooltipText;
+  } else {
+    tooltipText = lastTooltips[type] || '';
+  }
 
   const isReady = status === true || status === 'ready';
   const isError = status === 'error';
@@ -143,4 +151,27 @@ export function setLedStatus(type, status, tooltipText) {
  */
 export function getSubsystemStates() {
   return { ...subsystemState };
+}
+
+/**
+ * Initializes all LED badges with their localized pending state
+ * so they instantly get the formatted data-instant-tooltip.
+ */
+export function initAllLedTooltips() {
+  setLedStatus('conf', 'pending', '1. CONFIG: Loading...');
+  setLedStatus('thm', 'pending', '2. THEME: Loading...');
+  setLedStatus('i18n', 'pending', '3. LOCALE: Loading...');
+  setLedStatus('monaco', 'pending', '4. EDITOR: Initializing...');
+  setLedStatus('bin', 'pending', '5. RUST: Initializing...');
+  setLedStatus('ai', 'pending', '6. AI-MODEL: Standby');
+  setLedStatus('kb', 'pending', '7. HNSW: Unloaded');
+}
+
+// Ensure tooltip translations update when language changes
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:languageChanged', () => {
+    Object.keys(subsystemState).forEach(type => {
+      setLedStatus(type, subsystemState[type], lastTooltips[type]);
+    });
+  });
 }

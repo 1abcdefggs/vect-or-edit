@@ -58,11 +58,11 @@ export function initLocalAiWorker(getCurrentResults) {
           }
           logProgressRow.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; color: var(--accent-color, #38bdf8);">
-              <div style="display: flex; align-items: center; gap: 6px; font-weight: 600;">
+              <div style="display: flex; align-items: center; gap: 6px; ">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; animation: pulse 1.5s infinite;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <span>[AI Model Download] ${fileName}</span>
               </div>
-              <span style="font-weight: 700; color: #fff; background: rgba(56,189,248,0.25); padding: 1px 8px; border-radius: 10px;">${pct}%</span>
+              <span style=" color: #fff; background: rgba(56,189,248,0.25); padding: 1px 8px; border-radius: 10px;">${pct}%</span>
             </div>
             <div style="height: 6px; background: rgba(255,255,255,0.12); border-radius: 3px; overflow: hidden;">
               <div style="width: ${pct}%; height: 100%; background: linear-gradient(90deg, var(--accent-color, #38bdf8), #818cf8); transition: width 0.2s ease;"></div>
@@ -78,7 +78,7 @@ export function initLocalAiWorker(getCurrentResults) {
         isLocalAiReady = true;
         window.__isLocalAiModelReady = true;
         isLocalAiDownloading = false;
-        setLedStatus('ai', true, '7. AI Model (multilingual-e5-small): Ready');
+        setLedStatus('ai', true, '6. AI-MODEL: Ready');
         window.dispatchEvent(new CustomEvent('app:settingsChanged'));
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct: 100, status: 'ready' } }));
         
@@ -86,7 +86,7 @@ export function initLocalAiWorker(getCurrentResults) {
         const logProgressRow = document.getElementById('logDownloadProgressRow');
         if (logProgressRow) {
           logProgressRow.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; color: var(--success-color, #10b981); font-weight: 700;">
+            <div style="display: flex; align-items: center; justify-content: space-between; color: var(--success-color, #10b981); ">
               <span>[AI Model Download] Complete ✓ (multilingual-e5-small initialized offline)</span>
               <span style="background: rgba(16,185,129,0.2); padding: 1px 8px; border-radius: 10px; font-size: 0.7rem;">100% READY</span>
             </div>

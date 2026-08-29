@@ -3,10 +3,10 @@ import { setEditorContent } from '../../editor/editorManager.js';
 
 export function initTopBarRenderer() {
   const btnOpenEl = document.getElementById('btnOpen');
-  if (btnOpenEl) btnOpenEl.innerHTML = icons.open;
+  // if (btnOpenEl) btnOpenEl.innerHTML = icons.open;
 
   const btnSaveEl = document.getElementById('btnSave');
-  if (btnSaveEl) btnSaveEl.innerHTML = icons.save;
+  // if (btnSaveEl) btnSaveEl.innerHTML = icons.save;
 
   const copyAllIconEl = document.getElementById('copyAllIcon');
   if (copyAllIconEl) copyAllIconEl.innerHTML = icons.copy;
@@ -16,6 +16,18 @@ export function initTopBarRenderer() {
 
   const iconNeuroEl = document.getElementById('iconNeuroContainer');
   if (iconNeuroEl) iconNeuroEl.innerHTML = icons.vector;
+}
+
+let modalActionContext = { mode: 'open', saveCallback: null };
+
+export function showWorkspaceModal(mode = 'open', saveCallback = null) {
+  modalActionContext = { mode, saveCallback };
+  const modal = document.getElementById('workspaceSetupModal');
+  const btnSaveNormally = document.getElementById('btnSaveNormally');
+  if (btnSaveNormally) {
+    btnSaveNormally.style.display = mode === 'save' ? 'block' : 'none';
+  }
+  if (modal) modal.style.display = 'flex';
 }
 
 export function bindTopLevelUIEvents() {
@@ -38,7 +50,7 @@ export function bindTopLevelUIEvents() {
       if (window.engineAPI && window.engineAPI.getDefaultWorkspace) {
         const wsRes = await window.engineAPI.getDefaultWorkspace(false);
         if (wsRes && wsRes.success && !wsRes.exists) {
-          if (workspaceSetupModal) workspaceSetupModal.style.display = 'flex';
+          showWorkspaceModal('open');
           return;
         }
       }
@@ -52,14 +64,30 @@ export function bindTopLevelUIEvents() {
       if (window.engineAPI && window.engineAPI.getDefaultWorkspace) {
         await window.engineAPI.getDefaultWorkspace(true);
       }
-      await openFileDialog();
+      if (modalActionContext.mode === 'save' && modalActionContext.saveCallback) {
+        await modalActionContext.saveCallback();
+      } else {
+        await openFileDialog();
+      }
+    });
+  }
+
+  const btnSaveNormally = document.getElementById('btnSaveNormally');
+  if (btnSaveNormally) {
+    btnSaveNormally.addEventListener('click', async () => {
+      if (workspaceSetupModal) workspaceSetupModal.style.display = 'none';
+      if (modalActionContext.mode === 'save' && modalActionContext.saveCallback) {
+        await modalActionContext.saveCallback();
+      }
     });
   }
 
   if (btnCancelWorkspace) {
     btnCancelWorkspace.addEventListener('click', async () => {
       if (workspaceSetupModal) workspaceSetupModal.style.display = 'none';
-      await openFileDialog();
+      if (modalActionContext.mode === 'open') {
+        await openFileDialog();
+      }
     });
   }
 }

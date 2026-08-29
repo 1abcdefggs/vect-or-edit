@@ -29,4 +29,31 @@ export function saveEditorSettings(settings) {
   Object.keys(settings).forEach(key => {
     localStorage.setItem(`editor_${key}`, String(settings[key]));
   });
+  syncSettingsToBackend();
+}
+
+export async function syncSettingsToBackend() {
+  if (typeof window === 'undefined' || !window.engineAPI || !window.engineAPI.saveSettings) return;
+  
+  const settings = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    settings[key] = localStorage.getItem(key);
+  }
+  
+  await window.engineAPI.saveSettings(settings);
+}
+
+export async function loadSettingsFromBackend() {
+  if (typeof window === 'undefined' || !window.engineAPI || !window.engineAPI.loadSettings) return false;
+  
+  const res = await window.engineAPI.loadSettings();
+  if (res && res.success && res.settings && Object.keys(res.settings).length > 0) {
+    const s = res.settings;
+    for (const k of Object.keys(s)) {
+      localStorage.setItem(k, s[k]);
+    }
+    return true; // Indicates settings were loaded and applied
+  }
+  return false;
 }

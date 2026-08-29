@@ -101,6 +101,13 @@ export function initVectorSearchForBasicEditor(editorInput) {
 
 export function triggerSearchAndRender(query) {
   setVectorIconActive(true);
+  
+  // Auto-collapse Guideline and Knowledge cards to maximize results space
+  const glCard = document.getElementById('guidelineModuleCard');
+  if (glCard) glCard.classList.add('collapsed');
+  const knCard = document.getElementById('knowledgeModuleCard');
+  if (knCard) knCard.classList.add('collapsed');
+
   const limit = getSearchLimit();
   const minScore = getMinScore();
   const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
@@ -205,7 +212,7 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
             if (panel) {
               const alertHtml = alerts.map(a => `
                 <div class="semantic-alert semantic-alert--${(a.severity || 'warning').toLowerCase()}" style="border-left:3px solid ${a.severity === 'Error' ? '#ef4444' : '#f59e0b'};padding:6px 10px;margin:4px 0;border-radius:4px;background:rgba(0,0,0,0.25);font-size:0.78rem;">
-                  <strong>[${a.severity}]</strong> ${a.message}
+                  <span>[${a.severity}]</span> ${a.message}
                 </div>`).join('');
               panel.insertAdjacentHTML('afterbegin', alertHtml);
             }

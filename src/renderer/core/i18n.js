@@ -20,13 +20,14 @@ export async function loadLocales() {
     
     i18n = LOCALES[lang] || LOCALES.en;
     applyI18n();
-    setLedStatus('i18n', true, `5. Locale: ${lang}.json loaded`);
+    setLedStatus('i18n', true, `3. LOCALE: ${lang}.json loaded`);
     window.dispatchEvent(new CustomEvent('app:languageChanged', { detail: { lang } }));
   } catch (err) {
     console.error('Failed to apply locale:', err);
     currentLang = 'en';
     i18n = LOCALES.en;
     applyI18n();
+    setLedStatus('i18n', false, `3. LOCALE: Error`);
   }
 }
 

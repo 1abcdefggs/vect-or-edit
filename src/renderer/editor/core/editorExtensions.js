@@ -29,48 +29,8 @@ export function runEngineLinter(editor, monacoRef) {
 }
 
 export function registerEngineCompletionProvider(monacoRef) {
-  if (!monacoRef?.languages) return;
-  if (monacoRef.languages._isKnowledgeProviderRegistered) return;
-  monacoRef.languages._isKnowledgeProviderRegistered = true;
-
-  monacoRef.languages.registerCompletionItemProvider('markdown', {
-    triggerCharacters: [' ', ':', '、', '。'],
-    provideCompletionItems: function (model, position) {
-      const word = model.getWordUntilPosition(position);
-
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn || Math.max(1, position.column - 5),
-        endColumn: word.endColumn || position.column
-      };
-
-      const suggestions = allDictEntries.map(entry => {
-        const title = entry.item.title || '';
-        const code = entry.item.code || '';
-        const note = entry.note || entry.item.subtitle || '';
-        const hira = entry.item.hira || '';
-        const kata = entry.item.kata || '';
-        const kana = entry.item.kana || '';
-
-        const filterStr = [title, hira, kata, kana, code, note].filter(Boolean).join(' ');
-
-        return {
-          label: title,
-          kind: monacoRef.languages.CompletionItemKind.Keyword,
-          detail: code ? `[${code}] ${note}` : note,
-          documentation: {
-            value: `### ${title} ${code ? `\`${code}\`` : ''}\n\n${note}`
-          },
-          insertText: title,
-          filterText: filterStr,
-          range: range
-        };
-      });
-
-      return { suggestions };
-    }
-  });
+  // Removed IntelliSense / CompletionProvider per user request.
+  // The sidebar search will be the primary dictionary interface.
 }
 
 export function initializeKnowledgeExtensions(editor, monacoRef) {

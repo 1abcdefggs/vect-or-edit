@@ -1,5 +1,5 @@
 :root {
-  --bg-primary: #0f172a;
+  --bg-primary: #123;
   --bg-secondary: #1e293b;
   --header-bg: #080c16;
   --bg-card: rgba(30, 41, 59, 0.7);
@@ -34,7 +34,7 @@
   --bg-secondary: #ffffff;
   --header-bg: #e2e8f0;
   --bg-card: rgba(255, 255, 255, 0.9);
-  --text-main: #0f172a;
+  --text-main: #123;
   --text-muted: #64748b;
   --border-color: rgba(0, 0, 0, 0.14);
 
@@ -51,7 +51,7 @@
 
 @keyframes matrix-pulse {
   0% { opacity: 0.4; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 6px #38bdf8; }
+  100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 6px #66f; }
 }
 
 @keyframes matrix-ignition {
@@ -66,12 +66,12 @@
 
 @keyframes matrix-pulse-red {
   0% { opacity: 0.6; transform: scale(0.95); }
-  100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 9px #f87171; }
+  100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 9px #fa1; }
 }
 
 @keyframes pulse-glow {
   from { opacity: 0.6; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1.1); box-shadow: 0 0 10px #38bdf8; }
+  to { opacity: 1; transform: scale(1.1); box-shadow: 0 0 10px #66f; }
 }
 
 @keyframes vectorIconPulse {
@@ -142,7 +142,7 @@
   }
   20% {
     transform: translateY(-20px) scale(0.92, 1.12);
-    color: var(--accent-color, #38bdf8);
+    color: var(--accent-color, #66f);
     text-shadow: 0 0 24px rgba(56, 189, 248, 1);
   }
   40% {

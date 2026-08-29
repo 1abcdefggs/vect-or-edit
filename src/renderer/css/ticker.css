@@ -31,8 +31,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #38bdf8;
-  box-shadow: 0 0 6px #38bdf8;
+  background: #66f;
+  box-shadow: 0 0 6px #66f;
 }
 
 .live-log-item {
@@ -53,7 +53,7 @@
 }
 
 .live-log-tag {
-  font-weight: bold;
+  
   font-size: 0.65rem;
   flex-shrink: 0;
 }
@@ -106,7 +106,7 @@
   box-shadow: none !important;
   font-family: 'Cascadia Code', Consolas, 'Courier New', monospace;
   font-size: 0.62rem;
-  font-weight: 800;
+  
   letter-spacing: 0.5px;
   color: #64748b;
   cursor: default;
@@ -129,23 +129,23 @@
   flex-shrink: 0;
 }
 
-/* Loading / Unready: Deep Cyber Blue Standby Pulse */
+/* Loading / Unready: Standby Pulse (Yellow) */
 .status-led-dot.status-loading {
-  background: #0284c7;
-  box-shadow: 0 0 4px #0284c7;
-  animation: matrix-pulse 1.2s infinite alternate;
+  background: #fc2;
+  box-shadow: 0 0 4px #fc2;
+  animation: matrix-pulse-yellow 1.2s infinite alternate;
 }
 
-/* Ready State: Electric Neon Matrix Lit Block (#0080FF / #38bdf8) */
+/* Ready State: Emerald Success (#1b8) */
 .status-led-dot.status-ready {
-  background: #00e5ff;
-  box-shadow: 0 0 4px #00e5ff, 0 0 8px #0080ff;
+  background: #1b8;
+  box-shadow: 0 0 4px #1b8, 0 0 8px #1b8;
   border-radius: 1px;
   animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .status-pill.pill-ready {
-  color: #38bdf8 !important;
+  color: #1b8 !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -155,11 +155,11 @@
   color: #ffffff !important;
 }
 
-/* 1. Pending / Processing State: Warning Amber/Yellow Pulsing (#f59e0b / #fbbf24) */
+/* 1. Pending / Processing State: Warning Yellow Pulsing (#fc2) */
 .status-led-dot.status-loading,
 .status-led-dot.status-pending {
-  background: #f59e0b;
-  box-shadow: 0 0 5px rgba(245, 158, 11, 0.8), 0 0 8px rgba(251, 191, 36, 0.5);
+  background: #fc2;
+  box-shadow: 0 0 5px rgba(255, 204, 34, 0.8), 0 0 8px rgba(255, 204, 34, 0.5);
   animation: matrix-pulse-yellow 1.2s infinite alternate;
 }
 
@@ -169,38 +169,38 @@
   border-color: rgba(245, 158, 11, 0.35);
 }
 
-/* 2. Ready / Completed State: Electric Neon Matrix Lit Block (#00e5ff / #38bdf8) */
+/* 2. Ready / Completed State: Emerald Success (#1b8) */
 .status-led-dot.status-ready {
-  background: #00e5ff;
-  box-shadow: 0 0 4px #00e5ff, 0 0 8px #0080ff;
+  background: #1b8;
+  box-shadow: 0 0 4px #1b8, 0 0 8px #1b8;
   border-radius: 1px;
   animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .status-pill.pill-ready {
-  color: #38bdf8 !important;
-  background: rgba(0, 128, 255, 0.22);
-  border-color: rgba(0, 128, 255, 0.55);
-  box-shadow: 0 0 6px rgba(0, 128, 255, 0.3), inset 0 0 4px rgba(0, 128, 255, 0.15);
+  color: #1b8 !important;
+  background: rgba(17, 187, 136, 0.22);
+  border-color: rgba(17, 187, 136, 0.55);
+  box-shadow: 0 0 6px rgba(17, 187, 136, 0.3), inset 0 0 4px rgba(17, 187, 136, 0.15);
 }
 
 .status-pill.pill-ready:hover {
-  background: rgba(0, 128, 255, 0.35);
-  border-color: #38bdf8;
+  background: rgba(17, 187, 136, 0.35);
+  border-color: #1b8;
   color: #ffffff !important;
 }
 
-/* 3. Error State: Intense Warning Red (#ef4444 / #f87171) */
+/* 3. Error State: Intense Warning Amber (#fa1) */
 .status-led-dot.status-error {
-  background: #ef4444;
-  box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
+  background: #fa1;
+  box-shadow: 0 0 5px rgba(255, 170, 17, 0.9), 0 0 9px #fa1;
   animation: matrix-pulse-red 0.8s infinite alternate;
 }
 
 .status-pill.pill-error {
-  color: #f87171 !important;
-  background: rgba(239, 68, 68, 0.18) !important;
-  border-color: rgba(239, 68, 68, 0.6) !important;
+  color: #fa1 !important;
+  background: rgba(255, 170, 17, 0.12) !important;
+  border-color: rgba(255, 170, 17, 0.35) !important;
   box-shadow: 0 0 6px rgba(239, 68, 68, 0.3) !important;
 }
 
@@ -228,8 +228,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #38bdf8;
-  box-shadow: 0 0 8px #38bdf8;
+  background: #66f;
+  box-shadow: 0 0 8px #66f;
   display: inline-block;
 }
 
@@ -255,7 +255,7 @@
   flex-shrink: 0;
   height: 180px;
   max-height: 35vh;
-  background: #0b0f19;
+  background: #111111;
   border-top: 1px solid var(--border-color);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.35);
   display: flex;
@@ -270,13 +270,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 6px 12px;
-  background: #151d2f;
+  background: #222;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
 }
 
 .log-panel-title {
-  font-weight: 800;
+  
   font-size: 0.75rem;
   letter-spacing: 0.5px;
   color: #ffffff;
@@ -314,13 +314,13 @@
   padding: 1px 4px;
   border-radius: 4px;
   font-size: 0.65rem;
-  font-weight: bold;
+  
   flex-shrink: 0;
 }
 
 .log-badge.badge-info {
   background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
+  color: #66f;
   border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
@@ -332,13 +332,13 @@
 
 .log-badge.badge-error {
   background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  color: #fa1;
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .log-source {
   color: #94a3b8;
-  font-weight: 600;
+  
   flex-shrink: 0;
 }
 
@@ -413,7 +413,7 @@
   box-shadow: none !important;
   padding: 1px 3px;
   font-size: 0.68rem;
-  font-weight: 600;
+  
   color: var(--text-muted);
   cursor: default;
 }
@@ -448,7 +448,7 @@
 }
 
 .status-led-dot.status-error {
-  background: #ef4444;
+  background: #fa1;
 }
 
 /* Flow Arrow between pipeline stages */
@@ -456,7 +456,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-color, #66f);
   opacity: 0.6;
   padding: 0 1px;
 }
@@ -467,7 +467,7 @@
 
 .startup-status-text {
   font-size: 0.78rem;
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-color, #66f);
   font-family: var(--font-mono, monospace);
   letter-spacing: 0.6px;
   opacity: 0.85;

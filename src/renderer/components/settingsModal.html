@@ -51,6 +51,38 @@
               <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
             </select>
           </div>
+
+          <div class="setting-item">
+            <div>
+              <div class="setting-label" data-i18n="setting_ui_scaling">UI Scaling (Zoom)</div>
+              <div class="setting-desc" data-i18n="setting_ui_scaling_desc">Adjust the overall size of the application UI.</div>
+            </div>
+            <select id="modalZoomSelect" class="toolbar-select">
+              <option value="1.0" data-i18n="zoom_100">100% (Default)</option>
+              <option value="1.1" data-i18n="zoom_110">110%</option>
+              <option value="1.25" data-i18n="zoom_125">125%</option>
+              <option value="1.4" data-i18n="zoom_140">140%</option>
+              <option value="1.5" data-i18n="zoom_150">150%</option>
+            </select>
+          </div>
+
+          <!-- Workspace Session (.vectorspace) Backup & Restore -->
+          <div class="setting-item">
+            <div>
+              <div class="setting-label" data-i18n="setting_workspace_bundle">Workspace Session (.vectorspace)</div>
+              <div class="setting-desc" data-i18n="setting_workspace_bundle_desc">Save or restore all active documents, tabs, and layout state in a single bundle.</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btnExportWorkspace" class="toolbar-btn"
+                style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
+                <span data-i18n="btn_export_workspace">Save Workspace</span>
+              </button>
+              <button id="btnImportWorkspace" class="toolbar-btn"
+                style="padding: 6px 12px; background: var(--accent-color, #38bdf8); color: #000; border: none; border-radius: 6px; cursor: pointer;">
+                <span data-i18n="btn_import_workspace">Open Workspace</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Tab 2: Editor & Toolbar -->
@@ -210,7 +242,7 @@
         <div id="tabAiSearch" class="settings-tab-content">
           
           <!-- Section 1: Provider & Model -->
-          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
             <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--accent-color, #38bdf8); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
               <span data-i18n="ai_provider_config">AI Provider & Model Configuration</span>
@@ -221,22 +253,56 @@
                 <div class="setting-label" data-i18n="setting_ai_provider">AI Engine / Provider</div>
                 <div class="setting-desc" data-i18n="setting_ai_provider_desc">Select between 100% Offline Local Model, Google Gemini, OpenAI, or Claude.</div>
               </div>
-              <div class="provider-cards-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+              <div class="provider-cards-grid" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
                 <div class="provider-card" data-provider="local" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 2px;">Local AI</div>
-                  <div style="font-size: 0.65rem; color: var(--success-color, #10b981);" data-i18n="card_local_desc">100% Offline Secure</div>
+                  <div style=" font-size: 0.8rem; margin-bottom: 2px;">Local AI</div>
+                  <div style="font-size: 0.65rem; color: var(--success-color, #10b981);" data-i18n="card_local_desc">OFFLINE</div>
                 </div>
-                <div class="provider-card" data-provider="gemini" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 2px;">Google Gemini</div>
-                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">Cloud API</div>
+                
+                <!-- Local Model Opt-in Control -->
+                <div id="localAiSettingsBlock"
+                  style="display: flex; flex-direction: column; gap: 8px; background: rgba(16, 185, 129, 0.05); padding: 12px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.15);">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span id="localAiStatusBadge" style="font-size: 0.75rem; color: var(--success-color, #10b981); "
+                      data-i18n="local_ai_status_standby">Local AI: Standby (Offline Mode)</span>
+                    <button id="btnInitLocalAi" class="toolbar-btn"
+                      style="padding: 4px 12px; font-size: 0.75rem;  background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 4px; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                      <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
+                    </button>
+                  </div>
+                  <div class="setting-desc" data-i18n="local_ai_prompt_desc" style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">
+                    Fetches lightweight multilingual embedding model (multilingual-e5-small) for offline vector indexing.
+                  </div>
+                  <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">
+                      <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
+                      <span id="modalAiDownloadPct">0%</span>
+                    </div>
+                    <div style="width: 100%; background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; overflow: hidden;">
+                      <div id="modalAiDownloadProgressBar" style="height: 100%; background: var(--accent-color, #38bdf8); width: 0%; transition: width 0.3s ease;"></div>
+                    </div>
+                  </div>
                 </div>
-                <div class="provider-card" data-provider="openai" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 2px;">OpenAI</div>
-                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">Cloud API</div>
+
+                <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0;"></div>
+                
+                <div style="margin-bottom: 4px;">
+                  <div class="setting-label" style="font-size: 0.8rem; color: var(--text-muted);">Cloud API</div>
                 </div>
-                <div class="provider-card" data-provider="claude" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 2px;">Claude</div>
-                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">Cloud API</div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                  <div class="provider-card" data-provider="gemini" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                    <div style=" font-size: 0.8rem; margin-bottom: 2px;">Google Gemini</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
+                  </div>
+                  <div class="provider-card" data-provider="openai" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                    <div style=" font-size: 0.8rem; margin-bottom: 2px;">OpenAI</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
+                  </div>
+                  <div class="provider-card" data-provider="claude" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                    <div style=" font-size: 0.8rem; margin-bottom: 2px;">Claude</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
+                  </div>
                 </div>
               </div>
               <select id="modalAiProviderSelect" class="toolbar-select" style="display: none;">
@@ -245,31 +311,6 @@
                 <option value="openai" data-i18n="opt_provider_openai">OpenAI API (Cloud AI)</option>
                 <option value="claude" data-i18n="opt_provider_claude">Claude API (Anthropic Cloud AI)</option>
               </select>
-            </div>
-
-            <!-- Local Model Opt-in Control -->
-            <div id="localAiSettingsBlock"
-              style="display: flex; flex-direction: column; gap: 8px; background: rgba(16, 185, 129, 0.05); padding: 12px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.15);">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span id="localAiStatusBadge" style="font-size: 0.75rem; color: var(--success-color, #10b981); font-weight: bold;"
-                  data-i18n="local_ai_status_standby">Local AI: Standby (Offline Mode)</span>
-                <button id="btnInitLocalAi" class="toolbar-btn"
-                  style="padding: 4px 12px; font-size: 0.75rem; font-weight: 700; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 4px; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                  <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
-                </button>
-              </div>
-              <div class="setting-desc" data-i18n="local_ai_prompt_desc" style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">
-                Fetches lightweight multilingual embedding model (multilingual-e5-small) for offline vector indexing.
-              </div>
-              <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">
-                  <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
-                  <span id="modalAiDownloadPct">0%</span>
-                </div>
-                <div style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
-                  <div id="modalAiDownloadBar" style="width: 0%; height: 100%; background: var(--success-color, #10b981); transition: width 0.2s ease;"></div>
-                </div>
-              </div>
             </div>
 
             <!-- Google Gemini API Configuration Block -->
@@ -338,7 +379,7 @@
           </div>
 
           <!-- Section 2: AI Inference Scope -->
-          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
             <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--success-color, #10b981); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
               <span data-i18n="ai_inference_scope_title">AI Inference Scope</span>
@@ -346,7 +387,7 @@
             <div class="setting-item" style="border: none; padding: 0;">
               <div>
                 <div class="setting-label" data-i18n="setting_ai_scope">AI Role / Inference Scope</div>
-                <div class="setting-desc" style="color: var(--text-main); font-weight: 500;" data-i18n="setting_ai_scope_desc">Fine-tune the scope of AI assistance during writing (prioritizing human input when necessary).</div>
+                <div class="setting-desc" style="color: var(--text-main); " data-i18n="setting_ai_scope_desc">Fine-tune the scope of AI assistance during writing (prioritizing human input when necessary).</div>
               </div>
               <select id="modalAiScopeSelect" class="toolbar-select" style="max-width: 280px;">
                 <option value="suggestion_only" selected data-i18n="opt_scope_suggestion_only">Suggestions Only (Human Writes Text)</option>
@@ -357,7 +398,7 @@
           </div>
 
           <!-- Section 3: Vector Search & UI -->
-          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
             <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               <span data-i18n="vector_search_ui_title">Vector Search & Knowledge UI</span>
@@ -430,7 +471,7 @@
                 <div class="setting-label" data-i18n="btn_import_dict">Import Dictionary / Knowledge (.json)</div>
                 <div class="setting-desc" data-i18n="import_dict_desc">Load custom domain terms, schema rules, or vector definitions into HNSW index.</div>
               </div>
-              <button id="btnModalImportDict" class="toolbar-btn" style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-weight: 600; cursor: pointer;">
+              <button id="btnModalImportDict" class="toolbar-btn" style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;  cursor: pointer;">
                 <span data-i18n="btn_import_dict">Import Dictionary</span>
               </button>
             </div>
@@ -450,17 +491,6 @@
 
         <!-- Tab 4: System & Logs -->
         <div id="tabSystem" class="settings-tab-content">
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_log_position">System Log Display Position</div>
-              <div class="setting-desc" data-i18n="setting_log_position_desc">Choose where to display the real-time
-                system log monitor.</div>
-            </div>
-            <select id="selLogDisplayPosition" class="toolbar-select" style="min-width: 150px;">
-              <option value="bottom" selected data-i18n="opt_log_bottom">Bottom (Console Panel)</option>
-              <option value="top" data-i18n="opt_log_top">Top (Header Bar)</option>
-            </select>
-          </div>
 
           <div class="setting-item">
             <div>
@@ -470,25 +500,6 @@
             </div>
             <input type="checkbox" id="chkLogCollapsedOnStartup"
               style="accent-color: var(--accent-color, #38bdf8); width: 18px; height: 18px; cursor: pointer;">
-          </div>
-
-          <!-- Workspace Session (.vectorspace) Backup & Restore -->
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_workspace_bundle">Workspace Session (.vectorspace)</div>
-              <div class="setting-desc" data-i18n="setting_workspace_bundle_desc">Save or restore all active
-                documents, tabs, and layout state in a single bundle.</div>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button id="btnExportWorkspace" class="toolbar-btn"
-                style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-weight: 600; cursor: pointer;">
-                <span data-i18n="btn_export_workspace">Save Workspace</span>
-              </button>
-              <button id="btnImportWorkspace" class="toolbar-btn"
-                style="padding: 6px 12px; background: var(--accent-color, #38bdf8); color: #000; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">
-                <span data-i18n="btn_import_workspace">Open Workspace</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>

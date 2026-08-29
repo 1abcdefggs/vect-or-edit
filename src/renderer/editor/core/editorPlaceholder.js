@@ -33,8 +33,8 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
   const line5 = t('editor_placeholder_aimodel');
 
   placeholderEl.innerHTML = `
-    <div style="opacity: 0.9; font-size: 0.78rem; margin-bottom: 8px; color: var(--text-muted, #cbd5e1); font-weight: 500;">(*This description will disappear once you start typing)</div>
-    <div style="color: var(--accent-color, #38bdf8); font-weight: 700; margin-bottom: 2px;">${line1}</div>
+    <div style="opacity: 0.9; font-size: 0.78rem; margin-bottom: 8px; color: var(--text-muted, #cbd5e1); ">(*This description will disappear once you start typing)</div>
+    <div style="color: var(--accent-color, #38bdf8);  margin-bottom: 2px;">${line1}</div>
     <div style="opacity: 0.85;">${line2}</div>
     <div style="opacity: 0.85;">${line3}</div>
     <div style="opacity: 0.85;">${line4}</div>

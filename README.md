@@ -2,9 +2,16 @@
 
 > **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
-<p align="center">
+
+<p align="center">v0.3.1 
+  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.1 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
+</p>
+
+
+<p align="center">v0.2.0
   <img src="docs/assets/repository-ui-v020.gif" alt="VectOrEditOr v0.2.0 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
 </p>
+
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Electron](https://img.shields.io/badge/Electron-31.x-47848F?style=flat-square&logo=electron&logoColor=white)](https://www.electronjs.org/)
@@ -32,6 +39,13 @@
 - **🌐 Dynamic Bilingual UI (i18n)**: Seamless English & Japanese live switching without restart.
 - **📏 Real-Time Diagnostic Pipeline**: 7-stage LED status indicators monitoring Rust DLL, Knowledge Base, Config, Theme, Locale, Monaco, and AI Engine.
 
+---
+
+## 🆕 What's New in v0.3.1
+
+- **Unified AI Toggles**: Seamless styling and state synchronization for `SUGGEST AI` toggles between the Editor Header and Sidebar.
+- **Smart Suggestion Layout**: Auto-collapsing "Guideline" and "Knowledge" modules during Vector Search to maximize suggestion visibility.
+- **Refined Settings & UI**: Removed legacy positioning settings, unified English fallbacks (e.g., `OFFLINE`, `CLOUD`), and added missing translation keys.
 ---
 
 ## 🚀 Getting Started
