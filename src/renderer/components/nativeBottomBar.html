@@ -1,17 +1,20 @@
-<div id="nativeBottomBar" style="height: 24px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-end; padding: 0 10px; gap: 8px; font-size: 0.65rem;">
-  <!-- Pipeline Status LEDs removed per user request (kept in systemLogPanel) -->
-  <div id="pipelineStatusLedContainer" style="display: none;"></div>
+<div id="nativeBottomBar" style="height: 24px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; font-size: 0.65rem;">
+  
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <!-- Pipeline Status LEDs removed per user request (kept in systemLogPanel) -->
+    <div id="pipelineStatusLedContainer" style="display: none;"></div>
 
-  <span id="statusMemoryUsage" class="status-bar-item" style="color: var(--accent-color, #38bdf8); font-weight: 600;" data-i18n="label_ram">RAM: ~45 MB</span>
-  <span class="status-bar-separator" style="color: var(--border-color);">|</span>
-  <button id="btnToggleConsole" class="status-bar-btn toolbar-btn"
-    style="padding: 1px 6px; height: 20px; font-size: 0.68rem; font-weight: 700; display: flex; align-items: center; gap: 4px; border-radius: 3px; cursor: pointer; border: none; background: transparent; color: var(--text-main);"
-    data-i18n-title="btn_console">
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="4 17 10 11 4 5"></polyline>
-      <line x1="12" y1="19" x2="20" y2="19"></line>
-    </svg>
-    <span data-i18n="btn_console">Logs</span>
-    <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: 0.6rem;">0</span>
-  </button>
+    <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
+      <span class="material-symbols-outlined" style="font-size: 1.1rem; flex-shrink: 0;">&#xeb8e;</span>
+      <span data-i18n="btn_console">LOGS</span>
+      <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: 0.6rem; height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
+    </button>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <span class="status-bar-item" style="color: var(--text-main); display: flex; align-items: center; gap: 4px;">
+      <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-muted); flex-shrink: 0;">&#xe322;</span>
+      <span id="statusMemoryUsage" data-i18n="label_ram">RAM: ~45 MB</span>
+    </span>
+  </div>
 </div>

@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, webFrame } from 'electron';
 import type { 
   EngineAPI, 
   EngineStatus, 
@@ -10,10 +10,12 @@ const engineAPI: EngineAPI = {
   getEmbedderPath: () => ipcRenderer.invoke('embedder:getPath'),
   setEmbedderPath: (path) => ipcRenderer.invoke('embedder:setPath', path),
   searchVector: (vector: number[], limit?: number) => ipcRenderer.invoke('engine:searchVector', vector, limit),
-  saveFile: (content: string, defaultName: string) => ipcRenderer.invoke('app:saveFile', content, defaultName),
+  saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => ipcRenderer.invoke('app:saveFile', content, defaultName, forceDialog),
   openFile: () => ipcRenderer.invoke('app:openFile'),
   openWorkspace: () => ipcRenderer.invoke('app:openWorkspace'),
   getDefaultWorkspace: (createIfMissing?: boolean) => ipcRenderer.invoke('app:getDefaultWorkspace', createIfMissing),
+  loadSettings: () => ipcRenderer.invoke('app:loadSettings'),
+  saveSettings: (settings: any) => ipcRenderer.invoke('app:saveSettings', settings),
   validateDocument: (text: string) => ipcRenderer.invoke('app:validateDocument', text),
   loadImeDict: () => ipcRenderer.invoke('app:loadImeDict'),
   getKnowledgeBase: () => ipcRenderer.invoke('engine:getKnowledgeBase'),
@@ -50,6 +52,8 @@ const engineAPI: EngineAPI = {
   maximizeWindow: () => ipcRenderer.invoke('window:toggleMaximize'),
   closeWindow: () => ipcRenderer.invoke('window:close'),
   isWindowMaximized: () => ipcRenderer.invoke('window:isMaximized'),
+  setZoomFactor: (factor: number) => webFrame.setZoomFactor(factor),
+  getZoomFactor: () => webFrame.getZoomFactor(),
   checkUpdate: function (): Promise<{ hasUpdate: boolean; version?: string; releaseDate?: string; }> {
     throw new Error('Function not implemented.');
   },

@@ -1,8 +1,8 @@
 /* Theme-aware select styling */
 .toolbar-select {
   background: var(--bg-card);
-  border: 1px solid var(--accent-color);
-  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  color: var(--header-fg, var(--text-main));
   height: 32px;
   line-height: 30px;
   padding: 0 24px 0 8px;
@@ -26,7 +26,7 @@
 /* Hover styling */
 .toolbar-select:hover {
   background: var(--hover-bg);
-  color: var(--text-main);
+  color: var(--header-fg, var(--text-main));
   border-color: var(--accent-color);
 }
 
@@ -54,7 +54,7 @@
   top: 120%;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-card, rgba(15, 23, 42, 0.95));
+  background: var(--bg-card, rgba(0, 0, 0, 0.95));
   color: var(--text-main, #f8fafc);
   padding: 8px 12px;
   border-radius: 6px;
@@ -69,12 +69,18 @@
   text-align: left;
 }
 
+/* For elements inside the system log panel (bottom bar), show tooltip above to avoid overlapping mouse */
+.system-status-panel [data-instant-tooltip]:hover::after {
+  top: auto;
+  bottom: 130%;
+}
+
 /* Master AI Toggle Pill */
 .master-ai-pill {
   position: relative;
   display: flex;
   align-items: center;
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   width: 58px;
   height: 20px;
@@ -90,7 +96,7 @@
   left: 1px;
   width: 26px;
   height: 16px;
-  background: #ef4444;
+  background: #64748b;
   border-radius: 10px;
   transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), background-color 0.3s ease;
   z-index: 1;

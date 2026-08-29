@@ -14,6 +14,7 @@ body {
 .app-header {
   height: 38px;
   background-color: var(--header-bg, #080c16);
+  color: var(--header-fg, var(--text-main));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -21,13 +22,13 @@ body {
   -webkit-app-region: drag;
   position: relative;
   z-index: 50;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   overflow: hidden;
 }
 
 /* Master AI Active Window Frame Glow */
 body.master-ai-active .header-full-border-line {
-  background-color: var(--accent-color, #38bdf8) !important;
+  background-color: var(--accent-color, #66f) !important;
   box-shadow: 0 1px 12px rgba(56, 189, 248, 0.35) !important;
 }
 
@@ -51,13 +52,20 @@ body.master-ai-standby .header-full-border-line {
 }
 
 .app-header .toolbar-btn {
+  height: 32px;
+  min-width: 32px;
+  border-radius: var(--radius-md);
   border: none !important;
   background: transparent;
   box-shadow: none !important;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app-header .toolbar-btn:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: var(--hover-bg) !important;
 }
 
 .app-header .toolbar-select {
@@ -137,7 +145,7 @@ body.master-ai-standby .header-full-border-line {
   padding: 8px 4px;
 }
 
-.suggestion-sidebar.collapsed .sidebar-header > div {
+.suggestion-sidebar.collapsed .sidebar-header>div {
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -154,7 +162,7 @@ body.master-ai-standby .header-full-border-line {
 
 .sidebar-header h3 {
   font-size: 0.92rem;
-  font-weight: 700;
+  
   color: var(--text-main);
   display: flex;
   align-items: center;

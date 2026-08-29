@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -49,7 +51,7 @@
 
 .inspector-section-title {
   font-size: 0.78rem;
-  font-weight: 700;
+  
   color: var(--text-main, #f8fafc);
   display: flex;
   align-items: center;
@@ -58,7 +60,7 @@
 
 .inspector-section-badge {
   font-size: 0.65rem;
-  font-weight: bold;
+  
   padding: 1px 6px;
   border-radius: 10px;
   background: rgba(129, 140, 248, 0.15);
@@ -77,8 +79,9 @@
 }
 
 .section-title {
+  font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 0.75rem;
-  font-weight: 700;
+   /* Regular weight to match the original AUTOSAVE look */
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-main);
@@ -101,7 +104,7 @@
 .semantic-module-title {
   font-size: 0.72rem;
   color: var(--text-muted);
-  font-weight: 700;
+  
   display: flex;
   align-items: center;
   gap: 5px;
@@ -110,21 +113,21 @@
 .semantic-btn-add {
   padding: 2px 8px;
   font-size: 0.75rem;
-  font-weight: 700;
+  
   border-radius: 4px;
   display: flex;
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  color: var(--accent-color, #38bdf8);
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--accent-color, #66f);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.18s ease;
 }
 
 .semantic-btn-add:hover {
-  background: rgba(56, 189, 248, 0.18);
-  border-color: var(--accent-color, #38bdf8);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .semantic-btn-clear {
@@ -143,7 +146,7 @@
 
 .semantic-btn-clear:hover {
   background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  color: #fa1;
   border-color: rgba(239, 68, 68, 0.3);
 }
 
@@ -231,7 +234,7 @@
 }
 
 .item-code {
-  font-weight: 700;
+  
   color: var(--item-code-text);
   background: var(--item-code-bg);
   padding: 2px 6px;
@@ -246,7 +249,7 @@
 
 .item-title {
   font-size: 0.92rem;
-  font-weight: 700;
+  
   margin-bottom: 2px;
   line-height: 1.35;
   word-break: break-word;
@@ -282,7 +285,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  font-weight: 500;
+  
   color: var(--accent-color, #818cf8);
   margin-bottom: 2px;
 }
@@ -303,7 +306,7 @@
   left: -40%;
   width: 40%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, #818cf8, #38bdf8, transparent);
+  background: linear-gradient(90deg, transparent, #818cf8, #66f, transparent);
   box-shadow: 0 0 8px rgba(129, 140, 248, 0.7);
   animation: neuralPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
@@ -395,13 +398,13 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
-  font-weight: 500;
+  
   color: var(--text-color);
 }
 
 .model-progress-pct {
   font-size: 0.8rem;
-  font-weight: 700;
+  
   color: var(--accent-color, #818cf8);
 }
 
@@ -415,7 +418,7 @@
 
 .model-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #38bdf8);
+  background: linear-gradient(90deg, #6366f1, #66f);
   border-radius: 2px;
   transition: width 0.25s ease-out;
   box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
@@ -459,7 +462,7 @@
   border-bottom: 2px solid transparent;
   padding: 10px 16px;
   font-size: 0.82rem;
-  font-weight: 600;
+  
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -495,7 +498,7 @@
 }
 
 .setting-label {
-  font-weight: 600;
+  
   font-size: 0.88rem;
   color: var(--text-main);
   margin-bottom: 3px;
@@ -558,17 +561,114 @@
   height: 14px;
 }
 
+/* Suggestion Pill UI (Selection Popup) */
+.compact-suggest-pill {
+  min-width: auto;
+  padding: 4px;
+}
+
+.pill-top-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pill-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  color: var(--text-main);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.pill-action-btn:hover {
+  background: var(--hover-bg);
+}
+
+.pill-action-btn.primary {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+.pill-action-btn.primary:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+}
+
+.pill-action-btn.secondary {
+  padding: 6px 8px; /* Slightly tighter for icon-only button */
+}
+.pill-action-btn.secondary:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+}
+
+.pill-action-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.pill-action-btn span {
+  display: inline-block;
+  line-height: 1;
+}
+
+.pill-quick-candidates {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-color);
+}
+
+.pill-candidate-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 8px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.pill-candidate-chip:hover {
+  background: var(--hover-bg);
+}
+
+.chip-title {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.chip-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
 /* Elegant Non-blocking Toast Notification */
 .app-toast {
   position: fixed;
   bottom: 32px;
   right: 24px;
-  background: #0f172a;
+  background: #123;
   color: #f8fafc;
   padding: 10px 18px;
   border-radius: 8px;
   font-size: 0.82rem;
-  font-weight: 600;
+  
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
@@ -600,7 +700,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent-color, #38bdf8);
+  background: var(--accent-color, #66f);
   display: none;
   flex-shrink: 0;
   margin: 0 4px;
@@ -632,7 +732,7 @@
   right: 18px;
   pointer-events: none;
   font-size: 0.68rem;
-  font-weight: 800;
+  
   font-family: var(--font-mono, monospace);
   color: var(--success-color, #10b981);
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
@@ -661,7 +761,7 @@
   height: 28px;
   padding: 0 9px;
   font-size: 0.72rem;
-  font-weight: 700;
+  
   border-radius: 4px 0 0 4px;
   display: inline-flex;
   align-items: center;
@@ -689,7 +789,7 @@
 
 .save-capsule-btn-save:hover {
   background: rgba(56, 189, 248, 0.18);
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-color, #66f);
 }
 
 .save-capsule-btn-save:active {
@@ -743,7 +843,7 @@
 
 .font-control-integrated-group:hover,
 .font-control-integrated-group:focus-within {
-  border-color: var(--accent-color, #38bdf8) !important;
+  border-color: var(--accent-color, #66f) !important;
 }
 
 .toast-fadeout {
@@ -763,12 +863,12 @@
 }
 
 .app-toast.toast-error {
-  border-color: #ef4444 !important;
+  border-color: #fa1 !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(239, 68, 68, 0.4) !important;
 }
 
 .app-toast.toast-info {
-  border-color: #38bdf8 !important;
+  border-color: #66f !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.4) !important;
 }
 
@@ -793,7 +893,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent-color, #38bdf8);
+  background: var(--accent-color, #66f);
   display: none;
   flex-shrink: 0;
   margin: 0 4px;
@@ -825,7 +925,7 @@
   right: 18px;
   pointer-events: none;
   font-size: 0.68rem;
-  font-weight: 800;
+  
   font-family: var(--font-mono, monospace);
   color: var(--success-color, #10b981);
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
@@ -854,7 +954,7 @@
   height: 28px;
   padding: 0 9px;
   font-size: 0.72rem;
-  font-weight: 700;
+  
   border-radius: 4px 0 0 4px;
   display: inline-flex;
   align-items: center;
@@ -882,7 +982,7 @@
 
 .save-capsule-btn-save:hover {
   background: rgba(56, 189, 248, 0.18);
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-color, #66f);
 }
 
 .save-capsule-btn-save:active {
@@ -936,7 +1036,7 @@
 
 .font-control-integrated-group:hover,
 .font-control-integrated-group:focus-within {
-  border-color: var(--accent-color, #38bdf8) !important;
+  border-color: var(--accent-color, #66f) !important;
 }
 
 .toast-fadeout {
@@ -956,12 +1056,12 @@
 }
 
 .app-toast.toast-error {
-  border-color: #ef4444 !important;
+  border-color: #fa1 !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(239, 68, 68, 0.4) !important;
 }
 
 .app-toast.toast-info {
-  border-color: #38bdf8 !important;
+  border-color: #66f !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.4) !important;
 }
 
@@ -977,4 +1077,5 @@
 /* Global interactive cursor fixes */
 .toolbar-btn, .tab-btn, .sidebar-item, .setting-tab-btn, .pill-action-btn, [id^="btn"], button, .pill-label, .master-ai-pill, .toolbar-select {
   cursor: pointer;
-}
+}.icon-label-text { display: inline; }
+@media (max-width: 768px) { .icon-label-text { display: none; } }

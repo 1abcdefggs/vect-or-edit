@@ -23,7 +23,7 @@ import {
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
-import { saveFile, openFile, openWorkspace, getDefaultWorkspace } from './fileSystem';
+import { saveFile, openFile, openWorkspace, getDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 
 let customEmbedderPath: string | null = null;
 let currentKbPath: string = ""; // Default empty
@@ -46,10 +46,12 @@ app.whenReady().then(async () => {
   );
 
   // --- File System IPC ---
-  ipcMain.handle('app:saveFile', (_event, content, defaultName) => saveFile(content, defaultName));
+  ipcMain.handle('app:saveFile', (_event, content, defaultName, forceDialog) => saveFile(content, defaultName, forceDialog));
   ipcMain.handle('app:openFile', () => openFile());
   ipcMain.handle('app:openWorkspace', () => openWorkspace());
   ipcMain.handle('app:getDefaultWorkspace', (_event, createIfMissing) => getDefaultWorkspace(createIfMissing));
+  ipcMain.handle('app:loadSettings', () => loadSettings());
+  ipcMain.handle('app:saveSettings', (_event, settings) => saveSettings(settings));
 
   // --- AI Suggest IPC ---
   ipcMain.handle('app:claudeSemanticSuggest', (_event, payload) => fetchClaudeSemanticSuggest(payload.prompt, payload.apiKey, payload.model));

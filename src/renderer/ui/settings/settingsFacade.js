@@ -5,6 +5,12 @@ import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { importDictionary } from '../../search/dictionary.js';
 import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, updateAutoSaveUI } from '../../editor/editorManager.js';
+import { syncSettingsToBackend } from './settingsState.js';
+
+function setAndSync(key, value) {
+  localStorage.setItem(key, value);
+  syncSettingsToBackend();
+}
 
 let updateEditorOptionsCallback = null;
 
@@ -46,7 +52,7 @@ export function initSettings(updateEditorCb) {
   const modalLinterSelect = document.getElementById('modalLinterSelect');
   const modalSuggestTriggerSelect = document.getElementById('modalSuggestTriggerSelect');
 
-  const selLogDisplayPosition = document.getElementById('selLogDisplayPosition');
+
 
   // Theme list population
   const themeList = (availableThemes && availableThemes.length > 0)
@@ -90,8 +96,8 @@ export function initSettings(updateEditorCb) {
     if (themeSelect) themeSelect.value = themeName;
     if (modalThemeSelect) modalThemeSelect.value = themeName;
     await loadTheme(themeName);
-    localStorage.setItem(STORAGE_KEYS.LEGACY_THEME, themeName);
-    localStorage.setItem(STORAGE_KEYS.THEME, themeName);
+    setAndSync(STORAGE_KEYS.LEGACY_THEME, themeName);
+    setAndSync(STORAGE_KEYS.THEME, themeName);
   }
 
   if (themeSelect) {
@@ -189,17 +195,17 @@ export function initSettings(updateEditorCb) {
     }
 
     // Save preferences
-    localStorage.setItem(STORAGE_KEYS.FONT_FAMILY, fontFamily);
-    localStorage.setItem(STORAGE_KEYS.FONT_SIZE, String(fontSize));
-    localStorage.setItem(STORAGE_KEYS.LINE_HEIGHT, String(lineHeight));
-    localStorage.setItem(STORAGE_KEYS.WORD_WRAP, wordWrap);
-    localStorage.setItem(STORAGE_KEYS.LINE_NUMBERS, lineNumbers);
-    localStorage.setItem(STORAGE_KEYS.LINE_HIGHLIGHT, renderLineHighlight);
-    localStorage.setItem(STORAGE_KEYS.STICKY_SCROLL, String(stickyScroll));
-    localStorage.setItem(STORAGE_KEYS.RENDER_WHITESPACE, renderWhitespace);
-    localStorage.setItem(STORAGE_KEYS.EDITOR_BG_TONE, editorBgTone);
-    localStorage.setItem(STORAGE_KEYS.CUSTOM_EDITOR_BG, customBg);
-    localStorage.setItem(STORAGE_KEYS.CUSTOM_EDITOR_FG, customFg);
+    setAndSync(STORAGE_KEYS.FONT_FAMILY, fontFamily);
+    setAndSync(STORAGE_KEYS.FONT_SIZE, String(fontSize));
+    setAndSync(STORAGE_KEYS.LINE_HEIGHT, String(lineHeight));
+    setAndSync(STORAGE_KEYS.WORD_WRAP, wordWrap);
+    setAndSync(STORAGE_KEYS.LINE_NUMBERS, lineNumbers);
+    setAndSync(STORAGE_KEYS.LINE_HIGHLIGHT, renderLineHighlight);
+    setAndSync(STORAGE_KEYS.STICKY_SCROLL, String(stickyScroll));
+    setAndSync(STORAGE_KEYS.RENDER_WHITESPACE, renderWhitespace);
+    setAndSync(STORAGE_KEYS.EDITOR_BG_TONE, editorBgTone);
+    setAndSync(STORAGE_KEYS.CUSTOM_EDITOR_BG, customBg);
+    setAndSync(STORAGE_KEYS.CUSTOM_EDITOR_FG, customFg);
 
     applyEditorCanvasTone(editorBgTone, customBg, customFg);
 
@@ -282,28 +288,33 @@ export function initSettings(updateEditorCb) {
 
   // Event Listeners for Editor settings
   [fontFamilySelect, modalFontFamilySelect, fontSizeSelect, modalFontSizeSelect,
-   modalLineHeightSelect, modalWordWrapSelect, modalLineNumbersSelect,
-   modalLineHighlightSelect, modalStickyScrollSelect, modalWhitespaceSelect,
-   modalEditorBgSelect, quickEditorToneSelect].forEach(el => {
-    if (el) el.addEventListener('change', (e) => {
-      if (e.target === fontFamilySelect && modalFontFamilySelect) {
-        modalFontFamilySelect.value = fontFamilySelect.value;
-      } else if (e.target === modalFontFamilySelect && fontFamilySelect) {
-        fontFamilySelect.value = modalFontFamilySelect.value;
+    modalLineHeightSelect, modalWordWrapSelect, modalLineNumbersSelect,
+    modalLineHighlightSelect, modalStickyScrollSelect, modalWhitespaceSelect,
+    modalEditorBgSelect, quickEditorToneSelect].forEach(el => {
+      if (el) {
+        el.addEventListener('change', handleEditorSettingChange);
+        el.addEventListener('input', handleEditorSettingChange);
       }
-      if (e.target === fontSizeSelect && modalFontSizeSelect) {
-        modalFontSizeSelect.value = fontSizeSelect.value;
-      } else if (e.target === modalFontSizeSelect && fontSizeSelect) {
-        fontSizeSelect.value = modalFontSizeSelect.value;
-      }
-      if (e.target === quickEditorToneSelect && modalEditorBgSelect) {
-        modalEditorBgSelect.value = quickEditorToneSelect.value;
-      } else if (e.target === modalEditorBgSelect && quickEditorToneSelect) {
-        quickEditorToneSelect.value = modalEditorBgSelect.value;
-      }
-      applyEditorSettings();
     });
-  });
+
+  function handleEditorSettingChange(e) {
+    if (e.target === fontFamilySelect && modalFontFamilySelect) {
+      modalFontFamilySelect.value = fontFamilySelect.value;
+    } else if (e.target === modalFontFamilySelect && fontFamilySelect) {
+      fontFamilySelect.value = modalFontFamilySelect.value;
+    }
+    if (e.target === fontSizeSelect && modalFontSizeSelect) {
+      modalFontSizeSelect.value = fontSizeSelect.value;
+    } else if (e.target === modalFontSizeSelect && fontSizeSelect) {
+      fontSizeSelect.value = modalFontSizeSelect.value;
+    }
+    if (e.target === quickEditorToneSelect && modalEditorBgSelect) {
+      modalEditorBgSelect.value = quickEditorToneSelect.value;
+    } else if (e.target === modalEditorBgSelect && quickEditorToneSelect) {
+      quickEditorToneSelect.value = modalEditorBgSelect.value;
+    }
+    applyEditorSettings();
+  }
 
   [quickCustomBgPicker, quickCustomFgPicker, modalCustomBgPicker, modalCustomFgPicker].forEach(el => {
     if (el) el.addEventListener('input', () => applyEditorSettings());
@@ -320,7 +331,7 @@ export function initSettings(updateEditorCb) {
       if (selSearchLimit && modalLimitSelect) selSearchLimit.value = modalLimitSelect.value;
       if (chkShowFullMetadata && modalShowFullMetadataChk) {
         chkShowFullMetadata.checked = modalShowFullMetadataChk.checked;
-        localStorage.setItem('vect_show_full_metadata', String(chkShowFullMetadata.checked));
+        setAndSync('vect_show_full_metadata', String(chkShowFullMetadata.checked));
       }
     }
   }
@@ -332,140 +343,140 @@ export function initSettings(updateEditorCb) {
   if (chkShowFullMetadata) chkShowFullMetadata.addEventListener('change', () => syncSearchSettings('front'));
   if (modalShowFullMetadataChk) modalShowFullMetadataChk.addEventListener('change', () => syncSearchSettings('modal'));
 
-    // Tab 3 AI Provider & Model Settings
-    const modalAiProviderSelect = document.getElementById('modalAiProviderSelect');
-    const localAiSettingsBlock = document.getElementById('localAiSettingsBlock');
-    const claudeSettingsBlock = document.getElementById('claudeSettingsBlock');
-    const modalClaudeKeyInput = document.getElementById('modalClaudeKeyInput');
-    const modalClaudeModelSelect = document.getElementById('modalClaudeModelSelect');
-    const btnInitLocalAi = document.getElementById('btnInitLocalAi');
+  // Tab 3 AI Provider & Model Settings
+  const modalAiProviderSelect = document.getElementById('modalAiProviderSelect');
+  const localAiSettingsBlock = document.getElementById('localAiSettingsBlock');
+  const claudeSettingsBlock = document.getElementById('claudeSettingsBlock');
+  const modalClaudeKeyInput = document.getElementById('modalClaudeKeyInput');
+  const modalClaudeModelSelect = document.getElementById('modalClaudeModelSelect');
+  const btnInitLocalAi = document.getElementById('btnInitLocalAi');
 
-    const geminiSettingsBlock = document.getElementById('geminiSettingsBlock');
-    const modalGeminiKeyInput = document.getElementById('modalGeminiKeyInput');
-    const modalGeminiModelSelect = document.getElementById('modalGeminiModelSelect');
+  const geminiSettingsBlock = document.getElementById('geminiSettingsBlock');
+  const modalGeminiKeyInput = document.getElementById('modalGeminiKeyInput');
+  const modalGeminiModelSelect = document.getElementById('modalGeminiModelSelect');
 
-    const openaiSettingsBlock = document.getElementById('openaiSettingsBlock');
-    const modalOpenAiKeyInput = document.getElementById('modalOpenAiKeyInput');
-    const modalOpenAiModelSelect = document.getElementById('modalOpenAiModelSelect');
+  const openaiSettingsBlock = document.getElementById('openaiSettingsBlock');
+  const modalOpenAiKeyInput = document.getElementById('modalOpenAiKeyInput');
+  const modalOpenAiModelSelect = document.getElementById('modalOpenAiModelSelect');
 
-    const modalAiScopeSelect = document.getElementById('modalAiScopeSelect');
+  const modalAiScopeSelect = document.getElementById('modalAiScopeSelect');
 
-    const storedAiProvider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
-    const storedClaudeKey = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
-    const storedClaudeModel = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
-    const storedGeminiKey = localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY) || '';
-    const storedGeminiModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-    const storedOpenAiKey = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
-    const storedOpenAiModel = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
-    const storedAiScope = localStorage.getItem(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
+  const storedAiProvider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
+  const storedClaudeKey = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
+  const storedClaudeModel = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+  const storedGeminiKey = localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY) || '';
+  const storedGeminiModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+  const storedOpenAiKey = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
+  const storedOpenAiModel = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
+  const storedAiScope = localStorage.getItem(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
 
-    if (modalAiScopeSelect) {
-      modalAiScopeSelect.value = storedAiScope;
-      modalAiScopeSelect.addEventListener('change', () => {
-        localStorage.setItem(STORAGE_KEYS.AI_INFERENCE_SCOPE, modalAiScopeSelect.value);
-      });
-    }
+  if (modalAiScopeSelect) {
+    modalAiScopeSelect.value = storedAiScope;
+    modalAiScopeSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.AI_INFERENCE_SCOPE, modalAiScopeSelect.value);
+    });
+  }
 
-    if (modalAiProviderSelect) {
-      modalAiProviderSelect.value = storedAiProvider;
-      updateAiProviderVisibility(storedAiProvider);
-      
-      const providerCards = document.querySelectorAll('.provider-card');
-      
-      function updateActiveProviderCard(val) {
-        providerCards.forEach(card => {
-          if (card.dataset.provider === val) {
-            card.style.borderColor = 'var(--accent-color, #38bdf8)';
-            card.style.background = 'rgba(56, 189, 248, 0.1)';
-          } else {
-            card.style.borderColor = 'var(--border-color, rgba(148, 163, 184, 0.2))';
-            card.style.background = 'transparent';
-          }
-        });
-      }
+  if (modalAiProviderSelect) {
+    modalAiProviderSelect.value = storedAiProvider;
+    updateAiProviderVisibility(storedAiProvider);
 
-      updateActiveProviderCard(storedAiProvider);
-      
+    const providerCards = document.querySelectorAll('.provider-card');
+
+    function updateActiveProviderCard(val) {
       providerCards.forEach(card => {
-        card.addEventListener('click', () => {
-          modalAiProviderSelect.value = card.dataset.provider;
-          modalAiProviderSelect.dispatchEvent(new Event('change'));
-        });
-      });
-
-      modalAiProviderSelect.addEventListener('change', () => {
-        const val = modalAiProviderSelect.value;
-        localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, val);
-        updateAiProviderVisibility(val);
-        updateAiModelBadge();
-        updateActiveProviderCard(val);
+        if (card.dataset.provider === val) {
+          card.style.borderColor = 'var(--accent-color, #38bdf8)';
+          card.style.background = 'rgba(56, 189, 248, 0.1)';
+        } else {
+          card.style.borderColor = 'var(--border-color, rgba(148, 163, 184, 0.2))';
+          card.style.background = 'transparent';
+        }
       });
     }
 
-    function updateAiProviderVisibility(provider) {
-      if (localAiSettingsBlock) localAiSettingsBlock.style.display = provider === 'local' ? 'flex' : 'none';
-      if (geminiSettingsBlock) geminiSettingsBlock.style.display = provider === 'gemini' ? 'flex' : 'none';
-      if (openaiSettingsBlock) openaiSettingsBlock.style.display = provider === 'openai' ? 'flex' : 'none';
-      if (claudeSettingsBlock) claudeSettingsBlock.style.display = provider === 'claude' ? 'flex' : 'none';
-    }
+    updateActiveProviderCard(storedAiProvider);
 
-    if (modalGeminiKeyInput) {
-      modalGeminiKeyInput.value = storedGeminiKey;
-      modalGeminiKeyInput.addEventListener('input', () => {
-        localStorage.setItem(STORAGE_KEYS.GEMINI_API_KEY, modalGeminiKeyInput.value.trim());
+    providerCards.forEach(card => {
+      card.addEventListener('click', () => {
+        modalAiProviderSelect.value = card.dataset.provider;
+        modalAiProviderSelect.dispatchEvent(new Event('change'));
       });
-    }
+    });
 
-    if (modalGeminiModelSelect) {
-      modalGeminiModelSelect.value = storedGeminiModel;
-      modalGeminiModelSelect.addEventListener('change', () => {
-        localStorage.setItem(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
-        updateAiModelBadge();
-      });
-    }
+    modalAiProviderSelect.addEventListener('change', () => {
+      const val = modalAiProviderSelect.value;
+      setAndSync(STORAGE_KEYS.AI_PROVIDER, val);
+      updateAiProviderVisibility(val);
+      updateAiModelBadge();
+      updateActiveProviderCard(val);
+    });
+  }
 
-    if (modalOpenAiKeyInput) {
-      modalOpenAiKeyInput.value = storedOpenAiKey;
-      modalOpenAiKeyInput.addEventListener('input', () => {
-        localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, modalOpenAiKeyInput.value.trim());
-      });
-    }
+  function updateAiProviderVisibility(provider) {
+    if (localAiSettingsBlock) localAiSettingsBlock.style.display = provider === 'local' ? 'flex' : 'none';
+    if (geminiSettingsBlock) geminiSettingsBlock.style.display = provider === 'gemini' ? 'flex' : 'none';
+    if (openaiSettingsBlock) openaiSettingsBlock.style.display = provider === 'openai' ? 'flex' : 'none';
+    if (claudeSettingsBlock) claudeSettingsBlock.style.display = provider === 'claude' ? 'flex' : 'none';
+  }
 
-    if (modalOpenAiModelSelect) {
-      modalOpenAiModelSelect.value = storedOpenAiModel;
-      modalOpenAiModelSelect.addEventListener('change', () => {
-        localStorage.setItem(STORAGE_KEYS.OPENAI_MODEL, modalOpenAiModelSelect.value);
-        updateAiModelBadge();
-      });
-    }
+  if (modalGeminiKeyInput) {
+    modalGeminiKeyInput.value = storedGeminiKey;
+    modalGeminiKeyInput.addEventListener('input', () => {
+      setAndSync(STORAGE_KEYS.GEMINI_API_KEY, modalGeminiKeyInput.value.trim());
+    });
+  }
 
-    if (modalClaudeKeyInput) {
-      modalClaudeKeyInput.value = storedClaudeKey;
-      modalClaudeKeyInput.addEventListener('input', () => {
-        localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, modalClaudeKeyInput.value.trim());
-      });
-    }
+  if (modalGeminiModelSelect) {
+    modalGeminiModelSelect.value = storedGeminiModel;
+    modalGeminiModelSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
+      updateAiModelBadge();
+    });
+  }
 
-    if (modalClaudeModelSelect) {
-      modalClaudeModelSelect.value = storedClaudeModel;
-      modalClaudeModelSelect.addEventListener('change', () => {
-        localStorage.setItem(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
-        updateAiModelBadge();
-      });
-    }
+  if (modalOpenAiKeyInput) {
+    modalOpenAiKeyInput.value = storedOpenAiKey;
+    modalOpenAiKeyInput.addEventListener('input', () => {
+      setAndSync(STORAGE_KEYS.OPENAI_API_KEY, modalOpenAiKeyInput.value.trim());
+    });
+  }
 
-    if (btnInitLocalAi) {
-      btnInitLocalAi.addEventListener('click', () => {
-        window.dispatchEvent(new CustomEvent('app:requestLocalAiInit'));
-      });
-    }
+  if (modalOpenAiModelSelect) {
+    modalOpenAiModelSelect.value = storedOpenAiModel;
+    modalOpenAiModelSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.OPENAI_MODEL, modalOpenAiModelSelect.value);
+      updateAiModelBadge();
+    });
+  }
 
-    const btnModalImportDict = document.getElementById('btnModalImportDict');
-    if (btnModalImportDict) {
-      btnModalImportDict.addEventListener('click', async () => {
-        await importDictionary();
-      });
-    }
+  if (modalClaudeKeyInput) {
+    modalClaudeKeyInput.value = storedClaudeKey;
+    modalClaudeKeyInput.addEventListener('input', () => {
+      setAndSync(STORAGE_KEYS.CLAUDE_API_KEY, modalClaudeKeyInput.value.trim());
+    });
+  }
+
+  if (modalClaudeModelSelect) {
+    modalClaudeModelSelect.value = storedClaudeModel;
+    modalClaudeModelSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
+      updateAiModelBadge();
+    });
+  }
+
+  if (btnInitLocalAi) {
+    btnInitLocalAi.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit'));
+    });
+  }
+
+  const btnModalImportDict = document.getElementById('btnModalImportDict');
+  if (btnModalImportDict) {
+    btnModalImportDict.addEventListener('click', async () => {
+      await importDictionary();
+    });
+  }
 
   // Restore Search Settings
   const savedFullMeta = localStorage.getItem(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true';
@@ -476,7 +487,7 @@ export function initSettings(updateEditorCb) {
   if (modalSuggestTriggerSelect) {
     modalSuggestTriggerSelect.value = savedTriggerMode;
     modalSuggestTriggerSelect.addEventListener('change', (e) => {
-      localStorage.setItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE, e.target.value);
+      setAndSync(STORAGE_KEYS.SUGGEST_TRIGGER_MODE, e.target.value);
     });
   }
 
@@ -487,7 +498,7 @@ export function initSettings(updateEditorCb) {
     const dotEl = document.getElementById('activeAiModelStatusDot');
     if (!badgeEl) return;
     const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
-    
+
     if (provider === 'none') {
       if (dotEl) dotEl.style.color = 'var(--text-muted, #94a3b8)';
       badgeEl.textContent = 'OFF: Disabled';
@@ -592,19 +603,7 @@ export function initSettings(updateEditorCb) {
     const isCollapsedOnStart = localStorage.getItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP) === 'true';
     chkLogCollapsedOnStartup.checked = isCollapsedOnStart;
     chkLogCollapsedOnStartup.addEventListener('change', (e) => {
-      localStorage.setItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP, String(e.target.checked));
-    });
-  }
-
-  if (selLogDisplayPosition) {
-    const storedPos = localStorage.getItem(STORAGE_KEYS.LOG_DISPLAY_POSITION) || DEFAULTS.LOG_DISPLAY_POSITION || 'bottom';
-    selLogDisplayPosition.value = storedPos;
-    applyLogDisplayPosition(storedPos);
-
-    selLogDisplayPosition.addEventListener('change', () => {
-      const pos = selLogDisplayPosition.value;
-      localStorage.setItem(STORAGE_KEYS.LOG_DISPLAY_POSITION, pos);
-      applyLogDisplayPosition(pos);
+      setAndSync(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP, String(e.target.checked));
     });
   }
 
@@ -641,7 +640,7 @@ export function initSettings(updateEditorCb) {
 
   // Initial apply
   applyEditorSettings();
-  setLedStatus('conf', true, `3. User Config: Font & Settings Restored`);
+  setLedStatus('conf', true, `1. CONFIG: Settings Restored`);
 }
 
 export function getTheme() {

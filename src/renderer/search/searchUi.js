@@ -191,12 +191,12 @@ function renderSingleCard(r, isPreliminary = false) {
       <!-- Line 1: Code + Score + Title (Left) and Action Buttons (Right) -->
       <div class="card-header" style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; min-width: 0; flex: 1;">
-          ${code ? `<span class="item-code" style="flex-shrink: 0; font-family: monospace; font-size: 0.7rem; padding: 1px 5px; border-radius: 3px; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); font-weight: 700;">${code}</span>` : ''}
-          <span class="similarity-score" style="flex-shrink: 0; font-size: 0.72rem; font-weight: 800; color: #10b981;">${isPreliminary ? (t('vector_computing') || "Computing...") : `${scorePct}%`}</span>
-          ${title ? `<span class="item-title" style="font-size: 0.86rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${title}">${title}</span>` : ''}
+          ${code ? `<span class="item-code" style="flex-shrink: 0; font-family: monospace; font-size: 0.7rem; padding: 1px 5px; border-radius: 3px; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); ">${code}</span>` : ''}
+          <span class="similarity-score" style="flex-shrink: 0; font-size: 0.72rem;  color: #10b981;">${isPreliminary ? (t('vector_computing') || "Computing...") : `${scorePct}%`}</span>
+          ${title ? `<span class="item-title" style="font-size: 0.86rem;  color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${title}">${title}</span>` : ''}
         </div>
         <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
-          <button class="btn-item-insert" onclick="event.stopPropagation(); window.__insertVectorItem && window.__insertVectorItem('${insertPayload.replace(/'/g, "\\'")}');" style="background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.4); color: var(--accent-color); border-radius: 4px; padding: 1px 6px; font-size: 0.68rem; font-weight: bold; cursor: pointer;" title="${btnInsertText}">
+          <button class="btn-item-insert" onclick="event.stopPropagation(); window.__insertVectorItem && window.__insertVectorItem('${insertPayload.replace(/'/g, "\\'")}');" style="background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.4); color: var(--accent-color); border-radius: 4px; padding: 1px 6px; font-size: 0.68rem;  cursor: pointer;" title="${btnInsertText}">
             ${btnInsertText}
           </button>
           <button onclick="event.stopPropagation(); window.__copyVectorCardJson && window.__copyVectorCardJson(this, '${encodedJson}');" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; padding: 2px;" title="Copy JSON">
@@ -243,10 +243,13 @@ export function renderResults(results, isPreliminary = false) {
   let html = '';
 
   for (const [groupName, items] of categoryGroups.entries()) {
+    const isRanked = items.some(r => typeof r.score === 'number' && r.score > 0);
+    const iconCode = isRanked ? '&#xe242;' : '&#xe241;';
     html += `
     <div class="inspector-collapsible-section open">
       <div class="inspector-section-header" onclick="this.parentElement.classList.toggle('open')">
-        <span class="inspector-section-title">
+        <span class="inspector-section-title" style="display: flex; align-items: center;">
+          <span class="material-symbols-outlined" style="font-size: 1.1rem;">${iconCode}</span>
           <span>${groupName}</span>
           <span class="inspector-section-badge">${items.length}</span>
         </span>

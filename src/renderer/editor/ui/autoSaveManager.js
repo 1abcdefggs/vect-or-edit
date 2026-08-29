@@ -25,14 +25,14 @@ let editCounterResetTimer = null;
 
 // Cached DOM references
 const domCache = {
-  btnToggle: null,
+  chkToggle: null,
   labelEl: null,
   iconEl: null,
   saveInd: null
 };
 
 function getDomElements() {
-  if (!domCache.btnToggle) domCache.btnToggle = document.getElementById('btnToggleAutoSave');
+  if (!domCache.chkToggle) domCache.chkToggle = document.getElementById('chkAutoSaveToggle');
   if (!domCache.labelEl) domCache.labelEl = document.getElementById('autoSaveLabel');
   if (!domCache.iconEl) domCache.iconEl = document.getElementById('autoSaveIcon');
   if (!domCache.saveInd) domCache.saveInd = document.getElementById('statusSaveIndicator');
@@ -41,35 +41,25 @@ function getDomElements() {
 
 export function updateAutoSaveUI() {
   const isAutoSaveEnabled = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
-  const { btnToggle, labelEl, iconEl } = getDomElements();
+  const { chkToggle } = getDomElements();
 
-  if (btnToggle && labelEl && iconEl) {
-    if (isAutoSaveEnabled) {
-      btnToggle.style.background = 'rgba(16, 185, 129, 0.12)';
-      btnToggle.style.borderColor = 'rgba(16, 185, 129, 0.35)';
-      btnToggle.style.color = 'var(--success-color, #10b981)';
-      labelEl.textContent = i18n.autosave_on || 'Auto-Save: ON';
-      iconEl.style.color = 'var(--success-color, #10b981)';
-      btnToggle.title = i18n.tooltip_autosave_on || 'Adaptive Auto-Save: Enabled (Intelligently extends interval during heavy load)';
-    } else {
-      btnToggle.style.background = 'rgba(148, 163, 184, 0.1)';
-      btnToggle.style.borderColor = 'rgba(148, 163, 184, 0.3)';
-      btnToggle.style.color = 'var(--text-muted, #94a3b8)';
-      labelEl.textContent = i18n.autosave_off || 'Auto-Save: OFF';
-      iconEl.style.color = 'var(--text-muted, #94a3b8)';
-      btnToggle.title = i18n.tooltip_autosave_off || 'Auto-Save: Disabled (Manual Save Ctrl+S required)';
-    }
+  if (chkToggle) {
+    chkToggle.checked = isAutoSaveEnabled;
   }
 }
 
 export function initAutoSaveControls() {
-  const { btnToggle } = getDomElements();
-  if (btnToggle) {
-    btnToggle.addEventListener('click', () => {
-      const current = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
-      const next = !current;
-      localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(next));
+  const { chkToggle } = getDomElements();
+  if (chkToggle) {
+    // Add change listener instead of click
+    chkToggle.addEventListener('change', (e) => {
+      localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(e.target.checked));
       updateAutoSaveUI();
+    });
+    
+    // Prevent the change from triggering a save button click
+    chkToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
     });
   }
   updateAutoSaveUI();

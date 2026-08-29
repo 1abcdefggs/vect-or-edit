@@ -46,6 +46,12 @@ export function applyThemeToDOM(theme) {
     const headerBgColor = sanitizeHexColor(rawHeaderColor, theme.base === 'vs' ? '#f6f8fa' : '#171a1d');
     root.style.setProperty('--header-bg', headerBgColor);
 
+    const rawHeaderFgColor = theme.colors['titleBar.activeForeground']
+      || theme.colors['editor.foreground']
+      || (theme.base === 'vs' ? '#111111' : '#ffffff');
+    const headerFgColor = sanitizeHexColor(rawHeaderFgColor, theme.base === 'vs' ? '#111111' : '#ffffff');
+    root.style.setProperty('--header-fg', headerFgColor);
+
     if (theme.colors['editorGroup.border']) {
       root.style.setProperty('--border-color', theme.colors['editorGroup.border']);
     }

@@ -118,7 +118,7 @@ export async function updateSemanticStateDisplay() {
       if (!state?.slots || state.slots.length === 0) {
         slotsListEl.innerHTML = `
           <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden; padding: 2px 0;">
-            <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-i18n="slots_empty_placeholder">
+            <span style="font-size: 0.8rem;  color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-i18n="slots_empty_placeholder">
               ${t('slots_empty_placeholder') || 'No Knowledge Base'}
             </span>
             <span style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;">0 ${t('label_items') || 'items'}</span>
@@ -133,11 +133,11 @@ export async function updateSemanticStateDisplay() {
           leftContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;';
 
           const slotIndexBadge = document.createElement('span');
-          slotIndexBadge.style.cssText = 'font-size: 0.62rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--accent-color, #38bdf8); background: rgba(56, 189, 248, 0.12); padding: 1px 4px; border-radius: 3px; flex-shrink: 0;';
+          slotIndexBadge.style.cssText = 'font-size: 0.62rem;  font-family: var(--font-mono, monospace); color: var(--accent-color, #38bdf8); background: rgba(56, 189, 248, 0.12); padding: 1px 4px; border-radius: 3px; flex-shrink: 0;';
           slotIndexBadge.textContent = `SLOT ${idx + 1}`;
 
           const infoSpan = document.createElement('span');
-          infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981); font-weight: 700; font-size: 0.76rem;';
+          infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981);  font-size: 0.76rem;';
           infoSpan.textContent = slot.name;
           infoSpan.title = `[SLOT ${idx + 1}] ${slot.filePath}\nItems: ${slot.itemCount.toLocaleString()}\nMulti-slot indexing active.`;
 
@@ -148,7 +148,7 @@ export async function updateSemanticStateDisplay() {
           rightContainer.style.cssText = 'display: flex; align-items: center; gap: 4px; flex-shrink: 0;';
 
           const countBadge = document.createElement('span');
-          countBadge.style.cssText = 'font-size: 0.65rem; color: var(--text-muted); font-weight: 600;';
+          countBadge.style.cssText = 'font-size: 0.65rem; color: var(--text-muted); ';
           countBadge.textContent = `${slot.itemCount.toLocaleString()} ${t('label_items') || 'items'}`;
 
           const btnDel = document.createElement('button');

@@ -55,7 +55,7 @@ export function initSystemConsole() {
     row.style.cssText = 'padding: 3px 6px; font-family: var(--font-mono, monospace); font-size: 0.73rem; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.04);';
     const time = new Date().toLocaleTimeString();
     if (type === 'cmd') {
-      row.innerHTML = `<span style="color:var(--text-muted)">[${time}]</span> <span style="color:var(--accent-color, #38bdf8); font-weight:700;">❯ ${msg}</span>`;
+      row.innerHTML = `<span style="color:var(--text-muted)">[${time}]</span> <span style="color:var(--accent-color, #38bdf8); ">❯ ${msg}</span>`;
     } else if (type === 'success') {
       row.innerHTML = `<span style="color:var(--text-muted)">[${time}]</span> <span style="color:var(--success-color, #10b981);">✓ ${msg}</span>`;
     } else if (type === 'warn') {

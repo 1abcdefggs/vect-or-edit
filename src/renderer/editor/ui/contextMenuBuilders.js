@@ -96,7 +96,7 @@ export function buildPatternBMenu({ selectedText, onDismiss }) {
 
   const btnVector = createMenuButton({
     className: 'ctx-grid-btn primary-vector-btn',
-    innerHTML: `${icons.vector} <span>${t('suggest_context_menu') || "AI Suggest"}</span>`,
+    innerHTML: `${icons.vector} <span>AI Suggest</span>`,
     onClick: () => {
       onDismiss();
       triggerSearchAndRender(selectedText);
@@ -185,7 +185,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
   const btnVector = createMenuButton({
     className: 'custom-context-menu-item custom-context-menu-item-primary',
-    innerHTML: `${icons.search} <span>${t('suggest_context_menu') || "AI Suggest"}</span>`,
+    innerHTML: `${icons.search} <span>AI Suggest</span>`,
     onClick: () => {
       onDismiss();
       triggerSearchAndRender(selectedText);
