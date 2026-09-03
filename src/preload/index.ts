@@ -45,7 +45,7 @@ const engineAPI: EngineAPI = {
   openExternal: (url: string) => ipcRenderer.invoke('app:openExternal', url),
   setGoalProfile: (customPath?: string) => ipcRenderer.invoke('engine:setGoalProfile', customPath),
   resetGoalProfile: () => ipcRenderer.invoke('engine:resetGoalProfile'),
-  addKnowledgeSlot: (customPath?: string) => ipcRenderer.invoke('engine:addKnowledgeSlot', customPath),
+  addKnowledgeSlot: (customPath?: string, vencPassword?: string) => ipcRenderer.invoke('engine:addKnowledgeSlot', customPath, vencPassword),
   removeKnowledgeSlot: (slotId: string) => ipcRenderer.invoke('engine:removeKnowledgeSlot', slotId),
   clearAllKnowledgeSlots: () => ipcRenderer.invoke('engine:clearAllKnowledgeSlots'),
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
@@ -62,11 +62,26 @@ const engineAPI: EngineAPI = {
   }
 };
 
+const updaterAPI = {
+  check: () => ipcRenderer.invoke('updater:check'),
+  download: () => ipcRenderer.invoke('updater:download'),
+  quitAndInstall: () => ipcRenderer.invoke('updater:quitAndInstall'),
+  onStatus: (callback: (data: any) => void) => {
+    const handler = (_event: any, data: any) => callback(data);
+    ipcRenderer.on('updater:status', handler);
+    return () => {
+      ipcRenderer.removeListener('updater:status', handler);
+    };
+  }
+};
+
 contextBridge.exposeInMainWorld('engineAPI', engineAPI);
+contextBridge.exposeInMainWorld('updaterAPI', updaterAPI);
 contextBridge.exposeInMainWorld('electronAPI', { invoke: ipcRenderer.invoke });
 
 declare global {
   interface Window {
     engineAPI: EngineAPI;
+    updaterAPI: typeof updaterAPI;
   }
 }

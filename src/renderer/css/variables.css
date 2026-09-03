@@ -2,6 +2,8 @@
   --bg-primary: #123;
   --bg-secondary: #1e293b;
   --header-bg: #080c16;
+  --header-fg: #f8fafc;
+  --editor-fg: #f8fafc;
   --bg-card: rgba(30, 41, 59, 0.7);
   --accent-color: #6366f1;
   --accent-hover: #4f46e5;
@@ -21,6 +23,7 @@
   --modal-shadow: rgba(0, 0, 0, 0.5);
 
   /* Shared Layout Properties */
+  --sidebar-width: 360px;
   --radius-lg: 12px;
   --radius-md: 8px;
   --radius-sm: 4px;
@@ -33,6 +36,8 @@
   --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
   --header-bg: #e2e8f0;
+  --header-fg: #123;
+  --editor-fg: #123;
   --bg-card: rgba(255, 255, 255, 0.9);
   --text-main: #123;
   --text-muted: #64748b;

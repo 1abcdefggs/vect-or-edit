@@ -142,8 +142,8 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
           return rest;
         }));
       }
-    } catch (e) {
-      console.warn(`[App] Error reading slot ${slot.id} (${slot.name}):`, e);
+    } catch (e: any) {
+      console.warn(`[App] Error reading slot ${slot.id} (${slot.name}):`, e?.message || e);
     }
   }
 

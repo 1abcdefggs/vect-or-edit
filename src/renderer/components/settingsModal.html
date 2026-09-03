@@ -253,57 +253,162 @@
                 <div class="setting-label" data-i18n="setting_ai_provider">AI Engine / Provider</div>
                 <div class="setting-desc" data-i18n="setting_ai_provider_desc">Select between 100% Offline Local Model, Google Gemini, OpenAI, or Claude.</div>
               </div>
-              <div class="provider-cards-grid" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
-                <div class="provider-card" data-provider="local" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style=" font-size: 0.8rem; margin-bottom: 2px;">Local AI</div>
-                  <div style="font-size: 0.65rem; color: var(--success-color, #10b981);" data-i18n="card_local_desc">OFFLINE</div>
+              <div class="provider-cards-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+                <div class="provider-card" data-provider="local" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">Local AI</div>
+                  <div style="font-size: 0.65rem; color: var(--success-color, #10b981); font-weight: 500;" data-i18n="card_local_desc">OFFLINE</div>
                 </div>
-                
-                <!-- Local Model Opt-in Control -->
-                <div id="localAiSettingsBlock"
-                  style="display: flex; flex-direction: column; gap: 8px; background: rgba(16, 185, 129, 0.05); padding: 12px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.15);">
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span id="localAiStatusBadge" style="font-size: 0.75rem; color: var(--success-color, #10b981); "
-                      data-i18n="local_ai_status_standby">Local AI: Standby (Offline Mode)</span>
-                    <button id="btnInitLocalAi" class="toolbar-btn"
-                      style="padding: 4px 12px; font-size: 0.75rem;  background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 4px; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                      <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
-                    </button>
+                <div class="provider-card" data-provider="gemini" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">Google Gemini</div>
+                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
+                </div>
+                <div class="provider-card" data-provider="openai" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">OpenAI</div>
+                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
+                </div>
+                <div class="provider-card" data-provider="claude" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">Claude</div>
+                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
+                </div>
+              </div>
+
+              <!-- Local Model Opt-in Control -->
+              <div id="localAiSettingsBlock"
+                style="display: flex; flex-direction: column; gap: 10px; background: rgba(16, 185, 129, 0.05); padding: 14px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.18); margin-top: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span id="localAiStatusBadge" style="font-size: 0.78rem; font-weight: 600; color: var(--success-color, #10b981);"
+                    data-i18n="local_ai_status_standby">Local AI: Standby (Offline Mode)</span>
+                  <button id="btnInitLocalAi" class="toolbar-btn"
+                    style="padding: 5px 14px; font-size: 0.75rem; font-weight: 600; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.25);">
+                    <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
+                  </button>
+                </div>
+                <div class="setting-desc" data-i18n="local_ai_prompt_desc" style="font-size: 0.73rem; color: var(--text-muted); margin: 0;">
+                  Fetches lightweight multilingual embedding model (multilingual-e5-small) for offline vector indexing.
+                </div>
+
+                <!-- Active 384-dim Model Selector -->
+                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+                  <label for="selLocalEmbeddingModel" style="font-size: 0.74rem; color: var(--text-main); font-weight: 600;">
+                    Active Local Embedding Model (384-dim Compatible):
+                  </label>
+                  <select id="selLocalEmbeddingModel" class="toolbar-select" style="padding: 6px 10px; font-size: 0.78rem; border-radius: 6px; background: var(--bg-main, #0b0f19); color: var(--text-main); border: 1px solid var(--border-color);">
+                    <option value="Xenova/multilingual-e5-small" selected>Xenova/multilingual-e5-small (~45MB / Multilingual - JA/EN Default)</option>
+                    <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2 (~23MB / English - Ultra-Fast)</option>
+                    <option value="Xenova/bge-small-en-v1.5">Xenova/bge-small-en-v1.5 (~33MB / English - High Accuracy)</option>
+                  </select>
+                </div>
+
+                <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">
+                    <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
+                    <span id="modalAiDownloadPct">0%</span>
                   </div>
-                  <div class="setting-desc" data-i18n="local_ai_prompt_desc" style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">
-                    Fetches lightweight multilingual embedding model (multilingual-e5-small) for offline vector indexing.
-                  </div>
-                  <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">
-                      <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
-                      <span id="modalAiDownloadPct">0%</span>
-                    </div>
-                    <div style="width: 100%; background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; overflow: hidden;">
-                      <div id="modalAiDownloadProgressBar" style="height: 100%; background: var(--accent-color, #38bdf8); width: 0%; transition: width 0.3s ease;"></div>
-                    </div>
+                  <div style="width: 100%; background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; overflow: hidden;">
+                    <div id="modalAiDownloadProgressBar" style="height: 100%; background: var(--accent-color, #38bdf8); width: 0%; transition: width 0.3s ease;"></div>
                   </div>
                 </div>
 
-                <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0;"></div>
-                
-                <div style="margin-bottom: 4px;">
-                  <div class="setting-label" style="font-size: 0.8rem; color: var(--text-muted);">Cloud API</div>
-                </div>
+                <!-- Text Embedding Models Reference Table (English) -->
+                <details style="margin-top: 6px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 10px; transition: all 0.2s ease;">
+                  <summary style="font-size: 0.74rem; font-weight: 600; color: var(--accent-color, #38bdf8); cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; outline: none; padding: 4px 0;">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      Supported Models Catalog (ONNX / Transformers.js)
+                    </span>
+                    <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal;">Click to view catalog & characteristics ▾</span>
+                  </summary>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                  <div class="provider-card" data-provider="gemini" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                    <div style=" font-size: 0.8rem; margin-bottom: 2px;">Google Gemini</div>
-                    <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
+                  <div style="overflow-x: auto; margin-top: 8px; max-height: 220px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.70rem; color: var(--text-main); line-height: 1.4;">
+                      <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align: left; position: sticky; top: 0; background: var(--bg-secondary, #1e293b); z-index: 1;">
+                          <th style="padding: 4px 6px;">Model Name (HuggingFace ID)</th>
+                          <th style="padding: 4px 6px;">Dimensions</th>
+                          <th style="padding: 4px 6px;">Quantized Size</th>
+                          <th style="padding: 4px 6px;">Language & Characteristics</th>
+                          <th style="padding: 4px 6px; text-align: center;">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- 384-dim (Directly Compatible) -->
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(56, 189, 248, 0.04);" data-model-id="Xenova/multilingual-e5-small">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace); font-weight: 600; color: #38bdf8;">
+                            Xenova/multilingual-e5-small <span class="model-active-badge" style="background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; margin-left: 6px;">Active</span>
+                          </td>
+                          <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
+                          <td style="padding: 5px 6px;">~45 MB</td>
+                          <td style="padding: 5px 6px;">Multilingual (JA/EN/etc). Ultra-fast, low memory footprint.</td>
+                          <td style="padding: 5px 6px; text-align: center;">
+                            <button type="button" class="btn-switch-model" data-model="Xenova/multilingual-e5-small" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                          </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);" data-model-id="Xenova/all-MiniLM-L6-v2">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/all-MiniLM-L6-v2</td>
+                          <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
+                          <td style="padding: 5px 6px;">~23 MB</td>
+                          <td style="padding: 5px 6px;">English standard. Industry gold-standard for ultra-compact embedding.</td>
+                          <td style="padding: 5px 6px; text-align: center;">
+                            <button type="button" class="btn-switch-model" data-model="Xenova/all-MiniLM-L6-v2" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                          </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);" data-model-id="Xenova/bge-small-en-v1.5">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/bge-small-en-v1.5</td>
+                          <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
+                          <td style="padding: 5px 6px;">~33 MB</td>
+                          <td style="padding: 5px 6px;">English specialized. Top-tier MTEB benchmark performance in class.</td>
+                          <td style="padding: 5px 6px; text-align: center;">
+                            <button type="button" class="btn-switch-model" data-model="Xenova/bge-small-en-v1.5" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                          </td>
+                        </tr>
+
+                        <!-- Non 384-dim (Requires Knowledge Re-indexing) -->
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/multilingual-e5-base</td>
+                          <td style="padding: 5px 6px;">768-dim</td>
+                          <td style="padding: 5px 6px;">~220 MB</td>
+                          <td style="padding: 5px 6px;">Multilingual. Balanced precision and richer context representations.</td>
+                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/multilingual-e5-large</td>
+                          <td style="padding: 5px 6px;">1024-dim</td>
+                          <td style="padding: 5px 6px;">~560 MB</td>
+                          <td style="padding: 5px 6px;">Multilingual. Highest accuracy in the e5 series for heavy workloads.</td>
+                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">1024d Index</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/bge-m3</td>
+                          <td style="padding: 5px 6px;">1024-dim</td>
+                          <td style="padding: 5px 6px;">~560 MB</td>
+                          <td style="padding: 5px 6px;">BAAI flagship. Dense & sparse retrieval, supports up to 8192 tokens.</td>
+                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">1024d Index</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">cl-nagoya/sup-simcse-ja-base</td>
+                          <td style="padding: 5px 6px;">768-dim</td>
+                          <td style="padding: 5px 6px;">~110 MB</td>
+                          <td style="padding: 5px 6px;">Japanese specialized sentence embeddings by Nagoya University.</td>
+                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/all-mpnet-base-v2</td>
+                          <td style="padding: 5px 6px;">768-dim</td>
+                          <td style="padding: 5px 6px;">~110 MB</td>
+                          <td style="padding: 5px 6px;">English high-fidelity semantic similarity model.</td>
+                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
+                        </tr>
+                        <tr style="opacity: 0.75;">
+                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">nomic-ai/nomic-embed-text-v1.5</td>
+                          <td style="padding: 5px 6px;">768-dim</td>
+                          <td style="padding: 5px 6px;">~137 MB</td>
+                          <td style="padding: 5px 6px;">Long-context RAG. Supports 8192 tokens with Matryoshka dimension scaling.</td>
+                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <div class="provider-card" data-provider="openai" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                    <div style=" font-size: 0.8rem; margin-bottom: 2px;">OpenAI</div>
-                    <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
-                  </div>
-                  <div class="provider-card" data-provider="claude" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                    <div style=" font-size: 0.8rem; margin-bottom: 2px;">Claude</div>
-                    <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
-                  </div>
-                </div>
+                </details>
               </div>
               <select id="modalAiProviderSelect" class="toolbar-select" style="display: none;">
                 <option value="local" selected data-i18n="opt_provider_local">Local Embeddings (100% Offline)</option>

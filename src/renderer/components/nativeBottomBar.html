@@ -1,17 +1,60 @@
 <div id="nativeBottomBar" style="height: 24px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; font-size: 0.65rem;">
   
   <div style="display: flex; align-items: center; gap: 8px;">
-    <!-- Pipeline Status LEDs removed per user request (kept in systemLogPanel) -->
-    <div id="pipelineStatusLedContainer" style="display: none;"></div>
-
     <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
       <span class="material-symbols-outlined" style="font-size: 1.1rem; flex-shrink: 0;">&#xeb8e;</span>
       <span data-i18n="btn_console">LOGS</span>
       <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: 0.6rem; height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
     </button>
+
+    <div style="width: 1px; height: 12px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></div>
+
+    <!-- Integrated 7-Stage Pipeline Status LED Meter -->
+    <div class="system-status-panel" style="margin: 0; display: flex; align-items: center; gap: 4px;">
+      <span style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; opacity: 0.8; margin-right: 2px;" data-i18n="log_panel_title">PIPELINE</span>
+      <div id="badgeLedConf" class="status-pill" title="1. User Settings: Loading...">
+        <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
+        <span class="status-pill-label" style="font-size: 0.65rem;">1.CONFIG</span>
+      </div>
+      <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <div id="badgeLedThm" class="status-pill" title="2. Theme Palette: Loading...">
+        <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
+        <span class="status-pill-label" style="font-size: 0.65rem;">2.THEME</span>
+      </div>
+      <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <div id="badgeLedI18n" class="status-pill" title="3. Locale i18n: Loading...">
+        <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
+        <span class="status-pill-label" style="font-size: 0.65rem;">3.LOCALE</span>
+      </div>
+      <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <div id="badgeLedMonaco" class="status-pill" title="4. Monaco Editor: Initializing...">
+        <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
+        <span class="status-pill-label" style="font-size: 0.65rem;">4.EDITOR</span>
+      </div>
+      <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <div id="badgeLedBin" class="status-pill" title="5. Rust Binary (DLL): Initializing...">
+        <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
+        <span class="status-pill-label" style="font-size: 0.65rem;">5.RUST</span>
+      </div>
+      <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <div id="badgeLedAi" class="status-pill" title="6. AI Embeddings Model: Initializing...">
+        <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
+        <span class="status-pill-label" style="font-size: 0.65rem;">6.AI-MODEL</span>
+      </div>
+      <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <div id="badgeLedKb" class="status-pill" title="7. Knowledge Base & HNSW: Loading...">
+        <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
+        <span class="status-pill-label" style="font-size: 0.65rem;">7.HNSW</span>
+      </div>
+    </div>
   </div>
 
   <div style="display: flex; align-items: center; gap: 8px;">
+    <div id="updateLedContainer" style="display: none; align-items: center; gap: 4px; color: var(--text-main); cursor: pointer; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2);">
+      <span id="updateLedIcon" class="material-symbols-outlined" style="font-size: 0.95rem; line-height: 1;">&#xe86a;</span>
+      <span id="updateLedText" data-i18n="update_check_label" style="font-size: 0.65rem;">Check Updates</span>
+    </div>
+
     <span class="status-bar-item" style="color: var(--text-main); display: flex; align-items: center; gap: 4px;">
       <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-muted); flex-shrink: 0;">&#xe322;</span>
       <span id="statusMemoryUsage" data-i18n="label_ram">RAM: ~45 MB</span>

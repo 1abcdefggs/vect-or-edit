@@ -9,22 +9,6 @@
   flex-shrink: 0 !important;
 }
 
-.ticker-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #94a3b8;
-  font-size: 0.6rem;
-  padding: 1px 6px;
-  border-radius: 3px;
-  cursor: pointer;
-  line-height: 1;
-}
-
-.ticker-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-}
-
 .toolbar-btn {
   background: transparent;
   border: 1px solid transparent;

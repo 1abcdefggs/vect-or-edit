@@ -1,25 +1,77 @@
 import { setLedStatus } from '../core/statusManager.js';
 import { i18n } from '../core/i18n.js';
 import { renderResults } from './searchUi.js';
+import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
 
 let isLocalAiReady = false;
 let isLocalAiDownloading = false;
 let embeddingWorker = null;
+let isWorkerInitialized = false;
+
+let nextRequestId = 1;
+const pendingRequests = new Map();
+
+export function updateActiveModelBadgeInTable(activeModel) {
+  const table = document.querySelector('#tabAiSearch table');
+  if (!table) return;
+  const targetId = activeModel || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+  
+  // Clear existing Active badges
+  table.querySelectorAll('.model-active-badge').forEach(el => el.remove());
+
+  // Find matching row and attach badge
+  const rows = table.querySelectorAll('tbody tr');
+  rows.forEach(tr => {
+    const textCell = tr.querySelector('td:first-child');
+    if (textCell && textCell.textContent.includes(targetId)) {
+      tr.style.background = 'rgba(56, 189, 248, 0.08)';
+      const badge = document.createElement('span');
+      badge.className = 'model-active-badge';
+      badge.style.cssText = 'background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; margin-left: 6px;';
+      badge.textContent = 'Active';
+      textCell.appendChild(badge);
+    } else {
+      tr.style.background = '';
+    }
+  });
+}
 
 export function initLocalAiWorker(getCurrentResults) {
   if (typeof window === 'undefined') return;
+  if (isWorkerInitialized && embeddingWorker) return;
+  isWorkerInitialized = true;
 
-  window.addEventListener('app:requestLocalAiInit', () => {
-    if (isLocalAiReady || isLocalAiDownloading) return;
+  window.addEventListener('app:requestLocalAiInit', (ev) => {
+    const modelToLoad = ev?.detail?.model || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+    if (isLocalAiDownloading) return;
     isLocalAiDownloading = true;
     if (embeddingWorker) {
-      embeddingWorker.postMessage({ type: 'init' });
+      embeddingWorker.postMessage({ type: 'init', model: modelToLoad });
     }
   });
 
   try {
     embeddingWorker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
     embeddingWorker.addEventListener('message', (e) => {
+      const data = e.data || {};
+      const { requestId, status, error, vector } = data;
+
+      // 1. Route request-specific results
+      if (requestId && pendingRequests.has(requestId)) {
+        const { resolve, reject, timer } = pendingRequests.get(requestId);
+        if (timer) clearTimeout(timer);
+        pendingRequests.delete(requestId);
+
+        if (status === 'complete') {
+          resolve(vector);
+          return;
+        } else if (status === 'error') {
+          reject(new Error(error || 'Worker error'));
+          return;
+        }
+      }
+
+      // 2. Global model download / lifecycle handling
       const modalDownloadProgress = document.getElementById('modalAiDownloadProgress');
       const modalDownloadFile = document.getElementById('modalAiDownloadFile');
       const modalDownloadPct = document.getElementById('modalAiDownloadPct');
@@ -27,11 +79,11 @@ export function initLocalAiWorker(getCurrentResults) {
       const localAiStatusBadge = document.getElementById('localAiStatusBadge');
       const btnInitLocalAi = document.getElementById('btnInitLocalAi');
 
-      if (e.data.status === 'initiate' || e.data.status === 'download' || e.data.status === 'progress') {
-        const pct = e.data.progress !== undefined ? Math.round(e.data.progress) : 0;
-        const fileName = e.data.file || 'AI Model Weights';
+      if (status === 'initiate' || status === 'download' || status === 'progress') {
+        const pct = data.progress !== undefined ? Math.round(data.progress) : 0;
+        const fileName = data.file || 'AI Model Weights';
         setLedStatus('ai', false, `AI Model: Downloading ${pct}%`);
-        window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct, fileName, status: e.data.status } }));
+        window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct, fileName, status } }));
         
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'block';
         if (modalDownloadFile) modalDownloadFile.textContent = `${i18n.downloading_progress || 'Downloading...'} (${fileName})`;
@@ -74,47 +126,54 @@ export function initLocalAiWorker(getCurrentResults) {
           `;
           logContainer.scrollTop = logContainer.scrollHeight;
         }
-      } else if (e.data.status === 'done' || e.data.status === 'ready') {
+      } else if (status === 'done' || status === 'ready') {
         isLocalAiReady = true;
         window.__isLocalAiModelReady = true;
         isLocalAiDownloading = false;
-        setLedStatus('ai', true, '6. AI-MODEL: Ready');
+        const loadedModel = data.model || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+        const modelShortName = loadedModel.split('/').pop();
+        setLedStatus('ai', true, `6. AI-MODEL: Ready (${modelShortName})`);
         window.dispatchEvent(new CustomEvent('app:settingsChanged'));
-        window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct: 100, status: 'ready' } }));
+        window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct: 100, status: 'ready', model: loadedModel } }));
+        updateActiveModelBadgeInTable(loadedModel);
         
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'none';
         const logProgressRow = document.getElementById('logDownloadProgressRow');
         if (logProgressRow) {
           logProgressRow.innerHTML = `
             <div style="display: flex; align-items: center; justify-content: space-between; color: var(--success-color, #10b981); ">
-              <span>[AI Model Download] Complete ✓ (multilingual-e5-small initialized offline)</span>
+              <span>[AI Model Download] Complete ✓ (${modelShortName} initialized offline)</span>
               <span style="background: rgba(16,185,129,0.2); padding: 1px 8px; border-radius: 10px; font-size: 0.7rem;">100% READY</span>
             </div>
           `;
         }
         if (localAiStatusBadge) {
-          localAiStatusBadge.textContent = i18n.local_ai_ready || 'Local AI: Ready (100% Offline)';
+          localAiStatusBadge.textContent = `${i18n.local_ai_ready || 'Local AI: Ready'} (${modelShortName})`;
           localAiStatusBadge.style.color = 'var(--success-color, #10b981)';
         }
         if (btnInitLocalAi) {
           btnInitLocalAi.style.display = 'none';
         }
 
-        const currentResults = getCurrentResults();
-        if (currentResults && currentResults.length > 0) {
-          renderResults(currentResults, false);
+        if (typeof getCurrentResults === 'function') {
+          const currentResults = getCurrentResults();
+          if (currentResults && currentResults.length > 0) {
+            renderResults(currentResults, false);
+          }
         }
-      } else if (e.data.status === 'error') {
+      } else if (status === 'error') {
         isLocalAiDownloading = false;
-        console.warn("Embedding worker reported error:", e.data.error);
-        setLedStatus('ai', false, `AI Model Error: ${e.data.error}`);
+        console.warn("Embedding worker reported error:", error);
+        setLedStatus('ai', false, `AI Model Error: ${error}`);
         if (btnInitLocalAi) {
           btnInitLocalAi.disabled = false;
           btnInitLocalAi.style.opacity = '1';
         }
-        const currentResults = getCurrentResults();
-        if (currentResults && currentResults.length > 0) {
-          renderResults(currentResults, false);
+        if (typeof getCurrentResults === 'function') {
+          const currentResults = getCurrentResults();
+          if (currentResults && currentResults.length > 0) {
+            renderResults(currentResults, false);
+          }
         }
       }
     });
@@ -123,21 +182,29 @@ export function initLocalAiWorker(getCurrentResults) {
   }
 }
 
-export function getVectorFromWorker(text) {
+export function getVectorFromWorker(text, timeoutMs = 8000) {
   return new Promise((resolve, reject) => {
-    if (!embeddingWorker) return reject(new Error("Worker not initialized"));
+    if (!embeddingWorker) {
+      return reject(new Error("Worker not initialized"));
+    }
 
-    const messageHandler = (e) => {
-      if (e.data.status === 'complete') {
-        embeddingWorker.removeEventListener('message', messageHandler);
-        resolve(e.data.vector);
-      } else if (e.data.status === 'error') {
-        embeddingWorker.removeEventListener('message', messageHandler);
-        reject(new Error(e.data.error));
+    const requestId = `req_${nextRequestId++}_${Date.now()}`;
+    
+    const timer = setTimeout(() => {
+      if (pendingRequests.has(requestId)) {
+        pendingRequests.delete(requestId);
+        reject(new Error("Vector computation timeout"));
       }
-    };
+    }, timeoutMs);
 
-    embeddingWorker.addEventListener('message', messageHandler);
-    embeddingWorker.postMessage({ text });
+    pendingRequests.set(requestId, { resolve, reject, timer });
+
+    try {
+      embeddingWorker.postMessage({ text, requestId });
+    } catch (err) {
+      clearTimeout(timer);
+      pendingRequests.delete(requestId);
+      reject(err);
+    }
   });
 }

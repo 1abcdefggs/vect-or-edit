@@ -133,22 +133,9 @@ body.master-ai-standby .header-full-border-line {
   flex-shrink: 0;
 }
 
-.suggestion-sidebar.collapsed .sidebar-header h3 span:last-child,
-.suggestion-sidebar.collapsed .sidebar-header p,
-.suggestion-sidebar.collapsed .dict-control-bar,
-.suggestion-sidebar.collapsed .results-list,
-.suggestion-sidebar.collapsed #btnCopyAllResults {
+.suggestion-sidebar.collapsed .sidebar-header,
+.suggestion-sidebar.collapsed .results-list {
   display: none !important;
-}
-
-.suggestion-sidebar.collapsed .sidebar-header {
-  padding: 8px 4px;
-}
-
-.suggestion-sidebar.collapsed .sidebar-header>div {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .sidebar-header {

@@ -27,8 +27,14 @@ export function updateEditorOptions(options, editorInstances = []) {
   }
 }
 
-export function applyEditorCanvasTone(tone, customBg = null, customFg = null, monacoRef = null) {
-  const monaco = monacoRef || (typeof window !== 'undefined' ? window.monaco : null);
+export async function applyEditorCanvasTone(tone, customBg = null, customFg = null, monacoRef = null) {
+  let monaco = monacoRef || (typeof window !== 'undefined' ? window.monaco : null);
+  if (!monaco || !monaco.editor) {
+    try {
+      monaco = await import('monaco-editor');
+      if (typeof window !== 'undefined') window.monaco = monaco;
+    } catch (_) {}
+  }
   if (!monaco || !monaco.editor) return;
 
   const currentTone = tone || localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';

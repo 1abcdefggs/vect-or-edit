@@ -1,5 +1,6 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { existsSync } from 'fs';
 
 export default defineConfig({
   main: {
@@ -20,6 +21,27 @@ export default defineConfig({
     }
   },
   renderer: {
+    resolve: {
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
+    },
+    plugins: [
+      {
+        name: 'resolve-ts-for-js-imports',
+        resolveId(source, importer) {
+          if (importer && source.endsWith('.js') && (source.startsWith('./') || source.startsWith('../'))) {
+            const resolvedPath = resolve(dirname(importer), source.slice(0, -3) + '.ts');
+            try {
+              if (existsSync(resolvedPath)) {
+                return resolvedPath;
+              }
+            } catch {
+              // fallback
+            }
+          }
+          return null;
+        }
+      }
+    ],
     optimizeDeps: {
       exclude: ['@huggingface/transformers', 'onnxruntime-web']
     },

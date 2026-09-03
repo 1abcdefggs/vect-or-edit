@@ -17,9 +17,12 @@ class PipelineSingleton {
     static instance = null;
     static activeDevice = 'CPU (WebAssembly SIMD)';
 
-    static async getInstance(progress_callback = null) {
-        if (this.instance === null) {
-            // Use ultra-fast, robust, low-memory (45MB) Int8 quantized WASM SIMD
+    static async getInstance(modelName = null, progress_callback = null) {
+        const targetModel = modelName || this.model;
+        if (this.instance === null || this.model !== targetModel) {
+            this.model = targetModel;
+            this.instance = null; // Reset existing pipeline for new model
+            // Use ultra-fast, robust, low-memory Int8 quantized WASM SIMD
             this.instance = await pipeline(this.task, this.model, { 
                 progress_callback,
                 device: 'wasm',
@@ -27,8 +30,8 @@ class PipelineSingleton {
                 dtype: 'q8'
             });
             this.activeDevice = 'CPU (WebAssembly SIMD)';
-            console.log('[Worker] Running on CPU (WebAssembly SIMD, int8 quantized)');
-            self.postMessage({ status: 'ready', device: this.activeDevice });
+            console.log(`[Worker] Running ${this.model} on CPU (WebAssembly SIMD, int8 quantized)`);
+            self.postMessage({ status: 'ready', model: this.model, device: this.activeDevice });
         }
         return this.instance;
     }
@@ -36,35 +39,45 @@ class PipelineSingleton {
 
 // Model will only be initialized when explicitly requested by the user
 self.addEventListener('message', async (event) => {
-    const { text, type } = event.data;
+    const { text, type, model, requestId } = event.data;
     if (type === 'init' || !text) {
-        // Just triggering warmup
+        // Trigger model load or switch
         try {
-            await PipelineSingleton.getInstance(x => self.postMessage(x));
+            await PipelineSingleton.getInstance(model, x => self.postMessage({ ...x, requestId }));
         } catch (err) {
-            self.postMessage({ status: 'error', error: err.message });
+            self.postMessage({ status: 'error', error: err.message, requestId });
         }
         return;
     }
     
     try {
-        let extractor = await PipelineSingleton.getInstance(x => {
-            self.postMessage(x);
+        let extractor = await PipelineSingleton.getInstance(model, x => {
+            self.postMessage({ ...x, requestId });
         });
 
-        // The e5 models require 'query: ' prefix for queries to perform optimally
-        const formattedText = `query: ${text}`;
+        // Apply optimal query prefix per model family
+        let formattedText = text;
+        const currentModel = PipelineSingleton.model.toLowerCase();
+        if (currentModel.includes('e5')) {
+            formattedText = `query: ${text}`;
+        } else if (currentModel.includes('bge')) {
+            formattedText = `Represent this sentence for searching relevant passages: ${text}`;
+        }
 
         let output = await extractor(formattedText, { pooling: 'mean', normalize: true });
 
         self.postMessage({
             status: 'complete',
+            requestId,
+            model: PipelineSingleton.model,
             vector: Array.from(output.data)
         });
     } catch (err) {
         self.postMessage({
             status: 'error',
+            requestId,
             error: err.message
         });
     }
 });
+

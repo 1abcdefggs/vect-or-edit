@@ -5,48 +5,6 @@
     <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
       <!-- Integrated File Save Group -->
       <div class="font-control-integrated-group save-dropdown-container" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px; position: relative;">
-        
-        <style>
-          .save-dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            z-index: 100;
-            flex-direction: column;
-            min-width: 110px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            padding: 4px 0;
-            margin-top: 4px;
-          }
-          .save-dropdown-container:hover .save-dropdown-menu {
-            display: flex;
-          }
-          .save-dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            font-size: 0.75rem;
-          }
-          .save-dropdown-item:hover {
-            background: var(--bg-hover);
-          }
-          .save-dropdown-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-          }
-        </style>
 
         <!-- Combined Save & AutoSave Button -->
         <button id="btnSave" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 4px 0 8px; display: flex; align-items: center; gap: 6px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" data-i18n-title="btn_save">
@@ -76,10 +34,10 @@
         <select id="quickEditorToneSelect" class="editor-toolbar-select" style="max-width: 125px; height: 28px; border: none; background: transparent;"
           data-i18n-title="setting_editor_bg">
           <option value="default" selected data-i18n="tone_default">Tone: Default</option>
-          <option value="dark_oled" data-i18n="tone_dark_oled">Dark: OLED Black</option>
-          <option value="dark_obsidian" data-i18n="tone_dark_obsidian">Dark: Obsidian</option>
-          <option value="dark_charcoal" data-i18n="tone_dark_charcoal">Dark: Charcoal</option>
-          <option value="dark_slate" data-i18n="tone_dark_slate">Dark: Slate</option>
+          <option value="oled" data-i18n="tone_dark_oled">Dark: OLED Black</option>
+          <option value="obsidian" data-i18n="tone_dark_obsidian">Dark: Obsidian</option>
+          <option value="charcoal" data-i18n="tone_dark_charcoal">Dark: Charcoal</option>
+          <option value="slate" data-i18n="tone_dark_slate">Dark: Slate</option>
         </select>
       </div>
 
@@ -108,18 +66,6 @@
         </select>
       </div>
 
-      <!-- Markdown Copy/Paste Group -->
-      <div class="font-control-integrated-group" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px;">
-        <button id="btnMarkdownCopy" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 8px; display: flex; align-items: center; gap: 4px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" title="Copy as Markdown">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #818cf8; flex-shrink: 0;">&#xf553;</span>
-          <span class="icon-label-text" style="font-size: 0.72rem;">Copy</span>
-        </button>
-        <span style="display: inline-block; width: 1px; height: 14px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
-        <button id="btnMarkdownPaste" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 8px; display: flex; align-items: center; gap: 4px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" title="Paste Markdown">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #818cf8; flex-shrink: 0;">&#xf554;</span>
-          <span class="icon-label-text" style="font-size: 0.72rem;">Paste</span>
-        </button>
-      </div>
 
       <!-- Right: Editor AI Toggle Chip Button (matching Sidebar AI component) -->
       <button id="btnEditorAiToggle" class="toolbar-btn"

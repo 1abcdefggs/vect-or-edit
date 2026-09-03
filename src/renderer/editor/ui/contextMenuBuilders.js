@@ -183,37 +183,55 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
   const menu = document.createElement('div');
   menu.className = 'custom-context-menu context-menu-full pattern-a-vertical';
 
-  const btnVector = createMenuButton({
-    className: 'custom-context-menu-item custom-context-menu-item-primary',
-    innerHTML: `${icons.search} <span>AI Suggest</span>`,
-    onClick: () => {
-      onDismiss();
-      triggerSearchAndRender(selectedText);
-    }
-  });
-  menu.appendChild(btnVector);
+  const hasText = !!(selectedText && selectedText.trim());
 
-  const btnGoogle = createMenuButton({
-    className: 'custom-context-menu-item',
-    innerHTML: `${icons.google} <span>${t('action_google_search') || "Search with Google"}</span>`,
-    onClick: () => {
-      onDismiss();
-      const url = `https://www.google.com/search?q=${encodeURIComponent(selectedText.trim())}`;
-      if (window.engineAPI?.openExternal) window.engineAPI.openExternal(url);
-      else window.open(url, '_blank');
-    }
-  });
-  menu.appendChild(btnGoogle);
+  if (hasText) {
+    const btnVector = createMenuButton({
+      className: 'custom-context-menu-item custom-context-menu-item-primary',
+      innerHTML: `${icons.search} <span>AI Suggest</span>`,
+      onClick: () => {
+        onDismiss();
+        triggerSearchAndRender(selectedText);
+      }
+    });
+    menu.appendChild(btnVector);
 
-  const separator1 = document.createElement('div');
-  separator1.className = 'custom-context-menu-separator';
-  menu.appendChild(separator1);
+    const btnGoogle = createMenuButton({
+      className: 'custom-context-menu-item',
+      innerHTML: `${icons.google} <span>${t('action_google_search') || "Search with Google"}</span>`,
+      onClick: () => {
+        onDismiss();
+        const url = `https://www.google.com/search?q=${encodeURIComponent(selectedText.trim())}`;
+        if (window.engineAPI?.openExternal) window.engineAPI.openExternal(url);
+        else window.open(url, '_blank');
+      }
+    });
+    menu.appendChild(btnGoogle);
 
-  const standardActions = [
-    { label: 'Copy', icon: icons.copy, action: () => navigator.clipboard.writeText(selectedText) },
-    { label: 'Cut', icon: icons.cut, action: () => { navigator.clipboard.writeText(selectedText); insertTextIntoEditor(''); } },
-    { label: 'Paste', icon: icons.paste, action: async () => { const text = await navigator.clipboard.readText(); if (text) insertTextIntoEditor(text); } },
-  ];
+    const separator1 = document.createElement('div');
+    separator1.className = 'custom-context-menu-separator';
+    menu.appendChild(separator1);
+  }
+
+  const standardActions = [];
+  if (hasText) {
+    standardActions.push(
+      { label: 'Copy', icon: icons.copy, action: () => navigator.clipboard.writeText(selectedText) },
+      { label: 'Cut', icon: icons.cut, action: () => { navigator.clipboard.writeText(selectedText); insertTextIntoEditor(''); } }
+    );
+  } else {
+    standardActions.push(
+      { label: 'Copy All', icon: icons.copy, action: () => {
+        const editor = window.monacoEditorInstance;
+        const allText = editor?.getValue() || '';
+        if (allText) navigator.clipboard.writeText(allText);
+      }}
+    );
+  }
+
+  standardActions.push(
+    { label: 'Paste', icon: icons.paste, action: async () => { const text = await navigator.clipboard.readText(); if (text) insertTextIntoEditor(text); } }
+  );
 
   standardActions.forEach(act => {
     const btn = createMenuButton({
