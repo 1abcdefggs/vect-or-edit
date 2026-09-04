@@ -64,21 +64,30 @@ export function initAiSetup(onComplete) {
 
       // Start Download / Init Process
       const progressArea = document.getElementById('aiSetupProgressArea');
-      progressArea.style.display = 'block';
+      if (progressArea) progressArea.style.display = 'block';
 
-      // Hook up to worker download events (a bit hacky but works for UI)
-      window.addEventListener('ai_progress', (e) => {
-        const { progress } = e.detail;
-        document.getElementById('aiSetupProgressPct').textContent = `${Math.round(progress)}%`;
-        document.getElementById('aiSetupProgressBar').style.width = `${progress}%`;
-      });
+      // Clean up any existing listeners before adding new one
+      const handleAiProgress = (e) => {
+        const { pct, status } = e.detail || {};
+        if (status === 'initiate' || status === 'download' || status === 'progress') {
+          const progress = pct !== undefined ? pct : 0;
+          const pctEl = document.getElementById('aiSetupProgressPct');
+          const barEl = document.getElementById('aiSetupProgressBar');
+          if (pctEl) pctEl.textContent = `${Math.round(progress)}%`;
+          if (barEl) barEl.style.width = `${progress}%`;
+        } else if (status === 'ready' || status === 'done') {
+          window.removeEventListener('app:aiModelProgress', handleAiProgress);
+          finalizeSetup();
+        } else if (status === 'error') {
+          window.removeEventListener('app:aiModelProgress', handleAiProgress);
+          showToast('Failed to download AI model.', 'error');
+          if (progressArea) progressArea.style.display = 'none';
+        }
+      };
 
-      window.addEventListener('ai_ready', () => {
-        finalizeSetup();
-      });
+      window.addEventListener('app:aiModelProgress', handleAiProgress);
 
-      // trigger initialization
-      initLocalAiWorker(() => { });
+      // trigger initialization via single clean seam
       window.dispatchEvent(new CustomEvent('app:requestLocalAiInit'));
     } else if (selected === 'none') {
       localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, 'none');

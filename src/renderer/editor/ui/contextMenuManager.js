@@ -28,7 +28,7 @@ function calculateMenuPosition(x, y, width, height) {
 
 export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, triggerType = 'selection') {
   removeContextMenu();
-  if (!selectedText || !selectedText.trim()) return;
+  if (triggerType === 'selection' && (!selectedText || !selectedText.trim())) return;
 
   const mode = localStorage.getItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
   if (triggerType === 'selection' && mode === 'manual') return;

@@ -183,19 +183,87 @@ export async function updateSemanticStateDisplay() {
   }
 }
 
+function promptForPassword(filePath) {
+  return new Promise((resolve) => {
+    const filename = filePath.split(/[\\/]/).pop();
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(2px);';
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = 'background:var(--bg-panel);border:1px solid var(--border-color);border-radius:8px;padding:20px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:15px;font-family:inherit;';
+    
+    const title = document.createElement('div');
+    title.textContent = `Encrypted Knowledge Slot`;
+    title.style.cssText = 'font-weight:600;color:var(--text-color);font-size:15px;';
+    
+    const desc = document.createElement('div');
+    desc.textContent = `Password required for: ${filename}`;
+    desc.style.cssText = 'color:var(--text-muted);font-size:12px;word-break:break-all;';
+    
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.placeholder = 'Enter password...';
+    input.style.cssText = 'padding:10px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-input);color:var(--text-color);outline:none;font-size:14px;';
+    
+    const btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;justify-content:flex-end;gap:10px;margin-top:5px;';
+    
+    const btnCancel = document.createElement('button');
+    btnCancel.textContent = 'Cancel';
+    btnCancel.style.cssText = 'padding:6px 12px;border:1px solid var(--border-color);border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;';
+    
+    const btnSubmit = document.createElement('button');
+    btnSubmit.textContent = 'Unlock';
+    btnSubmit.style.cssText = 'padding:6px 12px;border:none;border-radius:4px;background:var(--accent-color, #007acc);color:#fff;cursor:pointer;font-size:13px;';
+    
+    btnRow.appendChild(btnCancel);
+    btnRow.appendChild(btnSubmit);
+    
+    modal.appendChild(title);
+    modal.appendChild(desc);
+    modal.appendChild(input);
+    modal.appendChild(btnRow);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    input.focus();
+    
+    const cleanup = () => document.body.removeChild(overlay);
+    
+    btnCancel.onclick = () => { cleanup(); resolve(null); };
+    btnSubmit.onclick = () => { cleanup(); resolve(input.value); };
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter') { cleanup(); resolve(input.value); }
+      if (e.key === 'Escape') { cleanup(); resolve(null); }
+    };
+  });
+}
+
 export async function addKnowledgeSlot() {
   if (window.engineAPI && window.engineAPI.addKnowledgeSlot) {
     try {
-      const res = await window.engineAPI.addKnowledgeSlot();
+      let res = await window.engineAPI.addKnowledgeSlot();
+      if (res && res.requiresPassword) {
+        const pwd = await promptForPassword(res.filePath);
+        if (pwd) {
+          res = await window.engineAPI.addKnowledgeSlot(res.filePath, pwd);
+        } else {
+          return null;
+        }
+      }
       if (res && res.success) {
         if (res.data) setKnowledgeItems(res.data);
         await updateSemanticStateDisplay();
         resetVectorSearchResults();
         refreshLinter();
         return res;
+      } else if (res && !res.success) {
+        const errorMsg = res.errorCode ? t(res.errorCode, res.errorParams || {}) : (res.error || t('error_slot_add', { message: 'Unknown' }));
+        alert(errorMsg);
       }
     } catch (err) {
       console.error("Failed to add knowledge slot:", err);
+      alert(t('error_slot_add', { message: err.message }));
     }
   }
   return null;

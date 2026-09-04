@@ -2,16 +2,9 @@
 
 > **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
-
-<p align="center">v0.3.1 
-  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.1 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
+<p align="center"><b>v0.3.2</b><br/>
+  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.2 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
 </p>
-
-
-<p align="center">v0.2.0
-  <img src="docs/assets/repository-ui-v020.gif" alt="VectOrEditOr v0.2.0 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
-</p>
-
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Electron](https://img.shields.io/badge/Electron-31.x-47848F?style=flat-square&logo=electron&logoColor=white)](https://www.electronjs.org/)
@@ -24,20 +17,29 @@
 [![100% Offline](https://img.shields.io/badge/Privacy-100%25_Offline_Local-success?style=flat-square&logo=privateinternetaccess&logoColor=white)](https://github.com/1abcdefggs/vect-or-edit)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square)](https://github.com/1abcdefggs/vect-or-edit/pulls)
 
-**VectOrEditOr** is a standalone, high-performance desktop editor designed for knowledge management, structured document drafting, and real-time semantic validation. It seamlessly integrates a native Rust-powered vector indexing engine (HNSW) with local transformer embeddings and Monaco Editor.
+**VectOrEditOr** is a standalone, high-performance desktop editor designed for knowledge management, structured document drafting, and real-time semantic validation. It seamlessly integrates a native Rust-powered vector indexing engine (HNSW) with local transformer embeddings, multi-provider AI connectors, and Monaco Editor.
 
 ---
 
-## ✨ Features
+## ✨ Core Features & Capabilities
 
-- **⚡ Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting via N-API native bindings.
-- **🔒 100% Offline & Private (Local Mode)**: Zero external telemetry. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
-- **⌨️ Monaco IntelliSense Integration**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and classification codes (e.g., ICD-10) with instant docs preview.
-- **🔍 Streamlined Selection Mini-Bar**: Select any text to immediately trigger semantic vector matching or external search with mutual context-menu exclusion.
+- **⚡ Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting powered by native Rust N-API bindings (`@1abcdefggs/vect-or-engine`).
+- **🔒 100% Offline & Private (Local Mode)**: Zero external telemetry required. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
+- **🤖 Hybrid AI Provider Integration**: Seamless switching between Local Offline Embeddings, Google Gemini (`@google/genai`), OpenAI, and Anthropic Claude.
+- **⌨️ Monaco IntelliSense & Semantic Linter**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and international terminology with instant documentation hover previews.
+- **🔍 Streamlined Selection Popover & Widget**: Select any text to immediately trigger semantic vector matching or external queries with intelligent context-menu exclusion.
 - **🧩 Dynamic Multi-Slot Knowledge & Clinical Presets**: Load, merge, and inspect multiple domain JSON slots (`kb_*.json`) or clinical drafting templates (`preset_*.json`) dynamically.
 - **🎨 Curated Modern Themes & Windows TitleBar Overlay**: Bundled with `Dracula`, `GitHub Dark`, `GitHub Light`, `Monokai`, `Night Owl`, syncing with Windows native control buttons.
 - **🌐 Dynamic Bilingual UI (i18n)**: Seamless English & Japanese live switching without restart.
 - **📏 Real-Time Diagnostic Pipeline**: 7-stage LED status indicators monitoring Rust DLL, Knowledge Base, Config, Theme, Locale, Monaco, and AI Engine.
+
+---
+
+## 🆕 What's New in v0.3.2
+
+- **Deep Module Architecture**: Refactored `searchLocalAi.js` with idempotent worker management and `requestId`-based message routing to eliminate request collision, listener accumulation, and infinite event loops.
+- **Project Structure Optimization**: Consolidated test suites under `tests/`, removed legacy duplicate `.js` files, and streamlined TypeScript renderer imports.
+- **SDK & Dependency Updates**: Upgraded `@google/genai` to `2.21.0` with full type verification.
 
 ---
 
@@ -46,6 +48,7 @@
 - **Unified AI Toggles**: Seamless styling and state synchronization for `SUGGEST AI` toggles between the Editor Header and Sidebar.
 - **Smart Suggestion Layout**: Auto-collapsing "Guideline" and "Knowledge" modules during Vector Search to maximize suggestion visibility.
 - **Refined Settings & UI**: Removed legacy positioning settings, unified English fallbacks (e.g., `OFFLINE`, `CLOUD`), and added missing translation keys.
+
 ---
 
 ## 🚀 Getting Started
@@ -91,14 +94,18 @@ vect-or-edit/
 ├── package.json                 # Project dependencies & scripts
 ├── public/                      # Static assets (icon.png, IME dicts)
 ├── docs/                        # Architecture & settings specifications
+├── tests/                       # Vitest automated test suites
 └── src/
     ├── main/                    # Electron Main process (IPC handlers, Window management)
     ├── preload/                 # Secure Context-Isolated IPC bridge
-    └── renderer/                # Front-end UI (Vanilla JS/CSS, Monaco Editor, Web Workers)
+    └── renderer/                # Front-end UI (TypeScript/Vanilla CSS, Monaco, Web Workers)
+        ├── core/                # State managers (aiStateManager, statusManager, i18n, icons)
+        ├── editor/              # Monaco editor core, tabs, themes, context menus
+        ├── search/              # Vector search, local AI worker, dictionary pipeline
+        ├── ui/                  # UI components, modals, topbar, settings facade
         ├── assets/              # App branding & icons
         ├── locales/             # i18n dictionaries (en.json, ja.json)
-        ├── themes/              # Monaco theme JSON definitions
-        └── *.js / style.css     # Core UI managers (vectorSearch, statusManager, etc.)
+        └── themes/              # Monaco theme JSON definitions
 ```
 
 ---

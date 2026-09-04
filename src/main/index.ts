@@ -45,6 +45,13 @@ app.whenReady().then(async () => {
     path.join(__dirname, '../renderer/index.html')
   );
 
+  const mainWindow = getMainWindow();
+  if (mainWindow) {
+    import('./autoUpdater').then(({ setupAutoUpdater }) => {
+      setupAutoUpdater(mainWindow);
+    }).catch(err => console.error("Failed to setup auto updater", err));
+  }
+
   // --- File System IPC ---
   ipcMain.handle('app:saveFile', (_event, content, defaultName, forceDialog) => saveFile(content, defaultName, forceDialog));
   ipcMain.handle('app:openFile', () => openFile());
@@ -162,18 +169,39 @@ app.whenReady().then(async () => {
         }
 
         let count = 0;
+        let arr: any[] = [];
         try {
           if (isVenc && _vault && resolvedPassword) {
+            console.log(`[App] Decrypting ${fp} with password length: ${resolvedPassword.length}`);
             const rawBuf = await fsPromises.readFile(fp);
-            const arr = await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword);
-            count = Array.isArray(arr) ? arr.length : 0;
+            arr = await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword);
           } else if (!isVenc) {
             const raw = await fsPromises.readFile(fp, 'utf-8');
-            const arr = JSON.parse(raw);
-            count = Array.isArray(arr) ? arr.length : 0;
+            arr = JSON.parse(raw);
           }
         } catch (e) {
-          count = 0;
+          arr = [];
+        }
+
+        if (Array.isArray(arr) && arr.length > 0) {
+          const firstItem = arr[0];
+          if (!firstItem.vector || !Array.isArray(firstItem.vector)) {
+            console.warn(`[App] File ${base} lacks vector embeddings.`);
+            return { 
+              success: false, 
+              errorCode: 'error_slot_no_vector',
+              errorParams: { file: base },
+              error: `File "${base}" contains no vector embeddings.`
+            };
+          }
+          count = arr.length;
+        } else if (arr.length === 0) {
+          return { 
+            success: false, 
+            errorCode: 'error_slot_empty',
+            errorParams: { file: base },
+            error: `File "${base}" is empty or could not be loaded.`
+          };
         }
 
         knowledgeSlots.push({

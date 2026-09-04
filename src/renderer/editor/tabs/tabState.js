@@ -12,8 +12,21 @@ export function getActiveTab() {
 }
 
 function generateDefaultDocumentTitle() {
-  const num = tabCounter++;
-  return `Doc-${num}.md`;
+  const existingNums = new Set();
+  const pattern = /^Doc-(\d+)\.md$/i;
+  for (const tab of tabs) {
+    if (tab.title) {
+      const match = tab.title.match(pattern);
+      if (match) {
+        existingNums.add(parseInt(match[1], 10));
+      }
+    }
+  }
+  let n = 1;
+  while (existingNums.has(n)) {
+    n++;
+  }
+  return `Doc-${n}.md`;
 }
 
 export function createNewTab(title = null, initialContent = '', filePath = null) {

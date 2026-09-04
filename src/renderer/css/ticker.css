@@ -253,8 +253,8 @@
 .system-log-panel {
   position: relative;
   flex-shrink: 0;
-  height: 180px;
-  max-height: 35vh;
+  height: 220px;
+  max-height: 40vh;
   background: #111111;
   border-top: 1px solid var(--border-color);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.35);

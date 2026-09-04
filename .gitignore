@@ -16,6 +16,12 @@ coverage/
 Thumbs.db
 *.log
 .agents/
-docs/
+
+_CODE_REVIEW/
+pre/
 ARCHITECTURE_DECISIONS.md
 CONTEXT.md
+
+# Test artifacts
+test_original.json
+test.venc

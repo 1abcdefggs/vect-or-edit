@@ -76,25 +76,21 @@ export function setupEditorContextMenu(editor, container) {
       }
     }
 
-    if (text && text.length > 0) {
-      const targetPos = selection && !selection.isEmpty()
-        ? { lineNumber: selection.endLineNumber, column: selection.startColumn }
-        : (e.target?.position || { lineNumber: 1, column: 1 });
+    const mouseEvent = e.event?.browserEvent;
+    let posX = mouseEvent ? mouseEvent.pageX : 100;
+    let posY = mouseEvent ? mouseEvent.pageY : 100;
 
-      const scrolledPos = editor.getScrolledVisiblePosition(targetPos);
-      let posX, posY;
+    const targetPos = selection && !selection.isEmpty()
+      ? { lineNumber: selection.endLineNumber, column: selection.startColumn }
+      : (e.target?.position || { lineNumber: 1, column: 1 });
 
-      if (scrolledPos) {
-        const containerRect = container.getBoundingClientRect();
-        posX = containerRect.left + scrolledPos.left;
-        posY = containerRect.top + scrolledPos.top + 32;
-      } else {
-        const mouseEvent = e.event?.browserEvent;
-        posX = mouseEvent ? mouseEvent.pageX : (e.target?.element?.getBoundingClientRect()?.left || 100);
-        posY = (mouseEvent ? mouseEvent.pageY : (e.target?.element?.getBoundingClientRect()?.top || 100)) + 20;
-      }
-
-      showSelectionPopoverMenu(posX, posY, text, null, 'context');
+    const scrolledPos = editor.getScrolledVisiblePosition(targetPos);
+    if (scrolledPos && !mouseEvent) {
+      const containerRect = container.getBoundingClientRect();
+      posX = containerRect.left + scrolledPos.left;
+      posY = containerRect.top + scrolledPos.top + 32;
     }
+
+    showSelectionPopoverMenu(posX, posY, text || '', null, 'context');
   });
 }

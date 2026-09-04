@@ -90,6 +90,7 @@ export async function initEditor() {
   monacoContainer.innerHTML = '';
 
   if (!monaco) monaco = await import('monaco-editor');
+  if (typeof window !== 'undefined') window.monaco = monaco;
   await registerAllMonacoThemes();
   const currentTheme = getTheme();
   try {
@@ -149,6 +150,7 @@ export async function initEditor() {
   });
 
   isEditorInitializing = false;
+  if (typeof window !== 'undefined') window.monacoEditorInstance = monacoEditorInstance;
   editorEvents.emit('onEditorInitialized');
 
   const btnNewTab = document.getElementById('btnNewTab');

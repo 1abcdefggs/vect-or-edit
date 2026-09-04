@@ -38,8 +38,15 @@ export function initAiControls() {
         if (btnHeaderModelSettings) {
           const icon = btnHeaderModelSettings.querySelector('.material-symbols-outlined');
           const text = btnHeaderModelSettings.querySelector('.icon-label-text');
-          if (icon) { icon.innerHTML = 'error'; icon.style.color = '#ef4444'; }
-          if (text) { text.textContent = 'No Model'; text.style.color = '#ef4444'; text.style.fontWeight = 'bold'; }
+          if (icon) { icon.innerHTML = 'warning'; icon.style.color = '#f59e0b'; }
+          if (text) {
+            text.textContent = t('ai_model_unset') || 'No Model';
+            text.style.color = '#f59e0b';
+            text.style.fontWeight = '600';
+          }
+          btnHeaderModelSettings.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+          btnHeaderModelSettings.style.background = 'rgba(245, 158, 11, 0.08)';
+          btnHeaderModelSettings.title = t('ai_model_unset_toast') || 'No AI model configured. Click to configure.';
         }
       } else {
         masterAiTogglePill.classList.remove('disabled');
@@ -53,12 +60,15 @@ export function initAiControls() {
           let modelName = 'Model';
           const provider = localStorage.getItem('ai_provider') || 'local';
           if (provider === 'local') modelName = 'e5-small (Local)';
-          else if (provider === 'gemini') modelName = localStorage.getItem('gemini_model') || 'Gemini';
+          else if (provider === 'gemini') modelName = localStorage.getItem('gemini_model') || 'Gemini 1.5';
           else if (provider === 'openai') modelName = localStorage.getItem('openai_model') || 'GPT-4o';
-          else if (provider === 'claude') modelName = localStorage.getItem('claude_model') || 'Claude';
+          else if (provider === 'claude') modelName = localStorage.getItem('claude_model') || 'Claude 3.5';
 
           if (icon) { icon.innerHTML = '&#xf3aa;'; icon.style.color = 'var(--accent-color, #38bdf8)'; }
           if (text) { text.textContent = modelName; text.style.color = ''; text.style.fontWeight = ''; }
+          btnHeaderModelSettings.style.borderColor = '';
+          btnHeaderModelSettings.style.background = '';
+          btnHeaderModelSettings.title = t('ai_model_badge_tooltip') || 'AI Model Settings';
         }
       }
     }
@@ -153,9 +163,9 @@ export function initAiControls() {
     if (btnSettings) {
       btnSettings.click();
       setTimeout(() => {
-        const aiTabBtn = document.querySelector('.settings-tab-btn[data-tab="ai"]');
+        const aiTabBtn = document.querySelector('.settings-tab-btn[data-tab="tabAiSearch"]');
         if (aiTabBtn) aiTabBtn.click();
-      }, 60);
+      }, 50);
     }
   }
 
@@ -191,22 +201,42 @@ export function initAiControls() {
   if (btnEditorAiToggle) {
     btnEditorAiToggle.addEventListener('click', () => {
       const state = aiManager.getState();
-      if (!state.master) {
-        showToast(t('toast_turn_master_ai_on_first'), 'warning');
+      if (!state.modelConfigured) {
+        showToast(t('ai_model_unset_toast'), 'warning');
+        openAiSettingsTab();
         return;
       }
-      aiManager.setEditorAi(!state.editor);
+      if (!state.master) {
+        // Auto-turn on Master AI when user wants to use Editor AI
+        aiManager.setMasterAi(true);
+        aiManager.setEditorAi(true);
+        showToast(t('toast_editor_ai_auto_enabled'), 'success');
+        return;
+      }
+      const nextEditor = !state.editor;
+      aiManager.setEditorAi(nextEditor);
+      showToast(nextEditor ? t('toast_editor_ai_on') : t('toast_editor_ai_off'), nextEditor ? 'success' : 'info');
     });
   }
 
   if (btnSidebarAiToggle) {
     btnSidebarAiToggle.addEventListener('click', () => {
       const state = aiManager.getState();
-      if (!state.master) {
-        showToast(t('toast_turn_master_ai_on_first'), 'warning');
+      if (!state.modelConfigured) {
+        showToast(t('ai_model_unset_toast'), 'warning');
+        openAiSettingsTab();
         return;
       }
-      aiManager.setSidebarAi(!state.sidebar);
+      if (!state.master) {
+        // Auto-turn on Master AI when user wants to use Suggest AI
+        aiManager.setMasterAi(true);
+        aiManager.setSidebarAi(true);
+        showToast(t('toast_sidebar_ai_auto_enabled'), 'success');
+        return;
+      }
+      const nextSidebar = !state.sidebar;
+      aiManager.setSidebarAi(nextSidebar);
+      showToast(nextSidebar ? t('toast_sidebar_ai_on') : t('toast_sidebar_ai_off'), nextSidebar ? 'success' : 'info');
     });
   }
 }

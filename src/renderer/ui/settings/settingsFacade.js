@@ -6,6 +6,8 @@ import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { importDictionary } from '../../search/dictionary.js';
 import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, updateAutoSaveUI } from '../../editor/editorManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
+import { showToast } from '../notifications/toastManager.js';
+import { updateActiveModelBadgeInTable } from '../../search/searchLocalAi.js';
 
 function setAndSync(key, value) {
   localStorage.setItem(key, value);
@@ -310,6 +312,8 @@ export function initSettings(updateEditorCb) {
     }
     if (e.target === quickEditorToneSelect && modalEditorBgSelect) {
       modalEditorBgSelect.value = quickEditorToneSelect.value;
+      const selectedOption = quickEditorToneSelect.options[quickEditorToneSelect.selectedIndex];
+      if (selectedOption) showToast(`Editor ${selectedOption.text}`, 'info');
     } else if (e.target === modalEditorBgSelect && quickEditorToneSelect) {
       quickEditorToneSelect.value = modalEditorBgSelect.value;
     }
@@ -467,9 +471,40 @@ export function initSettings(updateEditorCb) {
 
   if (btnInitLocalAi) {
     btnInitLocalAi.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit'));
+      const targetModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: targetModel } }));
     });
   }
+
+  // 384-dim Local Embedding Model Switching
+  const selLocalEmbeddingModel = document.getElementById('selLocalEmbeddingModel');
+  const storedLocalModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+  if (selLocalEmbeddingModel) {
+    selLocalEmbeddingModel.value = storedLocalModel;
+    selLocalEmbeddingModel.addEventListener('change', () => {
+      const selectedModel = selLocalEmbeddingModel.value;
+      setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, selectedModel);
+      const modelShortName = selectedModel.split('/').pop();
+      showToast(`Switched model to ${modelShortName}. Initializing...`, 'info');
+      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: selectedModel } }));
+      updateAiModelBadge();
+    });
+  }
+
+  // Handle table "Use" action buttons
+  document.querySelectorAll('.btn-switch-model').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetModel = btn.getAttribute('data-model');
+      if (targetModel) {
+        if (selLocalEmbeddingModel) selLocalEmbeddingModel.value = targetModel;
+        setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, targetModel);
+        const modelShortName = targetModel.split('/').pop();
+        showToast(`Selected ${modelShortName}. Initializing...`, 'info');
+        window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: targetModel } }));
+        updateAiModelBadge();
+      }
+    });
+  });
 
   const btnModalImportDict = document.getElementById('btnModalImportDict');
   if (btnModalImportDict) {
@@ -492,40 +527,34 @@ export function initSettings(updateEditorCb) {
   }
 
   // AI Model Badge updater & switcher
-  // AI Model Badge updater & switcher
   function updateAiModelBadge() {
     const badgeEl = document.getElementById('activeAiModelBadge');
     const dotEl = document.getElementById('activeAiModelStatusDot');
     if (!badgeEl) return;
     const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
 
+    const state = (window.aiManager && window.aiManager.getState) ? window.aiManager.getState() : { sidebar: true };
+    const isSidebarOn = state.sidebar !== false;
+
     if (provider === 'none') {
-      if (dotEl) dotEl.style.color = 'var(--text-muted, #94a3b8)';
-      badgeEl.textContent = 'OFF: Disabled';
+      if (dotEl) dotEl.style.color = '#ef4444';
+      badgeEl.textContent = 'Suggest AI OFF';
       badgeEl.parentElement?.setAttribute('title', 'AI Suggestion is currently disabled. Click to enable in Settings.');
       return;
     }
 
-    if (dotEl) dotEl.style.color = 'var(--success-color, #10b981)';
-
-    if (provider === 'gemini') {
-      const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-      const modelShort = model.replace('gemini-', '');
-      badgeEl.textContent = `ON: Cloud (Gemini ${modelShort})`;
-      badgeEl.parentElement?.setAttribute('title', `Active: Cloud AI (Gemini ${modelShort}). Click to configure.`);
-    } else if (provider === 'openai') {
-      const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
-      badgeEl.textContent = `ON: Cloud (OpenAI ${model})`;
-      badgeEl.parentElement?.setAttribute('title', `Active: Cloud AI (OpenAI ${model}). Click to configure.`);
-    } else if (provider === 'claude') {
-      const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
-      const shortName = model.includes('haiku') ? 'Haiku' : 'Sonnet';
-      badgeEl.textContent = `ON: Cloud (Claude ${shortName})`;
-      badgeEl.parentElement?.setAttribute('title', `Active: Cloud AI (Claude ${shortName}). Click to configure.`);
-    } else {
-      badgeEl.textContent = `ON: Local (E5-Small ONNX)`;
-      badgeEl.parentElement?.setAttribute('title', 'Active: Local On-Device AI (E5-Small ONNX / Zero Cloud Leak). Click to configure.');
+    if (provider === 'local') {
+      const currentModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+      const shortName = currentModel.split('/').pop();
+      badgeEl.textContent = isSidebarOn ? `${shortName}` : `${shortName} (OFF)`;
+      if (dotEl) dotEl.style.color = isSidebarOn ? 'var(--success-color, #10b981)' : '#ef4444';
+      badgeEl.parentElement?.setAttribute('title', `Local AI Model: ${currentModel}. Click to configure.`);
+      return;
     }
+
+    if (dotEl) dotEl.style.color = isSidebarOn ? 'var(--success-color, #10b981)' : '#ef4444';
+    badgeEl.textContent = isSidebarOn ? `${provider.toUpperCase()} AI ON` : `${provider.toUpperCase()} AI OFF`;
+    badgeEl.parentElement?.setAttribute('title', `AI Suggestion: ${isSidebarOn ? 'ON' : 'OFF'}. Click to configure.`);
   }
 
   updateAiModelBadge();
@@ -543,6 +572,9 @@ export function initSettings(updateEditorCb) {
     modalTabContents.forEach(c => {
       if (c.id === tabId) {
         c.classList.add('active');
+        if (tabId === 'tabAiSearch') {
+          updateActiveModelBadgeInTable();
+        }
       } else {
         c.classList.remove('active');
       }

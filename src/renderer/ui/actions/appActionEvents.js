@@ -40,18 +40,51 @@ export function bindAppActionEvents() {
     document.body.classList.add('window-active');
   }
 
-  // Sidebar header toggle
+  // Sidebar header toggle & Collapsed Rail
   if (btnHeaderToggleSidebar && suggestionSidebar) {
-    btnHeaderToggleSidebar.addEventListener('click', () => {
-      suggestionSidebar.classList.toggle('collapsed');
-      const isCollapsed = suggestionSidebar.classList.contains('collapsed');
-      btnHeaderToggleSidebar.style.background = isCollapsed ? 'transparent' : 'rgba(56, 189, 248, 0.15)';
-      btnHeaderToggleSidebar.style.color = isCollapsed ? 'var(--text-main)' : 'var(--accent-color, #38bdf8)';
+    const updateSidebarState = (collapsed) => {
+      if (collapsed) {
+        suggestionSidebar.classList.add('collapsed');
+      } else {
+        suggestionSidebar.classList.remove('collapsed');
+      }
+      btnHeaderToggleSidebar.style.background = collapsed ? 'transparent' : 'rgba(56, 189, 248, 0.15)';
+      btnHeaderToggleSidebar.style.color = collapsed ? 'var(--text-main)' : 'var(--accent-color, #38bdf8)';
       setTimeout(() => {
         const ed = window.__monacoEditorInstance || null;
         if (ed?.layout) ed.layout();
       }, 210);
+    };
+
+    btnHeaderToggleSidebar.addEventListener('click', () => {
+      const isCurrentlyCollapsed = suggestionSidebar.classList.contains('collapsed');
+      updateSidebarState(!isCurrentlyCollapsed);
     });
+
+    const btnRailGuideline = document.getElementById('btnRailGuideline');
+    const btnRailKnowledge = document.getElementById('btnRailKnowledge');
+
+    if (btnRailGuideline) {
+      btnRailGuideline.addEventListener('click', () => {
+        updateSidebarState(false);
+        const card = document.getElementById('guidelineModuleCard');
+        if (card) {
+          card.classList.remove('collapsed');
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    if (btnRailKnowledge) {
+      btnRailKnowledge.addEventListener('click', () => {
+        updateSidebarState(false);
+        const card = document.getElementById('knowledgeModuleCard');
+        if (card) {
+          card.classList.remove('collapsed');
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
   }
 
   if (btnChangeGoal) {
