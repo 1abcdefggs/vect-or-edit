@@ -7,7 +7,6 @@ bin-release/
 installer-release/
 .vite/
 coverage/
-*pre/
 
 # OS / Environment
 .env
@@ -17,6 +16,7 @@ Thumbs.db
 *.log
 .agents/
 
+_DEVELOP/
 _CODE_REVIEW/
 pre/
 ARCHITECTURE_DECISIONS.md
