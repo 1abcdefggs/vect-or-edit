@@ -1,17 +1,21 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.2",
-  "description": "VectOrEdit - Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
+  "version": "0.3.3",
+  "description": "VectOrEditOr - Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
     "editor",
     "markdown",
-    "knowledge-base",
-    "rust",
     "monaco-editor",
+    "knowledge-base",
     "vector-search",
-    "offline"
+    "semantic-search",
+    "rust",
+    "hnsw",
+    "local-ai",
+    "offline",
+    "local-first"
   ],
   "main": "out/main/index.js",
   "author": "1abcdefggs",

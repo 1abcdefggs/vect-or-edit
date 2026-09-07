@@ -2,8 +2,8 @@
 
 > **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
-<p align="center"><b>v0.3.2</b><br/>
-  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.2 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
+<p align="center"><b>v0.3.3</b><br/>
+  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.3 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -13,7 +13,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Rust N-API](https://img.shields.io/badge/Rust-N--API_Engine-DEA584?style=flat-square&logo=rust&logoColor=black)](https://napi.rs/)
 [![ONNX Runtime Web](https://img.shields.io/badge/ONNX-WebAssembly_WASM-005CED?style=flat-square&logo=onnx&logoColor=white)](https://onnxruntime.ai/)
-[![HuggingFace Transformers](https://img.shields.io/badge/%F0%9F%A4%97_Transformers.js-Local_Embeddings-FFD21E?style=flat-square)](https://huggingface.co/docs/transformers.js)
+[![HuggingFace Transformers](https://img.shields.io/badge/Transformers.js-Local_Embeddings-FFD21E?style=flat-square)](https://huggingface.co/docs/transformers.js)
+[![Google GenAI SDK](https://img.shields.io/badge/Google_GenAI_SDK-2.21.0-4285F4?style=flat-square&logo=google&logoColor=white)](https://github.com/googleapis/genai-js)
+[![Vitest](https://img.shields.io/badge/Tested_with-Vitest-6E9F18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Platform](https://img.shields.io/badge/Platform-Windows_10%2F11-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/1abcdefggs/vect-or-edit)
 [![100% Offline](https://img.shields.io/badge/Privacy-100%25_Offline_Local-success?style=flat-square&logo=privateinternetaccess&logoColor=white)](https://github.com/1abcdefggs/vect-or-edit)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square)](https://github.com/1abcdefggs/vect-or-edit/pulls)
 
@@ -21,37 +25,32 @@
 
 ---
 
-## ✨ Core Features & Capabilities
+## Core Features & Capabilities
 
-- **⚡ Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting powered by native Rust N-API bindings (`@1abcdefggs/vect-or-engine`).
-- **🔒 100% Offline & Private (Local Mode)**: Zero external telemetry required. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
-- **🤖 Hybrid AI Provider Integration**: Seamless switching between Local Offline Embeddings, Google Gemini (`@google/genai`), OpenAI, and Anthropic Claude.
-- **⌨️ Monaco IntelliSense & Semantic Linter**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and international terminology with instant documentation hover previews.
-- **🔍 Streamlined Selection Popover & Widget**: Select any text to immediately trigger semantic vector matching or external queries with intelligent context-menu exclusion.
-- **🧩 Dynamic Multi-Slot Knowledge & Clinical Presets**: Load, merge, and inspect multiple domain JSON slots (`kb_*.json`) or clinical drafting templates (`preset_*.json`) dynamically.
-- **🎨 Curated Modern Themes & Windows TitleBar Overlay**: Bundled with `Dracula`, `GitHub Dark`, `GitHub Light`, `Monokai`, `Night Owl`, syncing with Windows native control buttons.
-- **🌐 Dynamic Bilingual UI (i18n)**: Seamless English & Japanese live switching without restart.
-- **📏 Real-Time Diagnostic Pipeline**: 7-stage LED status indicators monitoring Rust DLL, Knowledge Base, Config, Theme, Locale, Monaco, and AI Engine.
-
----
-
-## 🆕 What's New in v0.3.2
-
-- **Deep Module Architecture**: Refactored `searchLocalAi.js` with idempotent worker management and `requestId`-based message routing to eliminate request collision, listener accumulation, and infinite event loops.
-- **Project Structure Optimization**: Consolidated test suites under `tests/`, removed legacy duplicate `.js` files, and streamlined TypeScript renderer imports.
-- **SDK & Dependency Updates**: Upgraded `@google/genai` to `2.21.0` with full type verification.
+- **Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting powered by native Rust N-API bindings (`@1abcdefggs/vect-or-engine`).
+- **100% Offline & Private (Local Mode)**: Zero external telemetry required. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
+- **Hybrid AI Provider Integration**: Seamless switching between Local Offline Embeddings, Google Gemini (`@google/genai`), OpenAI, and Anthropic Claude.
+- **Monaco IntelliSense & Semantic Linter**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and international terminology with instant documentation hover previews.
+- **Streamlined Selection Popover & Widget**: Select any text to immediately trigger semantic vector matching or external queries with intelligent context-menu exclusion.
+- **Dynamic Multi-Slot Knowledge & Presets**: Load, merge, and inspect multiple domain JSON slots (`kb_*.json`) or drafting templates dynamically.
+- **Curated Modern Themes & Windows TitleBar Overlay**: Bundled with `Dracula`, `GitHub Dark`, `GitHub Light`, `Monokai`, `Night Owl`, syncing with Windows native control buttons.
+- **Dynamic Bilingual UI (i18n)**: Seamless English & Japanese live switching without restart.
+- **Real-Time Diagnostic Pipeline**: 7-stage LED status indicators monitoring Rust DLL, Knowledge Base, Config, Theme, Locale, Monaco, and AI Engine.
 
 ---
 
-## 🆕 What's New in v0.3.1
+## What's New in v0.3.3
 
-- **Unified AI Toggles**: Seamless styling and state synchronization for `SUGGEST AI` toggles between the Editor Header and Sidebar.
-- **Smart Suggestion Layout**: Auto-collapsing "Guideline" and "Knowledge" modules during Vector Search to maximize suggestion visibility.
-- **Refined Settings & UI**: Removed legacy positioning settings, unified English fallbacks (e.g., `OFFLINE`, `CLOUD`), and added missing translation keys.
+- **Electron Security Hardening**: Fully encapsulated IPC context bridge (`engineAPI.querySemantics`), eliminating raw `ipcRenderer.invoke` exposure in accordance with official Electron security standards. Added runtime argument validation in main IPC handlers.
+- **Domain-Neutral Architecture**: Decoupled domain-specific medical ontologies to ensure `vect-or-edit` remains a 100% generic desktop vector knowledge editor.
+- **Window Lifecycle**: Added macOS `activate` event handler for clean window restoration.
+- **UI & Modal Fixes**: Resolved CSS inflation bugs causing toast and modal sizing overflow.
+
+See full release history in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -73,6 +72,16 @@ npm install
 npm run dev
 ```
 
+### Testing & Quality Assurance
+
+```bash
+# Run automated test suites (Vitest)
+npm run test
+
+# Type checking across main, preload, and renderer
+npm run typecheck
+```
+
 ### Building for Production & Windows `.exe`
 
 ```bash
@@ -85,7 +94,16 @@ npm run build:win
 
 ---
 
-## 🛠️ Project Architecture
+## Security Architecture & Dual-Lock Spec
+
+`vect-or-edit` follows the official **Electron Security Guidelines**:
+- **Context Isolation & Sandbox**: Renderer runs with complete process isolation.
+- **Typed IPC Bridge**: Direct `ipcRenderer.invoke` is strictly prohibited. Only explicit, typed methods (`engineAPI.querySemantics`) are exposed via `contextBridge`.
+- **Knowledge Vault & Decryption**: Complies with the system-wide [Security and Encryption Architecture Specification](file:///c:/VectOrEditOr-dev/docs/domain-and-pipeline-rules/SECURITY_AND_ENCRYPTION_ARCHITECTURE_SPEC.md).
+
+---
+
+## Project Architecture
 
 ```
 vect-or-edit/
@@ -110,6 +128,7 @@ vect-or-edit/
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
+
