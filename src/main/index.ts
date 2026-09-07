@@ -52,6 +52,17 @@ app.whenReady().then(async () => {
     }).catch(err => console.error("Failed to setup auto updater", err));
   }
 
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow(
+        path.join(__dirname, '../preload/index.cjs'),
+        process.env['ELECTRON_RENDERER_URL'] || '',
+        path.join(__dirname, '../renderer/index.html')
+      );
+    }
+  });
+
+
   // --- File System IPC ---
   ipcMain.handle('app:saveFile', (_event, content, defaultName, forceDialog) => saveFile(content, defaultName, forceDialog));
   ipcMain.handle('app:openFile', () => openFile());
@@ -70,6 +81,38 @@ app.whenReady().then(async () => {
     if (!isRustEngineReady()) return { success: false, error: 'Knowledge base not ready' };
     return handleSearchVector({ vector, topK: limit });
   });
+
+  ipcMain.handle('semantics:query', async (_event, queryText: string, contextText?: string) => {
+    try {
+      const activeProf = getActiveProfile();
+      const rules = activeProf?.rules || [];
+      const alerts: any[] = [];
+      if (Array.isArray(rules)) {
+        for (const r of rules) {
+          if (r.pattern && typeof r.pattern === 'string' && queryText.includes(r.pattern)) {
+            alerts.push({
+              severity: r.severity || 'Warning',
+              message: r.message || `Matched rule pattern: ${r.pattern}`
+            });
+          }
+        }
+      }
+      const matches: any[] = [];
+      const stripped: any[] = [];
+      for (const items of slotItemsCache.values()) stripped.push(...items);
+      for (const item of stripped) {
+        const name = item.name || item.id || '';
+        if (name && typeof name === 'string' && name.toLowerCase().includes(queryText.toLowerCase())) {
+          matches.push(item);
+          if (matches.length >= 10) break;
+        }
+      }
+      return { success: true, data: { alerts, matches } };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  });
+
 
   ipcMain.handle('embedder:getPath', () => {
     return customEmbedderPath || path.join(process.cwd(), 'node_modules/@vect-or-engine/core/models/onnx');

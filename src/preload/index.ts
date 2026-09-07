@@ -59,7 +59,8 @@ const engineAPI: EngineAPI = {
   },
   installUpdate: function (): Promise<void> {
     throw new Error('Function not implemented.');
-  }
+  },
+  querySemantics: (query: string, context?: string) => ipcRenderer.invoke('semantics:query', query, context)
 };
 
 const updaterAPI = {
@@ -77,7 +78,7 @@ const updaterAPI = {
 
 contextBridge.exposeInMainWorld('engineAPI', engineAPI);
 contextBridge.exposeInMainWorld('updaterAPI', updaterAPI);
-contextBridge.exposeInMainWorld('electronAPI', { invoke: ipcRenderer.invoke });
+
 
 declare global {
   interface Window {

@@ -71,13 +71,14 @@ async function embedText(text) {
 
 // ------- IPC helper -------
 function invoke(channel, ...args) {
-  if (window.electronAPI?.invoke) return window.electronAPI.invoke(channel, ...args);
-  if (window.ipcRenderer?.invoke) return window.ipcRenderer.invoke(channel, ...args);
-  // Preload bridge (contextBridge style)
-  const api = window.electronAPI ?? window.api;
+  if (channel === 'semantics:query' && window.engineAPI?.querySemantics) {
+    return window.engineAPI.querySemantics(args[0], args[1]);
+  }
+  const api = window.engineAPI;
   if (api?.[channel]) return api[channel](...args);
-  return Promise.resolve({ success: false, error: 'IPC not available' });
+  return Promise.resolve({ success: false, error: 'IPC channel not mapped' });
 }
+
 
 // ------- main pipeline -------
 

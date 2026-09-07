@@ -184,8 +184,7 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
         }
       }
 
-      const invokeIpc = window.electronAPI?.invoke ?? window.ipcRenderer?.invoke;
-      if (invokeIpc) {
+      if (window.engineAPI?.querySemantics) {
         let context;
         if (targetEditor) {
           try {
@@ -203,7 +202,8 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
           } catch { /* ignore */ }
         }
 
-        const semRes = await invokeIpc('semantics:query', query, context);
+        const semRes = await window.engineAPI.querySemantics(query, context);
+
         if (semRes?.success && semRes.data) {
           const { alerts = [], matches = [] } = semRes.data;
 
