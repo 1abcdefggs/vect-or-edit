@@ -1,8 +1,8 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.4",
-  "description": "VectOrEditOr - Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
+  "version": "0.3.5",
+  "description": "VectOrEdit ,Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
     "editor",
@@ -32,8 +32,9 @@
     "clean": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} ['dist','out','release','bin-release','build-dist','installer-release'].forEach(d => fs.rmSync(d, {recursive:true, force:true})); const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){fs.rmSync(appData, {recursive:true, force:true});}\"",
     "clear": "npm run clean",
     "prebuild": "npm run clean",
-    "predev": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){try{fs.rmSync(appData, {recursive:true, force:true});}catch(e){}}\"",
+    "predev": "node -e \"const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){}\"",
     "dev": "electron-vite dev",
+    "dev:reset": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){fs.rmSync(appData, {recursive:true, force:true}); console.log('VectOrEdit development app data reset.');}\"",
     "build": "electron-vite build",
     "build:win": "electron-vite build && electron-builder --win",
     "dist": "electron-builder",
