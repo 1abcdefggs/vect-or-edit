@@ -112,9 +112,14 @@ export interface EngineAPI {
   onSystemLog: (callback: (log: SystemLogEntry) => void) => () => void;
   claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
+  saveGeminiApiKey: (apiKey: string) => Promise<{ success: boolean; error?: string }>;
+  hasGeminiApiKey: () => Promise<boolean>;
+  listGeminiModels: () => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }>>;
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   importKnowledgeBase: () => Promise<ImportKnowledgeBaseResponse>;
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => Promise<{ success: boolean; error?: string }>;
+  clearCache: () => Promise<{ success: boolean; error?: string }>;
+  restartApp: () => Promise<void>;
   getSemanticState: () => Promise<SemanticState>;
   openExternal: (url: string) => Promise<{ success: boolean; error?: string }>;
   setGoalProfile: (customPath?: string) => Promise<{ success: boolean; goal?: any; filePath?: string; error?: string }>;

@@ -1,4 +1,4 @@
-import { app, ipcMain, BrowserWindow, shell, dialog } from 'electron';
+import { app, ipcMain, BrowserWindow, shell, dialog, session } from 'electron';
 
 import path from 'node:path';
 import fs from 'node:fs';
@@ -21,7 +21,7 @@ import {
   clearKnowledgeSlots
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
-import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest } from './ai/aiServices';
+import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, hasStoredGeminiApiKey, listGeminiModels, saveGeminiApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 
@@ -85,7 +85,10 @@ if (!gotTheLock) {
 
     // --- AI Suggest IPC ---
     ipcMain.handle('app:claudeSemanticSuggest', (_event, payload) => fetchClaudeSemanticSuggest(payload.prompt, payload.apiKey, payload.model));
-    ipcMain.handle('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, payload.apiKey, payload.model));
+    ipcMain.handle('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, undefined, payload.model));
+    ipcMain.handle('app:saveGeminiApiKey', (_event, apiKey: string) => saveGeminiApiKey(apiKey));
+    ipcMain.handle('app:hasGeminiApiKey', () => hasStoredGeminiApiKey());
+    ipcMain.handle('app:listGeminiModels', () => listGeminiModels());
     ipcMain.handle('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, payload.apiKey, payload.model));
 
     // --- Engine IPC ---
@@ -457,6 +460,20 @@ if (!gotTheLock) {
         console.warn('[App] Could not update titleBarOverlay:', err);
         return { success: false, error: err.message };
       }
+    });
+
+    ipcMain.handle('app:clearCache', async () => {
+      try {
+        await session.defaultSession.clearCache();
+        return { success: true };
+      } catch (err: any) {
+        return { success: false, error: err.message };
+      }
+    });
+
+    ipcMain.handle('app:restart', () => {
+      app.relaunch();
+      app.exit(0);
     });
 
     ipcMain.handle('app:validateDocument', async (_event, text: string) => {
