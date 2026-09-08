@@ -54,11 +54,20 @@ const engineAPI: EngineAPI = {
   isWindowMaximized: () => ipcRenderer.invoke('window:isMaximized'),
   setZoomFactor: (factor: number) => webFrame.setZoomFactor(factor),
   getZoomFactor: () => webFrame.getZoomFactor(),
-  checkUpdate: function (): Promise<{ hasUpdate: boolean; version?: string; releaseDate?: string; }> {
-    throw new Error('Function not implemented.');
+  checkUpdate: async () => {
+    try {
+      const res = await ipcRenderer.invoke('updater:check');
+      return res || { hasUpdate: false };
+    } catch {
+      return { hasUpdate: false };
+    }
   },
-  installUpdate: function (): Promise<void> {
-    throw new Error('Function not implemented.');
+  installUpdate: async () => {
+    try {
+      await ipcRenderer.invoke('updater:quitAndInstall');
+    } catch (e) {
+      console.warn('[Updater] installUpdate error:', e);
+    }
   },
   querySemantics: (query: string, context?: string) => ipcRenderer.invoke('semantics:query', query, context)
 };

@@ -96,8 +96,8 @@ export interface EngineAPI {
   getEmbedderPath: () => Promise<string>;
   setEmbedderPath: (path: string) => Promise<{ success: boolean; error?: string }>;
   searchVector: (vector: number[], limit?: number) => Promise<SearchVectorResponse>;
-  saveFile: (content: string, defaultName?: string) => Promise<{ success: boolean, path?: string, error?: string }>;
-  openFile: () => Promise<{ success: boolean, path?: string, content?: string, error?: string }>;
+  saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => Promise<{ success: boolean, path?: string, filePath?: string, error?: string }>;
+  openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, error?: string }>;
   openWorkspace: () => Promise<{ success: boolean, path?: string, error?: string }>;
   getDefaultWorkspace: (createIfMissing?: boolean) => Promise<{ success: boolean, path?: string, exists?: boolean, error?: string }>;
   loadSettings: () => Promise<{ success: boolean, settings?: any, error?: string }>;

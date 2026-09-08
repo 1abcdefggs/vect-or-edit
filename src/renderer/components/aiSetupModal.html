@@ -18,14 +18,14 @@
             <span data-i18n="ai_setup_local_title">Local AI Model</span>
             <span style="font-size: 0.65rem; padding: 2px 6px; background: var(--accent-color); color: #fff; border-radius: 4px;" data-i18n="ai_setup_recommended">Recommended</span>
           </div>
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
-            <span data-i18n="ai_setup_local_desc1">Runs completely offline with zero risk of data leakage. Model download required on first use. (Downloaded to app cache)</span>
-            <br>
-            <span style="font-size: 0.75rem; color: var(--text-muted); opacity: 0.8;" data-i18n="ai_setup_local_desc2">* Can be changed later in settings. A dedicated page for searching and downloading other AI models is planned.</span>
-          </div>
+          <ul style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px 0; padding-left: 16px; line-height: 1.5; display: flex; flex-direction: column; gap: 3px;">
+            <li data-i18n="ai_setup_local_feat_offline">Completely Offline: Zero data leakage risk (no outbound traffic)</li>
+            <li data-i18n="ai_setup_local_feat_download">Initial Setup: Download model once (stored in app cache)</li>
+            <li data-i18n="ai_setup_local_feat_settings" style="font-size: 0.75rem; opacity: 0.85;">Configurable: Can be changed in Settings (model store page planned)</li>
+          </ul>
           <div id="aiSetupLocalOptions" style="display: flex; flex-direction: column; gap: 8px;">
             <select id="aiSetupLocalModel" class="toolbar-input" size="3" style="width: 100%; padding: 6px; background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden;">
-              <option value="Xenova/multilingual-e5-small" data-i18n="ai_setup_model_e5">multilingual-e5-small (45MB / Lightweight & Fast)</option>
+              <option value="Xenova/multilingual-e5-small" selected data-i18n="ai_setup_model_e5">multilingual-e5-small (45MB / Lightweight & Fast)</option>
               <option value="Xenova/bge-small-en-v1.5" data-i18n="ai_setup_model_bge">bge-small-en (45MB / English only, high accuracy)</option>
               <option value="nomic-ai/nomic-embed-text-v1.5" data-i18n="ai_setup_model_nomic">nomic-embed-text (137MB / High accuracy)</option>
             </select>
@@ -79,8 +79,8 @@
     </div>
 
     <div style="padding: 16px 32px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px;">
-      <button id="btnAiSetupCancel" class="btn" style="padding: 6px 16px;" data-i18n="btn_cancel">Cancel</button>
-      <button id="btnAiSetupSave" class="btn primary" style="padding: 6px 24px;" data-i18n="btn_save_start">Save & Start</button>
+      <button id="btnAiSetupCancel" class="btn" style="padding: 6px 16px;" data-i18n="btn_ai_setup_later">あとで</button>
+      <button id="btnAiSetupSave" class="btn primary" style="padding: 6px 24px;" data-i18n="btn_download_start">Download & Start</button>
     </div>
   </div>
 </div>

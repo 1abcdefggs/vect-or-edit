@@ -1,6 +1,7 @@
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { initLocalAiWorker } from '../../search/searchLocalAi.js';
 import { showToast } from '../notifications/toastManager.js';
+import { applyI18n, t } from '../../core/i18n';
 
 let setupCompleteCallback = null;
 
@@ -10,6 +11,9 @@ export function initAiSetup(onComplete) {
   const overlay = document.getElementById('aiSetupModalOverlay');
   if (!overlay) return;
 
+  // Apply internationalization translations to modal components
+  applyI18n();
+
   const radios = document.querySelectorAll('input[name="ai_setup_provider"]');
   const cloudOptions = document.getElementById('aiSetupCloudOptions');
   const localOptions = document.getElementById('aiSetupLocalOptions');
@@ -17,26 +21,30 @@ export function initAiSetup(onComplete) {
   const btnSave = document.getElementById('btnAiSetupSave');
   const btnCancel = document.getElementById('btnAiSetupCancel');
 
+  const updateSaveButtonText = (provider) => {
+    if (btnSave) {
+      if (provider === 'local') {
+        btnSave.textContent = t('btn_download_start') || 'Download & Start';
+      } else {
+        btnSave.textContent = t('btn_save_start') || 'Save & Start';
+      }
+    }
+  };
+
   radios.forEach(radio => {
     radio.addEventListener('change', (e) => {
       const val = e.target.value;
       cloudOptions.style.display = val === 'cloud' ? 'flex' : 'none';
       localOptions.style.display = val === 'local' ? 'flex' : 'none';
       
-      // Update button text dynamically
-      if (val === 'local') {
-        btnSave.textContent = 'Download & Start';
-      } else {
-        btnSave.textContent = 'Save & Start';
-      }
+      // Update button text dynamically using i18n
+      updateSaveButtonText(val);
     });
   });
 
   // Set initial button text based on default selection
-  const initialSelected = document.querySelector('input[name="ai_setup_provider"]:checked')?.value;
-  if (initialSelected === 'local') {
-    btnSave.textContent = 'Download & Start';
-  }
+  const initialSelected = document.querySelector('input[name="ai_setup_provider"]:checked')?.value || 'local';
+  updateSaveButtonText(initialSelected);
 
   btnSave.addEventListener('click', async () => {
     const selected = document.querySelector('input[name="ai_setup_provider"]:checked')?.value;
@@ -58,7 +66,8 @@ export function initAiSetup(onComplete) {
 
       finalizeSetup();
     } else if (selected === 'local') {
-      const model = document.getElementById('aiSetupLocalModel').value;
+      const modelSelect = document.getElementById('aiSetupLocalModel');
+      const model = modelSelect?.value || DEFAULTS.LOCAL_EMBEDDING_MODEL;
       localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, 'local');
       localStorage.setItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, model);
 
@@ -88,7 +97,7 @@ export function initAiSetup(onComplete) {
       window.addEventListener('app:aiModelProgress', handleAiProgress);
 
       // trigger initialization via single clean seam
-      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit'));
+      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model } }));
     } else if (selected === 'none') {
       localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, 'none');
       finalizeSetup();
@@ -106,6 +115,7 @@ export function initAiSetup(onComplete) {
 export function showAiSetupModal() {
   const overlay = document.getElementById('aiSetupModalOverlay');
   if (overlay) {
+    applyI18n();
     overlay.style.display = 'flex';
   }
 }
