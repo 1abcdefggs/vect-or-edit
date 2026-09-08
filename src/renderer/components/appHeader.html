@@ -4,75 +4,204 @@
       <img src="./assets/icon.png" alt="VectOrEditOr" class="logo-icon">
       <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">VectOrEditOr</span>
     </div>
-    <!-- Workspace Folder Button (Native Frame) -->
-    <button id="btnOpen" class="toolbar-btn"
-      style="height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; transition: color 0.2s ease; -webkit-app-region: no-drag; color: var(--text-main); white-space: nowrap;"
-      data-i18n-title="btn_open"
-      onmouseover="this.style.color='var(--accent-color, #38bdf8)'"
-      onmouseout="this.style.color='var(--text-main)'">
-      <span id="iconFolderClosed" class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-main); flex-shrink: 0; display: block;">&#xe2cc;</span>
-      <span id="iconFolderOpen" class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8); flex-shrink: 0; display: none;">&#xe2cc;</span>
-      <span class="icon-label-text" style="font-size: 0.75rem; font-weight: 600;" data-i18n="label_workspace">Workspace</span>
-    </button>
 
-    <!-- Master AI Power Switch: Clean borderless style with Active Model Info -->
-    <div id="masterAiContainer"
-      style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 0; background: transparent; -webkit-app-region: no-drag; border: none; box-shadow: none; flex-shrink: 0;">
-      
-      <span
-        style="font-size: 0.72rem;  color: var(--text-main); display: flex; align-items: center; gap: 4px;">
-        <span id="masterAiStatusDot" class="material-symbols-outlined" style="color: #ef4444; font-size: 1.1rem; transition: color 0.3s ease;">&#xe989;</span>
-        <span class="icon-label-text" data-i18n="master_ai_label">Master AI</span>
-      </span>
-
-      <!-- Seamless ON/OFF Toggle Pill -->
-      <div id="masterAiTogglePill" class="master-ai-pill" title="Toggle Master AI" style="flex-shrink: 0;">
-        <div class="pill-slider"></div>
-        <span class="pill-label pill-off">OFF</span>
-        <span class="pill-label pill-on">ON</span>
+    <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
+    <nav id="appMenuBar" class="app-menu-bar" aria-label="Application Menu" style="-webkit-app-region: no-drag;">
+      <!-- File Menu -->
+      <div class="menu-bar-item" data-menu="file">
+        <button class="menu-bar-btn" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_file">File</button>
+        <div class="menu-dropdown" id="menuDropdownFile" role="menu">
+          <button class="menu-dropdown-item" id="menuItemNewFile" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_new">New File</span>
+            <span class="menu-accelerator">Ctrl+N</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemOpenFile" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_open">Open File...</span>
+            <span class="menu-accelerator">Ctrl+O</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemOpenWorkspace" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_open_workspace">Open Workspace...</span>
+            <span class="menu-accelerator">Ctrl+K Ctrl+O</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemSaveFile" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_save">Save</span>
+            <span class="menu-accelerator">Ctrl+S</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemSaveAs" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_save_as">Save As...</span>
+            <span class="menu-accelerator">Ctrl+Shift+S</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemSaveAll" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_save_all">Save All</span>
+            <span class="menu-accelerator">Ctrl+K S</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemCloseTab" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_close">Close Tab</span>
+            <span class="menu-accelerator">Ctrl+W</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemExit" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_file_exit">Exit</span>
+            <span class="menu-accelerator">Alt+F4</span>
+          </button>
+        </div>
       </div>
 
-      <div style="width: 1px; height: 14px; background: rgba(255,255,255,0.1); margin: 0 2px;"></div>
+      <!-- Edit Menu -->
+      <div class="menu-bar-item" data-menu="edit">
+        <button class="menu-bar-btn" id="menuBtnEdit" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_edit">Edit</button>
+        <div class="menu-dropdown" id="menuDropdownEdit" role="menu">
+          <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_edit_undo">Undo</span>
+            <span class="menu-accelerator">Ctrl+Z</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemRedo" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_edit_redo">Redo</span>
+            <span class="menu-accelerator">Ctrl+Y</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemCut" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_edit_cut">Cut</span>
+            <span class="menu-accelerator">Ctrl+X</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemCopy" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_edit_copy">Copy</span>
+            <span class="menu-accelerator">Ctrl+C</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemPaste" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_edit_paste">Paste</span>
+            <span class="menu-accelerator">Ctrl+V</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemSelectAll" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_edit_select_all">Select All</span>
+            <span class="menu-accelerator">Ctrl+A</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- View Menu -->
+      <div class="menu-bar-item" data-menu="view">
+        <button class="menu-bar-btn" id="menuBtnView" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_view">View</button>
+        <div class="menu-dropdown" id="menuDropdownView" role="menu">
+          <button class="menu-dropdown-item" id="menuItemToggleSidebar" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_view_toggle_sidebar">Toggle Suggest Sidebar</span>
+            <span class="menu-accelerator">Ctrl+B</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemToggleLogs" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_view_toggle_logs">Toggle System Logs</span>
+            <span class="menu-accelerator">Ctrl+J</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemZoomIn" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_view_zoom_in">Zoom In</span>
+            <span class="menu-accelerator">Ctrl+=</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemZoomOut" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_view_zoom_out">Zoom Out</span>
+            <span class="menu-accelerator">Ctrl+-</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemResetZoom" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_view_reset_zoom">Reset Zoom</span>
+            <span class="menu-accelerator">Ctrl+0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Window Menu -->
+      <div class="menu-bar-item" data-menu="window">
+        <button class="menu-bar-btn" id="menuBtnWindow" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_window">Window</button>
+        <div class="menu-dropdown" id="menuDropdownWindow" role="menu">
+          <button class="menu-dropdown-item" id="menuItemMinimize" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_window_minimize">Minimize</span>
+            <span class="menu-accelerator">Win+Down</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemMaximize" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_window_maximize">Toggle Maximize</span>
+            <span class="menu-accelerator">Win+Up</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemCloseWindow" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_window_close">Close Window</span>
+            <span class="menu-accelerator">Alt+F4</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Help Menu -->
+      <div class="menu-bar-item" data-menu="help">
+        <button class="menu-bar-btn" id="menuBtnHelp" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_help">Help</button>
+        <div class="menu-dropdown" id="menuDropdownHelp" role="menu">
+          <button class="menu-dropdown-item" id="menuItemAiSetup" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_help_ai_setup">AI Engine Setup...</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemOpenSettings" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_help_settings">Preferences & Settings...</span>
+            <span class="menu-accelerator">Ctrl+,</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemDocs" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_help_docs">Documentation</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemAbout" role="menuitem" type="button">
+            <span class="menu-item-label" data-i18n="menu_help_about">About VectOrEditOr</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Master AI & Model Integrated Group: Slim, borderless & space-optimized -->
+    <div id="masterAiContainer"
+      style="display: flex; align-items: center; gap: 5px; height: 26px; padding: 0 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); -webkit-app-region: no-drag; flex-shrink: 0;">
+      
+      <div style="display: flex; align-items: center; gap: 4px; padding: 0 2px;">
+        <span id="masterAiStatusDot" class="material-symbols-outlined" style="color: #ef4444; font-size: 0.95rem; transition: color 0.3s ease;">&#xe989;</span>
+        <span class="icon-label-text" style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.3px;" data-i18n="master_ai_label">AI</span>
+      </div>
+
+      <!-- Seamless ON/OFF Toggle Pill -->
+      <div id="masterAiTogglePill" class="master-ai-pill" title="Toggle Master AI" style="width: 48px; height: 18px; flex-shrink: 0;">
+        <div class="pill-slider" style="width: 22px; height: 14px; top: 1px; left: 1px;"></div>
+        <span class="pill-label pill-off" style="font-size: 0.5rem;">OFF</span>
+        <span class="pill-label pill-on" style="font-size: 0.5rem;">ON</span>
+      </div>
+
+      <div style="width: 1px; height: 12px; background: var(--border-color); margin: 0 1px; opacity: 0.7;"></div>
 
       <!-- Model Settings Button -->
       <button id="btnHeaderModelSettings" class="toolbar-btn header-action-btn"
-        style="height: 22px; padding: 0 4px; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; white-space: nowrap;"
+        style="height: 20px; padding: 0 6px; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; white-space: nowrap; border-radius: 3px;"
         data-i18n-title="label_model" title="Select Model">
-        <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">&#xf3aa;</span>
-        <span class="icon-label-text" style="font-size: 0.72rem; white-space: nowrap;">Model</span>
+        <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xf3aa;</span>
+        <span class="icon-label-text" style="font-size: 0.70rem; white-space: nowrap; max-width: 110px; overflow: hidden; text-overflow: ellipsis;">Model</span>
       </button>
     </div>
 
   </div>
   <div class="toolbar app-header-toolbar"
-    style="display: flex; align-items: center; gap: 5px; flex-shrink: 0; margin-left: auto;">
-    
-    <div style="width: 1px; height: 14px; background: rgba(255,255,255,0.1); margin: 0 2px;"></div>
+    style="display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: auto;">
 
-    <!-- Global Theme Selector -->
-    <div style="display: flex; align-items: center; gap: 2px;">
-      <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-muted);">&#xe40a;</span>
+    <!-- Global Theme Selector: Optimized with integrated icon -->
+    <div style="position: relative; display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 2px; height: 24px;">
+      <span class="material-symbols-outlined" style="position: absolute; left: 6px; font-size: 0.95rem; color: var(--text-muted); pointer-events: none;">&#xe40a;</span>
       <select id="themeSelect" class="toolbar-select header-theme-select"
-        style="min-width: 100px; height: 26px; font-size: 0.72rem; padding: 1px 26px 1px 8px; flex-shrink: 0; text-overflow: ellipsis; white-space: nowrap;"
+        style="min-width: 86px; max-width: 110px; height: 22px; line-height: 20px; font-size: 0.70rem; padding: 0 20px 0 22px; border: none; background: transparent; flex-shrink: 0; text-overflow: ellipsis; white-space: nowrap;"
         data-i18n-title="label_theme"></select>
     </div>
     
     <!-- Language Toggle -->
     <button id="btnLangToggle" class="toolbar-btn btn-lang-outline"
-      style="height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.7rem; flex-shrink: 0; border: none; background: transparent;">
-      <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
+      style="height: 24px; padding: 0 6px; display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 0.68rem; font-weight: 600; flex-shrink: 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);">
+      <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
       <span class="icon-label-text" id="langToggleLabel">EN</span>
     </button>
-    <!-- Top-level Sidebar Toggle Button -->
-    <button id="btnHeaderToggleSidebar" class="toolbar-btn header-action-btn"
-      style="width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
-      data-i18n-title="btn_toggle_sidebar">
-      <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="font-size: 1.1rem;">&#xf705;</span>
-    </button>
+
+    <!-- Settings Button -->
     <button id="btnSettings" class="toolbar-btn header-action-btn"
-      style="width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
+      style="width: 26px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);"
       data-i18n-title="btn_settings">
-      <span class="material-symbols-outlined" style="font-size: 1.1rem;">settings</span>
+      <span class="material-symbols-outlined" style="font-size: 1rem;">settings</span>
     </button>
   </div>
 </header>

@@ -1,5 +1,5 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import path from 'node:path';
+import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { bindLoggerToWindow, flushLogsToRenderer } from './logger';
 
 let mainWindowInstance: BrowserWindow | null = null;
@@ -25,7 +25,13 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
       nodeIntegration: false,
       sandbox: false
     },
-    autoHideMenuBar: false,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#080c16',
+      symbolColor: '#94a3b8',
+      height: 38
+    },
+    autoHideMenuBar: true,
     show: true
   });
 
@@ -44,9 +50,38 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     }
   }, 1500);
 
+  // Security: Prevent arbitrary window opens & restrict to https/http external browser only
   mainWindowInstance.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
+    try {
+      const parsedUrl = new URL(details.url);
+      if (['https:', 'http:'].includes(parsedUrl.protocol)) {
+        shell.openExternal(details.url);
+      } else {
+        console.warn('[Security] Blocked untrusted external URL scheme:', details.url);
+      }
+    } catch (e) {
+      console.warn('[Security] Malformed URL rejected:', details.url);
+    }
     return { action: 'deny' };
+  });
+
+  // Security: Prevent in-app navigation to unauthorized URLs
+  mainWindowInstance.webContents.on('will-navigate', (event, navigationUrl) => {
+    const parsedUrl = new URL(navigationUrl);
+    const targetUrl = process.env.ELECTRON_RENDERER_URL || rendererUrl;
+    if (targetUrl) {
+      try {
+        const allowedOrigin = new URL(targetUrl).origin;
+        if (parsedUrl.origin === allowedOrigin) return;
+      } catch {}
+    }
+    if (parsedUrl.protocol === 'file:') return;
+
+    // Block unknown navigation and open safely in external browser if http(s)
+    event.preventDefault();
+    if (['https:', 'http:'].includes(parsedUrl.protocol)) {
+      shell.openExternal(navigationUrl);
+    }
   });
 
   const targetUrl = process.env.ELECTRON_RENDERER_URL || rendererUrl;

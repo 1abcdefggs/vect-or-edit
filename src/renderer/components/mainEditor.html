@@ -83,9 +83,14 @@
       </div>
     </div>
 
-    <!-- Right: Vector Generation Assist -->
+    <!-- Right: Editor Header Actions (Sidebar Toggle & Vector Assist) -->
     <div class="editor-header-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-      <!-- Editor AI is now handled in the center group -->
+      <button id="btnHeaderToggleSidebar" class="toolbar-btn header-action-btn"
+        style="height: 28px; padding: 0 8px; display: flex; align-items: center; justify-content: center; gap: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main); font-size: 0.72rem; font-weight: 600;"
+        data-i18n-title="btn_toggle_sidebar" title="Toggle Suggest Sidebar (Ctrl+B)">
+        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">&#xf705;</span>
+        <span data-i18n="sidebar_title">Suggest</span>
+      </button>
     </div>
   </div>
   <!-- Chrome-style Multi-Document Tab Bar -->

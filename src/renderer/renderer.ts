@@ -14,6 +14,7 @@ import { initSystemConsole } from './ui/console/systemConsoleManager.js';
 import { bindAppActionEvents } from './ui/actions/appActionEvents.js';
 import { initZoomControls } from './ui/zoomController.js';
 import { injectLazyUIComponents } from './core/uiLoader';
+import { initMenuBar } from './ui/layout/menuBarController';
 
 export { setLedStatus };
 
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 1. Initialize UI Layout & Elements
   initTopBarRenderer();
   bindTopLevelUIEvents();
+  initMenuBar();
   initSidebarResizer();
 
   // 2. Setup Engine & Knowledge Base IPC Listeners
