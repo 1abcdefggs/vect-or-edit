@@ -1,8 +1,8 @@
 <header class="app-header">
   <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
     <div class="window-controls-left" style="display: flex; align-items: center; gap: 6px;">
-      <img src="./assets/icon.png" alt="VectOrEditOr" class="logo-icon">
-      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">VectOrEditOr</span>
+      <img src="./assets/icon.png" alt="VectOrEdit" class="logo-icon">
+      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;" data-i18n="app_title">VectOrEdit</span>
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
@@ -145,7 +145,7 @@
             <span class="menu-item-label" data-i18n="menu_help_docs">Documentation</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemAbout" role="menuitem" type="button">
-            <span class="menu-item-label" data-i18n="menu_help_about">About VectOrEditOr</span>
+            <span class="menu-item-label" data-i18n="menu_help_about">About VectOrEdit</span>
           </button>
         </div>
       </div>
@@ -155,26 +155,26 @@
     <div id="masterAiContainer"
       style="display: flex; align-items: center; gap: 5px; height: 26px; padding: 0 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); -webkit-app-region: no-drag; flex-shrink: 0;">
       
-      <div style="display: flex; align-items: center; gap: 4px; padding: 0 2px;">
-        <span id="masterAiStatusDot" class="material-symbols-outlined" style="color: #ef4444; font-size: 0.95rem; transition: color 0.3s ease;">&#xe989;</span>
-        <span class="icon-label-text" style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.3px;" data-i18n="master_ai_label">AI</span>
+      <div style="display: flex; align-items: center; gap: 4px; padding: 0 1px;">
+        <span id="masterAiStatusDot" class="material-symbols-outlined" style="color: #ef4444; font-size: 1.05rem; transition: color 0.3s ease;">&#xe65f;</span>
+        <span class="icon-label-text" style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px;" data-i18n="master_ai_label">AI</span>
       </div>
 
       <!-- Seamless ON/OFF Toggle Pill -->
-      <div id="masterAiTogglePill" class="master-ai-pill" title="Toggle Master AI" style="width: 48px; height: 18px; flex-shrink: 0;">
-        <div class="pill-slider" style="width: 22px; height: 14px; top: 1px; left: 1px;"></div>
-        <span class="pill-label pill-off" style="font-size: 0.5rem;">OFF</span>
-        <span class="pill-label pill-on" style="font-size: 0.5rem;">ON</span>
+      <div id="masterAiTogglePill" class="master-ai-pill" title="Toggle Master AI" style="width: 50px; height: 20px; flex-shrink: 0; margin: 0;">
+        <div class="pill-slider" style="width: 23px; height: 16px; top: 1px; left: 1px;"></div>
+        <span class="pill-label pill-on" style="font-size: 0.55rem;">ON</span>
+        <span class="pill-label pill-off" style="font-size: 0.55rem;">OFF</span>
       </div>
 
-      <div style="width: 1px; height: 12px; background: var(--border-color); margin: 0 1px; opacity: 0.7;"></div>
+      <div class="master-ai-divider" aria-hidden="true"></div>
 
       <!-- Model Settings Button -->
       <button id="btnHeaderModelSettings" class="toolbar-btn header-action-btn"
-        style="height: 20px; padding: 0 6px; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; white-space: nowrap; border-radius: 3px;"
-        data-i18n-title="label_model" title="Select Model">
-        <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xf3aa;</span>
-        <span class="icon-label-text" style="font-size: 0.70rem; white-space: nowrap; max-width: 110px; overflow: hidden; text-overflow: ellipsis;">Model</span>
+        style="height: 20px; padding: 0 8px; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; white-space: nowrap; border-radius: 4px; max-width: 160px;"
+        data-i18n-title="ai_model_badge_tooltip" title="AI Model Settings">
+        <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8); flex-shrink: 0;">&#xf3aa;</span>
+        <span class="icon-label-text" style="font-size: 0.70rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">No Model</span>
       </button>
     </div>
 

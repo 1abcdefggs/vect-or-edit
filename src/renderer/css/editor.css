@@ -3,13 +3,6 @@
   min-width: 320px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-}
-
-.editor-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
   background: var(--bg-card);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -80,7 +73,7 @@
 
 .monaco-editor .active-line-number {
   color: var(--accent-color, #818cf8) !important;
-  
+
   opacity: 1 !important;
 }
 
@@ -166,7 +159,7 @@
   color: var(--text-main);
   border-color: var(--border-color);
   border-top: 2px solid var(--accent-color, #66f);
-  
+
 }
 
 .editor-tab-item.is-dirty .tab-dirty-dot {

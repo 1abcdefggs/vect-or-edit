@@ -182,10 +182,17 @@ export function initLocalAiWorker(getCurrentResults) {
   }
 }
 
+export function isLocalAiReadyState() {
+  return Boolean(isLocalAiReady || window.__isLocalAiModelReady);
+}
+
 export function getVectorFromWorker(text, timeoutMs = 8000) {
   return new Promise((resolve, reject) => {
     if (!embeddingWorker) {
       return reject(new Error("Worker not initialized"));
+    }
+    if (!isLocalAiReadyState()) {
+      return reject(new Error("Local AI model is not ready. Please initialize from settings."));
     }
 
     const requestId = `req_${nextRequestId++}_${Date.now()}`;

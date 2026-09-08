@@ -6,10 +6,9 @@
   <div class="sidebar-header">
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
       <h3 style="display: flex; align-items: center; gap: 6px; margin: 0; min-width: 0;">
-        <!-- Sidebar Child AI Switch -->
-        <button id="btnSidebarAiToggle" class="toolbar-btn"
-          style="height: 28px; padding: 2px 10px; font-size: 0.70rem; font-weight: 700; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); color: var(--accent-color, #38bdf8); cursor: pointer; white-space: nowrap; transition: all 0.25s ease;"
-          data-i18n-title="ai_model_badge_tooltip">
+        <!-- Sidebar Child AI Switch: Unified .ai-chip-pill -->
+        <button id="btnSidebarAiToggle" class="ai-chip-pill"
+          data-i18n-title="ai_model_badge_tooltip" title="Suggest AI">
           <span id="activeAiModelStatusDot" style="color: var(--success-color, #10b981); font-size: 0.65rem; transition: color 0.3s ease;">●</span>
           <span id="activeAiModelBadge">Suggest AI ON</span>
         </button>
@@ -147,6 +146,10 @@
 
   <!-- Collapsed Rail: Shown only when .suggestion-sidebar.collapsed is active -->
   <div id="sidebarCollapsedRail" class="sidebar-collapsed-rail">
+    <button id="btnRailExpand" class="rail-icon-btn" data-i18n-title="btn_toggle_sidebar" title="Expand Sidebar (Ctrl+B)">
+      <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--accent-color, #38bdf8);">&#xf705;</span>
+    </button>
+    <div style="width: 20px; height: 1px; background: var(--border-color); opacity: 0.6; margin: 2px 0;"></div>
     <button id="btnRailGuideline" class="rail-icon-btn" data-i18n-title="active_guideline_preset_label" title="Guideline">
       <span class="material-symbols-outlined" style="font-size: 1.25rem;">&#xf1c9;</span>
     </button>

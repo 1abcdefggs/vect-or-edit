@@ -1,0 +1,172 @@
+/* ==========================================================================
+   Popups, Context Menus & Selection Pills
+   ========================================================================== */
+
+/* Custom Context Menu */
+.custom-context-menu {
+  position: absolute;
+  z-index: 1000;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 20px var(--modal-shadow);
+  padding: 4px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+
+.custom-context-menu-item:hover {
+  background: var(--accent-color);
+  color: #ffffff;
+}
+
+.custom-context-menu-item svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Suggestion Pill UI (Selection Popup) */
+.compact-suggest-pill {
+  min-width: auto;
+  padding: 4px;
+}
+
+.pill-top-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+}
+
+.pill-top-row .pill-action-btn + .pill-action-btn {
+  border-top: 1px solid var(--border-color, rgba(148, 163, 184, 0.35));
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  margin-top: 2px;
+  padding-top: 9px;
+}
+
+.pill-top-row .pill-action-btn.primary {
+  border: 1px solid color-mix(in srgb, var(--accent-color) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-color) 8%, transparent);
+}
+
+.pill-top-row .pill-action-btn.secondary {
+  border: 1px solid color-mix(in srgb, var(--text-muted) 32%, transparent);
+  color: var(--text-main);
+}
+
+.pill-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  color: var(--text-main);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.pill-action-btn:hover {
+  background: var(--hover-bg);
+}
+
+.pill-action-btn.primary {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.pill-action-btn.primary:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+}
+
+.pill-action-btn.secondary {
+  padding: 6px 8px;
+}
+
+.pill-action-btn.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: saturate(0.4);
+}
+
+.external-action-icon {
+  margin-left: auto;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.pill-action-btn.secondary:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+}
+
+.pill-action-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.pill-action-btn span {
+  display: inline-block;
+  line-height: 1;
+}
+
+.pill-quick-candidates {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-color);
+}
+
+.pill-candidate-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 8px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.pill-candidate-chip:hover {
+  background: var(--hover-bg);
+}
+
+.chip-title {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.chip-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}

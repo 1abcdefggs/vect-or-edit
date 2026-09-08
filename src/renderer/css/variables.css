@@ -1,26 +1,29 @@
 :root {
-  --bg-primary: #123;
-  --bg-secondary: #1e293b;
-  --header-bg: #080c16;
+  --bg-primary: #101a2a;
+  --bg-secondary: #1a2435;
+  --header-bg: #09131d;
   --header-fg: #f8fafc;
   --editor-fg: #f8fafc;
-  --bg-card: rgba(30, 41, 59, 0.7);
+  --bg-card: rgba(17, 24, 39, 0.82);
   --accent-color: #6366f1;
   --accent-hover: #4f46e5;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: rgba(255, 255, 255, 0.12);
+  --text-main: #edf5ff;
+  --text-muted: #b7c6dc;
+  --border-color: rgba(148, 163, 184, 0.22);
   --success-color: #10b981;
 
   /* Shared Alpha Colors */
-  --hover-bg: rgba(255, 255, 255, 0.05);
-  --active-bg: rgba(255, 255, 255, 0.1);
-  --result-bg: rgba(255, 255, 255, 0.04);
-  --result-hover-bg: rgba(99, 102, 241, 0.1);
-  --item-code-bg: rgba(99, 102, 241, 0.15);
-  --item-code-text: #818cf8;
-  --modal-overlay-bg: rgba(0, 0, 0, 0.6);
-  --modal-shadow: rgba(0, 0, 0, 0.5);
+  --hover-bg: rgba(148, 163, 184, 0.08);
+  --active-bg: rgba(148, 163, 184, 0.14);
+  --result-bg: rgba(148, 163, 184, 0.06);
+  --result-hover-bg: rgba(99, 102, 241, 0.14);
+  --item-code-bg: rgba(99, 102, 241, 0.18);
+  --item-code-text: #a5b4fc;
+  --modal-overlay-bg: rgba(2, 6, 23, 0.7);
+  --modal-shadow: rgba(2, 6, 23, 0.6);
+  --select-bg: rgba(15, 23, 42, 0.9);
+  --select-text: #edf5ff;
+  --select-border: rgba(148, 163, 184, 0.3);
 
   /* Shared Layout Properties */
   --sidebar-width: 360px;
@@ -33,25 +36,28 @@
 }
 
 :root.light-theme {
-  --bg-primary: #f8fafc;
+  --bg-primary: #edf3f9;
   --bg-secondary: #ffffff;
-  --header-bg: #e2e8f0;
+  --header-bg: #dfeaf5;
   --header-fg: #123;
   --editor-fg: #123;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --text-main: #123;
-  --text-muted: #64748b;
-  --border-color: rgba(0, 0, 0, 0.14);
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border-color: rgba(15, 23, 42, 0.14);
 
   /* Shared Alpha Colors (Light) */
-  --hover-bg: rgba(0, 0, 0, 0.05);
-  --active-bg: rgba(0, 0, 0, 0.1);
-  --result-bg: rgba(0, 0, 0, 0.03);
-  --result-hover-bg: rgba(99, 102, 241, 0.1);
-  --item-code-bg: rgba(99, 102, 241, 0.15);
-  --item-code-text: #4f46e5;
-  --modal-overlay-bg: rgba(0, 0, 0, 0.3);
-  --modal-shadow: rgba(0, 0, 0, 0.15);
+  --hover-bg: rgba(15, 23, 42, 0.06);
+  --active-bg: rgba(15, 23, 42, 0.09);
+  --result-bg: rgba(15, 23, 42, 0.04);
+  --result-hover-bg: rgba(99, 102, 241, 0.12);
+  --item-code-bg: rgba(99, 102, 241, 0.12);
+  --item-code-text: #4338ca;
+  --modal-overlay-bg: rgba(15, 23, 42, 0.34);
+  --modal-shadow: rgba(15, 23, 42, 0.18);
+  --select-bg: rgba(255, 255, 255, 0.96);
+  --select-text: #0f172a;
+  --select-border: rgba(148, 163, 184, 0.5);
 }
 
 @keyframes matrix-pulse {

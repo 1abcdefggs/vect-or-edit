@@ -4,7 +4,7 @@ export function isAiModelConfigured() {
   const provider = localStorage.getItem('ai_provider') || 'local';
   if (provider === 'local') return Boolean(window.__isLocalAiModelReady);
   if (provider === 'claude') return Boolean(localStorage.getItem('claude_api_key'));
-  if (provider === 'gemini') return Boolean(localStorage.getItem('gemini_api_key'));
+  if (provider === 'gemini') return Boolean(window.__geminiApiKeyConfigured || localStorage.getItem('gemini_api_key'));
   if (provider === 'openai') return Boolean(localStorage.getItem('openai_api_key'));
   return false;
 }

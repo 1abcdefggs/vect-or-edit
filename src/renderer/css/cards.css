@@ -1,0 +1,266 @@
+/* ==========================================================================
+   Cards, Results & Progress Component Styles
+   ========================================================================== */
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
+  scroll-behavior: smooth;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  background: var(--result-bg);
+  border-radius: var(--radius-md);
+}
+
+.result-card,
+.vector-widget-card {
+  position: relative;
+  background: var(--result-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0 !important;
+  min-height: max-content;
+  box-sizing: border-box;
+}
+
+.result-card:hover {
+  background: var(--result-hover-bg);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.score-progress-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--accent-color);
+  opacity: 0.12;
+  z-index: 0;
+  pointer-events: none;
+  transition: width 0.3s ease;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.item-code {
+  color: var(--item-code-text);
+  background: var(--item-code-bg);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+}
+
+.similarity-score {
+  font-size: 0.75rem;
+  color: var(--success-color);
+}
+
+.item-title {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  margin-bottom: 2px;
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.item-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.item-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 4px;
+  color: var(--text-muted);
+}
+
+.loading-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--accent-color, #818cf8);
+  margin-bottom: 2px;
+}
+
+.neural-glow-line {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: rgba(99, 102, 241, 0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.neural-glow-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #818cf8, #66f, transparent);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.7);
+  animation: neuralPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Shimmer Skeleton */
+.skeleton-card {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md, 8px);
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.04) 20%,
+      rgba(255, 255, 255, 0.08) 60%,
+      rgba(255, 255, 255, 0));
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.skeleton-pill {
+  height: 16px;
+  width: 68px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.skeleton-pill-sm {
+  height: 14px;
+  width: 52px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--border-color, rgba(255, 255, 255, 0.08));
+}
+
+.skeleton-title {
+  height: 16px;
+  width: 72%;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--border-color, rgba(255, 255, 255, 0.12));
+  margin-bottom: 8px;
+}
+
+.skeleton-subtitle {
+  height: 12px;
+  width: 90%;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--border-color, rgba(255, 255, 255, 0.07));
+  margin-bottom: 6px;
+}
+
+.skeleton-subtitle.short {
+  width: 50%;
+  margin-bottom: 0;
+}
+
+/* Model Download Progress Card */
+.model-progress-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.model-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-main);
+}
+
+.model-progress-pct {
+  font-size: 0.8rem;
+  color: var(--accent-color, #818cf8);
+}
+
+.model-progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--hover-bg, rgba(255, 255, 255, 0.08));
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.model-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #66f);
+  border-radius: 2px;
+  transition: width 0.25s ease-out;
+  box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(129, 140, 248, 0.2);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}

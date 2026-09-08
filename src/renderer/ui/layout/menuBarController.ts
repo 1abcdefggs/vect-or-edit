@@ -386,6 +386,6 @@ function bindMenuActions(closeMenus: () => void): void {
 
   const itemAbout = document.getElementById('menuItemAbout');
   itemAbout?.addEventListener('click', runAction(() => {
-    showToast('VectOrEditOr v0.3.3 - Vector-Native Knowledge Base Editor', 'info');
+    showToast('VectOrEdit v0.3.5 - Vector-Native Knowledge Base Editor', 'info');
   }));
 }

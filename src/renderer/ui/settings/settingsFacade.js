@@ -368,11 +368,20 @@ export function initSettings(updateEditorCb) {
   const storedAiProvider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
   const storedClaudeKey = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
   const storedClaudeModel = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
-  const storedGeminiKey = localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY) || '';
+  const storedGeminiKey = '';
   const storedGeminiModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
   const storedOpenAiKey = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
   const storedOpenAiModel = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
   const storedAiScope = localStorage.getItem(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
+
+  if (storedAiProvider === 'gemini' && window.engineAPI?.hasGeminiApiKey) {
+    window.engineAPI.hasGeminiApiKey().then((configured) => {
+      window.__geminiApiKeyConfigured = Boolean(configured);
+      window.dispatchEvent(new Event('app:settingsChanged'));
+    }).catch(() => {
+      window.__geminiApiKeyConfigured = false;
+    });
+  }
 
   if (modalAiScopeSelect) {
     modalAiScopeSelect.value = storedAiScope;
@@ -426,8 +435,11 @@ export function initSettings(updateEditorCb) {
 
   if (modalGeminiKeyInput) {
     modalGeminiKeyInput.value = storedGeminiKey;
-    modalGeminiKeyInput.addEventListener('input', () => {
-      setAndSync(STORAGE_KEYS.GEMINI_API_KEY, modalGeminiKeyInput.value.trim());
+    modalGeminiKeyInput.addEventListener('change', async () => {
+      const result = await window.engineAPI.saveGeminiApiKey(modalGeminiKeyInput.value);
+      localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
+      if (!result.success) modalGeminiKeyInput.setCustomValidity(result.error || 'Unable to save API key securely.');
+      else modalGeminiKeyInput.setCustomValidity('');
     });
   }
 
@@ -595,10 +607,15 @@ export function initSettings(updateEditorCb) {
     });
   }
 
+  window.addEventListener('app:openSettings', (e) => {
+    const tabId = e.detail?.tab || 'tabAppearance';
+    openSettingsTab(tabId);
+  });
+
   // Modal Open/Close & Tabs
   if (btnSettings && settingsModal) {
     btnSettings.addEventListener('click', () => {
-      settingsModal.style.display = 'flex';
+      openSettingsTab('tabAppearance');
     });
   }
 
@@ -673,6 +690,38 @@ export function initSettings(updateEditorCb) {
   // Initial apply
   applyEditorSettings();
   setLedStatus('conf', true, `1. CONFIG: Settings Restored`);
+}
+
+const btnClearAppCache = document.getElementById('btnClearAppCache');
+if (btnClearAppCache) {
+  btnClearAppCache.addEventListener('click', async () => {
+    if (!window.confirm('Clear the application cache? Documents and API keys will be kept.')) return;
+    const result = await window.engineAPI.clearCache();
+    window.alert(result.success ? 'Application cache cleared.' : (result.error || 'Unable to clear cache.'));
+  });
+}
+
+const btnResetSettings = document.getElementById('btnResetSettings');
+if (btnResetSettings) {
+  btnResetSettings.addEventListener('click', () => {
+    if (!window.confirm('Restore default settings and reload the editor?')) return;
+    localStorage.clear();
+    window.location.reload();
+  });
+}
+
+const btnReloadEditor = document.getElementById('btnReloadEditor');
+if (btnReloadEditor) {
+  btnReloadEditor.addEventListener('click', () => {
+    if (window.confirm('Reload the editor now?')) window.location.reload();
+  });
+}
+
+const btnRestartApplication = document.getElementById('btnRestartApplication');
+if (btnRestartApplication) {
+  btnRestartApplication.addEventListener('click', () => {
+    if (window.confirm('Restart VectOrEdit now?')) window.engineAPI.restartApp();
+  });
 }
 
 export function getTheme() {

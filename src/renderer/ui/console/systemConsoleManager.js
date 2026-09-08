@@ -126,7 +126,7 @@ export function initSystemConsole() {
     time: new Date().toLocaleTimeString(),
     source: 'App:Init',
     level: 'INFO',
-    message: 'VectOrEditOr core system online. Ready.'
+    message: 'VectOrEdit core system online. Ready.'
   });
 
   if (window.engineAPI?.onSystemLog) {

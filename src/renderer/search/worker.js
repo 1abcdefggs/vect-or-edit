@@ -40,13 +40,23 @@ class PipelineSingleton {
 // Model will only be initialized when explicitly requested by the user
 self.addEventListener('message', async (event) => {
     const { text, type, model, requestId } = event.data;
-    if (type === 'init' || !text) {
-        // Trigger model load or switch
+    if (type === 'init') {
+        // Explicit trigger for model download / initialization
         try {
             await PipelineSingleton.getInstance(model, x => self.postMessage({ ...x, requestId }));
         } catch (err) {
             self.postMessage({ status: 'error', error: err.message, requestId });
         }
+        return;
+    }
+
+    // Guard: Prevent auto-downloading model when computing embeddings if model has not been initialized yet
+    if (!PipelineSingleton.instance) {
+        self.postMessage({
+            status: 'error',
+            requestId,
+            error: 'AI Model is not initialized. Please configure or download the model from settings first.'
+        });
         return;
     }
     
