@@ -49,38 +49,55 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     ? `<span style="color: #38bdf8;">- ${t('editor_placeholder_ready')}</span>`
     : `<span style="color: #94a3b8;">${t('placeholder_no_slots')}</span>`;
 
-  // 4. Render Rich Interactive Placeholder & Typography Sample
-  const sampleHeadingText = t('sample_heading', { font: activeFontName, size: Math.round(activeFontSize * 1.25) });
-  const sampleBodyText = t('sample_body', { font: activeFontName, size: activeFontSize });
+    // 4. Resolve Tone-aware Canvas Contrast (Charcoal, Obsidian, OLED, Ivory, Paper, etc.)
+    const currentTone = localStorage.getItem('editor_bg_tone') || 'default';
+    const isCharcoal = currentTone === 'charcoal' || currentTone === 'dark_charcoal';
+    const isLightTone = ['ivory', 'light_ivory', 'warmWhite', 'light_warm', 'snow', 'light_snow', 'paper', 'light_paper'].includes(currentTone);
 
-  placeholderEl.innerHTML = `
-    <div style="opacity: 0.7; font-size: 0.72rem; font-family: var(--font-mono, monospace); color: var(--text-muted, #cbd5e1);">
-      ${t('placeholder_hint')}
-    </div>
+    let boxBg = 'rgba(255, 255, 255, 0.03)';
+    let boxBorder = '1px dashed var(--border-color, rgba(255, 255, 255, 0.18))';
+    let boxTextMain = 'var(--text-main, #f8fafc)';
+    let boxTextMuted = 'var(--text-muted, #94a3b8)';
 
-    <!-- AI & Knowledge Live Status -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 0.75rem; margin-top: 2px;">
-      ${aiStatusHtml}
-    </div>
+    if (isCharcoal) {
+      boxBg = 'rgba(255, 255, 255, 0.05)';
+      boxBorder = '1px dashed rgba(255, 255, 255, 0.22)';
+      boxTextMain = '#ffffff';
+      boxTextMuted = '#a1a1aa';
+    } else if (isLightTone) {
+      boxBg = 'rgba(0, 0, 0, 0.02)';
+      boxBorder = '1px dashed rgba(0, 0, 0, 0.16)';
+      boxTextMain = '#18181b';
+      boxTextMuted = '#71717a';
+    }
 
-    <!-- Core Feature Hints -->
-    <div style="display: flex; flex-direction: column; gap: 3px; font-size: 0.80rem; margin-top: 4px; line-height: 1.5;">
-      <div>${kbLine}</div>
-      <div>- ${t('editor_placeholder_intellisense')}</div>
-      <div>- ${t('editor_placeholder_selection')}</div>
-      <div>- ${t('editor_placeholder_contextmenu')}</div>
-    </div>
+    placeholderEl.style.fontFamily = activeFontFamily;
 
-    <!-- Typography Sample Preview (reflects current fontFamily & fontSize as dynamic text) -->
-    <div style="font-family: ${activeFontFamily}; border: 1px dashed var(--border-color, rgba(255,255,255,0.15)); border-radius: 8px; padding: 10px 14px; background: rgba(0,0,0,0.15); margin-top: 6px; max-width: 680px;">
-      <div style="font-size: 0.70rem; color: var(--text-muted); margin-bottom: 6px; font-family: var(--font-mono, monospace); letter-spacing: 0.5px;">
-        [ ${t('sample_preview_title')} | ${t('sample_preview_family')}: <strong style="color: var(--accent-color, #38bdf8);">${activeFontName}</strong> | ${t('sample_preview_size')}: <strong style="color: var(--accent-color, #38bdf8);">${activeFontSize}px</strong> ]
+    placeholderEl.innerHTML = `
+    <!-- 1. Top System Bar (Typography & Dismiss Hint) -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: ${boxTextMuted}; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+      <div style="display: inline-flex; align-items: center; gap: 6px;">
+        <span style="color: var(--accent-color, #38bdf8); font-weight: 600;">[ ${activeFontName} | ${activeFontSize}px Preview ]</span>
+        <span style="opacity: 0.85;">${t('placeholder_hint')}</span>
       </div>
-      <div style="font-size: ${Math.round(activeFontSize * 1.25)}px; font-weight: 700; color: var(--text-main); line-height: 1.35;">
-        ${sampleHeadingText}
+      <div style="display: inline-flex; align-items: center; gap: 8px;">
+        ${aiStatusHtml}
       </div>
-      <div style="font-size: ${activeFontSize}px; color: var(--text-main); opacity: 0.92; margin-top: 6px; line-height: 1.6;">
-        ${sampleBodyText}
+    </div>
+
+    <!-- 2. Interactive Guide Container (Directly reflecting Font & Size from line 1) -->
+    <div style="display: flex; flex-direction: column; gap: 8px; font-family: ${activeFontFamily}; color: ${boxTextMain}; border: ${boxBorder}; border-radius: 8px; padding: 14px 18px; background: ${boxBg}; margin-top: 4px; max-width: 760px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);">
+      <!-- Heading Line with dynamic size -->
+      <div style="font-size: ${Math.round(activeFontSize * 1.25)}px; font-weight: 700; line-height: 1.35; letter-spacing: -0.2px; color: ${boxTextMain};">
+        # VectOrEdit (${activeFontName} / ${Math.round(activeFontSize * 1.25)}px)
+      </div>
+
+      <!-- Core Guidance Lines directly rendered in activeFontSize -->
+      <div style="display: flex; flex-direction: column; gap: 6px; font-size: ${activeFontSize}px; line-height: 1.6; opacity: 0.95;">
+        <div>${kbLine}</div>
+        <div>- ${t('editor_placeholder_intellisense')}</div>
+        <div>- ${t('editor_placeholder_selection')}</div>
+        <div>- ${t('editor_placeholder_contextmenu')}</div>
       </div>
     </div>
   `;
@@ -93,6 +110,7 @@ export function bindPlaceholderEvents(monacoEditorInstance) {
   window.addEventListener('app:knowledgeSlotChanged', handler);
   window.addEventListener('app:languageChanged', handler);
   window.addEventListener('app:settingsChanged', handler);
+  window.addEventListener('app:editorToneChanged', handler);
   aiManager.addEventListener('app:aiStateChanged', handler);
 
   // Re-render sample when font family or font size selects change (direct & delegation)
@@ -101,8 +119,11 @@ export function bindPlaceholderEvents(monacoEditorInstance) {
   if (fontFamilySelect) fontFamilySelect.addEventListener('change', handler);
   if (fontSizeSelect) fontSizeSelect.addEventListener('change', handler);
 
+  const quickEditorToneSelect = document.getElementById('quickEditorToneSelect');
+  if (quickEditorToneSelect) quickEditorToneSelect.addEventListener('change', handler);
+
   document.addEventListener('change', (e) => {
-    if (e.target?.id === 'fontFamilySelect' || e.target?.id === 'fontSizeSelect' || e.target?.id === 'modalFontFamilySelect' || e.target?.id === 'modalFontSizeSelect') {
+    if (e.target?.id === 'fontFamilySelect' || e.target?.id === 'fontSizeSelect' || e.target?.id === 'modalFontFamilySelect' || e.target?.id === 'modalFontSizeSelect' || e.target?.id === 'quickEditorToneSelect' || e.target?.id === 'modalEditorBgSelect') {
       handler();
     }
   });

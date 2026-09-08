@@ -45,11 +45,13 @@ export function bindAppActionEvents() {
     const updateSidebarState = (collapsed) => {
       if (collapsed) {
         suggestionSidebar.classList.add('collapsed');
+        btnHeaderToggleSidebar.classList.remove('active');
       } else {
         suggestionSidebar.classList.remove('collapsed');
+        btnHeaderToggleSidebar.classList.add('active');
       }
-      btnHeaderToggleSidebar.style.background = collapsed ? 'transparent' : 'rgba(56, 189, 248, 0.15)';
-      btnHeaderToggleSidebar.style.color = collapsed ? 'var(--text-main)' : 'var(--accent-color, #38bdf8)';
+      btnHeaderToggleSidebar.style.background = '';
+      btnHeaderToggleSidebar.style.color = '';
       setTimeout(() => {
         const ed = window.__monacoEditorInstance || null;
         if (ed?.layout) ed.layout();
@@ -60,6 +62,11 @@ export function bindAppActionEvents() {
       const isCurrentlyCollapsed = suggestionSidebar.classList.contains('collapsed');
       updateSidebarState(!isCurrentlyCollapsed);
     });
+
+    const btnRailExpand = document.getElementById('btnRailExpand');
+    if (btnRailExpand) {
+      btnRailExpand.addEventListener('click', () => updateSidebarState(false));
+    }
 
     const btnRailGuideline = document.getElementById('btnRailGuideline');
     const btnRailKnowledge = document.getElementById('btnRailKnowledge');

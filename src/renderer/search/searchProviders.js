@@ -7,11 +7,10 @@ export async function fetchAiSuggestions(query, provider) {
 
   try {
     if (provider === 'gemini') {
-      const apiKey = localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY);
       const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-      if (window.engineAPI && window.engineAPI.geminiSemanticSuggest && apiKey) {
+      if (window.engineAPI && window.engineAPI.geminiSemanticSuggest) {
         const prompt = `Analyze this query/phrase and suggest the best matching domain definitions or structured draft:\nQuery: "${query}"`;
-        const geminiRes = await window.engineAPI.geminiSemanticSuggest({ prompt, apiKey, model });
+        const geminiRes = await window.engineAPI.geminiSemanticSuggest({ prompt, model });
         if (geminiRes && geminiRes.success && geminiRes.text) {
           return {
             id: 'gemini-ai-suggestion',

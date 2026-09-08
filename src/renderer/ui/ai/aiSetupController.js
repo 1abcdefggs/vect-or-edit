@@ -21,6 +21,17 @@ export function initAiSetup(onComplete) {
   const btnSave = document.getElementById('btnAiSetupSave');
   const btnCancel = document.getElementById('btnAiSetupCancel');
 
+  const updateCardSelection = (selectedVal) => {
+    document.querySelectorAll('.ai-setup-card').forEach(card => {
+      const radio = card.querySelector('input[name="ai_setup_provider"]');
+      if (radio && radio.value === selectedVal) {
+        card.classList.add('selected');
+      } else {
+        card.classList.remove('selected');
+      }
+    });
+  };
+
   const updateSaveButtonText = (provider) => {
     if (btnSave) {
       if (provider === 'local') {
@@ -37,13 +48,17 @@ export function initAiSetup(onComplete) {
       cloudOptions.style.display = val === 'cloud' ? 'flex' : 'none';
       localOptions.style.display = val === 'local' ? 'flex' : 'none';
       
+      // Update visual card highlight
+      updateCardSelection(val);
+
       // Update button text dynamically using i18n
       updateSaveButtonText(val);
     });
   });
 
-  // Set initial button text based on default selection
+  // Set initial button text and card selection based on default selection
   const initialSelected = document.querySelector('input[name="ai_setup_provider"]:checked')?.value || 'local';
+  updateCardSelection(initialSelected);
   updateSaveButtonText(initialSelected);
 
   btnSave.addEventListener('click', async () => {
@@ -60,7 +75,14 @@ export function initAiSetup(onComplete) {
       }
 
       localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, provider);
-      if (provider === 'gemini') localStorage.setItem(STORAGE_KEYS.GEMINI_API_KEY, key);
+      if (provider === 'gemini') {
+        const result = await window.engineAPI.saveGeminiApiKey(key);
+        if (!result.success) {
+          showToast(result.error || 'Unable to save Gemini API key securely.', 'error');
+          return;
+        }
+        localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
+      }
       if (provider === 'openai') localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, key);
       if (provider === 'claude') localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, key);
 
@@ -103,6 +125,15 @@ export function initAiSetup(onComplete) {
       finalizeSetup();
     }
   });
+
+  const btnOpenSettings = document.getElementById('btnAiSetupOpenSettings');
+  if (btnOpenSettings) {
+    btnOpenSettings.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      if (setupCompleteCallback) setupCompleteCallback();
+      window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAiSearch' } }));
+    });
+  }
 
   if (btnCancel) {
     btnCancel.addEventListener('click', () => {

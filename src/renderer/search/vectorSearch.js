@@ -14,9 +14,10 @@ import {
   getCurrentResults
 } from './searchUi.js';
 
-import { initLocalAiWorker, getVectorFromWorker } from './searchLocalAi.js';
+import { initLocalAiWorker, getVectorFromWorker, isLocalAiReadyState } from './searchLocalAi.js';
 import { fetchAiSuggestions } from './searchProviders.js';
 import { showMonacoWidget } from './searchWidget.js';
+import { aiManager } from '../core/aiStateManager.js';
 
 let debounceTimer = null;
 let backendTimer = null;
@@ -129,6 +130,12 @@ export function triggerSearchAndRender(query) {
         return;
       }
 
+      // Gate: AI feature is only invoked when Master AI is explicitly ON
+      if (typeof aiManager?.isMasterAiEnabled === 'function' && !aiManager.isMasterAiEnabled()) {
+        renderResults(quickResults, false);
+        return;
+      }
+
       if (provider === 'gemini' || provider === 'openai' || provider === 'claude') {
         const suggestion = await fetchAiSuggestions(query, provider);
         if (suggestion) {
@@ -138,7 +145,8 @@ export function triggerSearchAndRender(query) {
       }
 
       // 4. Local Embeddings + Rust HNSW Flow
-      if (provider === 'local' && window.engineAPI && window.engineAPI.searchVector) {
+      // Guard: Only proceed if local AI model is fully downloaded and ready
+      if (provider === 'local' && window.engineAPI && window.engineAPI.searchVector && isLocalAiReadyState()) {
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), TIMINGS.WORKER_TIMEOUT_MS));
         const vector = await Promise.race([getVectorFromWorker(query), timeoutPromise]);
         const queryLimit = Math.max(limit, 8);
@@ -173,9 +181,13 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
       const isAiSetup = localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
       if (!isAiSetup) return;
 
+      // Gate: Monaco AI vector search only runs when Master AI is explicitly ON
+      if (typeof aiManager?.isMasterAiEnabled === 'function' && !aiManager.isMasterAiEnabled()) return;
+
       const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
 
-      if (provider === 'local' && window.engineAPI && window.engineAPI.searchVector) {
+      // Guard: Only proceed if local AI model is fully downloaded and ready
+      if (provider === 'local' && window.engineAPI && window.engineAPI.searchVector && isLocalAiReadyState()) {
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500));
         const vector = await Promise.race([getVectorFromWorker(query), timeoutPromise]);
         const response = await window.engineAPI.searchVector(vector);

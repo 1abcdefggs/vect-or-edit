@@ -5,6 +5,7 @@ import { duplicateCurrentTab } from '../tabs/tabManager.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { triggerSearchAndRender } from '../../search/vectorSearch.js';
 import { getQuickMatches } from '../../search/dictionary.js';
+import { aiManager } from '../../core/aiStateManager.js';
 
 export function createMenuButton({ className, title, innerHTML, onClick }) {
   const btn = document.createElement('button');
@@ -24,26 +25,34 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   const menu = document.createElement('div');
   menu.className = 'custom-context-menu compact-suggest-pill';
 
-  // Top Row: Suggest + Google
   const topRow = document.createElement('div');
   topRow.className = 'pill-top-row';
+  topRow.style.flexDirection = 'column';
+  topRow.style.alignItems = 'stretch';
+
+  const modelReady = Boolean(aiManager?.getState?.().modelConfigured);
 
   const btnSuggest = createMenuButton({
     className: 'pill-action-btn primary',
-    title: t('suggest_context_menu') || "AI Suggest",
-    innerHTML: `${icons.search} <span>AI Suggest</span>`,
+    title: modelReady ? (t('suggest_context_menu') || "AI Suggest") : (t('ai_suggest_model_unset_title') || "AI Suggest: Model not configured. Please select or download a model in Settings."),
+    innerHTML: `${icons.search} <span>${modelReady ? 'AISUGGEST' : (t('ai_suggest_model_unset_badge') || 'AISUGGEST - No Model')}</span>`,
     onClick: () => {
+      if (!modelReady) return;
       onDismiss();
       triggerSearchAndRender(selectedText);
       if (onSelectCallback) onSelectCallback('suggest');
     }
   });
+  if (!modelReady) {
+    btnSuggest.disabled = true;
+    btnSuggest.classList.add('disabled');
+  }
   topRow.appendChild(btnSuggest);
 
   const btnQuickGoogle = createMenuButton({
     className: 'pill-action-btn secondary',
     title: t('action_google_search') || "Search with Google",
-    innerHTML: icons.google,
+    innerHTML: `${icons.google} <span>${t('action_google_search') || "Search with Google"}</span> <span class="external-action-icon">↗</span>`,
     onClick: () => {
       onDismiss();
       const queryUrl = `https://www.google.com/search?q=${encodeURIComponent(selectedText.trim())}`;

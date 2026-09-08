@@ -92,6 +92,14 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
       }
     });
     monaco.editor.setTheme(customThemeName);
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--editor-bg', toneConfig.bg);
+      document.documentElement.style.setProperty('--editor-fg', toneConfig.fg);
+      window.dispatchEvent(new CustomEvent('app:editorToneChanged', {
+        detail: { tone: currentTone, bg: toneConfig.bg, fg: toneConfig.fg, isDark: toneConfig.isDark }
+      }));
+    }
   } catch (_) {
     safeSetMonacoTheme('vs-dark', toneConfig.isDark ? 'vs-dark' : 'vs');
   }
