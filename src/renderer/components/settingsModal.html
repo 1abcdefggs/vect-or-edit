@@ -240,9 +240,91 @@
 
         <!-- Tab 3: AI & Vector Search -->
         <div id="tabAiSearch" class="settings-tab-content">
+
+          <section class="ai-control-overview" aria-label="AI system status">
+            <div class="ai-overview-heading">
+              <div>
+                <div class="setting-label">AI Control Center</div>
+                <div class="setting-desc" data-i18n="ai_overview_desc">Live status for verification before configuring.</div>
+              </div>
+              <span class="ai-overview-note">Local-first</span>
+            </div>
+            <div class="ai-status-grid">
+              <div class="ai-status-card" data-status-tone="neutral">
+                <span class="ai-status-kicker">EMBEDDING</span>
+                <strong id="settingsEmbeddingStatus">Not configured</strong>
+                <span id="settingsEmbeddingDetail">Local vector model</span>
+              </div>
+              <div class="ai-status-card" data-status-tone="neutral">
+                <span class="ai-status-kicker">KNOWLEDGE</span>
+                <strong id="settingsKnowledgeStatus">Not loaded</strong>
+                <span id="settingsKnowledgeDetail">Add a JSON or VENC slot</span>
+              </div>
+              <div class="ai-status-card" data-status-tone="neutral">
+                <span class="ai-status-kicker">GENERATION</span>
+                <strong id="settingsGenerationStatus">Local AI</strong>
+                <span id="settingsGenerationDetail">Suggestions use the active provider</span>
+              </div>
+              <div class="ai-status-card" data-status-tone="off">
+                <span class="ai-status-kicker">MASTER AI</span>
+                <strong id="settingsMasterAiStatus">OFF</strong>
+                <span id="settingsMasterAiDetail">Enable after a model is ready</span>
+              </div>
+            </div>
+            <div class="ai-structure-map" aria-label="AI processing structure">
+              <div class="ai-structure-column">
+                <span class="ai-structure-label">INPUT</span>
+                <div class="ai-structure-node">Editor text</div>
+              </div>
+              <span class="ai-structure-connector" aria-hidden="true">+</span>
+              <div class="ai-structure-column">
+                <span class="ai-structure-label">EMBEDDING</span>
+                <div class="ai-structure-node" id="settingsStructureEmbedding">Local model</div>
+              </div>
+              <span class="ai-structure-connector" aria-hidden="true">+</span>
+              <div class="ai-structure-column">
+                <span class="ai-structure-label">KNOWLEDGE</span>
+                <div class="ai-structure-node" id="settingsStructureKnowledge">HNSW index</div>
+              </div>
+              <span class="ai-structure-connector" aria-hidden="true">+</span>
+              <div class="ai-structure-column">
+                <span class="ai-structure-label">ASSIST</span>
+                <div class="ai-structure-node" id="settingsStructureAssist">Master AI OFF</div>
+              </div>
+            </div>
+            <div class="ai-structure-caption">
+              <span>Generation providers such as Gemini produce suggestions separately from local vector indexing.</span>
+              <button id="btnOpenAiStructureSettings" class="ai-structure-link" type="button">Configure components</button>
+            </div>
+            <div class="ai-capability-table-wrap">
+              <div class="ai-capability-heading">
+                <div class="setting-label" data-i18n="ai_cap_heading">AI Capability Scope</div>
+                <div class="setting-desc" data-i18n="ai_cap_desc">Embedding handles semantic search, while Generation Model handles text creation.</div>
+              </div>
+              <table class="ai-capability-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="ai_cap_col_feature">Feature</th>
+                    <th><span class="capability-badge capability-local" data-i18n="ai_cap_col_embedding">Embedding Only</span></th>
+                    <th><span class="capability-badge capability-generation" data-i18n="ai_cap_col_generation">Generation Model</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td data-i18n="ai_cap_feat_typing">Text Input & Monaco Editor Editing</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
+                  <tr><td data-i18n="ai_cap_feat_file_io">File Save & Load</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
+                  <tr><td data-i18n="ai_cap_feat_selection">Text Selection</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
+                  <tr><td data-i18n="ai_cap_feat_knowledge_search">Knowledge Search & Similar Candidates</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
+                  <tr><td data-i18n="ai_cap_feat_local_hnsw">384-dim Local Search & Rust HNSW</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-no" data-i18n="ai_cap_status_out_of_scope">Out of Scope</td></tr>
+                  <tr><td data-i18n="ai_cap_feat_generation_chat">Text Generation & Conversation</td><td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
+                  <tr><td data-i18n="ai_cap_feat_summarize_rewrite">Summarization & Natural Language Rewriting</td><td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
+                  <tr><td data-i18n="ai_cap_feat_direct_edit">Direct Editing & Answering via AI</td><td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
           
           <!-- Section 1: Provider & Model -->
-          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+          <div id="aiProviderModelSection" class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
             <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--accent-color, #38bdf8); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
               <span data-i18n="ai_provider_config">AI Provider & Model Configuration</span>
@@ -255,19 +337,19 @@
               </div>
               <div class="provider-cards-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
                 <div class="provider-card" data-provider="local" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">Local AI</div>
+                  <div class="provider-name">Local AI <span class="tool-version">384-dim</span></div>
                   <div style="font-size: 0.65rem; color: var(--success-color, #10b981); font-weight: 500;" data-i18n="card_local_desc">OFFLINE</div>
                 </div>
                 <div class="provider-card" data-provider="gemini" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">Google Gemini</div>
+                  <div class="provider-name">Google Gemini <span class="tool-version">API v1beta</span></div>
                   <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
                 </div>
                 <div class="provider-card" data-provider="openai" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">OpenAI</div>
+                  <div class="provider-name">OpenAI <span class="tool-version">API v1</span></div>
                   <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
                 </div>
                 <div class="provider-card" data-provider="claude" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 2px;">Claude</div>
+                  <div class="provider-name">Claude <span class="tool-version">API v3</span></div>
                   <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
                 </div>
               </div>
@@ -290,9 +372,9 @@
                 <!-- Active 384-dim Model Selector -->
                 <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
                   <label for="selLocalEmbeddingModel" style="font-size: 0.74rem; color: var(--text-main); font-weight: 600;">
-                    Active Local Embedding Model (384-dim Compatible):
+                    Active Local Embedding Model <span class="tool-version">384-dim</span>
                   </label>
-                  <select id="selLocalEmbeddingModel" class="toolbar-select" style="padding: 6px 10px; font-size: 0.78rem; border-radius: 6px; background: var(--bg-main, #0b0f19); color: var(--text-main); border: 1px solid var(--border-color);">
+                  <select id="selLocalEmbeddingModel" class="toolbar-select" style="padding: 6px 10px; font-size: 0.78rem; border-radius: 6px;">
                     <option value="Xenova/multilingual-e5-small" selected>Xenova/multilingual-e5-small (~45MB / Multilingual - JA/EN Default)</option>
                     <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2 (~23MB / English - Ultra-Fast)</option>
                     <option value="Xenova/bge-small-en-v1.5">Xenova/bge-small-en-v1.5 (~33MB / English - High Accuracy)</option>
@@ -606,6 +688,38 @@
             <input type="checkbox" id="chkLogCollapsedOnStartup"
               style="accent-color: var(--accent-color, #38bdf8); width: 18px; height: 18px; cursor: pointer;">
           </div>
+
+          <div class="settings-section-card settings-maintenance-card">
+            <h4>Application Maintenance</h4>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Clear Application Cache</div>
+                <div class="setting-desc">Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys.</div>
+              </div>
+              <button id="btnClearAppCache" class="toolbar-btn" type="button">Clear Cache</button>
+            </div>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Restore Default Settings</div>
+                <div class="setting-desc">Deletes renderer preferences such as theme, language, editor layout, AI provider selection, and search options, then reloads the editor. It does not delete documents, Knowledge Slots, cached model files, or the encrypted Gemini API key.</div>
+              </div>
+              <button id="btnResetSettings" class="toolbar-btn" type="button">Restore Defaults</button>
+            </div>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Reload Editor</div>
+                <div class="setting-desc">Reloads the editor window and renderer process. It does not clear settings, cache, documents, models, or API keys.</div>
+              </div>
+              <button id="btnReloadEditor" class="toolbar-btn" type="button">Reload</button>
+            </div>
+            <div class="setting-item" style="border-bottom: none; margin-bottom: 0;">
+              <div>
+                <div class="setting-label">Restart Application</div>
+                <div class="setting-desc">Closes and relaunches the Electron application. It keeps settings, documents, cached models, Knowledge Slots, and encrypted API keys.</div>
+              </div>
+              <button id="btnRestartApplication" class="toolbar-btn" type="button">Restart</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </div>

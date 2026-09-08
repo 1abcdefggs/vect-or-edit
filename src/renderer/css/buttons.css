@@ -366,3 +366,77 @@ body.resizing-sidebar * {
     display: none !important;
   }
 }
+
+/* Unified AI Chip Toggle Button Component (Editor AI & Suggestion AI) */
+.ai-chip-pill {
+  height: 26px !important;
+  padding: 0 8px !important;
+  font-size: 0.70rem !important;
+  font-weight: 700 !important;
+  border-radius: var(--radius-sm, 4px) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.25)) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--text-muted, #94a3b8) !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  user-select: none !important;
+  flex-shrink: 0 !important;
+}
+
+.ai-chip-pill:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.08)) !important;
+  border-color: var(--accent-color, #38bdf8) !important;
+  color: var(--text-main, #ffffff) !important;
+}
+
+.ai-chip-pill.active {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  color: #10b981 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.2) !important;
+}
+
+.ai-chip-pill.active:hover {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: #10b981 !important;
+}
+
+/* Compact Icon-Only Sidebar Toggle in Header */
+.sidebar-toggle-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  border-radius: var(--radius-md, 6px) !important;
+  border: 1px solid var(--border-color) !important;
+  background: var(--bg-card, rgba(255, 255, 255, 0.05)) !important;
+  color: var(--text-main) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  flex-shrink: 0 !important;
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--hover-bg, rgba(56, 189, 248, 0.15)) !important;
+  border-color: var(--accent-color, #38bdf8) !important;
+  color: var(--accent-color, #38bdf8) !important;
+  transform: scale(1.04);
+}
+
+.sidebar-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.sidebar-toggle-btn.active {
+  background: rgba(56, 189, 248, 0.15) !important;
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  color: var(--accent-color, #38bdf8) !important;
+}
