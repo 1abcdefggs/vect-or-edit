@@ -2,6 +2,8 @@ import { aiManager } from '../../core/aiStateManager.js';
 import { isAiModelConfigured } from '../settings/settingsState.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
+import { queryLlmChat } from '../../search/searchProviders.js';
+import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editorManager.js';
 
 export function initAiControls() {
   const isMasterAiOn = isAiModelConfigured();
@@ -48,7 +50,7 @@ export function initAiControls() {
         knowledgeDetail.textContent = count > 0 ? `${count} indexed items` : 'Add a JSON or VENC slot';
         if (knowledgeCard) knowledgeCard.dataset.statusTone = count > 0 ? 'ready' : 'neutral';
         if (structureKnowledge) structureKnowledge.textContent = count > 0 ? `HNSW index (${count})` : 'Knowledge not loaded';
-      }).catch(() => {});
+      }).catch(() => { });
     }
     if (structureAssist) structureAssist.textContent = state.master ? 'Master AI ON' : 'Master AI OFF';
   }
@@ -64,59 +66,8 @@ export function initAiControls() {
     if (settingsMasterStatus) settingsMasterStatus.textContent = state.master ? 'ON' : 'OFF';
     if (settingsMasterDetail) settingsMasterDetail.textContent = state.modelConfigured ? 'Ready to assist' : 'Enable after a model is ready';
     if (settingsMasterCard) settingsMasterCard.dataset.statusTone = state.master ? 'ready' : 'off';
-    
-    if (masterAiTogglePill) {
-      if (state.master) masterAiTogglePill.classList.add('active');
-      else masterAiTogglePill.classList.remove('active');
 
-      const btnHeaderModelSettings = document.getElementById('btnHeaderModelSettings');
-      
-      if (!state.modelConfigured) {
-        masterAiTogglePill.classList.add('disabled');
-        masterAiTogglePill.setAttribute('data-instant-tooltip', t('ai_model_unset_toast') || 'AI Model is not set.\nPlease select a model from settings.');
-        masterAiTogglePill.removeAttribute('title');
-        
-        if (btnHeaderModelSettings) {
-          const icon = btnHeaderModelSettings.querySelector('.material-symbols-outlined');
-          const text = btnHeaderModelSettings.querySelector('.icon-label-text');
-          if (icon) { icon.innerHTML = 'warning'; icon.style.color = ''; }
-          if (text) {
-            text.textContent = t('ai_model_unset') || 'No Model';
-            text.style.color = '';
-            text.style.fontWeight = '';
-          }
-          btnHeaderModelSettings.classList.remove('model-status-ready');
-          btnHeaderModelSettings.classList.add('model-status-unconfigured');
-          btnHeaderModelSettings.style.borderColor = '';
-          btnHeaderModelSettings.style.background = '';
-          btnHeaderModelSettings.title = t('ai_model_unset_toast') || 'No AI model configured. Click to configure.';
-        }
-      } else {
-        masterAiTogglePill.classList.remove('disabled');
-        masterAiTogglePill.removeAttribute('data-instant-tooltip');
-        masterAiTogglePill.title = t('toggle_master_ai') || 'Toggle Master AI';
-        
-        if (btnHeaderModelSettings) {
-          const icon = btnHeaderModelSettings.querySelector('.material-symbols-outlined');
-          const text = btnHeaderModelSettings.querySelector('.icon-label-text');
-          
-          let modelName = 'Model';
-          const provider = localStorage.getItem('ai_provider') || 'local';
-          if (provider === 'local') modelName = 'e5-small (Local)';
-          else if (provider === 'gemini') modelName = localStorage.getItem('gemini_model') || 'Gemini 1.5';
-          else if (provider === 'openai') modelName = localStorage.getItem('openai_model') || 'GPT-4o';
-          else if (provider === 'claude') modelName = localStorage.getItem('claude_model') || 'Claude 3.5';
 
-          if (icon) { icon.innerHTML = '&#xf3aa;'; icon.style.color = ''; }
-          if (text) { text.textContent = modelName; text.style.color = ''; text.style.fontWeight = ''; }
-          btnHeaderModelSettings.classList.remove('model-status-unconfigured');
-          btnHeaderModelSettings.classList.add('model-status-ready');
-          btnHeaderModelSettings.style.borderColor = '';
-          btnHeaderModelSettings.style.background = '';
-          btnHeaderModelSettings.title = t('ai_model_badge_tooltip') || 'AI Model Settings';
-        }
-      }
-    }
 
     if (masterAiStatusDot) masterAiStatusDot.style.color = state.master ? 'var(--success-color, #10b981)' : '#ef4444';
 
@@ -141,19 +92,13 @@ export function initAiControls() {
       else monacoContainerEl.classList.remove('glow-editor-active');
     }
 
-    if (btnSidebarAiToggle) {
-      btnSidebarAiToggle.style.opacity = state.master ? '1' : '0.5';
-      if (state.sidebar) {
-        btnSidebarAiToggle.classList.add('active');
-      } else {
-        btnSidebarAiToggle.classList.remove('active');
-      }
-      btnSidebarAiToggle.style.background = '';
-      btnSidebarAiToggle.style.borderColor = '';
-      btnSidebarAiToggle.style.color = '';
-      if (activeAiModelBadge) activeAiModelBadge.textContent = state.sidebar ? (t('sidebar_ai_on') || 'SUGGEST AI ON') : (t('sidebar_ai_off') || 'SUGGEST AI OFF');
+    const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
+    if (btnSidebarEmbeddingModel) {
+      btnSidebarEmbeddingModel.style.opacity = state.master ? '1' : '0.65';
     }
-    if (activeAiModelStatusDot) activeAiModelStatusDot.style.color = state.sidebar ? 'var(--success-color, #10b981)' : '#ef4444';
+    if (activeAiModelStatusDot) {
+      activeAiModelStatusDot.style.color = window.__isLocalAiModelReady ? 'var(--success-color, #10b981)' : '#f59e0b';
+    }
 
     if (state.master) {
       document.body.classList.add('master-ai-active', 'glow-master-active');
@@ -207,29 +152,12 @@ export function initAiControls() {
       masterAiModelNameText.style.color = isReady ? '#38bdf8' : '#f59e0b';
     }
 
-    const btnHeaderModelSettings = document.getElementById('btnHeaderModelSettings');
-    if (btnHeaderModelSettings) {
-      const icon = btnHeaderModelSettings.querySelector('.material-symbols-outlined');
-      const text = btnHeaderModelSettings.querySelector('.icon-label-text');
-      if (icon) {
-        icon.innerHTML = isReady ? '&#xf3aa;' : 'warning';
-        icon.style.color = '';
-      }
-      if (text) {
-        text.textContent = modelName;
-        text.style.color = '';
-        text.style.fontWeight = '';
-      }
-      if (isReady) {
-        btnHeaderModelSettings.classList.remove('model-status-unconfigured');
-        btnHeaderModelSettings.classList.add('model-status-ready');
-      } else {
-        btnHeaderModelSettings.classList.remove('model-status-ready');
-        btnHeaderModelSettings.classList.add('model-status-unconfigured');
-      }
-      btnHeaderModelSettings.style.borderColor = '';
-      btnHeaderModelSettings.style.background = '';
-      btnHeaderModelSettings.title = isReady ? (t('ai_model_badge_tooltip') || 'AI Model Settings') : (t('ai_model_unset_toast') || 'No AI model configured. Click to configure.');
+
+    const sidebarEmbeddingNameEl = document.getElementById('sidebarEmbeddingModelName');
+    if (sidebarEmbeddingNameEl) {
+      const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
+      sidebarEmbeddingNameEl.textContent = window.__isLocalAiModelReady ? localModel : 'No Embedding';
+      sidebarEmbeddingNameEl.style.opacity = window.__isLocalAiModelReady ? '1' : '0.65';
     }
   }
 
@@ -238,8 +166,6 @@ export function initAiControls() {
   }
 
   if (masterAiModelNameBadge) masterAiModelNameBadge.addEventListener('click', openAiSettingsTab);
-  const btnHeaderModelSettings = document.getElementById('btnHeaderModelSettings');
-  if (btnHeaderModelSettings) btnHeaderModelSettings.addEventListener('click', openAiSettingsTab);
 
   updateMasterAiModelBadge();
   updateSettingsOverview();
@@ -253,25 +179,25 @@ export function initAiControls() {
     updateSettingsOverview();
   });
 
-    if (masterAiTogglePill) {
-      masterAiTogglePill.addEventListener('click', () => {
-        const state = aiManager.getState();
-        if (!state.master) {
-          if (!state.modelConfigured) {
-            showToast(t('ai_model_unset_toast'), 'warning', {
-              label: t('btn_open_settings') || 'Open Settings',
-              onClick: openAiSettingsTab
-            });
-            return;
-          }
-          aiManager.setMasterAi(true);
-          showToast(t('toast_master_ai_activated'), 'success');
-        } else {
-          aiManager.setMasterAi(false);
-          showToast(t('toast_master_ai_standby'), 'info');
+  if (masterAiTogglePill) {
+    masterAiTogglePill.addEventListener('click', () => {
+      const state = aiManager.getState();
+      if (!state.master) {
+        if (!state.modelConfigured) {
+          showToast(t('ai_model_unset_toast'), 'warning', {
+            label: t('btn_open_settings') || 'Open Settings',
+            onClick: openAiSettingsTab
+          });
+          return;
         }
-      });
-    }
+        aiManager.setMasterAi(true);
+        showToast(t('toast_master_ai_activated'), 'success');
+      } else {
+        aiManager.setMasterAi(false);
+        showToast(t('toast_master_ai_standby'), 'info');
+      }
+    });
+  }
 
   if (btnEditorAiToggle) {
     btnEditorAiToggle.addEventListener('click', () => {
@@ -297,56 +223,356 @@ export function initAiControls() {
     });
   }
 
-  if (btnSidebarAiToggle) {
-    btnSidebarAiToggle.addEventListener('click', () => {
-      const state = aiManager.getState();
-      if (!state.modelConfigured) {
-        showToast(t('ai_model_unset_toast'), 'warning', {
-          label: t('btn_open_settings') || 'Open Settings',
-          onClick: openAiSettingsTab
-        });
-        openAiSettingsTab();
-        return;
-      }
-      if (!state.master) {
-        // Auto-turn on Master AI when user wants to use Suggest AI
-        aiManager.setMasterAi(true);
-        aiManager.setSidebarAi(true);
-        showToast(t('toast_sidebar_ai_auto_enabled'), 'success');
-        return;
-      }
-      const nextSidebar = !state.sidebar;
-      aiManager.setSidebarAi(nextSidebar);
-      showToast(nextSidebar ? t('toast_sidebar_ai_on') : t('toast_sidebar_ai_off'), nextSidebar ? 'success' : 'info');
+  // Sidebar Embedding Model Badge Click: jump to settings embedding tab
+  const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
+  if (btnSidebarEmbeddingModel) {
+    btnSidebarEmbeddingModel.addEventListener('click', () => {
+      openAiSettingsTab();
     });
   }
 
-  // Model Download Complete: Prompt to enable Master AI if it is currently OFF
-  window.addEventListener('app:aiModelProgress', (e) => {
-    const { status, model } = e.detail || {};
-    if (status === 'ready' || status === 'done') {
-      const state = aiManager.getState();
-      if (!state.master) {
-        const modelName = (model || 'Local Model').split('/').pop();
-        const title = t('toast_model_downloaded_title') || `${modelName} is ready. Turn ON Master AI now?`;
-        showToast(title, 'info', [
-          {
-            label: t('btn_enable_master_ai') || 'Turn ON Master AI',
-            onClick: () => {
-              aiManager.setMasterAi(true);
-              aiManager.setEditorAi(true);
-              showToast(t('toast_master_ai_activated') || 'Master AI: ON', 'success');
-            }
-          },
-          {
-            label: t('btn_keep_standby') || 'Keep Standby',
-            secondary: true,
-            onClick: () => {
-              showToast(t('toast_master_ai_standby') || 'Master AI: Standby', 'info');
-            }
+  // --- LLM Chat & Rewrite Dock Controller ---
+  initLlmChatDock();
+}
+
+function initLlmChatDock() {
+  const dock = document.getElementById('editorLlmChatDock');
+  const chatMessages = document.getElementById('llmChatMessages');
+  const chatInput = document.getElementById('llmChatInput');
+  const btnSend = document.getElementById('btnLlmSend');
+  const btnClear = document.getElementById('btnLlmClearChat');
+  const btnClose = document.getElementById('btnLlmCloseChat');
+  const btnCollapse = document.getElementById('btnLlmToggleCollapse');
+  const collapseIcon = document.getElementById('llmCollapseIcon');
+  const modelBadge = document.getElementById('llmDockModelBadge');
+  const btnKeyConfig = document.getElementById('btnLlmKeyConfig');
+  const quickApiBanner = document.getElementById('llmQuickApiKeyBanner');
+  const selQuickProvider = document.getElementById('selLlmQuickProvider');
+  const quickApiKeyInput = document.getElementById('llmQuickApiKeyInput');
+  const btnToggleQuickVisibility = document.getElementById('btnToggleQuickKeyVisibility');
+  const btnSaveQuickKey = document.getElementById('btnSaveQuickApiKey');
+
+  if (!dock || !chatInput) return;
+
+  function updateDockModelBadge() {
+    if (!modelBadge) return;
+    const provider = localStorage.getItem('ai_provider') || 'gemini';
+    if (provider === 'gemini') {
+      const model = localStorage.getItem('gemini_model') || '1.5-flash';
+      modelBadge.textContent = `Gemini (${model.replace('gemini-', '')})`;
+    } else if (provider === 'openai') {
+      const model = localStorage.getItem('openai_model') || 'gpt-4o-mini';
+      modelBadge.textContent = `OpenAI (${model})`;
+    } else if (provider === 'claude') {
+      const model = localStorage.getItem('claude_model') || '3.5-sonnet';
+      modelBadge.textContent = `Claude (${model.includes('haiku') ? 'Haiku' : 'Sonnet'})`;
+    } else {
+      modelBadge.textContent = 'LLM (Cloud)';
+    }
+  }
+
+  // Auto-init model badge on startup
+  updateDockModelBadge();
+
+  // Quick API Key Banner Logic
+  function syncQuickApiKeyInput() {
+    if (!selQuickProvider || !quickApiKeyInput) return;
+    const provider = selQuickProvider.value;
+    if (provider === 'openai') {
+      quickApiKeyInput.value = localStorage.getItem('vect_openai_api_key') || '';
+      quickApiKeyInput.placeholder = 'sk-proj-...';
+    } else if (provider === 'claude') {
+      quickApiKeyInput.value = localStorage.getItem('vect_claude_api_key') || '';
+      quickApiKeyInput.placeholder = 'sk-ant-api03-...';
+    } else {
+      quickApiKeyInput.value = '';
+      quickApiKeyInput.placeholder = 'AIzaSy... (Gemini)';
+      if (window.engineAPI?.hasGeminiApiKey) {
+        window.engineAPI.hasGeminiApiKey().then((hasKey) => {
+          if (hasKey && !quickApiKeyInput.value) {
+            quickApiKeyInput.placeholder = '•••••••••••••••••••• (API Key Configured)';
           }
-        ]);
+        }).catch(() => { });
       }
     }
+  }
+
+  if (btnKeyConfig && quickApiBanner) {
+    btnKeyConfig.addEventListener('click', () => {
+      const isVisible = quickApiBanner.style.display === 'block';
+      quickApiBanner.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible) {
+        const currentProvider = localStorage.getItem('ai_provider') || 'gemini';
+        if (selQuickProvider) selQuickProvider.value = (currentProvider === 'local') ? 'gemini' : currentProvider;
+        syncQuickApiKeyInput();
+        setTimeout(() => quickApiKeyInput?.focus(), 50);
+      }
+    });
+  }
+
+  if (selQuickProvider) {
+    selQuickProvider.addEventListener('change', syncQuickApiKeyInput);
+  }
+
+  if (btnToggleQuickVisibility && quickApiKeyInput) {
+    btnToggleQuickVisibility.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isPassword = quickApiKeyInput.type === 'password';
+      quickApiKeyInput.type = isPassword ? 'text' : 'password';
+      const icon = btnToggleQuickVisibility.querySelector('.material-symbols-outlined');
+      if (icon) {
+        icon.textContent = isPassword ? 'visibility' : 'visibility_off';
+      }
+      btnToggleQuickVisibility.title = isPassword ? 'APIキーを隠す' : 'APIキーを表示';
+    });
+  }
+
+  if (btnSaveQuickKey && quickApiKeyInput && selQuickProvider) {
+    btnSaveQuickKey.addEventListener('click', async () => {
+      const provider = selQuickProvider.value;
+      const key = quickApiKeyInput.value.trim();
+
+      if (!key && provider !== 'gemini') {
+        showToast('Please enter an API key', 'warning');
+        return;
+      }
+
+      localStorage.setItem('ai_provider', provider);
+      if (provider === 'gemini') {
+        if (key) {
+          const res = await window.engineAPI.saveGeminiApiKey(key);
+          if (!res.success) {
+            showToast(res.error || 'Failed to save Gemini key', 'error');
+            return;
+          }
+          window.__geminiApiKeyConfigured = true;
+
+          // Automatically fetch and cache official Gemini models
+          try {
+            const models = await window.engineAPI.listGeminiModels(key);
+            if (Array.isArray(models) && models.length > 0) {
+              localStorage.setItem('cached_gemini_models', JSON.stringify(models));
+              if (!localStorage.getItem('gemini_model')) {
+                localStorage.setItem('gemini_model', models[0].name);
+              }
+              showToast(`Google公式から ${models.length} models has been loaded`, 'info');
+            }
+          } catch (modelErr) {
+            console.warn('[Gemini] Automatic model fetch warning:', modelErr);
+          }
+        }
+      } else if (provider === 'openai') {
+        localStorage.setItem('vect_openai_api_key', key);
+      } else if (provider === 'claude') {
+        localStorage.setItem('vect_claude_api_key', key);
+      }
+
+      updateDockModelBadge();
+      window.dispatchEvent(new Event('app:settingsChanged'));
+      showToast(`${provider.toUpperCase()} API Key saved successfully!`, 'success');
+      if (quickApiBanner) quickApiBanner.style.display = 'none';
+    });
+  }
+
+  function openDock(initialPrompt = '') {
+    // Only allow opening when Master AI is active
+    const state = aiManager.getState?.() ?? {};
+    if (!state.master) {
+      showToast('LLM Chat is inactive. Activate Master AI to use.', 'warning');
+      return;
+    }
+    dock.style.display = 'flex';
+    dock.classList.remove('collapsed');
+    if (collapseIcon) collapseIcon.innerHTML = '&#xe5cf;';
+    updateDockModelBadge();
+    if (initialPrompt) {
+      chatInput.value = initialPrompt;
+      chatInput.style.height = 'auto';
+      chatInput.style.height = `${Math.min(chatInput.scrollHeight, 100)}px`;
+    }
+    setTimeout(() => {
+      chatInput.focus();
+      if (initialPrompt) chatInput.select();
+    }, 50);
+  }
+
+  function closeDock() {
+    dock.style.display = 'none';
+  }
+
+  function toggleCollapseDock() {
+    const isCollapsed = dock.classList.toggle('collapsed');
+    if (collapseIcon) {
+      collapseIcon.innerHTML = isCollapsed ? '&#xe5ce;' : '&#xe5cf;';
+    }
+  }
+
+  window.addEventListener('app:openLlmChat', (e) => {
+    const prompt = e.detail?.prompt || '';
+    openDock(prompt);
   });
+  // Close LLM Chat dock automatically when Master AI is turned off
+  window.addEventListener('app:aiStateChanged', (e) => {
+    const state = e.detail;
+    if (!state.master) {
+      closeDock();
+    }
+  });
+
+  if (btnClose) btnClose.addEventListener('click', closeDock);
+  if (btnCollapse) btnCollapse.addEventListener('click', toggleCollapseDock);
+
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      chatMessages.innerHTML = `
+        <div class="llm-msg llm-msg-system">
+          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xe88e;</span>
+          <span>Conversation cleared. Type a prompt, question, or select text in Monaco Editor and right-click "LLM Chat" to converse or rewrite here.</span>
+        </div>
+      `;
+    });
+  }
+  // Disable input when Master AI is OFF
+  const updateChatInputState = () => {
+    const state = aiManager.getState?.() ?? {};
+    const disabled = !state.master;
+    if (chatInput) chatInput.disabled = disabled;
+    if (btnSend) btnSend.disabled = disabled;
+    if (btnClear) btnClear.disabled = disabled;
+    if (btnClose) btnClose.disabled = disabled;
+    dock.style.opacity = disabled ? '0.5' : '1';
+  };
+  // Listen for AI state changes
+  window.addEventListener('app:aiStateChanged', updateChatInputState);
+  // Initial state sync
+  updateChatInputState();
+
+  async function handleSend() {
+    const prompt = chatInput.value.trim();
+    if (!prompt) return;
+
+    // Append User Message
+    const userMsgEl = document.createElement('div');
+    userMsgEl.className = 'llm-msg llm-msg-user';
+    userMsgEl.textContent = prompt;
+    chatMessages.appendChild(userMsgEl);
+
+    chatInput.value = '';
+    chatInput.style.height = '32px';
+
+    // Append Pending AI Message
+    const aiMsgEl = document.createElement('div');
+    aiMsgEl.className = 'llm-msg llm-msg-ai';
+    aiMsgEl.innerHTML = `
+      <div class="llm-msg-ai-header">
+        <span style="display: flex; align-items: center; gap: 4px;">
+          <span class="material-symbols-outlined" style="font-size: 0.85rem;">smart_toy</span>
+          <span>Thinking...</span>
+        </span>
+      </div>
+      <div class="llm-ai-body" style="opacity: 0.7; font-style: italic;">Generating response...</div>
+    `;
+    chatMessages.appendChild(aiMsgEl);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    btnSend.disabled = true;
+
+    try {
+      const response = await queryLlmChat(prompt);
+      if (response && response.text) {
+        const text = response.text;
+        const modelName = response.model || 'AI Assistant';
+        aiMsgEl.innerHTML = `
+          <div class="llm-msg-ai-header">
+            <span style="display: flex; align-items: center; gap: 4px;">
+              <span class="material-symbols-outlined" style="font-size: 0.85rem;">smart_toy</span>
+              <span>${modelName}</span>
+            </span>
+          </div>
+          <div class="llm-ai-body" style="white-space: pre-wrap; word-break: break-word;">${escapeHtml(text)}</div>
+          <div class="llm-msg-actions">
+            <button class="llm-action-btn btn-action-insert" title="Insert output at editor cursor">
+              <span class="material-symbols-outlined" style="font-size: 0.75rem;">input</span>
+              <span>Insert</span>
+            </button>
+            <button class="llm-action-btn btn-action-rewrite" title="Replace selected text with this output (decorated)">
+              <span class="material-symbols-outlined" style="font-size: 0.75rem;">auto_fix_high</span>
+              <span>Replace (Rewrite)</span>
+            </button>
+            <button class="llm-action-btn btn-action-copy" title="Copy to clipboard">
+              <span class="material-symbols-outlined" style="font-size: 0.75rem;">content_copy</span>
+              <span>Copy</span>
+            </button>
+          </div>
+        `;
+
+        const btnInsert = aiMsgEl.querySelector('.btn-action-insert');
+        const btnRewrite = aiMsgEl.querySelector('.btn-action-rewrite');
+        const btnCopy = aiMsgEl.querySelector('.btn-action-copy');
+
+        if (btnInsert) {
+          btnInsert.addEventListener('click', () => {
+            applyAiOutputToEditor(text, 'insert', 'generate');
+            showToast('Inserted AI output into editor', 'success');
+          });
+        }
+
+        if (btnRewrite) {
+          btnRewrite.addEventListener('click', () => {
+            applyAiOutputToEditor(text, 'replace', 'rewrite');
+            showToast('Replaced selection with AI rewritten output', 'success');
+          });
+        }
+
+        if (btnCopy) {
+          btnCopy.addEventListener('click', async () => {
+            await navigator.clipboard.writeText(text);
+            showToast('Copied AI text to clipboard', 'info');
+          });
+        }
+      } else {
+        const err = response?.error || 'No response from AI model. Please verify API key in Settings.';
+        aiMsgEl.innerHTML = `
+          <div class="llm-msg-ai-header" style="color: #ef4444;">
+            <span class="material-symbols-outlined" style="font-size: 0.85rem;">error</span>
+            <span>Error</span>
+          </div>
+          <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(err)}</div>
+        `;
+      }
+    } catch (e) {
+      aiMsgEl.innerHTML = `
+        <div class="llm-msg-ai-header" style="color: #ef4444;">
+          <span class="material-symbols-outlined" style="font-size: 0.85rem;">error</span>
+          <span>Error</span>
+        </div>
+        <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(e.message || 'Request failed')}</div>
+      `;
+    } finally {
+      btnSend.disabled = false;
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+
+  if (btnSend) btnSend.addEventListener('click', handleSend);
+
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    } else if (e.key === 'Escape') {
+      closeDock();
+    }
+  });
+
+  chatInput.addEventListener('input', () => {
+    chatInput.style.height = 'auto';
+    chatInput.style.height = `${Math.min(chatInput.scrollHeight, 120)}px`;
+  });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }

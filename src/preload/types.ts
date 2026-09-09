@@ -114,8 +114,10 @@ export interface EngineAPI {
   geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   saveGeminiApiKey: (apiKey: string) => Promise<{ success: boolean; error?: string }>;
   hasGeminiApiKey: () => Promise<boolean>;
-  listGeminiModels: () => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }>>;
+  listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }>>;
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
+  /** LLM-as-Embedding: converts text to a pseudo-vector using an LLM provider. */
+  llmEmbedding: (payload: { text: string; provider: 'gemini' | 'claude' | 'openai'; model?: string; apiKey?: string; dimensions?: number }) => Promise<{ success: boolean; vector?: number[]; error?: string }>;
   importKnowledgeBase: () => Promise<ImportKnowledgeBaseResponse>;
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => Promise<{ success: boolean; error?: string }>;
   clearCache: () => Promise<{ success: boolean; error?: string }>;
@@ -136,4 +138,5 @@ export interface EngineAPI {
   checkUpdate: () => Promise<{ hasUpdate: boolean; version?: string; releaseDate?: string }>;
   installUpdate: () => Promise<void>;
   querySemantics?: (query: string, context?: string) => Promise<any>;
+  getAppVersion: () => Promise<string>;
 }

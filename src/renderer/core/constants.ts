@@ -34,7 +34,11 @@ export const STORAGE_KEYS = {
   CONTEXT_MENU_PATTERN: 'vect_context_menu_pattern',
   SUGGEST_DISPLAY_TARGET: 'vect_suggest_display_target',
   AI_SETUP_COMPLETED: 'vect_ai_setup_completed',
-  LOCAL_EMBEDDING_MODEL: 'vect_local_embedding_model'
+  LOCAL_EMBEDDING_MODEL: 'vect_local_embedding_model',
+  /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
+  EMBEDDING_SOURCE: 'vect_embedding_source',
+  /** When EMBEDDING_SOURCE is 'llm-embed-*', which LLM provider to use as embedder */
+  LLM_EMBEDDING_PROVIDER: 'vect_llm_embedding_provider'
 } as const;
 
 export const TIMINGS = {
@@ -58,6 +62,8 @@ export const DEFAULTS = {
   AI_INFERENCE_SCOPE: 'suggestion_only',
   SUGGEST_TRIGGER_MODE: 'selection',
   AI_PROVIDER: 'local',
+  /** Default Vectorizer source */
+  EMBEDDING_SOURCE: 'local',
   APP_LANG: 'ja',
   AUTO_SAVE: true,
   LOG_DISPLAY_POSITION: 'bottom',

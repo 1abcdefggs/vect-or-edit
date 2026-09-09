@@ -22,7 +22,10 @@ export function getResolvedThemeName(themeSetting) {
     const target = isDark ? 'GitHub Dark' : 'GitHub Light';
     return availableThemes.includes(target) ? target : (availableThemes[0] || 'GitHub Dark');
   }
-  return themeSetting;
+  // Allow matching "GitHub-Dark" or "github-dark" to "GitHub Dark"
+  const normalizedInput = themeSetting.toLowerCase().replace(/[-_]/g, ' ');
+  const match = availableThemes.find(t => t.toLowerCase() === normalizedInput || t.toLowerCase() === themeSetting.toLowerCase());
+  return match || themeSetting;
 }
 
 // Global OS Dark/Light Mode Listener

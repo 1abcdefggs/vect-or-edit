@@ -63,3 +63,37 @@ export async function fetchAiSuggestions(query, provider) {
   }
   return null;
 }
+
+export async function queryLlmChat(prompt, userProvider = null) {
+  const provider = userProvider || localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || 'gemini';
+  try {
+    if (provider === 'gemini') {
+      const apiKey = localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY);
+      const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+      if (window.engineAPI?.geminiSemanticSuggest) {
+        const res = await window.engineAPI.geminiSemanticSuggest({ prompt, apiKey, model });
+        if (res && res.success && res.text) return { text: res.text, model: `Gemini (${model})` };
+        if (res && res.error) throw new Error(res.error);
+      }
+    } else if (provider === 'openai') {
+      const apiKey = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY);
+      const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
+      if (window.engineAPI?.openaiSemanticSuggest) {
+        const res = await window.engineAPI.openaiSemanticSuggest({ prompt, apiKey, model });
+        if (res && res.success && res.text) return { text: res.text, model: `OpenAI (${model})` };
+        if (res && res.error) throw new Error(res.error);
+      }
+    } else if (provider === 'claude') {
+      const apiKey = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY);
+      const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+      if (window.engineAPI?.claudeSemanticSuggest) {
+        const res = await window.engineAPI.claudeSemanticSuggest({ prompt, apiKey, model });
+        if (res && res.success && res.text) return { text: res.text, model: `Claude (${model})` };
+        if (res && res.error) throw new Error(res.error);
+      }
+    }
+  } catch (e) {
+    return { error: e.message || 'Failed to query LLM provider' };
+  }
+  return { error: 'No active LLM provider configured. Please check API Key in Settings.' };
+}

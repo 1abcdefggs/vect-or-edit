@@ -1,7 +1,22 @@
 import { icons } from '../../core/icons.js';
 import { setEditorContent } from '../../editor/editorManager.js';
+import appLogoUrl from '../../assets/icon.png';
 
 export function initTopBarRenderer() {
+  const appLogoEl = document.getElementById('appLogoIcon');
+  if (appLogoEl && appLogoUrl) {
+    appLogoEl.src = appLogoUrl;
+  }
+
+  if (window.engineAPI?.getAppVersion) {
+    window.engineAPI.getAppVersion().then((version) => {
+      const versionEl = document.getElementById('appVersionBadge');
+      if (versionEl && version) {
+        versionEl.textContent = `v${version}`;
+      }
+    }).catch(() => {});
+  }
+
   const btnOpenEl = document.getElementById('btnOpen');
   // if (btnOpenEl) btnOpenEl.innerHTML = icons.open;
 

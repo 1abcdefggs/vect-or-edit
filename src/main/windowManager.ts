@@ -32,14 +32,17 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
       height: 38
     },
     autoHideMenuBar: true,
-    show: true
+    show: false,
+    backgroundColor: '#080c16'
   });
 
   bindLoggerToWindow(mainWindowInstance);
 
   mainWindowInstance.once('ready-to-show', () => {
-    mainWindowInstance?.show();
-    flushLogsToRenderer();
+    if (mainWindowInstance && !mainWindowInstance.isVisible()) {
+      mainWindowInstance.show();
+      flushLogsToRenderer();
+    }
   });
 
   // Fallback to guarantee window visibility in dev environments
@@ -73,7 +76,7 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
       try {
         const allowedOrigin = new URL(targetUrl).origin;
         if (parsedUrl.origin === allowedOrigin) return;
-      } catch {}
+      } catch { }
     }
     if (parsedUrl.protocol === 'file:') return;
 
@@ -101,10 +104,21 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     mainWindowInstance?.show();
     mainWindowInstance?.focus();
     flushLogsToRenderer();
+    if (!app.isPackaged) {
+      mainWindowInstance?.webContents.openDevTools({ mode: 'detach' });
+    }
+  });
+
+  mainWindowInstance.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+    console.log(`[Renderer Console - Lvl ${level}] ${message} (${sourceId}:${line})`);
   });
 
   mainWindowInstance.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL) => {
     console.error(`[Window] did-fail-load: ${errorCode} ${errorDescription} (${validatedURL})`);
+  });
+
+  mainWindowInstance.webContents.on('render-process-gone', (_event, details) => {
+    console.error(`[Window] render-process-gone:`, details);
   });
 
 

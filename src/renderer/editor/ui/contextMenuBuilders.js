@@ -49,6 +49,19 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   }
   topRow.appendChild(btnSuggest);
 
+  // LLM Chat & Rewrite button
+  const btnLlmChat = createMenuButton({
+    className: 'pill-action-btn secondary',
+    title: "Start LLM Chat or rewrite with selected text",
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: 1rem; color: #c084fc;">chat</span> <span>LLM Chat & Rewrite</span>`,
+    onClick: () => {
+      onDismiss();
+      window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
+    }
+  });
+  topRow.appendChild(btnLlmChat);
+
+
   const btnQuickGoogle = createMenuButton({
     className: 'pill-action-btn secondary',
     title: t('action_google_search') || "Search with Google",
@@ -204,6 +217,17 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
       }
     });
     menu.appendChild(btnVector);
+
+    const btnLlm = createMenuButton({
+      className: 'custom-context-menu-item',
+      innerHTML: `<span class="material-symbols-outlined" style="font-size: 1.05rem; color: #c084fc;">chat</span> <span>LLM Chat & Rewrite</span>`,
+      onClick: () => {
+        onDismiss();
+        window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
+      }
+    });
+    menu.appendChild(btnLlm);
+
 
     const btnGoogle = createMenuButton({
       className: 'custom-context-menu-item',

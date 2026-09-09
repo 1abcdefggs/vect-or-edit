@@ -14,10 +14,11 @@ import {
   getCurrentResults
 } from './searchUi.js';
 
-import { initLocalAiWorker, getVectorFromWorker, isLocalAiReadyState } from './searchLocalAi.js';
+import { initLocalAiWorker, isLocalAiReadyState } from './searchLocalAi.js';
 import { fetchAiSuggestions } from './searchProviders.js';
 import { showMonacoWidget } from './searchWidget.js';
 import { aiManager } from '../core/aiStateManager.js';
+import { adapterRegistry } from './adapterRegistry.js';
 
 let debounceTimer = null;
 let backendTimer = null;
@@ -130,34 +131,59 @@ export function triggerSearchAndRender(query) {
         return;
       }
 
-      // Gate: AI feature is only invoked when Master AI is explicitly ON
-      if (typeof aiManager?.isMasterAiEnabled === 'function' && !aiManager.isMasterAiEnabled()) {
+      // Gate: AI feature is active when setup is completed
+      // Master AI gate removed in favor of direct model readiness
+
+      const vectorizerId = adapterRegistry.getActiveVectorizerId();
+      const generatorId  = adapterRegistry.getActiveGeneratorId();
+
+      // --- LLM-as-Embedding path ---
+      if (vectorizerId.startsWith('llm-embed-')) {
+        const vectorizer = adapterRegistry.getActiveVectorizer();
+        try {
+          const vector = await vectorizer.encode(query);
+          const queryLimit = Math.max(limit, 8);
+          const response = await window.engineAPI.searchVector(vector, queryLimit);
+          if (response?.success && Array.isArray(response.data) && response.data.length > 0) {
+            const filtered = response.data.filter(r => (r.score || 0) >= minScore);
+            renderResults(filtered.length >= 3 ? filtered : response.data.slice(0, queryLimit), false);
+            return;
+          }
+        } catch (err) {
+          console.warn('[vectorSearch] LLM-Embedding failed, falling back to quick results:', err);
+        }
         renderResults(quickResults, false);
         return;
       }
 
-      if (provider === 'gemini' || provider === 'openai' || provider === 'claude') {
-        const suggestion = await fetchAiSuggestions(query, provider);
+      // --- Cloud LLM suggestion path (gemini / claude / openai) ---
+      if (generatorId === 'gemini' || generatorId === 'openai' || generatorId === 'claude') {
+        const suggestion = await fetchAiSuggestions(query, generatorId);
         if (suggestion) {
           renderResults([suggestion, ...quickResults], false);
           return;
         }
       }
 
-      // 4. Local Embeddings + Rust HNSW Flow
-      // Guard: Only proceed if local AI model is fully downloaded and ready
-      if (provider === 'local' && window.engineAPI && window.engineAPI.searchVector && isLocalAiReadyState()) {
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), TIMINGS.WORKER_TIMEOUT_MS));
-        const vector = await Promise.race([getVectorFromWorker(query), timeoutPromise]);
+      // --- Local Embedding + Rust HNSW path ---
+      if (vectorizerId === 'local' && window.engineAPI?.searchVector && isLocalAiReadyState()) {
+        const vectorizer = adapterRegistry.getActiveVectorizer();
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout')), TIMINGS.WORKER_TIMEOUT_MS)
+        );
+        const vector = await Promise.race([vectorizer.encode(query), timeoutPromise]);
         const queryLimit = Math.max(limit, 8);
         const response = await window.engineAPI.searchVector(vector, queryLimit);
-        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
+        if (response?.success && Array.isArray(response.data) && response.data.length > 0) {
           const filtered = response.data.filter(r => (r.score || 0) >= minScore);
-          const finalResults = filtered.length >= 3 ? filtered : response.data.slice(0, Math.min(queryLimit, Math.max(3, filtered.length)));
-          renderResults(finalResults, false);
+          renderResults(
+            filtered.length >= 3 ? filtered : response.data.slice(0, Math.min(queryLimit, Math.max(3, filtered.length))),
+            false
+          );
           return;
         }
       }
+
       renderResults(quickResults, false);
     } catch (err) {
       console.warn('AI suggestion fallback used:', err);

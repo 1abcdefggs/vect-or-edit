@@ -65,5 +65,11 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
   }
 
   // Start checking right away (only in production / packaged mode)
-  autoUpdater.checkForUpdates();
+  try {
+    autoUpdater.checkForUpdates().catch((e) => {
+      console.warn('[Updater] Auto-update check failed:', e?.message || e);
+    });
+  } catch (e) {
+    console.warn('[Updater] Could not initiate update check:', e);
+  }
 }
