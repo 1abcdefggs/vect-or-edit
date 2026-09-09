@@ -128,7 +128,7 @@
   "settings_title": "Application Settings",
   "tab_appearance": "Header & Appearance",
   "tab_editor": "Editor & Toolbar",
-  "tab_ai_search": "AI & Knowledge Sidebar",
+  "tab_ai_search": "AI MODEL",
   "tab_system": "System & Bottom Bar",
   "setting_line_height": "Line Height",
   "setting_line_height_desc": "Adjust vertical pitch between lines in the editor.",

@@ -6,11 +6,13 @@
   <div class="sidebar-header">
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
       <h3 style="display: flex; align-items: center; gap: 6px; margin: 0; min-width: 0;">
-        <!-- Sidebar Child AI Switch: Unified .ai-chip-pill -->
-        <button id="btnSidebarAiToggle" class="ai-chip-pill"
-          data-i18n-title="ai_model_badge_tooltip" title="Suggest AI">
+        <!-- Single Unified Embedding / Vector Suggest Button -->
+        <button id="btnSidebarEmbeddingModel" class="ai-chip-pill"
+          style="background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.25); color: var(--accent-color, #38bdf8); cursor: pointer; display: flex; align-items: center; gap: 5px;"
+          title="Active Embedding Model / Dictionary (Click to configure)">
           <span id="activeAiModelStatusDot" style="color: var(--success-color, #10b981); font-size: 0.65rem; transition: color 0.3s ease;">●</span>
-          <span id="activeAiModelBadge">Suggest AI ON</span>
+          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8); flex-shrink: 0;">menu_book</span>
+          <span id="sidebarEmbeddingModelName" style="font-size: 0.68rem; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Embedding</span>
         </button>
       </h3>
       <div style="display: flex; align-items: center; gap: 6px;">

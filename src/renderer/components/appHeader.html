@@ -1,8 +1,9 @@
 <header class="app-header">
   <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
     <div class="window-controls-left" style="display: flex; align-items: center; gap: 6px;">
-      <img src="./assets/icon.png" alt="VectOrEdit" class="logo-icon">
+      <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon">
       <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;" data-i18n="app_title">VectOrEdit</span>
+      <span id="appVersionBadge" class="app-version-badge">v0.3.8</span>
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
@@ -151,33 +152,6 @@
       </div>
     </nav>
 
-    <!-- Master AI & Model Integrated Group: Slim, borderless & space-optimized -->
-    <div id="masterAiContainer"
-      style="display: flex; align-items: center; gap: 5px; height: 26px; padding: 0 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); -webkit-app-region: no-drag; flex-shrink: 0;">
-      
-      <div style="display: flex; align-items: center; gap: 4px; padding: 0 1px;">
-        <span id="masterAiStatusDot" class="material-symbols-outlined" style="color: #ef4444; font-size: 1.05rem; transition: color 0.3s ease;">&#xe65f;</span>
-        <span class="icon-label-text" style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px;" data-i18n="master_ai_label">AI</span>
-      </div>
-
-      <!-- Seamless ON/OFF Toggle Pill -->
-      <div id="masterAiTogglePill" class="master-ai-pill" title="Toggle Master AI" style="width: 50px; height: 20px; flex-shrink: 0; margin: 0;">
-        <div class="pill-slider" style="width: 23px; height: 16px; top: 1px; left: 1px;"></div>
-        <span class="pill-label pill-on" style="font-size: 0.55rem;">ON</span>
-        <span class="pill-label pill-off" style="font-size: 0.55rem;">OFF</span>
-      </div>
-
-      <div class="master-ai-divider" aria-hidden="true"></div>
-
-      <!-- Model Settings Button -->
-      <button id="btnHeaderModelSettings" class="toolbar-btn header-action-btn"
-        style="height: 20px; padding: 0 8px; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; border: none; background: transparent; cursor: pointer; white-space: nowrap; border-radius: 4px; max-width: 160px;"
-        data-i18n-title="ai_model_badge_tooltip" title="AI Model Settings">
-        <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8); flex-shrink: 0;">&#xf3aa;</span>
-        <span class="icon-label-text" style="font-size: 0.70rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">No Model</span>
-      </button>
-    </div>
-
   </div>
   <div class="toolbar app-header-toolbar"
     style="display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: auto;">
@@ -196,6 +170,20 @@
       <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
       <span class="icon-label-text" id="langToggleLabel">EN</span>
     </button>
+
+    <!-- Zoom / UI Scaling Relative Adjustment (Plus / Minus) -->
+    <div class="header-zoom-group" style="display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); height: 24px; padding: 0 1px;">
+      <button id="btnHeaderZoomOut" class="toolbar-btn header-zoom-btn" type="button"
+        style="width: 22px; height: 22px; padding: 0; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 3px; cursor: pointer; color: var(--text-main);"
+        title="Zoom Out / 文字縮小 (Ctrl+-)" data-i18n="btnHeaderZoomOutTitle">
+        <span class="material-symbols-outlined" style="font-size: 0.95rem;">remove</span>
+      </button>
+      <button id="btnHeaderZoomIn" class="toolbar-btn header-zoom-btn" type="button"
+        style="width: 22px; height: 22px; padding: 0; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 3px; cursor: pointer; color: var(--text-main);"
+        title="Zoom In / 文字拡大 (Ctrl++)" data-i18n="btnHeaderZoomInTitle">
+        <span class="material-symbols-outlined" style="font-size: 0.95rem;">add</span>
+      </button>
+    </div>
 
     <!-- Settings Button -->
     <button id="btnSettings" class="toolbar-btn header-action-btn"

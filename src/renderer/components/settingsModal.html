@@ -1,8 +1,19 @@
-  <!-- Comprehensive Application Settings Modal -->
-  <div id="settingsModal" class="modal-backdrop" style="display: none;">
-    <div class="modal-dialog settings-modal-dialog">
-      <div class="modal-header">
-        <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+<!-- Comprehensive Application Settings Modal -->
+<div id="settingsModal" class="modal-backdrop" style="display: none;">
+  <div class="modal-dialog settings-modal-dialog">
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button id="btnBackToEditor" class="toolbar-btn"
+          style="padding: 4px 10px; font-size: 0.78rem; font-weight: 600; display: flex; align-items: center; gap: 5px; border-radius: 6px; background: rgba(56, 189, 248, 0.12); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); cursor: pointer;"
+          title="Back to Editor (Esc)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span data-i18n="btn_back_to_editor">Back to Editor</span>
+        </button>
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px; margin: 0;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
@@ -12,714 +23,978 @@
           </svg>
           <span data-i18n="settings_title">Application Settings</span>
         </h3>
-        <button id="btnCloseSettingsModal" class="log-panel-btn"
-          style="padding: 2px 8px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+      </div>
+      <button id="btnCloseSettingsModal" class="log-panel-btn"
+        style="padding: 4px 10px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px;"
+        title="Close Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="settings-modal-tabs">
+      <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance">Header &
+        Appearance</button>
+      <button class="settings-tab-btn" data-tab="tabEditor" data-i18n="tab_editor">Editor & Toolbar</button>
+      <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n="tab_ai_search">AI & Knowledge Sidebar</button>
+      <button class="settings-tab-btn" data-tab="tabSystem" data-i18n="tab_system">System & Bottom Bar</button>
+    </div>
+
+    <div class="modal-body settings-modal-body">
+      <!-- Tab 1: Header & Appearance -->
+      <div id="tabAppearance" class="settings-tab-content active">
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="theme_label">Color Theme</div>
+            <div class="setting-desc" data-i18n="setting_theme_desc">Switch color palette and titlebar theme.</div>
+          </div>
+          <select id="modalThemeSelect" class="toolbar-select">
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="language_label">UI Language</div>
+            <div class="setting-desc" data-i18n="setting_language_desc">Switch application locale.</div>
+          </div>
+          <select id="modalLangSelect" class="toolbar-select">
+            <option value="en" data-i18n="lang_en">English (EN)</option>
+            <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_ui_scaling">UI Scaling (Zoom)</div>
+            <div class="setting-desc" data-i18n="setting_ui_scaling_desc">Adjust the overall size of the application UI.
+            </div>
+          </div>
+          <select id="modalZoomSelect" class="toolbar-select">
+            <option value="1.0" data-i18n="zoom_100">100% (Default)</option>
+            <option value="1.1" data-i18n="zoom_110">110%</option>
+            <option value="1.25" data-i18n="zoom_125">125%</option>
+            <option value="1.4" data-i18n="zoom_140">140%</option>
+            <option value="1.5" data-i18n="zoom_150">150%</option>
+          </select>
+        </div>
+
+        <!-- Workspace Session (.vectorspace) Backup & Restore -->
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_workspace_bundle">Workspace Session (.vectorspace)</div>
+            <div class="setting-desc" data-i18n="setting_workspace_bundle_desc">Save or restore all active documents,
+              tabs, and layout state in a single bundle.</div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btnExportWorkspace" class="toolbar-btn"
+              style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
+              <span data-i18n="btn_export_workspace">Save Workspace</span>
+            </button>
+            <button id="btnImportWorkspace" class="toolbar-btn"
+              style="padding: 6px 12px; background: var(--accent-color, #38bdf8); color: #000; border: none; border-radius: 6px; cursor: pointer;">
+              <span data-i18n="btn_import_workspace">Open Workspace</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="settings-modal-tabs">
-        <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance">Header & Appearance</button>
-        <button class="settings-tab-btn" data-tab="tabEditor" data-i18n="tab_editor">Editor & Toolbar</button>
-        <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n="tab_ai_search">AI & Knowledge Sidebar</button>
-        <button class="settings-tab-btn" data-tab="tabSystem" data-i18n="tab_system">System & Bottom Bar</button>
-      </div>
-
-      <div class="modal-body settings-modal-body">
-        <!-- Tab 1: Header & Appearance -->
-        <div id="tabAppearance" class="settings-tab-content active">
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="theme_label">Color Theme</div>
-              <div class="setting-desc" data-i18n="setting_theme_desc">Switch color palette and titlebar theme.</div>
-            </div>
-            <select id="modalThemeSelect" class="toolbar-select">
-            </select>
+      <!-- Tab 2: Editor & Toolbar -->
+      <div id="tabEditor" class="settings-tab-content">
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="font_family_label">Font Family</div>
+            <div class="setting-desc" data-i18n="setting_font_family_desc">Select typeface for text rendering.</div>
           </div>
+          <select id="modalFontFamilySelect" class="toolbar-select">
+            <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">
+              Source Serif 4 (Serif)</option>
+            <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
+            <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">
+              Source Code Pro (Monospace)</option>
+          </select>
+        </div>
 
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="language_label">UI Language</div>
-              <div class="setting-desc" data-i18n="setting_language_desc">Switch application locale.</div>
-            </div>
-            <select id="modalLangSelect" class="toolbar-select">
-              <option value="en" data-i18n="lang_en">English (EN)</option>
-              <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
-            </select>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="font_size_label">Font Size</div>
+            <div class="setting-desc" data-i18n="setting_font_size_desc">Adjust editor font scaling.</div>
           </div>
+          <select id="modalFontSizeSelect" class="toolbar-select">
+            <option value="14" data-i18n="font_small">14px</option>
+            <option value="16" data-i18n="font_normal">16px</option>
+            <option value="18" data-i18n="font_large">18px</option>
+            <option value="20" data-i18n="font_xlarge">20px</option>
+          </select>
+        </div>
 
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_ui_scaling">UI Scaling (Zoom)</div>
-              <div class="setting-desc" data-i18n="setting_ui_scaling_desc">Adjust the overall size of the application UI.</div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_line_height">Line Height</div>
+            <div class="setting-desc" data-i18n="setting_line_height_desc">Adjust vertical pitch between lines.
             </div>
-            <select id="modalZoomSelect" class="toolbar-select">
-              <option value="1.0" data-i18n="zoom_100">100% (Default)</option>
-              <option value="1.1" data-i18n="zoom_110">110%</option>
-              <option value="1.25" data-i18n="zoom_125">125%</option>
-              <option value="1.4" data-i18n="zoom_140">140%</option>
-              <option value="1.5" data-i18n="zoom_150">150%</option>
-            </select>
           </div>
+          <select id="modalLineHeightSelect" class="toolbar-select">
+            <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
+            <option value="26" selected data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
+            <option value="30" data-i18n="opt_lh_relaxed">1.8 Relaxed (30px)</option>
+            <option value="34" data-i18n="opt_lh_spacious">2.0 Spacious (34px)</option>
+          </select>
+        </div>
 
-          <!-- Workspace Session (.vectorspace) Backup & Restore -->
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_workspace_bundle">Workspace Session (.vectorspace)</div>
-              <div class="setting-desc" data-i18n="setting_workspace_bundle_desc">Save or restore all active documents, tabs, and layout state in a single bundle.</div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_editor_bg">Editor Canvas Tone (Dark & Light Variations)
             </div>
-            <div style="display: flex; gap: 8px;">
-              <button id="btnExportWorkspace" class="toolbar-btn"
-                style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
-                <span data-i18n="btn_export_workspace">Save Workspace</span>
-              </button>
-              <button id="btnImportWorkspace" class="toolbar-btn"
-                style="padding: 6px 12px; background: var(--accent-color, #38bdf8); color: #000; border: none; border-radius: 6px; cursor: pointer;">
-                <span data-i18n="btn_import_workspace">Open Workspace</span>
-              </button>
-            </div>
+            <div class="setting-desc" data-i18n="setting_editor_bg_desc">Customize background color inside Monaco
+              editor independently.</div>
+          </div>
+          <select id="modalEditorBgSelect" class="toolbar-select">
+            <option value="default" selected data-i18n="opt_bg_default">Theme Match (Default)</option>
+            <optgroup label="Dark Variations">
+              <option value="oled" data-i18n="opt_bg_oled">OLED Pitch Black (#000000)</option>
+              <option value="obsidian" data-i18n="opt_bg_obsidian">Obsidian Dark (#090d16)</option>
+              <option value="charcoal" data-i18n="opt_bg_charcoal">Midnight Charcoal (#111827)</option>
+              <option value="slate" data-i18n="opt_bg_slate">Deep Slate Navy (#0f172a)</option>
+            </optgroup>
+            <optgroup label="Light Variations">
+              <option value="snow" data-i18n="opt_bg_snow">Pure Snow White (#FFFFFF)</option>
+              <option value="ivory" data-i18n="opt_bg_ivory">Ivory Cream (#FFFFF0)</option>
+              <option value="warmWhite" data-i18n="opt_bg_warm">Warm Off-White (#FAFAF9)</option>
+              <option value="paper" data-i18n="opt_bg_paper">Japanese Paper Light (#FDFBF7)</option>
+            </optgroup>
+            <option value="custom" data-i18n="opt_bg_custom">Arbitrary Custom Colors</option>
+          </select>
+        </div>
+
+        <!-- Arbitrary Custom Editor Colors Settings Item -->
+        <div id="modalCustomColorSettings" class="setting-item"
+          style="display: none; background: rgba(56,189,248,0.06); border-left: 3px solid var(--accent-color, #38bdf8); padding: 10px 14px; border-radius: 6px;">
+          <div>
+            <div class="setting-label" data-i18n="setting_custom_colors">Custom Background & Text Color</div>
+            <div class="setting-desc" data-i18n="setting_custom_colors_desc">Pick any custom HEX color for the
+              Monaco canvas background and font text.</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+              <span data-i18n="label_bg">Background:</span>
+              <input type="color" id="modalCustomBgPicker" value="#1e1e2e"
+                style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+              <span data-i18n="label_text">Text:</span>
+              <input type="color" id="modalCustomFgPicker" value="#cdd6f4"
+                style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+            </label>
           </div>
         </div>
 
-        <!-- Tab 2: Editor & Toolbar -->
-        <div id="tabEditor" class="settings-tab-content">
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="font_family_label">Font Family</div>
-              <div class="setting-desc" data-i18n="setting_font_family_desc">Select typeface for text rendering.</div>
-            </div>
-            <select id="modalFontFamilySelect" class="toolbar-select">
-              <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
-                data-i18n="font_serif">Source Serif 4 (Serif)</option>
-              <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-                data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
-              <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">
-                Source Code Pro (Monospace)</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="font_size_label">Font Size</div>
-              <div class="setting-desc" data-i18n="setting_font_size_desc">Adjust editor font scaling.</div>
-            </div>
-            <select id="modalFontSizeSelect" class="toolbar-select">
-              <option value="14" data-i18n="font_small">14px</option>
-              <option value="16" data-i18n="font_normal">16px</option>
-              <option value="18" data-i18n="font_large">18px</option>
-              <option value="20" data-i18n="font_xlarge">20px</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_line_height">Line Height</div>
-              <div class="setting-desc" data-i18n="setting_line_height_desc">Adjust vertical pitch between lines.
-              </div>
-            </div>
-            <select id="modalLineHeightSelect" class="toolbar-select">
-              <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
-              <option value="26" selected data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
-              <option value="30" data-i18n="opt_lh_relaxed">1.8 Relaxed (30px)</option>
-              <option value="34" data-i18n="opt_lh_spacious">2.0 Spacious (34px)</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_editor_bg">Editor Canvas Tone (Dark & Light Variations)
-              </div>
-              <div class="setting-desc" data-i18n="setting_editor_bg_desc">Customize background color inside Monaco
-                editor independently.</div>
-            </div>
-            <select id="modalEditorBgSelect" class="toolbar-select">
-              <option value="default" selected data-i18n="opt_bg_default">Theme Match (Default)</option>
-              <optgroup label="Dark Variations">
-                <option value="oled" data-i18n="opt_bg_oled">OLED Pitch Black (#000000)</option>
-                <option value="obsidian" data-i18n="opt_bg_obsidian">Obsidian Dark (#090d16)</option>
-                <option value="charcoal" data-i18n="opt_bg_charcoal">Midnight Charcoal (#111827)</option>
-                <option value="slate" data-i18n="opt_bg_slate">Deep Slate Navy (#0f172a)</option>
-              </optgroup>
-              <optgroup label="Light Variations">
-                <option value="snow" data-i18n="opt_bg_snow">Pure Snow White (#FFFFFF)</option>
-                <option value="ivory" data-i18n="opt_bg_ivory">Ivory Cream (#FFFFF0)</option>
-                <option value="warmWhite" data-i18n="opt_bg_warm">Warm Off-White (#FAFAF9)</option>
-                <option value="paper" data-i18n="opt_bg_paper">Japanese Paper Light (#FDFBF7)</option>
-              </optgroup>
-              <option value="custom" data-i18n="opt_bg_custom">Arbitrary Custom Colors</option>
-            </select>
-          </div>
-
-          <!-- Arbitrary Custom Editor Colors Settings Item -->
-          <div id="modalCustomColorSettings" class="setting-item"
-            style="display: none; background: rgba(56,189,248,0.06); border-left: 3px solid var(--accent-color, #38bdf8); padding: 10px 14px; border-radius: 6px;">
-            <div>
-              <div class="setting-label" data-i18n="setting_custom_colors">Custom Background & Text Color</div>
-              <div class="setting-desc" data-i18n="setting_custom_colors_desc">Pick any custom HEX color for the
-                Monaco canvas background and font text.</div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
-                <span data-i18n="label_bg">Background:</span>
-                <input type="color" id="modalCustomBgPicker" value="#1e1e2e"
-                  style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
-              </label>
-              <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
-                <span data-i18n="label_text">Text:</span>
-                <input type="color" id="modalCustomFgPicker" value="#cdd6f4"
-                  style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
-              </label>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_line_highlight">Current Line Highlight</div>
+            <div class="setting-desc" data-i18n="setting_line_highlight_desc">Configure cursor highlight style.
             </div>
           </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_line_highlight">Current Line Highlight</div>
-              <div class="setting-desc" data-i18n="setting_line_highlight_desc">Configure cursor highlight style.
-              </div>
-            </div>
-            <select id="modalLineHighlightSelect" class="toolbar-select">
-              <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
-              <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
-              <option value="none" data-i18n="opt_highlight_none">Disabled</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_word_wrap">Word Wrap</div>
-              <div class="setting-desc" data-i18n="setting_word_wrap_desc">Toggle automatic text wrapping.</div>
-            </div>
-            <select id="modalWordWrapSelect" class="toolbar-select">
-              <option value="on" selected data-i18n="opt_wrap_on">On (Wrap at view)</option>
-              <option value="off" data-i18n="opt_wrap_off">Off (Horizontal scroll)</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_line_numbers">Line Numbers</div>
-              <div class="setting-desc" data-i18n="setting_line_numbers_desc">Configure visibility of line numbers.
-              </div>
-            </div>
-            <select id="modalLineNumbersSelect" class="toolbar-select">
-              <option value="on" selected data-i18n="opt_numbers_on">On (Visible)</option>
-              <option value="off" data-i18n="opt_numbers_off">Off (Minimalist)</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_sticky_scroll">Sticky Scroll</div>
-              <div class="setting-desc" data-i18n="setting_sticky_scroll_desc">Keep parent headings visible at top.
-              </div>
-            </div>
-            <select id="modalStickyScrollSelect" class="toolbar-select">
-              <option value="on" selected data-i18n="opt_sticky_on">On (Enabled)</option>
-              <option value="off" data-i18n="opt_sticky_off">Off (Disabled)</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_whitespace">Render Whitespace</div>
-              <div class="setting-desc" data-i18n="setting_whitespace_desc">Show visible marks for spaces and tabs.
-              </div>
-            </div>
-            <select id="modalWhitespaceSelect" class="toolbar-select">
-              <option value="none" selected data-i18n="opt_ws_none">None (Hidden)</option>
-              <option value="boundary" data-i18n="opt_ws_boundary">Boundary (Leading/Trailing)</option>
-              <option value="all" data-i18n="opt_ws_all">All (Show everywhere)</option>
-            </select>
-          </div>
+          <select id="modalLineHighlightSelect" class="toolbar-select">
+            <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
+            <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
+            <option value="none" data-i18n="opt_highlight_none">Disabled</option>
+          </select>
         </div>
 
-        <!-- Tab 3: AI & Vector Search -->
-        <div id="tabAiSearch" class="settings-tab-content">
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_word_wrap">Word Wrap</div>
+            <div class="setting-desc" data-i18n="setting_word_wrap_desc">Toggle automatic text wrapping.</div>
+          </div>
+          <select id="modalWordWrapSelect" class="toolbar-select">
+            <option value="on" selected data-i18n="opt_wrap_on">On (Wrap at view)</option>
+            <option value="off" data-i18n="opt_wrap_off">Off (Horizontal scroll)</option>
+          </select>
+        </div>
 
-          <section class="ai-control-overview" aria-label="AI system status">
-            <div class="ai-overview-heading">
-              <div>
-                <div class="setting-label">AI Control Center</div>
-                <div class="setting-desc" data-i18n="ai_overview_desc">Live status for verification before configuring.</div>
-              </div>
-              <span class="ai-overview-note">Local-first</span>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_line_numbers">Line Numbers</div>
+            <div class="setting-desc" data-i18n="setting_line_numbers_desc">Configure visibility of line numbers.
             </div>
-            <div class="ai-status-grid">
-              <div class="ai-status-card" data-status-tone="neutral">
-                <span class="ai-status-kicker">EMBEDDING</span>
-                <strong id="settingsEmbeddingStatus">Not configured</strong>
-                <span id="settingsEmbeddingDetail">Local vector model</span>
-              </div>
-              <div class="ai-status-card" data-status-tone="neutral">
-                <span class="ai-status-kicker">KNOWLEDGE</span>
-                <strong id="settingsKnowledgeStatus">Not loaded</strong>
-                <span id="settingsKnowledgeDetail">Add a JSON or VENC slot</span>
-              </div>
-              <div class="ai-status-card" data-status-tone="neutral">
-                <span class="ai-status-kicker">GENERATION</span>
-                <strong id="settingsGenerationStatus">Local AI</strong>
-                <span id="settingsGenerationDetail">Suggestions use the active provider</span>
-              </div>
-              <div class="ai-status-card" data-status-tone="off">
-                <span class="ai-status-kicker">MASTER AI</span>
-                <strong id="settingsMasterAiStatus">OFF</strong>
-                <span id="settingsMasterAiDetail">Enable after a model is ready</span>
-              </div>
+          </div>
+          <select id="modalLineNumbersSelect" class="toolbar-select">
+            <option value="on" selected data-i18n="opt_numbers_on">On (Visible)</option>
+            <option value="off" data-i18n="opt_numbers_off">Off (Minimalist)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_sticky_scroll">Sticky Scroll</div>
+            <div class="setting-desc" data-i18n="setting_sticky_scroll_desc">Keep parent headings visible at top.
             </div>
-            <div class="ai-structure-map" aria-label="AI processing structure">
-              <div class="ai-structure-column">
-                <span class="ai-structure-label">INPUT</span>
-                <div class="ai-structure-node">Editor text</div>
-              </div>
-              <span class="ai-structure-connector" aria-hidden="true">+</span>
-              <div class="ai-structure-column">
-                <span class="ai-structure-label">EMBEDDING</span>
-                <div class="ai-structure-node" id="settingsStructureEmbedding">Local model</div>
-              </div>
-              <span class="ai-structure-connector" aria-hidden="true">+</span>
-              <div class="ai-structure-column">
-                <span class="ai-structure-label">KNOWLEDGE</span>
-                <div class="ai-structure-node" id="settingsStructureKnowledge">HNSW index</div>
-              </div>
-              <span class="ai-structure-connector" aria-hidden="true">+</span>
-              <div class="ai-structure-column">
-                <span class="ai-structure-label">ASSIST</span>
-                <div class="ai-structure-node" id="settingsStructureAssist">Master AI OFF</div>
+          </div>
+          <select id="modalStickyScrollSelect" class="toolbar-select">
+            <option value="on" selected data-i18n="opt_sticky_on">On (Enabled)</option>
+            <option value="off" data-i18n="opt_sticky_off">Off (Disabled)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_whitespace">Render Whitespace</div>
+            <div class="setting-desc" data-i18n="setting_whitespace_desc">Show visible marks for spaces and tabs.
+            </div>
+          </div>
+          <select id="modalWhitespaceSelect" class="toolbar-select">
+            <option value="none" selected data-i18n="opt_ws_none">None (Hidden)</option>
+            <option value="boundary" data-i18n="opt_ws_boundary">Boundary (Leading/Trailing)</option>
+            <option value="all" data-i18n="opt_ws_all">All (Show everywhere)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tab 3: AI & Vector Search -->
+      <div id="tabAiSearch" class="settings-tab-content">
+
+        <section class="ai-control-overview" aria-label="AI system status">
+          <div class="ai-overview-heading">
+            <div>
+              <div class="setting-label">AI Control Center</div>
+              <div class="setting-desc" data-i18n="ai_overview_desc">Live status for verification before configuring.
               </div>
             </div>
-            <div class="ai-structure-caption">
-              <span>Generation providers such as Gemini produce suggestions separately from local vector indexing.</span>
-              <button id="btnOpenAiStructureSettings" class="ai-structure-link" type="button">Configure components</button>
+            <span class="ai-overview-note">Local-first</span>
+          </div>
+          <div class="ai-status-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="ai-status-card" data-status-tone="neutral">
+              <span class="ai-status-kicker">EMBEDDING</span>
+              <strong id="settingsEmbeddingStatus">Not configured</strong>
+              <span id="settingsEmbeddingDetail">Local vector model</span>
             </div>
-            <div class="ai-capability-table-wrap">
-              <div class="ai-capability-heading">
-                <div class="setting-label" data-i18n="ai_cap_heading">AI Capability Scope</div>
-                <div class="setting-desc" data-i18n="ai_cap_desc">Embedding handles semantic search, while Generation Model handles text creation.</div>
+            <div class="ai-status-card" data-status-tone="neutral">
+              <span class="ai-status-kicker">KNOWLEDGE</span>
+              <strong id="settingsKnowledgeStatus">Not loaded</strong>
+              <span id="settingsKnowledgeDetail">Add a JSON or VENC slot</span>
+            </div>
+            <div class="ai-status-card" data-status-tone="neutral">
+              <span class="ai-status-kicker">LLM / GENERATION</span>
+              <strong id="settingsGenerationStatus">Local AI</strong>
+              <span id="settingsGenerationDetail">Suggestions use the active provider</span>
+            </div>
+          </div>
+          <div class="ai-structure-map" aria-label="AI processing structure">
+            <div class="ai-structure-column">
+              <span class="ai-structure-label">INPUT</span>
+              <div class="ai-structure-node">Editor text</div>
+            </div>
+            <span class="ai-structure-connector" aria-hidden="true">+</span>
+            <div class="ai-structure-column">
+              <span class="ai-structure-label">EMBEDDING</span>
+              <div class="ai-structure-node" id="settingsStructureEmbedding">Local model</div>
+            </div>
+            <span class="ai-structure-connector" aria-hidden="true">+</span>
+            <div class="ai-structure-column">
+              <span class="ai-structure-label">KNOWLEDGE</span>
+              <div class="ai-structure-node" id="settingsStructureKnowledge">HNSW index</div>
+            </div>
+          </div>
+          <div class="ai-structure-caption">
+            <span>Local vector search and Cloud LLM features operate independently based on your active
+              configuration.</span>
+            <button id="btnOpenAiStructureSettings" class="ai-structure-link" type="button">Configure
+              components</button>
+          </div>
+          <!-- AI Capability Scope moved to separate Capability tab -->
+          <div class="ai-capability-heading">
+            <div class="setting-label" data-i18n="ai_cap_heading">AI Capability Scope</div>
+            <div class="setting-desc" data-i18n="ai_cap_desc">Embedding handles semantic search, while Generation Model
+              handles text creation.</div>
+          </div>
+          <table class="ai-capability-table">
+            <thead>
+              <tr>
+                <th data-i18n="ai_cap_col_feature">Feature</th>
+                <th><span class="capability-badge capability-local" data-i18n="ai_cap_col_embedding">Embedding
+                    Only</span></th>
+                <th><span class="capability-badge capability-generation" data-i18n="ai_cap_col_generation">Generation
+                    Model</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="ai_cap_feat_typing">Text Input & Monaco Editor Editing</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_file_io">File Save & Load</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_selection">Text Selection</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_knowledge_search">Knowledge Search & Similar Candidates</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_local_hnsw">384-dim Local Search & Rust HNSW</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-no" data-i18n="ai_cap_status_out_of_scope">Out of Scope</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_generation_chat">Text Generation & Conversation</td>
+                <td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_summarize_rewrite">Summarization & Natural Language Rewriting</td>
+                <td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_direct_edit">Direct Editing & Answering via AI</td>
+                <td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      </section>
+
+
+
+      <!-- Tab Panel 1: Embedding -->
+      <div id="panelEmbedding" class="ai-model-panel active">
+        <!-- Embedding Subtabs: Local vs Cloud -->
+        <div class="ai-model-subtab-bar" role="tablist">
+          <button type="button" class="ai-model-subtab-btn active" data-emb-subtab="local" id="btnSubTabLocal">
+            <span class="material-symbols-outlined" style="font-size: 0.95rem;">memory</span>
+            <span>Local</span>
+          </button>
+          <button type="button" class="ai-model-subtab-btn" data-emb-subtab="cloud" id="btnSubTabCloud">
+            <span class="material-symbols-outlined" style="font-size: 0.95rem;">cloud</span>
+            <span>Cloud</span>
+          </button>
+        </div>
+
+        <!-- Subpanel 1A: Local Embedding -->
+        <div id="subpanelEmbLocal" class="ai-model-panel active">
+          <div id="embeddingConfigCard" class="settings-section-card"
+            style="margin-bottom: 16px; padding: 14px 18px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px;">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px;">
+              <h4
+                style="margin: 0; font-size: 0.82rem; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 1.1rem;">menu_book</span>
+                <span data-i18n="heading_embedding_catalog">エンベディング一覧 (EMBEDDING / 局所ベクトル検索)</span>
+              </h4>
+              <span class="tool-version" style="color: var(--success-color, #10b981); font-weight: 600;">100%
+                OFFLINE</span>
+            </div>
+            <div class="setting-desc" data-i18n="embedding_card_desc"
+              style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 10px;">
+              エディタの専門用語辞書、HNSWベクトル検索、リアルタイムインテリセンスに使用します。モデルが無くても通常辞書・文字入力はそのまま使えます。
+            </div>
+
+            <!-- Local Model Opt-in Control -->
+            <div id="localAiSettingsBlock"
+              style="display: flex; flex-direction: column; gap: 10px; background: rgba(16, 185, 129, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.18);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="localAiStatusBadge"
+                  style="font-size: 0.78rem; font-weight: 600; color: var(--success-color, #10b981);"
+                  data-i18n="local_ai_status_standby">Local Embedding: Standby (Offline Mode)</span>
+                <button id="btnInitLocalAi" class="toolbar-btn"
+                  style="padding: 5px 14px; font-size: 0.75rem; font-weight: 600; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.25);">
+                  <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
+                </button>
               </div>
-              <table class="ai-capability-table">
-                <thead>
-                  <tr>
-                    <th data-i18n="ai_cap_col_feature">Feature</th>
-                    <th><span class="capability-badge capability-local" data-i18n="ai_cap_col_embedding">Embedding Only</span></th>
-                    <th><span class="capability-badge capability-generation" data-i18n="ai_cap_col_generation">Generation Model</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td data-i18n="ai_cap_feat_typing">Text Input & Monaco Editor Editing</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
-                  <tr><td data-i18n="ai_cap_feat_file_io">File Save & Load</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
-                  <tr><td data-i18n="ai_cap_feat_selection">Text Selection</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
-                  <tr><td data-i18n="ai_cap_feat_knowledge_search">Knowledge Search & Similar Candidates</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
-                  <tr><td data-i18n="ai_cap_feat_local_hnsw">384-dim Local Search & Rust HNSW</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td><td class="capability-no" data-i18n="ai_cap_status_out_of_scope">Out of Scope</td></tr>
-                  <tr><td data-i18n="ai_cap_feat_generation_chat">Text Generation & Conversation</td><td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
-                  <tr><td data-i18n="ai_cap_feat_summarize_rewrite">Summarization & Natural Language Rewriting</td><td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
-                  <tr><td data-i18n="ai_cap_feat_direct_edit">Direct Editing & Answering via AI</td><td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td><td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td></tr>
-                </tbody>
-              </table>
+
+              <!-- Active 384-dim Model Selector -->
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+                <label for="selLocalEmbeddingModel"
+                  style="font-size: 0.74rem; color: var(--text-main); font-weight: 600;">
+                  Active Local Embedding Model <span class="tool-version">384-dim</span>
+                </label>
+                <select id="selLocalEmbeddingModel" class="toolbar-select"
+                  style="padding: 6px 10px; font-size: 0.78rem; border-radius: 6px;">
+                  <option value="Xenova/multilingual-e5-small" selected>Xenova/multilingual-e5-small (~45MB /
+                    Multilingual - JA/EN Default)</option>
+                  <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2 (~23MB / English - Ultra-Fast)
+                  </option>
+                  <option value="Xenova/bge-small-en-v1.5">Xenova/bge-small-en-v1.5 (~33MB / English - High Accuracy)
+                  </option>
+                </select>
+              </div>
+
+              <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
+                <div
+                  style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">
+                  <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
+                  <span id="modalAiDownloadPct">0%</span>
+                </div>
+                <div
+                  style="width: 100%; background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; overflow: hidden;">
+                  <div id="modalAiDownloadProgressBar"
+                    style="height: 100%; background: var(--accent-color, #38bdf8); width: 0%; transition: width 0.3s ease;">
+                  </div>
+                </div>
+              </div>
+              <!-- Text Embedding Models Reference Table (English) -->
+              <details
+                style="margin-top: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 10px; transition: all 0.2s ease;">
+                <summary
+                  style="font-size: 0.74rem; font-weight: 600; color: var(--accent-color, #38bdf8); cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; outline: none; padding: 4px 0;">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    Supported Embedding Models Catalog (ONNX / Transformers.js)
+                  </span>
+                  <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal;">Click to view catalog
+                    & characteristics ▾</span>
+                </summary>
+
+                <div style="overflow-x: auto; margin-top: 8px; max-height: 220px; overflow-y: auto;">
+                  <table
+                    style="width: 100%; border-collapse: collapse; font-size: 0.70rem; color: var(--text-main); line-height: 1.4;">
+                    <thead>
+                      <tr
+                        style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align: left; position: sticky; top: 0; background: var(--bg-secondary, #1e293b); z-index: 1;">
+                        <th style="padding: 4px 6px;">Model Name (HuggingFace ID)</th>
+                        <th style="padding: 4px 6px;">Dimensions</th>
+                        <th style="padding: 4px 6px;">Quantized Size</th>
+                        <th style="padding: 4px 6px;">Language & Characteristics</th>
+                        <th style="padding: 4px 6px; text-align: center;">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(56, 189, 248, 0.04);"
+                        data-model-id="Xenova/multilingual-e5-small">
+                        <td
+                          style="padding: 5px 6px; font-family: var(--font-mono, monospace); font-weight: 600; color: #38bdf8;">
+                          Xenova/multilingual-e5-small <span class="model-active-badge"
+                            style="background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; margin-left: 6px;">Active</span>
+                        </td>
+                        <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
+                        <td style="padding: 5px 6px;">~45 MB</td>
+                        <td style="padding: 5px 6px;">Multilingual (JA/EN/etc). Ultra-fast, low memory footprint.</td>
+                        <td style="padding: 5px 6px; text-align: center;">
+                          <button type="button" class="btn-switch-model" data-model="Xenova/multilingual-e5-small"
+                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
+                        data-model-id="Xenova/all-MiniLM-L6-v2">
+                        <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/all-MiniLM-L6-v2
+                        </td>
+                        <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
+                        <td style="padding: 5px 6px;">~23 MB</td>
+                        <td style="padding: 5px 6px;">English standard. Industry gold-standard for ultra-compact
+                          embedding.</td>
+                        <td style="padding: 5px 6px; text-align: center;">
+                          <button type="button" class="btn-switch-model" data-model="Xenova/all-MiniLM-L6-v2"
+                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
+                        data-model-id="Xenova/bge-small-en-v1.5">
+                        <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/bge-small-en-v1.5
+                        </td>
+                        <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
+                        <td style="padding: 5px 6px;">~33 MB</td>
+                        <td style="padding: 5px 6px;">English specialized. Top-tier MTEB benchmark performance in class.
+                        </td>
+                        <td style="padding: 5px 6px; text-align: center;">
+                          <button type="button" class="btn-switch-model" data-model="Xenova/bge-small-en-v1.5"
+                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </div><!-- /localAiSettingsBlock -->
+          </div><!-- /embeddingConfigCard -->
+        </div><!-- /subpanelEmbLocal -->
+
+        <!-- Subpanel 1B: Cloud Embedding -->
+        <div id="subpanelEmbCloud" class="ai-model-panel">
+          <div class="settings-section-card"
+            style="margin-bottom: 16px; padding: 14px 18px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px;">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px;">
+              <h4
+                style="margin: 0; font-size: 0.82rem; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 1.1rem;">cloud_sync</span>
+                <span>Cloud Vector Embedding (API Vectorizer)</span>
+              </h4>
+              <span class="tool-version" style="color: var(--accent-color, #38bdf8); font-weight: 600;">CLOUD API</span>
             </div>
-          </section>
-          
-          <!-- Section 1: Provider & Model -->
-          <div id="aiProviderModelSection" class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
-            <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--accent-color, #38bdf8); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              <span data-i18n="ai_provider_config">AI Provider & Model Configuration</span>
+            <div class="setting-desc" style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 14px;">
+              Google text-embedding-004 や OpenAI text-embedding-3 等のクラウドAPIを利用した高次元ベクトル化設定です。APIキーはLLMタブと共有されます。
+            </div>
+
+            <div
+              style="display: flex; flex-direction: column; gap: 10px; background: rgba(56, 189, 248, 0.04); padding: 14px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.15);">
+              <div style="font-size: 0.76rem; color: var(--text-main); font-weight: 600;">
+                Cloud Vectorizer Status
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.5;">
+                現在、高精度オフライン検索（384次元 HNSW / ONNX）が標準で動作しています。クラウドAPIによる埋め込みを利用する場合は、LLMタブでAPIキーを設定し、対応アダプターを有効化してください。
+              </div>
+              <div style="margin-top: 4px;">
+                <button type="button" id="btnGoToLlmConfig" class="toolbar-btn"
+                  style="padding: 6px 12px; font-size: 0.74rem; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 6px; cursor: pointer;">
+                  <span>LLMタブでAPIキーを設定</span> →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div><!-- /subpanelEmbCloud -->
+      </div><!-- /panelEmbedding -->
+
+      <!-- Tab Panel 2: LLM -->
+      <div id="panelLlm" class="ai-model-panel">
+        <!-- Section 1B: LLM CHAT & Assistant (Cloud API / High-Cost / High-Intelligence) -->
+        <div id="llmConfigCard" class="settings-section-card"
+          style="margin-bottom: 16px; padding: 14px 18px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 8px;">
+          <div
+            style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px;">
+            <h4 style="margin: 0; font-size: 0.82rem; color: #c084fc; display: flex; align-items: center; gap: 8px;">
+              <span class="material-symbols-outlined" style="font-size: 1.1rem;">chat</span>
+              <span data-i18n="heading_llm_catalog">LLM一覧 (CHAT / 文章校正・リライト・対話支援)</span>
             </h4>
+            <span class="tool-version" style="color: #c084fc; font-weight: 600;">API連携 (コスト高)</span>
+          </div>
+          <div class="setting-desc" data-i18n="llm_card_desc"
+            style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 12px;">
+            エディタ下部のチャット欄および右クリックからの直接リライト・推敲対話に使用します。APIキーを設定するとチャット機能が解放されます。
+          </div>
 
-            <div class="setting-item" style="border: none; padding: 0 0 12px 0; display: block;">
-              <div style="margin-bottom: 8px;">
-                <div class="setting-label" data-i18n="setting_ai_provider">AI Engine / Provider</div>
-                <div class="setting-desc" data-i18n="setting_ai_provider_desc">Select between 100% Offline Local Model, Google Gemini, OpenAI, or Claude.</div>
+          <div class="setting-item" style="border: none; padding: 0 0 12px 0; display: block;">
+            <input type="hidden" id="modalAiProviderSelect" value="gemini">
+            <div class="provider-cards-grid"
+              style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
+              <div class="provider-card" data-provider="gemini"
+                style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                <div class="provider-name">Google Gemini <span class="tool-version">v1beta</span></div>
+                <div style="font-size: 0.65rem; color: var(--accent-color, #38bdf8);" data-i18n="card_cloud_desc">CLOUD
+                  API</div>
               </div>
-              <div class="provider-cards-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
-                <div class="provider-card" data-provider="local" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div class="provider-name">Local AI <span class="tool-version">384-dim</span></div>
-                  <div style="font-size: 0.65rem; color: var(--success-color, #10b981); font-weight: 500;" data-i18n="card_local_desc">OFFLINE</div>
-                </div>
-                <div class="provider-card" data-provider="gemini" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div class="provider-name">Google Gemini <span class="tool-version">API v1beta</span></div>
-                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
-                </div>
-                <div class="provider-card" data-provider="openai" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div class="provider-name">OpenAI <span class="tool-version">API v1</span></div>
-                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
-                </div>
-                <div class="provider-card" data-provider="claude" style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
-                  <div class="provider-name">Claude <span class="tool-version">API v3</span></div>
-                  <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD</div>
-                </div>
+              <div class="provider-card" data-provider="openai"
+                style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                <div class="provider-name">OpenAI <span class="tool-version">v1</span></div>
+                <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
               </div>
-
-              <!-- Local Model Opt-in Control -->
-              <div id="localAiSettingsBlock"
-                style="display: flex; flex-direction: column; gap: 10px; background: rgba(16, 185, 129, 0.05); padding: 14px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.18); margin-top: 12px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span id="localAiStatusBadge" style="font-size: 0.78rem; font-weight: 600; color: var(--success-color, #10b981);"
-                    data-i18n="local_ai_status_standby">Local AI: Standby (Offline Mode)</span>
-                  <button id="btnInitLocalAi" class="toolbar-btn"
-                    style="padding: 5px 14px; font-size: 0.75rem; font-weight: 600; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.25);">
-                    <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
-                  </button>
-                </div>
-                <div class="setting-desc" data-i18n="local_ai_prompt_desc" style="font-size: 0.73rem; color: var(--text-muted); margin: 0;">
-                  Fetches lightweight multilingual embedding model (multilingual-e5-small) for offline vector indexing.
-                </div>
-
-                <!-- Active 384-dim Model Selector -->
-                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
-                  <label for="selLocalEmbeddingModel" style="font-size: 0.74rem; color: var(--text-main); font-weight: 600;">
-                    Active Local Embedding Model <span class="tool-version">384-dim</span>
-                  </label>
-                  <select id="selLocalEmbeddingModel" class="toolbar-select" style="padding: 6px 10px; font-size: 0.78rem; border-radius: 6px;">
-                    <option value="Xenova/multilingual-e5-small" selected>Xenova/multilingual-e5-small (~45MB / Multilingual - JA/EN Default)</option>
-                    <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2 (~23MB / English - Ultra-Fast)</option>
-                    <option value="Xenova/bge-small-en-v1.5">Xenova/bge-small-en-v1.5 (~33MB / English - High Accuracy)</option>
-                  </select>
-                </div>
-
-                <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
-                  <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">
-                    <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
-                    <span id="modalAiDownloadPct">0%</span>
-                  </div>
-                  <div style="width: 100%; background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; overflow: hidden;">
-                    <div id="modalAiDownloadProgressBar" style="height: 100%; background: var(--accent-color, #38bdf8); width: 0%; transition: width 0.3s ease;"></div>
-                  </div>
-                </div>
-
-                <!-- Text Embedding Models Reference Table (English) -->
-                <details style="margin-top: 6px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 10px; transition: all 0.2s ease;">
-                  <summary style="font-size: 0.74rem; font-weight: 600; color: var(--accent-color, #38bdf8); cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; outline: none; padding: 4px 0;">
-                    <span style="display: flex; align-items: center; gap: 6px;">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                      Supported Models Catalog (ONNX / Transformers.js)
-                    </span>
-                    <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal;">Click to view catalog & characteristics ▾</span>
-                  </summary>
-
-                  <div style="overflow-x: auto; margin-top: 8px; max-height: 220px; overflow-y: auto;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.70rem; color: var(--text-main); line-height: 1.4;">
-                      <thead>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align: left; position: sticky; top: 0; background: var(--bg-secondary, #1e293b); z-index: 1;">
-                          <th style="padding: 4px 6px;">Model Name (HuggingFace ID)</th>
-                          <th style="padding: 4px 6px;">Dimensions</th>
-                          <th style="padding: 4px 6px;">Quantized Size</th>
-                          <th style="padding: 4px 6px;">Language & Characteristics</th>
-                          <th style="padding: 4px 6px; text-align: center;">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- 384-dim (Directly Compatible) -->
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(56, 189, 248, 0.04);" data-model-id="Xenova/multilingual-e5-small">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace); font-weight: 600; color: #38bdf8;">
-                            Xenova/multilingual-e5-small <span class="model-active-badge" style="background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; margin-left: 6px;">Active</span>
-                          </td>
-                          <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
-                          <td style="padding: 5px 6px;">~45 MB</td>
-                          <td style="padding: 5px 6px;">Multilingual (JA/EN/etc). Ultra-fast, low memory footprint.</td>
-                          <td style="padding: 5px 6px; text-align: center;">
-                            <button type="button" class="btn-switch-model" data-model="Xenova/multilingual-e5-small" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
-                          </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);" data-model-id="Xenova/all-MiniLM-L6-v2">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/all-MiniLM-L6-v2</td>
-                          <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
-                          <td style="padding: 5px 6px;">~23 MB</td>
-                          <td style="padding: 5px 6px;">English standard. Industry gold-standard for ultra-compact embedding.</td>
-                          <td style="padding: 5px 6px; text-align: center;">
-                            <button type="button" class="btn-switch-model" data-model="Xenova/all-MiniLM-L6-v2" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
-                          </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);" data-model-id="Xenova/bge-small-en-v1.5">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/bge-small-en-v1.5</td>
-                          <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
-                          <td style="padding: 5px 6px;">~33 MB</td>
-                          <td style="padding: 5px 6px;">English specialized. Top-tier MTEB benchmark performance in class.</td>
-                          <td style="padding: 5px 6px; text-align: center;">
-                            <button type="button" class="btn-switch-model" data-model="Xenova/bge-small-en-v1.5" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
-                          </td>
-                        </tr>
-
-                        <!-- Non 384-dim (Requires Knowledge Re-indexing) -->
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/multilingual-e5-base</td>
-                          <td style="padding: 5px 6px;">768-dim</td>
-                          <td style="padding: 5px 6px;">~220 MB</td>
-                          <td style="padding: 5px 6px;">Multilingual. Balanced precision and richer context representations.</td>
-                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/multilingual-e5-large</td>
-                          <td style="padding: 5px 6px;">1024-dim</td>
-                          <td style="padding: 5px 6px;">~560 MB</td>
-                          <td style="padding: 5px 6px;">Multilingual. Highest accuracy in the e5 series for heavy workloads.</td>
-                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">1024d Index</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/bge-m3</td>
-                          <td style="padding: 5px 6px;">1024-dim</td>
-                          <td style="padding: 5px 6px;">~560 MB</td>
-                          <td style="padding: 5px 6px;">BAAI flagship. Dense & sparse retrieval, supports up to 8192 tokens.</td>
-                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">1024d Index</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">cl-nagoya/sup-simcse-ja-base</td>
-                          <td style="padding: 5px 6px;">768-dim</td>
-                          <td style="padding: 5px 6px;">~110 MB</td>
-                          <td style="padding: 5px 6px;">Japanese specialized sentence embeddings by Nagoya University.</td>
-                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.75;">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/all-mpnet-base-v2</td>
-                          <td style="padding: 5px 6px;">768-dim</td>
-                          <td style="padding: 5px 6px;">~110 MB</td>
-                          <td style="padding: 5px 6px;">English high-fidelity semantic similarity model.</td>
-                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
-                        </tr>
-                        <tr style="opacity: 0.75;">
-                          <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">nomic-ai/nomic-embed-text-v1.5</td>
-                          <td style="padding: 5px 6px;">768-dim</td>
-                          <td style="padding: 5px 6px;">~137 MB</td>
-                          <td style="padding: 5px 6px;">Long-context RAG. Supports 8192 tokens with Matryoshka dimension scaling.</td>
-                          <td style="padding: 5px 6px; text-align: center; font-size: 0.60rem; color: var(--text-muted);">768d Index</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </details>
+              <div class="provider-card" data-provider="claude"
+                style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                <div class="provider-name">Claude <span class="tool-version">v3</span></div>
+                <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
               </div>
-              <select id="modalAiProviderSelect" class="toolbar-select" style="display: none;">
-                <option value="local" selected data-i18n="opt_provider_local">Local Embeddings (100% Offline)</option>
-                <option value="gemini" data-i18n="opt_provider_gemini">Google Gemini API (Cloud AI)</option>
-                <option value="openai" data-i18n="opt_provider_openai">OpenAI API (Cloud AI)</option>
-                <option value="claude" data-i18n="opt_provider_claude">Claude API (Anthropic Cloud AI)</option>
-              </select>
             </div>
+          </div>
 
-            <!-- Google Gemini API Configuration Block -->
-            <div id="geminiSettingsBlock"
-              style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-              <div class="setting-item" style="border: none; padding: 0;">
+          <!-- Google Gemini API Configuration Block -->
+          <div id="geminiSettingsBlock"
+            style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="setting-item"
+              style="border: none; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+              <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                  <div class="setting-label" data-i18n="setting_gemini_key">Gemini API Key</div>
-                  <div class="setting-desc" data-i18n="setting_gemini_key_desc">Stored securely on your local device.</div>
+                  <div class="setting-label"
+                    style="font-size: 0.8rem; font-weight: 600; color: var(--accent-color, #38bdf8);"
+                    data-i18n="setting_gemini_key">Gemini API Key</div>
+                  <div class="setting-desc" data-i18n="setting_gemini_key_desc">安全にローカルデバイスへ保存されます。</div>
                 </div>
-                <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." class="toolbar-select" style="width: 200px;">
+                <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                  style="font-size: 0.72rem; color: var(--accent-color, #38bdf8); text-decoration: none; display: flex; align-items: center; gap: 3px;">
+                  <span>Get Key</span>
+                  <span class="material-symbols-outlined" style="font-size: 0.8rem;">open_in_new</span>
+                </a>
               </div>
-              <div class="setting-item" style="border: none; padding: 0;">
+              <div class="api-key-input-container"
+                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
+                <span class="material-symbols-outlined"
+                  style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
+                <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." autocomplete="off"
+                  spellcheck="false"
+                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
+                <button type="button" id="btnToggleGeminiKeyVisibility" class="toolbar-btn" title="APIキーの表示/非表示を切り替え"
+                  style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
+                  <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
+                </button>
+              </div>
+            </div>
+            <div class="setting-item"
+              style="border: none; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+              <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                 <div>
                   <div class="setting-label" data-i18n="setting_gemini_model">Gemini Model</div>
+                  <div id="geminiModelsFetchStatus" class="setting-desc"
+                    style="font-size: 0.7rem; color: var(--accent-color, #38bdf8);">
+                    APIキー設定時にGoogle公式から利用可能な最新モデルを自動取得します。
+                  </div>
                 </div>
-                <select id="modalGeminiModelSelect" class="toolbar-select" style="width: 200px;">
-                  <option value="gemini-1.5-flash" selected>Gemini 1.5 Flash (Fast)</option>
-                  <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-                  <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                </select>
+                <button type="button" id="btnFetchGeminiModels" class="toolbar-btn" title="Googleから利用可能モデル一覧を再取得"
+                  style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; padding: 3px 8px; background: rgba(56, 189, 248, 0.1); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 4px; cursor: pointer;">
+                  <span class="material-symbols-outlined" style="font-size: 0.95rem;">sync</span>
+                  <span>公式モデル取得</span>
+                </button>
               </div>
-            </div>
-
-            <!-- OpenAI API Configuration Block -->
-            <div id="openaiSettingsBlock"
-              style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-              <div class="setting-item" style="border: none; padding: 0;">
-                <div>
-                  <div class="setting-label" data-i18n="setting_openai_key">OpenAI API Key</div>
-                  <div class="setting-desc" data-i18n="setting_openai_key_desc">Stored securely on your local device.</div>
-                </div>
-                <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." class="toolbar-select" style="width: 200px;">
-              </div>
-              <div class="setting-item" style="border: none; padding: 0;">
-                <div>
-                  <div class="setting-label" data-i18n="setting_openai_model">OpenAI Model</div>
-                </div>
-                <select id="modalOpenAiModelSelect" class="toolbar-select" style="width: 200px;">
-                  <option value="gpt-4o-mini" selected>GPT-4o Mini</option>
-                  <option value="gpt-4o">GPT-4o</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Claude API Configuration Block -->
-            <div id="claudeSettingsBlock"
-              style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-              <div class="setting-item" style="border: none; padding: 0;">
-                <div>
-                  <div class="setting-label" data-i18n="setting_claude_key">Anthropic API Key</div>
-                  <div class="setting-desc" data-i18n="setting_claude_key_desc">Stored securely on your local device.</div>
-                </div>
-                <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." class="toolbar-select" style="width: 200px;">
-              </div>
-              <div class="setting-item" style="border: none; padding: 0;">
-                <div>
-                  <div class="setting-label" data-i18n="setting_claude_model">Claude Model</div>
-                </div>
-                <select id="modalClaudeModelSelect" class="toolbar-select" style="width: 200px;">
-                  <option value="claude-3-5-sonnet-20241022" selected>Claude 3.5 Sonnet</option>
-                  <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 2: AI Inference Scope -->
-          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
-            <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--success-color, #10b981); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-              <span data-i18n="ai_inference_scope_title">AI Inference Scope</span>
-            </h4>
-            <div class="setting-item" style="border: none; padding: 0;">
-              <div>
-                <div class="setting-label" data-i18n="setting_ai_scope">AI Role / Inference Scope</div>
-                <div class="setting-desc" style="color: var(--text-main); " data-i18n="setting_ai_scope_desc">Fine-tune the scope of AI assistance during writing (prioritizing human input when necessary).</div>
-              </div>
-              <select id="modalAiScopeSelect" class="toolbar-select" style="max-width: 280px;">
-                <option value="suggestion_only" selected data-i18n="opt_scope_suggestion_only">Suggestions Only (Human Writes Text)</option>
-                <option value="lint_assist" data-i18n="opt_scope_lint_assist">Suggestions + Lint Rule Assistance</option>
-                <option value="full_assist" data-i18n="opt_scope_full_assist">Full Assistance (Suggestions + Lint + Drafting)</option>
+              <select id="modalGeminiModelSelect" class="toolbar-select"
+                style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.78rem;">
+                <option value="gemini-1.5-flash" selected>gemini-1.5-flash (標準・高速)</option>
+                <option value="gemini-2.5-flash">gemini-2.5-flash (次世代推奨・思考モデル)</option>
+                <option value="gemini-1.5-pro">gemini-1.5-pro (高度推論)</option>
               </select>
             </div>
           </div>
 
-          <!-- Section 3: Vector Search & UI -->
-          <div class="settings-section-card" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
-            <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <span data-i18n="vector_search_ui_title">Vector Search & Knowledge UI</span>
-            </h4>
-
-            <div class="setting-item" style="padding-top: 0;">
-              <div>
-                <div class="setting-label" data-i18n="setting_suggest_trigger">Suggestion Trigger Mode</div>
-                <div class="setting-desc" data-i18n="setting_suggest_trigger_desc">Control how vector suggestions are invoked.</div>
+          <!-- OpenAI API Configuration Block -->
+          <div id="openaiSettingsBlock"
+            style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="setting-item"
+              style="border: none; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+              <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div class="setting-label" style="font-size: 0.8rem; font-weight: 600; color: #10b981;"
+                    data-i18n="setting_openai_key">OpenAI API Key</div>
+                  <div class="setting-desc" data-i18n="setting_openai_key_desc">安全にローカルデバイスへ保存されます。</div>
+                </div>
+                <a href="https://platform.openai.com/api-keys" target="_blank"
+                  style="font-size: 0.72rem; color: #10b981; text-decoration: none; display: flex; align-items: center; gap: 3px;">
+                  <span>Get Key</span>
+                  <span class="material-symbols-outlined" style="font-size: 0.8rem;">open_in_new</span>
+                </a>
               </div>
-              <select id="modalSuggestTriggerSelect" class="toolbar-select">
-                <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse Release)</option>
-                <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
-                <option value="manual" data-i18n="opt_trigger_manual">Manual (Alt+S Shortcut Only)</option>
-              </select>
+              <div class="api-key-input-container"
+                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
+                <span class="material-symbols-outlined"
+                  style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
+                <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." autocomplete="off"
+                  spellcheck="false"
+                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
+                <button type="button" id="btnToggleOpenAiKeyVisibility" class="toolbar-btn" title="APIキーの表示/非表示を切り替え"
+                  style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
+                  <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
+                </button>
+              </div>
             </div>
-
-            <div class="setting-item">
+            <div class="setting-item"
+              style="border: none; padding: 0; display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <div class="setting-label" data-i18n="setting_context_menu_layout">Context Menu Layout (Right-Click)</div>
-                <div class="setting-desc" data-i18n="setting_context_menu_layout_desc">Switch between Pattern A (Hierarchical List) and Pattern B (Mini-Editor Grid).</div>
+                <div class="setting-label" data-i18n="setting_openai_model">OpenAI Model</div>
               </div>
-              <select id="modalContextMenuPatternSelect" class="toolbar-select">
-                <option value="patternA" selected data-i18n="opt_cm_pattern_a">Pattern A: Hierarchical Vertical List</option>
-                <option value="patternB" data-i18n="opt_cm_pattern_b">Pattern B: Mini-Editor Grid Layout</option>
-              </select>
-            </div>
-
-            <div class="setting-item">
-              <div>
-                <div class="setting-label" data-i18n="setting_suggest_display">SUGGEST Results Display Area</div>
-                <div class="setting-desc" data-i18n="setting_suggest_display_desc">Choose where full vector suggestion rankings are displayed.</div>
-              </div>
-              <select id="modalSuggestDisplayTargetSelect" class="toolbar-select">
-                <option value="sidebar" selected data-i18n="opt_disp_sidebar">Right Sidebar (Standard SUGGEST Panel)</option>
-                <option value="bottom" data-i18n="opt_disp_bottom">Bottom Area (Integrated with Lower Panel)</option>
-              </select>
-            </div>
-
-            <div class="setting-item">
-              <div>
-                <div class="setting-label" data-i18n="setting_min_score">Minimum Similarity Score (%)</div>
-                <div class="setting-desc" data-i18n="setting_min_score_desc">Ignore results below this similarity threshold.</div>
-              </div>
-              <input type="number" id="modalMinScoreInput" min="50" max="99" value="70" class="toolbar-select" style="width: 70px;">
-            </div>
-
-            <div class="setting-item">
-              <div>
-                <div class="setting-label" data-i18n="setting_limit">Search Results Limit</div>
-                <div class="setting-desc" data-i18n="setting_limit_desc">Maximum number of suggestions returned.</div>
-              </div>
-              <select id="modalLimitSelect" class="toolbar-select">
-                <option value="5" selected data-i18n="opt_limit_5">5 results</option>
-                <option value="10" data-i18n="opt_limit_10">10 results</option>
-                <option value="20" data-i18n="opt_limit_20">20 results</option>
-              </select>
-            </div>
-
-            <div class="setting-item">
-              <div>
-                <div class="setting-label" data-i18n="opt_show_full_metadata">Show Full Metadata / Attributes</div>
-                <div class="setting-desc" data-i18n="setting_full_meta_desc">Auto-expand key-value attributes in suggestion cards.</div>
-              </div>
-              <input type="checkbox" id="modalShowFullMetadataChk" style="accent-color: var(--accent-color, #818cf8); width: 18px; height: 18px; cursor: pointer;">
-            </div>
-
-            <div class="setting-item">
-              <div>
-                <div class="setting-label" data-i18n="btn_import_dict">Import Dictionary / Knowledge (.json)</div>
-                <div class="setting-desc" data-i18n="import_dict_desc">Load custom domain terms, schema rules, or vector definitions into HNSW index.</div>
-              </div>
-              <button id="btnModalImportDict" class="toolbar-btn" style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;  cursor: pointer;">
-                <span data-i18n="btn_import_dict">Import Dictionary</span>
-              </button>
-            </div>
-
-            <div class="setting-item" style="border-bottom: none; margin-bottom: 0;">
-              <div>
-                <div class="setting-label" data-i18n="setting_linter_enabled">Real-time Validation (Linter)</div>
-                <div class="setting-desc" data-i18n="setting_linter_enabled_desc">Enable background document validation.</div>
-              </div>
-              <select id="modalLinterSelect" class="toolbar-select">
-                <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
-                <option value="off" data-i18n="opt_linter_off">Disabled</option>
+              <select id="modalOpenAiModelSelect" class="toolbar-select" style="min-width: 220px;">
+                <option value="gpt-4o-mini" selected>GPT-4o Mini (推奨)</option>
+                <option value="gpt-4o">GPT-4o</option>
               </select>
             </div>
           </div>
+
+          <!-- Claude API Configuration Block -->
+          <div id="claudeSettingsBlock"
+            style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="setting-item"
+              style="border: none; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+              <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div class="setting-label" style="font-size: 0.8rem; font-weight: 600; color: #f97316;"
+                    data-i18n="setting_claude_key">Anthropic API Key</div>
+                  <div class="setting-desc" data-i18n="setting_claude_key_desc">安全にローカルデバイスへ保存されます。</div>
+                </div>
+                <a href="https://console.anthropic.com/settings/keys" target="_blank"
+                  style="font-size: 0.72rem; color: #f97316; text-decoration: none; display: flex; align-items: center; gap: 3px;">
+                  <span>Get Key</span>
+                  <span class="material-symbols-outlined" style="font-size: 0.8rem;">open_in_new</span>
+                </a>
+              </div>
+              <div class="api-key-input-container"
+                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
+                <span class="material-symbols-outlined"
+                  style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
+                <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"
+                  spellcheck="false"
+                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
+                <button type="button" id="btnToggleClaudeKeyVisibility" class="toolbar-btn" title="APIキーの表示/非表示を切り替え"
+                  style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
+                  <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
+                </button>
+              </div>
+            </div>
+            <div class="setting-item"
+              style="border: none; padding: 0; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div class="setting-label" data-i18n="setting_claude_model">Claude Model</div>
+              </div>
+              <select id="modalClaudeModelSelect" class="toolbar-select" style="min-width: 220px;">
+                <option value="claude-3-5-sonnet-20241022" selected>Claude 3.5 Sonnet</option>
+                <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+              </select>
+            </div>
+          </div>
+        </div><!-- /llmConfigCard -->
+      </div><!-- /panelLlm -->
+      <div id="panelCapability" class="ai-model-panel">
+        <div class="ai-capability-table-wrap">
+          <div class="ai-capability-heading">
+            <div class="setting-label" data-i18n="ai_cap_heading">AI Capability Scope</div>
+            <div class="setting-desc" data-i18n="ai_cap_desc">Embedding handles semantic search, while Generation Model
+              handles text creation.</div>
+          </div>
+          <table class="ai-capability-table">
+            <thead>
+              <tr>
+                <th data-i18n="ai_cap_col_feature">Feature</th>
+                <th><span class="capability-badge capability-local" data-i18n="ai_cap_col_embedding">Embedding
+                    Only</span></th>
+                <th><span class="capability-badge capability-generation" data-i18n="ai_cap_col_generation">Generation
+                    Model</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="ai_cap_feat_typing">Text Input &amp; Monaco Editor Editing</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_file_io">File Save &amp; Load</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_selection">Text Selection</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_knowledge_search">Knowledge Search &amp; Similar Candidates</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_local_hnsw">384-dim Local Search &amp; Rust HNSW</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+                <td class="capability-no" data-i18n="ai_cap_status_out_of_scope">Out of Scope</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_generation_chat">Text Generation &amp; Conversation</td>
+                <td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_summarize_rewrite">Summarization &amp; Natural Language Rewriting</td>
+                <td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+              <tr>
+                <td data-i18n="ai_cap_feat_direct_edit">Direct Editing &amp; Answering via AI</td>
+                <td class="capability-no" data-i18n="ai_cap_status_unsupported">Unsupported</td>
+                <td class="capability-yes" data-i18n="ai_cap_status_supported">Supported</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 2: AI Inference Scope -->
+      <div class="settings-section-card"
+        style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+        <h4
+          style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--success-color, #10b981); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          <span data-i18n="ai_inference_scope_title">AI Inference Scope</span>
+        </h4>
+        <div class="setting-item" style="border: none; padding: 0;">
+          <div>
+            <div class="setting-label" data-i18n="setting_ai_scope">AI Role / Inference Scope</div>
+            <div class="setting-desc" style="color: var(--text-main); " data-i18n="setting_ai_scope_desc">Fine-tune the
+              scope of AI assistance during writing (prioritizing human input when necessary).</div>
+          </div>
+          <select id="modalAiScopeSelect" class="toolbar-select" style="max-width: 280px;">
+            <option value="suggestion_only" selected data-i18n="opt_scope_suggestion_only">Suggestions Only (Human
+              Writes Text)</option>
+            <option value="lint_assist" data-i18n="opt_scope_lint_assist">Suggestions + Lint Rule Assistance</option>
+            <option value="full_assist" data-i18n="opt_scope_full_assist">Full Assistance (Suggestions + Lint +
+              Drafting)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 3: Vector Search & UI -->
+      <div class="settings-section-card"
+        style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+        <h4
+          style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span data-i18n="vector_search_ui_title">Vector Search & Knowledge UI</span>
+        </h4>
+
+        <div class="setting-item" style="padding-top: 0;">
+          <div>
+            <div class="setting-label" data-i18n="setting_suggest_trigger">Suggestion Trigger Mode</div>
+            <div class="setting-desc" data-i18n="setting_suggest_trigger_desc">Control how vector suggestions are
+              invoked.</div>
+          </div>
+          <select id="modalSuggestTriggerSelect" class="toolbar-select">
+            <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse Release)
+            </option>
+            <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
+            <option value="manual" data-i18n="opt_trigger_manual">Manual (Alt+S Shortcut Only)</option>
+          </select>
         </div>
 
-        <!-- Tab 4: System & Logs -->
-        <div id="tabSystem" class="settings-tab-content">
-
-          <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_log_startup_collapse">Start with Logs Closed</div>
-              <div class="setting-desc" data-i18n="setting_log_startup_collapse_desc">Automatically collapse the
-                bottom log console when the application starts.</div>
-            </div>
-            <input type="checkbox" id="chkLogCollapsedOnStartup"
-              style="accent-color: var(--accent-color, #38bdf8); width: 18px; height: 18px; cursor: pointer;">
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_context_menu_layout">Context Menu Layout (Right-Click)</div>
+            <div class="setting-desc" data-i18n="setting_context_menu_layout_desc">Switch between Pattern A
+              (Hierarchical List) and Pattern B (Mini-Editor Grid).</div>
           </div>
+          <select id="modalContextMenuPatternSelect" class="toolbar-select">
+            <option value="patternA" selected data-i18n="opt_cm_pattern_a">Pattern A: Hierarchical Vertical List
+            </option>
+            <option value="patternB" data-i18n="opt_cm_pattern_b">Pattern B: Mini-Editor Grid Layout</option>
+          </select>
+        </div>
 
-          <div class="settings-section-card settings-maintenance-card">
-            <h4>Application Maintenance</h4>
-            <div class="setting-item">
-              <div>
-                <div class="setting-label">Clear Application Cache</div>
-                <div class="setting-desc">Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys.</div>
-              </div>
-              <button id="btnClearAppCache" class="toolbar-btn" type="button">Clear Cache</button>
-            </div>
-            <div class="setting-item">
-              <div>
-                <div class="setting-label">Restore Default Settings</div>
-                <div class="setting-desc">Deletes renderer preferences such as theme, language, editor layout, AI provider selection, and search options, then reloads the editor. It does not delete documents, Knowledge Slots, cached model files, or the encrypted Gemini API key.</div>
-              </div>
-              <button id="btnResetSettings" class="toolbar-btn" type="button">Restore Defaults</button>
-            </div>
-            <div class="setting-item">
-              <div>
-                <div class="setting-label">Reload Editor</div>
-                <div class="setting-desc">Reloads the editor window and renderer process. It does not clear settings, cache, documents, models, or API keys.</div>
-              </div>
-              <button id="btnReloadEditor" class="toolbar-btn" type="button">Reload</button>
-            </div>
-            <div class="setting-item" style="border-bottom: none; margin-bottom: 0;">
-              <div>
-                <div class="setting-label">Restart Application</div>
-                <div class="setting-desc">Closes and relaunches the Electron application. It keeps settings, documents, cached models, Knowledge Slots, and encrypted API keys.</div>
-              </div>
-              <button id="btnRestartApplication" class="toolbar-btn" type="button">Restart</button>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_suggest_display">SUGGEST Results Display Area</div>
+            <div class="setting-desc" data-i18n="setting_suggest_display_desc">Choose where full vector suggestion
+              rankings are displayed.</div>
+          </div>
+          <select id="modalSuggestDisplayTargetSelect" class="toolbar-select">
+            <option value="sidebar" selected data-i18n="opt_disp_sidebar">Right Sidebar (Standard SUGGEST Panel)
+            </option>
+            <option value="bottom" data-i18n="opt_disp_bottom">Bottom Area (Integrated with Lower Panel)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_min_score">Minimum Similarity Score (%)</div>
+            <div class="setting-desc" data-i18n="setting_min_score_desc">Ignore results below this similarity threshold.
             </div>
           </div>
+          <input type="number" id="modalMinScoreInput" min="50" max="99" value="70" class="toolbar-select"
+            style="width: 70px;">
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_limit">Search Results Limit</div>
+            <div class="setting-desc" data-i18n="setting_limit_desc">Maximum number of suggestions returned.</div>
+          </div>
+          <select id="modalLimitSelect" class="toolbar-select">
+            <option value="5" selected data-i18n="opt_limit_5">5 results</option>
+            <option value="10" data-i18n="opt_limit_10">10 results</option>
+            <option value="20" data-i18n="opt_limit_20">20 results</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="opt_show_full_metadata">Show Full Metadata / Attributes</div>
+            <div class="setting-desc" data-i18n="setting_full_meta_desc">Auto-expand key-value attributes in suggestion
+              cards.</div>
+          </div>
+          <input type="checkbox" id="modalShowFullMetadataChk"
+            style="accent-color: var(--accent-color, #818cf8); width: 18px; height: 18px; cursor: pointer;">
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="btn_import_dict">Import Dictionary / Knowledge (.json)</div>
+            <div class="setting-desc" data-i18n="import_dict_desc">Load custom domain terms, schema rules, or vector
+              definitions into HNSW index.</div>
+          </div>
+          <button id="btnModalImportDict" class="toolbar-btn"
+            style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;  cursor: pointer;">
+            <span data-i18n="btn_import_dict">Import Dictionary</span>
+          </button>
+        </div>
+
+        <div class="setting-item" style="border-bottom: none; margin-bottom: 0;">
+          <div>
+            <div class="setting-label" data-i18n="setting_linter_enabled">Real-time Validation (Linter)</div>
+            <div class="setting-desc" data-i18n="setting_linter_enabled_desc">Enable background document validation.
+            </div>
+          </div>
+          <select id="modalLinterSelect" class="toolbar-select">
+            <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
+            <option value="off" data-i18n="opt_linter_off">Disabled</option>
+          </select>
         </div>
       </div>
     </div>
+
+    <!-- Tab 4: System & Logs -->
+    <div id="tabSystem" class="settings-tab-content">
+
+      <div class="setting-item">
+        <div>
+          <div class="setting-label" data-i18n="setting_log_startup_collapse">Start with Logs Closed</div>
+          <div class="setting-desc" data-i18n="setting_log_startup_collapse_desc">Automatically collapse the
+            bottom log console when the application starts.</div>
+        </div>
+        <input type="checkbox" id="chkLogCollapsedOnStartup"
+          style="accent-color: var(--accent-color, #38bdf8); width: 18px; height: 18px; cursor: pointer;">
+      </div>
+
+      <div class="settings-section-card settings-maintenance-card">
+        <h4>Application Maintenance</h4>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Clear Application Cache</div>
+            <div class="setting-desc">Clears Electron session cache and temporary renderer resources. It does not delete
+              documents, Knowledge Slots, settings, downloaded model files, or API keys.</div>
+          </div>
+          <button id="btnClearAppCache" class="toolbar-btn" type="button">Clear Cache</button>
+        </div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Restore Default Settings</div>
+            <div class="setting-desc">Deletes renderer preferences such as theme, language, editor layout, AI provider
+              selection, and search options, then reloads the editor. It does not delete documents, Knowledge Slots,
+              cached model files, or the encrypted Gemini API key.</div>
+          </div>
+          <button id="btnResetSettings" class="toolbar-btn" type="button">Restore Defaults</button>
+        </div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Reload Editor</div>
+            <div class="setting-desc">Reloads the editor window and renderer process. It does not clear settings, cache,
+              documents, models, or API keys.</div>
+          </div>
+          <button id="btnReloadEditor" class="toolbar-btn" type="button">Reload</button>
+        </div>
+        <div class="setting-item" style="border-bottom: none; margin-bottom: 0;">
+          <div>
+            <div class="setting-label">Restart Application</div>
+            <div class="setting-desc">Closes and relaunches the Electron application. It keeps settings, documents,
+              cached models, Knowledge Slots, and encrypted API keys.</div>
+          </div>
+          <button id="btnRestartApplication" class="toolbar-btn" type="button">Restart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
