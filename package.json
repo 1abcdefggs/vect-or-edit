@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.8",
+  "version": "0.3.10",
   "description": "VectOrEdit ,Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
@@ -29,10 +29,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "clean": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} ['dist','out','release','bin-release','build-dist','installer-release'].forEach(d => fs.rmSync(d, {recursive:true, force:true})); const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){fs.rmSync(appData, {recursive:true, force:true});}\"",
+    "clean": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} try{cp.execSync('taskkill /F /IM VectOrEdit.exe /T',{stdio:'ignore'});}catch(e){} ['dist','out','release','bin-release','build-dist','installer-release'].forEach(d => { try{fs.rmSync(d, {recursive:true, force:true});}catch(e){} }); const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){ try{fs.rmSync(appData, {recursive:true, force:true});}catch(e){} }\"",
     "clear": "npm run clean",
     "prebuild": "npm run clean",
-    "predev": "node -e \"const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){}\"",
+    "predev": "node -e \"const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} try{cp.execSync('taskkill /F /IM VectOrEdit.exe /T',{stdio:'ignore'});}catch(e){}\"",
     "dev": "electron-vite dev",
     "dev:reset": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){fs.rmSync(appData, {recursive:true, force:true}); console.log('VectOrEdit development app data reset.');}\"",
     "build": "electron-vite build",

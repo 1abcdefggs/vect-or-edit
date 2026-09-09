@@ -239,3 +239,279 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+/* ==========================================================================
+   Editor Bottom LLM Chat Dock
+   ========================================================================== */
+.editor-llm-chat-dock {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card, #0f172a);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  height: 220px;
+  min-height: 140px;
+  max-height: 380px;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  animation: slideUpChat 0.15s ease-out;
+}
+
+@keyframes slideUpChat {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.llm-dock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.llm-dock-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.llm-dock-icon {
+  font-size: 1.1rem;
+  color: var(--accent-color, #38bdf8);
+}
+
+.llm-dock-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.3px;
+}
+
+.llm-model-badge {
+  font-size: 0.65rem;
+  font-family: var(--font-mono, monospace);
+  padding: 1px 6px;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-color, #38bdf8);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 4px;
+}
+
+.llm-dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.llm-dock-btn {
+  padding: 2px 6px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.llm-dock-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Inline Quick API Key Banner */
+.llm-quick-api-banner {
+  background: rgba(15, 23, 42, 0.85);
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 12px;
+  animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.api-key-input-container:focus-within {
+  border-color: var(--accent-color, #38bdf8) !important;
+  box-shadow: 0 0 0 1px var(--accent-color, #38bdf8);
+}
+
+.api-key-input-container input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.llm-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.llm-msg {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 90%;
+  word-break: break-word;
+}
+
+.llm-msg-user {
+  align-self: flex-end;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--text-main);
+}
+
+.llm-msg-ai {
+  align-self: flex-start;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--text-main);
+  flex-direction: column;
+  position: relative;
+}
+
+.llm-msg-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 0.68rem;
+  color: var(--success-color, #10b981);
+  font-weight: 600;
+}
+
+.llm-msg-system {
+  align-self: center;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.llm-msg-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.llm-action-btn {
+  padding: 2px 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.llm-action-btn:hover {
+  background: var(--accent-color, #38bdf8);
+  color: #0f172a;
+}
+
+.llm-chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border-top: 1px solid var(--border-color);
+}
+
+.llm-chat-input {
+  flex: 1;
+  resize: none;
+  height: 32px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary, #0f172a);
+  color: var(--text-main);
+  outline: none;
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+.llm-chat-input:focus {
+  border-color: var(--accent-color, #38bdf8);
+}
+
+.llm-send-btn {
+  height: 32px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--accent-color, #38bdf8);
+  color: #0f172a;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.llm-send-btn:hover {
+  opacity: 0.9;
+}
+
+/* Monaco Editor Bottom LLM Chat Dock Collapsed state */
+.editor-llm-chat-dock.collapsed {
+  height: 38px !important;
+  min-height: 38px !important;
+}
+
+.editor-llm-chat-dock.collapsed .llm-chat-messages,
+.editor-llm-chat-dock.collapsed .llm-chat-input-bar {
+  display: none !important;
+}
+
+/* AI Generated / Rewritten Text Monaco Decorations (Clear Visual Distinction) */
+.monaco-ai-generated-inline {
+  background: rgba(56, 189, 248, 0.14) !important;
+  border-left: 3px solid #38bdf8 !important;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.2);
+}
+
+.monaco-ai-rewritten-inline {
+  background: rgba(192, 132, 252, 0.16) !important;
+  border-left: 3px solid #c084fc !important;
+  border-bottom: 2px dashed rgba(192, 132, 252, 0.8) !important;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(192, 132, 252, 0.25);
+}
+
+.monaco-ai-glyph-margin {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'%3E%3Cpath d='M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5h-2v-2h2zm0-4h-2V7h2z'/%3E%3C/svg%3E") no-repeat center center;
+  background-size: 12px 12px;
+}

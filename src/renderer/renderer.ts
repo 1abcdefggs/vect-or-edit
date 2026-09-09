@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 3. Launch Editor & Core Modules in Parallel
   const editorPromise = initEditor();
   const initModulesPromise = (async () => {
-    await loadLocales();
     await loadSettingsFromBackend();
+    await loadLocales();
     initSettings(updateEditorOptions);
   })();
 
