@@ -3,7 +3,11 @@
 > **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
 <p align="center"><b>v0.3.12</b><br/>
-  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.12 Demo" ... />
+  <img src="docs/assets/repository-ui-v0312.gif" alt="VectOrEditOr v0.3.12 Demo" ... />
+</p>
+
+<p align="center"><b>v0.3.1</b><br/>
+  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.1 Demo" ... />
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
