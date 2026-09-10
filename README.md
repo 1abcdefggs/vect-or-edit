@@ -1,9 +1,13 @@
-# VectOrEditOr (`vect-or-edit`)
+# VectOrEdit (`vect-or-edit`)
 
 > **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
-<p align="center"><b>v0.3.3</b><br/>
-  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.3 Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
+<p align="center"><b>v0.3.12</b><br/>
+  <img src="docs/assets/repository-ui-v0312.gif" alt="VectOrEditOr v0.3.12 Demo" ... />
+</p>
+
+<p align="center"><b>v0.3.1</b><br/>
+  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.1 Demo" ... />
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -21,7 +25,7 @@
 [![100% Offline](https://img.shields.io/badge/Privacy-100%25_Offline_Local-success?style=flat-square&logo=privateinternetaccess&logoColor=white)](https://github.com/1abcdefggs/vect-or-edit)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square)](https://github.com/1abcdefggs/vect-or-edit/pulls)
 
-**VectOrEditOr** is a standalone, high-performance desktop editor designed for knowledge management, structured document drafting, and real-time semantic validation. It seamlessly integrates a native Rust-powered vector indexing engine (HNSW) with local transformer embeddings, multi-provider AI connectors, and Monaco Editor.
+**VectOrEdit** is a standalone, high-performance desktop editor designed for knowledge management, structured document drafting, and real-time semantic validation. It seamlessly integrates a native Rust-powered vector indexing engine (HNSW) with local transformer embeddings, multi-provider AI connectors, and Monaco Editor.
 
 ---
 
@@ -31,6 +35,7 @@
 - **100% Offline & Private (Local Mode)**: Zero external telemetry required. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
 - **Hybrid AI Provider Integration**: Seamless switching between Local Offline Embeddings, Google Gemini (`@google/genai`), OpenAI, and Anthropic Claude.
 - **Monaco IntelliSense & Semantic Linter**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and international terminology with instant documentation hover previews.
+- **Command-Driven Navigation & Header Extras**: Centralized `CommandManager` architecture with streamlined header controls (theme selector, zoom, language switcher, window actions).
 - **Streamlined Selection Popover & Widget**: Select any text to immediately trigger semantic vector matching or external queries with intelligent context-menu exclusion.
 - **Dynamic Multi-Slot Knowledge & Presets**: Load, merge, and inspect multiple domain JSON slots (`kb_*.json`) or drafting templates dynamically.
 - **Curated Modern Themes & Windows TitleBar Overlay**: Bundled with `Dracula`, `GitHub Dark`, `GitHub Light`, `Monokai`, `Night Owl`, syncing with Windows native control buttons.
@@ -39,12 +44,17 @@
 
 ---
 
-## What's New in v0.3.3
+## What's New in v0.3.12
 
-- **Electron Security Hardening**: Fully encapsulated IPC context bridge (`engineAPI.querySemantics`), eliminating raw `ipcRenderer.invoke` exposure in accordance with official Electron security standards. Added runtime argument validation in main IPC handlers.
-- **Domain-Neutral Architecture**: Decoupled domain-specific medical ontologies to ensure `vect-or-edit` remains a 100% generic desktop vector knowledge editor.
-- **Window Lifecycle**: Added macOS `activate` event handler for clean window restoration.
-- **UI & Modal Fixes**: Resolved CSS inflation bugs causing toast and modal sizing overflow.
+- **Header Extras & Menu Bar Refactoring**:
+- Refactored menu bar operations to use a centralized command registration mechanism via `CommandManager`. 
+- Consolidated and enhanced styling for header toolbar elements (theme selector, language switcher, zoom controls, version display, etc.) in `header-extras.css`.
+- **IPC Security & Validation Hardening**:
+- Implemented runtime argument validation for IPC handlers in the main process and ensured complete isolation via the Context Bridge.
+- **Vector Search & Provider Enhancements**:
+- Improved usability of the vector search UI and stabilized integration with the Google GenAI SDK (`@google/genai`).
+- **Domain-Neutral Core**:
+- Decoupled the core to function as a general-purpose, standalone vector knowledge editor that does not rely on domain-specific ontologies (e.g., medical).
 
 See full release history in [CHANGELOG.md](CHANGELOG.md).
 
@@ -105,30 +115,32 @@ npm run build:win
 
 ## Project Architecture
 
-```
 vect-or-edit/
-├── Cargo.toml / lib.rs          # Rust N-API engine bindings
-├── electron.vite.config.ts      # Electron-Vite bundling configuration
-├── package.json                 # Project dependencies & scripts
-├── public/                      # Static assets (icon.png, IME dicts)
-├── docs/                        # Architecture & settings specifications
-├── tests/                       # Vitest automated test suites
+├── electron.vite.config.ts # Electron-Vite bundling configuration
+├── vitest.config.ts # Vitest test runner configuration
+├── package.json # Project dependencies & scripts
+├── scripts/ # Build & maintenance scripts
+├── public/ # Static assets (icon.png, IME dicts)
+├── docs/ # Architecture & settings specifications
+├── tests/ # Automated test suites
 └── src/
-    ├── main/                    # Electron Main process (IPC handlers, Window management)
-    ├── preload/                 # Secure Context-Isolated IPC bridge
-    └── renderer/                # Front-end UI (TypeScript/Vanilla CSS, Monaco, Web Workers)
-        ├── core/                # State managers (aiStateManager, statusManager, i18n, icons)
-        ├── editor/              # Monaco editor core, tabs, themes, context menus
-        ├── search/              # Vector search, local AI worker, dictionary pipeline
-        ├── ui/                  # UI components, modals, topbar, settings facade
-        ├── assets/              # App branding & icons
-        ├── locales/             # i18n dictionaries (en.json, ja.json)
-        └── themes/              # Monaco theme JSON definitions
-```
+├── main/ # Electron Main process (IPC handlers, Window management)
+├── preload/ # Secure Context-Isolated IPC bridge
+└── renderer/ # Front-end UI (TypeScript/CSS, Monaco, Web Workers)
+├── renderer.ts # Front-end main entry point
+├── core/ # State managers (aiStateManager, statusManager, i18n, icons)
+├── components/ # Specialized UI components & widgets
+├── editor/ # Monaco editor core, tabs, themes, context menus
+├── search/ # Vector search, local AI worker, dictionary pipeline
+├── ui/ # UI components, modals, topbar, settings facade
+├── css/ # Stylesheets (header.css, header-extras.css, etc.)
+├── assets/ # App branding & static assets
+├── locales/ # i18n dictionaries (en.json, ja.json)
+├── themes/ # Monaco theme JSON definitions
+└── types/ # TypeScript type definitions
 
 ---
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-

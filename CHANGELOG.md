@@ -5,16 +5,18 @@ All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.12] - 2026-09-10
+
+feat: Add header extras styles and refactor menu bar controller
+
+- Introduced a new CSS file for header extras, consolidating styles for header toolbar components, action buttons, theme selector, language toggle, and zoom controls.
+- Enhanced header.css with additional styles for branding, window controls, and improved version text display.
+- Updated style.css to import the new header-extras.css.
+- Refactored menuBarController.ts to register application commands with a centralized CommandManager, simplifying the handling of menu actions and improving code maintainability.
+- Removed old event listeners and replaced them with command registration for better scalability and organization.
+-
+
 ---
-
-## [0.3.8] - 2026-09-10
-
-### Security
-- Hardened IPC channel validation (placeholder).
-- Updated Electron to 28.0.0 with security patches (placeholder).
-
----
-
 ## [0.3.11] - 2026-09-10
 
 ### Added
@@ -31,6 +33,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - (TODO: describe changes for v0.3.9)
+
+---
+## [0.3.8] - 2026-09-10
+
+### Security
+- Hardened IPC channel validation (placeholder).
+- Updated Electron to 28.0.0 with security patches (placeholder).
 
 ---
 ## [0.3.7] - 2026-09-08

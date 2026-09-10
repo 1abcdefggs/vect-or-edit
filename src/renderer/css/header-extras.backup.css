@@ -1,0 +1,1376 @@
+/* Header Extras – consolidated stylesheet using BEM naming */
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-mid);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn,
+.app-header__action-btn:hover,
+.app-header__action-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-header__action-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.app-header__action-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 4px 28px 4px 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn,
+.lang-toggle-btn:hover,
+.lang-toggle-btn:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 20px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  background: var(--bg-btn-primary);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle-btn:hover {
+  background: var(--bg-btn-hover);
+}
+.lang-toggle-btn:focus {
+  outline: none;
+  background: var(--bg-btn-active);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+}
+
+/* Zoom group container */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Zoom buttons */
+.zoom-in-btn,
+.zoom-out-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--bg-btn-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoom-in-btn:hover,
+.zoom-out-btn:hover {
+  background: var(--bg-btn-hover);
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 18px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 12px;
+}
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+.app-header__action-btn:hover {
+  background: var(--hover-bg);
+}
+
+/* Theme selector wrapper adjustments */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  padding-left: 1.8rem; /* space for icon */
+  -webkit-app-region: no-drag;
+}
+
+/* Theme selector icon */
+.theme-select-icon {
+  position: absolute;
+  left: 6px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Language toggle button */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.lang-toggle-icon {
+  font-size: 0.95rem;
+  color: var(--accent-color, #38bdf8);
+}
+
+/* Zoom group styling */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  height: 24px;
+  padding: 0 1px;
+}
+
+/* Settings button icon */
+.settings-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+/* Theme toggle button icon */
+.theme-toggle-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag; /* Prevent dragging */
+}
+
+/* Header action button common style */
+.app-header__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+.app-header__action-btn:hover {
+  background: var(--hover-bg);
+}
+
+/* Theme selector wrapper adjustments */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+.app-header__theme-select {
+  padding-left: 1.8rem; /* space for icon */
+  -webkit-app-region: no-drag;
+}
+
+/* Theme selector icon */
+.theme-select-icon {
+  position: absolute;
+  left: 6px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Language toggle button */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.lang-toggle-icon {
+  font-size: 0.95rem;
+  color: var(--accent-color, #38bdf8);
+}
+
+/* Zoom group styling */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  height: 24px;
+  padding: 0 1px;
+}
+
+/* Settings button icon */
+.settings-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+/* Theme toggle button icon */
+.theme-toggle-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  align-items: center;
+  -webkit-app-region: no-drag;
+  /* Prevent dragging on toolbar */
+}
+
+/* Header action button common style */
+.app-header__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.app-header__action-btn:hover {
+  background: var(--hover-bg);
+}
+
+/* Theme selector wrapper adjustments */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+.app-header__theme-select {
+  padding-left: 1.8rem;
+  /* space for icon */
+  -webkit-app-region: no-drag;
+}
+
+/* Theme selector icon */
+.theme-select-icon {
+  position: absolute;
+  left: 6px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Language toggle button */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-toggle-icon {
+  font-size: 0.95rem;
+  color: var(--accent-color, #38bdf8);
+}
+
+/* Zoom group styling */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  height: 24px;
+  padding: 0 1px;
+}
+
+/* Settings button icon */
+.settings-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+/* Theme toggle button icon */
+.theme-toggle-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  align-items: center;
+  -webkit-app-region: no-drag;
+}
+
+/* Header action button common style */
+.app-header__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.app-header__action-btn:hover {
+  background: var(--hover-bg);
+}
+
+/* Theme selector wrapper adjustments */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+.app-header__theme-select {
+  padding-left: 1.8rem;
+  /* space for icon */
+  -webkit-app-region: no-drag;
+}
+
+/* Theme selector icon */
+.theme-select-icon {
+  position: absolute;
+  left: 6px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Language toggle button */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-toggle-icon {
+  font-size: 0.95rem;
+  color: var(--accent-color, #38bdf8);
+}
+
+/* Zoom group styling */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  height: 24px;
+  padding: 0 1px;
+}
+
+/* Settings button icon */
+.settings-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+/* Theme toggle button icon */
+.theme-toggle-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+
+/* Toolbar wrapper */
+.header-toolbar {
+  align-items: center;
+  -webkit-app-region: no-drag;
+}
+
+/* Header action button common style */
+.app-header__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.app-header__action-btn:hover {
+  background: var(--hover-bg);
+}
+
+/* Theme selector wrapper adjustments */
+.app-header__theme-select-wrapper {
+  position: relative;
+}
+
+.app-header__theme-select {
+  padding-left: 1.8rem;
+  /* space for icon */
+  -webkit-app-region: no-drag;
+}
+
+
+
+
+
+
+/* Theme selector icon */
+.theme-select-icon {
+  position: absolute;
+  left: 6px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Language toggle button */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-toggle-icon {
+  font-size: 0.95rem;
+  color: var(--accent-color, #38bdf8);
+}
+
+/* Zoom group styling */
+.header-zoom-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  height: 24px;
+  padding: 0 1px;
+}
+
+/* Settings button icon */
+.settings-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.theme-toggle-icon {
+  font-size: 1rem;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  color: var(--text-main);
+  pointer-events: none;
+  font-size: 1rem;
+}
