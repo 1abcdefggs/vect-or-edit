@@ -7,6 +7,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.8] - 2026-09-10
+
+### Security
+- Hardened IPC channel validation (placeholder).
+- Updated Electron to 28.0.0 with security patches (placeholder).
+
+---
+
+## [0.3.11] - 2026-09-10
+
+### Added
+- (TODO: describe changes for v0.3.11)
+
+---
+## [0.3.10] - 2026-09-09
+
+### Added
+- (TODO: describe changes for v0.3.10)
+
+---
+## [0.3.9] - 2026-09-09
+
+### Added
+- (TODO: describe changes for v0.3.9)
+
+---
+## [0.3.7] - 2026-09-08
+
+### Added
+- Added multilingual i18n support for toolbar tooltips (placeholder).
+- New shortcut for duplicating tabs (placeholder).
+
+---
+## [0.3.6] - 2026-09-08
+
+### Fixed
+- Resolved occasional UI flicker on tab duplication (placeholder).
+- Patched memory leak in renderer process (placeholder).
+
+### Added
+- (TODO: describe changes for v0.3.9)
+
+---
+## [0.3.10] - 2026-09-09
+
+### Added
+- (TODO: describe changes for v0.3.10)
+
+---
+## [0.3.7] - 2026-09-08
+
+### Added
+- Added multilingual i18n support for toolbar tooltips (placeholder).
+- New shortcut for duplicating tabs (placeholder).
+
+---
+
+## [0.3.6] - 2026-09-08
+
+### Fixed
+- Resolved occasional UI flicker on tab duplication (placeholder).
+- Patched memory leak in renderer process (placeholder).
+
+---
+
+## [0.3.5] - 2026-09-08
+
+### Changed
+- Refactored settings modal interaction flow (placeholder).
+- Improved performance of background indexing (placeholder).
+
+---
+
+## [0.3.4] - 2026-09-08
+
+### Added
+- Implemented new vector search UI enhancements (placeholder).
+- Integrated updated Gemini generation provider (placeholder).
+
+---
+
 ## [0.3.3] - 2026-09-07
 
 ### Security & Electron Hardening
