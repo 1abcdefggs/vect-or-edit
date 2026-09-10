@@ -19,11 +19,12 @@ export async function loadLocales(): Promise<void> {
     currentLang = lang;
     
     i18n = LOCALES[lang] || LOCALES.en;
+    console.log(`[i18n] Applying locale: ${lang} (keys: ${Object.keys(i18n).length})`);
     applyI18n();
     setLedStatus('i18n', true, `3. LOCALE: ${lang}.json loaded`);
     window.dispatchEvent(new CustomEvent('app:languageChanged', { detail: { lang } }));
   } catch (err) {
-    console.error('Failed to apply locale:', err);
+    console.error('[i18n] Failed to apply locale:', err);
     currentLang = 'en';
     i18n = LOCALES.en;
     applyI18n();

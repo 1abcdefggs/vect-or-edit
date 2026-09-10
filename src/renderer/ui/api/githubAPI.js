@@ -1,4 +1,4 @@
-export const CURRENT_APP_VERSION = '0.2.0';
+export const CURRENT_APP_VERSION = '0.2.1';
 export const GITHUB_REPO_URL = 'https://github.com/1abcdefggs/vect-or-edit';
 
 /**
@@ -25,7 +25,7 @@ export async function fetchLatestRelease() {
   });
   if (!res.ok) throw new Error('Failed to fetch release');
   const data = await res.json();
-  
+
   return {
     latestTag: data.tag_name || data.name || '',
     releaseBody: data.body || 'New features, improvements and bug fixes.'

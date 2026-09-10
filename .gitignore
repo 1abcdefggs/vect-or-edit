@@ -25,3 +25,4 @@ CONTEXT.md
 # Test artifacts
 test_original.json
 test.venc
+check.ps1

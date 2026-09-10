@@ -40,8 +40,9 @@ const engineAPI: EngineAPI = {
   geminiSemanticSuggest: (payload) => ipcRenderer.invoke('app:geminiSemanticSuggest', payload),
   saveGeminiApiKey: (apiKey: string) => ipcRenderer.invoke('app:saveGeminiApiKey', apiKey),
   hasGeminiApiKey: () => ipcRenderer.invoke('app:hasGeminiApiKey'),
-  listGeminiModels: () => ipcRenderer.invoke('app:listGeminiModels'),
+  listGeminiModels: (apiKey?: string) => ipcRenderer.invoke('app:listGeminiModels', apiKey),
   openaiSemanticSuggest: (payload) => ipcRenderer.invoke('app:openaiSemanticSuggest', payload),
+  llmEmbedding: (payload) => ipcRenderer.invoke('app:llmEmbedding', payload),
   importKnowledgeBase: () => ipcRenderer.invoke('engine:importKnowledgeBase'),
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => ipcRenderer.invoke('app:setTitleBarOverlay', options),
   clearCache: () => ipcRenderer.invoke('app:clearCache'),
@@ -74,7 +75,8 @@ const engineAPI: EngineAPI = {
       console.warn('[Updater] installUpdate error:', e);
     }
   },
-  querySemantics: (query: string, context?: string) => ipcRenderer.invoke('semantics:query', query, context)
+  querySemantics: (query: string, context?: string) => ipcRenderer.invoke('semantics:query', query, context),
+  getAppVersion: () => ipcRenderer.invoke('app:getVersion')
 };
 
 const updaterAPI = {

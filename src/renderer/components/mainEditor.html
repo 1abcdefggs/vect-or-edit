@@ -99,6 +99,78 @@
     </button>
   </div>
   <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
+
+  <!-- Monaco Editor Bottom LLM Chat Dock (Intelligent Assistant & Text Generator) -->
+  <div id="editorLlmChatDock" class="editor-llm-chat-dock" style="display: flex;">
+    <div class="llm-dock-header">
+      <div class="llm-dock-title">
+        <span class="material-symbols-outlined llm-dock-icon">&#xe0b7;</span>
+        <span class="llm-dock-label" data-i18n="llm_chat_dock_title">LLM Chat & Assistant</span>
+        <span id="llmDockModelBadge" class="llm-model-badge">Gemini</span>
+      </div>
+      <div class="llm-dock-actions">
+        <button id="btnLlmKeyConfig" class="toolbar-btn llm-dock-btn" title="APIキー設定" data-i18n="btnLlmKeyConfigTitle" style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; padding: 2px 8px;">
+          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: #fbbf24;">key</span>
+          <span data-i18n="btnLlmKeyConfigLabel">API Key</span>
+        </button>
+        <button id="btnLlmClearChat" class="toolbar-btn llm-dock-btn" title="Clear Conversation">
+          <span class="material-symbols-outlined">&#xe419;</span>
+        </button>
+        <button id="btnLlmClearKey" class="toolbar-btn llm-dock-btn" title="Clear API Key">
+          <span class="material-symbols-outlined">clear</span>
+        </button>
+        <button id="btnLlmToggleCollapse" class="toolbar-btn llm-dock-btn" title="Toggle Chat Height">
+          <span id="llmCollapseIcon" class="material-symbols-outlined">&#xe5cf;</span>
+        </button>
+        <button id="btnLlmCloseChat" class="toolbar-btn llm-dock-btn" title="Close Chat">
+          <span class="material-symbols-outlined">&#xe5cd;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Inline API Key Setup Banner (Expandable) -->
+    <div id="llmQuickApiKeyBanner" class="llm-quick-api-banner" style="display: none;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;">
+        <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #fbbf24;">vpn_key</span>
+          <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-main);">LLM API Key:</span>
+          <select id="selLlmQuickProvider" class="toolbar-select" style="font-size: 0.72rem; height: 26px; padding: 0 4px;">
+            <option value="gemini">Google Gemini</option>
+            <option value="openai">OpenAI</option>
+            <option value="claude">Anthropic Claude</option>
+          </select>
+        </div>
+        <div class="api-key-input-container" style="flex: 1; display: flex; align-items: center; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 6px; padding: 0 4px 0 8px; height: 28px;">
+          <input type="password" id="llmQuickApiKeyInput" placeholder="Enter API Key (AIzaSy... / sk-...)" autocomplete="off" spellcheck="false"
+            style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: 0.75rem; letter-spacing: 0.5px; height: 100%;">
+          <button type="button" id="btnToggleQuickKeyVisibility" class="toolbar-btn" title="表示/非表示" data-i18n="btnToggleQuickKeyVisibilityTitle"
+            style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); padding: 0;">
+            <span class="material-symbols-outlined" style="font-size: 0.95rem;">visibility_off</span>
+          </button>
+        </div>
+        <button id="btnSaveQuickApiKey" class="llm-action-btn" style="background: var(--accent-color, #38bdf8); color: #0f172a; border: none; height: 28px; padding: 0 12px; font-weight: 700; flex-shrink: 0;">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div id="llmChatMessages" class="llm-chat-messages" data-i18n="llm_chat_section">
+      <div class="llm-msg llm-msg-system">
+        <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xe88e;</span>
+        <span data-i18n="llm_chat_welcome">Editor上部の文章作成と連動してここでチャットや推敲が可能です。エディタ内入力から直接Ctrl+KでもAI指示を出せます。</span>
+      </div>
+    </div>
+    <div class="llm-chat-input-bar">
+      <textarea id="llmChatInput" class="llm-chat-input" rows="1" placeholder="Ask LLM or command rewrite (Shift+Enter for newline, Enter to send)..." data-i18n-placeholder="llm_chat_placeholder"></textarea>
+      <div class="llm-chat-controls">
+        <button id="btnLlmSend" class="llm-send-btn" title="Send (Enter)">
+          <span class="material-symbols-outlined">&#xe163;</span>
+          <span data-i18n="btn_send">Send</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Editor Status Bar: Clean minimal design without redundant doc name / autosave -->
   <div class="editor-status-bar" id="editorStatusBar">
     <div class="status-bar-left">

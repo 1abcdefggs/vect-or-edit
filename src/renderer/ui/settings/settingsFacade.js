@@ -8,6 +8,7 @@ import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, up
 import { syncSettingsToBackend } from './settingsState.js';
 import { showToast } from '../notifications/toastManager.js';
 import { updateActiveModelBadgeInTable } from '../../search/searchLocalAi.js';
+import { initEmbeddingSourceController } from './embeddingSourceController.js';
 
 function setAndSync(key, value) {
   localStorage.setItem(key, value);
@@ -18,6 +19,9 @@ let updateEditorOptionsCallback = null;
 
 export function initSettings(updateEditorCb) {
   updateEditorOptionsCallback = updateEditorCb;
+
+  // Init Embedding Source Selector (idempotent – safe to call on every modal open)
+  initEmbeddingSourceController();
 
   // Front UI Elements
   const fontFamilySelect = document.getElementById('fontFamilySelect');
@@ -127,7 +131,12 @@ export function initSettings(updateEditorCb) {
   // Language toggle & 2-way sync
   async function applyLanguage(lang) {
     await changeLanguage(lang);
-    if (btnLangToggle) btnLangToggle.textContent = lang.toUpperCase();
+    const langToggleLabel = document.getElementById('langToggleLabel');
+    if (langToggleLabel) {
+      langToggleLabel.textContent = lang.toUpperCase();
+    } else if (btnLangToggle) {
+      btnLangToggle.textContent = lang.toUpperCase();
+    }
     if (modalLangSelect) modalLangSelect.value = lang;
     populateThemeDropdown(themeSelect);
     populateThemeDropdown(modalThemeSelect);
@@ -135,7 +144,12 @@ export function initSettings(updateEditorCb) {
   }
 
   if (btnLangToggle) {
-    btnLangToggle.textContent = currentLang.toUpperCase();
+    const langToggleLabel = document.getElementById('langToggleLabel');
+    if (langToggleLabel) {
+      langToggleLabel.textContent = currentLang.toUpperCase();
+    } else {
+      btnLangToggle.textContent = currentLang.toUpperCase();
+    }
     btnLangToggle.addEventListener('click', async () => {
       const nextLang = currentLang === 'en' ? 'ja' : 'en';
       await applyLanguage(nextLang);
@@ -427,19 +441,113 @@ export function initSettings(updateEditorCb) {
   }
 
   function updateAiProviderVisibility(provider) {
-    if (localAiSettingsBlock) localAiSettingsBlock.style.display = provider === 'local' ? 'flex' : 'none';
+    // When in LLM tab, toggle the appropriate provider config block
     if (geminiSettingsBlock) geminiSettingsBlock.style.display = provider === 'gemini' ? 'flex' : 'none';
     if (openaiSettingsBlock) openaiSettingsBlock.style.display = provider === 'openai' ? 'flex' : 'none';
     if (claudeSettingsBlock) claudeSettingsBlock.style.display = provider === 'claude' ? 'flex' : 'none';
+    // If provider is local or none, ensure gemini shows as default fallback in LLM tab if none selected
+    if (provider === 'local' || provider === 'none') {
+      if (geminiSettingsBlock) geminiSettingsBlock.style.display = 'flex';
+    }
   }
+
+  const btnFetchGeminiModels = document.getElementById('btnFetchGeminiModels');
+  const geminiModelsFetchStatus = document.getElementById('geminiModelsFetchStatus');
+
+  async function fetchAndPopulateGeminiModels(explicitKey) {
+    if (!modalGeminiModelSelect) return;
+    const keyToUse = explicitKey || modalGeminiKeyInput?.value?.trim();
+
+    if (geminiModelsFetchStatus) {
+      geminiModelsFetchStatus.textContent = 'Google API Keys loading ...';
+      geminiModelsFetchStatus.style.color = 'var(--accent-color, #38bdf8)';
+    }
+
+    try {
+      const models = await window.engineAPI.listGeminiModels(keyToUse || undefined);
+      if (Array.isArray(models) && models.length > 0) {
+        modalGeminiModelSelect.innerHTML = '';
+        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || 'gemini-1.5-flash';
+        let foundSaved = false;
+
+        models.forEach((m) => {
+          const opt = document.createElement('option');
+          opt.value = m.name;
+          const label = m.displayName ? `${m.name} (${m.displayName})` : m.name;
+          opt.textContent = label;
+          if (m.name === currentSavedModel) {
+            opt.selected = true;
+            foundSaved = true;
+          }
+          modalGeminiModelSelect.appendChild(opt);
+        });
+
+        if (!foundSaved && modalGeminiModelSelect.options.length > 0) {
+          modalGeminiModelSelect.selectedIndex = 0;
+          setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
+        }
+
+        // Cache for offline/quick load
+        localStorage.setItem('cached_gemini_models', JSON.stringify(models));
+
+        if (geminiModelsFetchStatus) {
+          geminiModelsFetchStatus.textContent = `Google API Keys loaded ${models.length} items.`;
+          geminiModelsFetchStatus.style.color = 'var(--success-color, #10b981)';
+        }
+        updateAiModelBadge();
+      } else {
+        throw new Error('Google API Keys Error...');
+      }
+    } catch (err) {
+      console.warn('[Gemini] Model list fetch error:', err);
+      if (geminiModelsFetchStatus) {
+        geminiModelsFetchStatus.textContent = 'Google API Keys Error...';
+        geminiModelsFetchStatus.style.color = '#ef4444';
+      }
+    }
+  }
+
+  // Restore cached models if available
+  try {
+    const cached = localStorage.getItem('cached_gemini_models');
+    if (cached && modalGeminiModelSelect) {
+      const models = JSON.parse(cached);
+      if (Array.isArray(models) && models.length > 0) {
+        modalGeminiModelSelect.innerHTML = '';
+        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || 'gemini-1.5-flash';
+        models.forEach((m) => {
+          const opt = document.createElement('option');
+          opt.value = m.name;
+          opt.textContent = m.displayName ? `${m.name} (${m.displayName})` : m.name;
+          if (m.name === currentSavedModel) opt.selected = true;
+          modalGeminiModelSelect.appendChild(opt);
+        });
+      }
+    }
+  } catch (_) { }
 
   if (modalGeminiKeyInput) {
     modalGeminiKeyInput.value = storedGeminiKey;
     modalGeminiKeyInput.addEventListener('change', async () => {
-      const result = await window.engineAPI.saveGeminiApiKey(modalGeminiKeyInput.value);
-      localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
-      if (!result.success) modalGeminiKeyInput.setCustomValidity(result.error || 'Unable to save API key securely.');
-      else modalGeminiKeyInput.setCustomValidity('');
+      const keyVal = modalGeminiKeyInput.value.trim();
+      if (keyVal) {
+        const result = await window.engineAPI.saveGeminiApiKey(keyVal);
+        localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
+        if (!result.success) {
+          modalGeminiKeyInput.setCustomValidity(result.error || 'Unable to save API key securely.');
+        } else {
+          modalGeminiKeyInput.setCustomValidity('');
+          window.__geminiApiKeyConfigured = true;
+          // Automatically fetch official models from Google upon setting key
+          fetchAndPopulateGeminiModels(keyVal);
+        }
+      }
+    });
+  }
+
+  if (btnFetchGeminiModels) {
+    btnFetchGeminiModels.addEventListener('click', () => {
+      fetchAndPopulateGeminiModels();
     });
   }
 
@@ -473,13 +581,27 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  if (modalClaudeModelSelect) {
-    modalClaudeModelSelect.value = storedClaudeModel;
-    modalClaudeModelSelect.addEventListener('change', () => {
-      setAndSync(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
-      updateAiModelBadge();
+  // Setup Password Visibility Toggles
+  function setupPasswordToggle(inputId, toggleBtnId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(toggleBtnId);
+    if (!input || !btn) return;
+    const icon = btn.querySelector('.material-symbols-outlined');
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      if (icon) {
+        icon.textContent = isPassword ? 'visibility' : 'visibility_off';
+      }
+      btn.title = isPassword ? 'APIキーを隠す' : 'APIキーを表示';
     });
   }
+
+  setupPasswordToggle('modalGeminiKeyInput', 'btnToggleGeminiKeyVisibility');
+  setupPasswordToggle('modalOpenAiKeyInput', 'btnToggleOpenAiKeyVisibility');
+  setupPasswordToggle('modalClaudeKeyInput', 'btnToggleClaudeKeyVisibility');
 
   if (btnInitLocalAi) {
     btnInitLocalAi.addEventListener('click', () => {
@@ -522,6 +644,79 @@ export function initSettings(updateEditorCb) {
   if (btnModalImportDict) {
     btnModalImportDict.addEventListener('click', async () => {
       await importDictionary();
+    });
+  }
+
+  // AI MODEL Tab Switching (Embedding vs LLM)
+  const aiModelTabBtns = document.querySelectorAll('.ai-model-tab-btn');
+  const panelEmbedding = document.getElementById('panelEmbedding');
+  const panelLlm = document.getElementById('panelLlm');
+  const panelCapability = document.getElementById('panelCapability');
+
+  function switchAiModelTab(targetTab) {
+    aiModelTabBtns.forEach(btn => {
+      if (btn.dataset.aimodelTab === targetTab) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    if (panelEmbedding) {
+      if (targetTab === 'embedding') panelEmbedding.classList.add('active');
+      else panelEmbedding.classList.remove('active');
+    }
+    if (panelLlm) {
+      if (targetTab === 'llm') panelLlm.classList.add('active');
+      else panelLlm.classList.remove('active');
+    }
+    if (panelCapability) {
+      if (targetTab === 'capability') panelCapability.classList.add('active');
+      else panelCapability.classList.remove('active');
+    }
+  }
+
+  aiModelTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchAiModelTab(btn.dataset.aimodelTab);
+    });
+  });
+
+  // Embedding Subtab Switching (Local vs Cloud)
+  const aiEmbSubtabBtns = document.querySelectorAll('.ai-model-subtab-btn');
+  const subpanelEmbLocal = document.getElementById('subpanelEmbLocal');
+  const subpanelEmbCloud = document.getElementById('subpanelEmbCloud');
+
+  function switchEmbSubtab(targetSubtab) {
+    aiEmbSubtabBtns.forEach(btn => {
+      if (btn.dataset.embSubtab === targetSubtab) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    if (subpanelEmbLocal) {
+      if (targetSubtab === 'local') subpanelEmbLocal.classList.add('active');
+      else subpanelEmbLocal.classList.remove('active');
+    }
+    if (subpanelEmbCloud) {
+      if (targetSubtab === 'cloud') subpanelEmbCloud.classList.add('active');
+      else subpanelEmbCloud.classList.remove('active');
+    }
+  }
+
+  aiEmbSubtabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchEmbSubtab(btn.dataset.embSubtab);
+    });
+  });
+
+  // Shortcut from Cloud Embedding subpanel to LLM tab
+  const btnGoToLlmConfig = document.getElementById('btnGoToLlmConfig');
+  if (btnGoToLlmConfig) {
+    btnGoToLlmConfig.addEventListener('click', () => {
+      switchAiModelTab('llm');
     });
   }
 
@@ -571,7 +766,7 @@ export function initSettings(updateEditorCb) {
 
   updateAiModelBadge();
 
-  function openSettingsTab(tabId) {
+  function openSettingsTab(tabId, subtab) {
     if (!settingsModal) return;
     settingsModal.style.display = 'flex';
     modalTabs.forEach(b => {
@@ -586,6 +781,9 @@ export function initSettings(updateEditorCb) {
         c.classList.add('active');
         if (tabId === 'tabAiSearch') {
           updateActiveModelBadgeInTable();
+          if (subtab === 'llm' || subtab === 'embedding') {
+            switchAiModelTab(subtab);
+          }
         }
       } else {
         c.classList.remove('active');
@@ -609,31 +807,43 @@ export function initSettings(updateEditorCb) {
 
   window.addEventListener('app:openSettings', (e) => {
     const tabId = e.detail?.tab || 'tabAppearance';
-    openSettingsTab(tabId);
+    const subtab = e.detail?.subtab;
+    openSettingsTab(tabId, subtab);
   });
 
-  // Modal Open/Close & Tabs
+  const btnBackToEditor = document.getElementById('btnBackToEditor');
+
+  const closeSettingsView = () => {
+    if (settingsModal) settingsModal.style.display = 'none';
+    updateAiModelBadge();
+  };
+
+  // Modal / Full-Page View Open/Close & Tabs
   if (btnSettings && settingsModal) {
     btnSettings.addEventListener('click', () => {
-      openSettingsTab('tabAppearance');
-    });
-  }
-
-  if (btnCloseSettingsModal && settingsModal) {
-    btnCloseSettingsModal.addEventListener('click', () => {
-      settingsModal.style.display = 'none';
-      updateAiModelBadge();
-    });
-  }
-
-  if (settingsModal) {
-    settingsModal.addEventListener('click', (e) => {
-      if (e.target === settingsModal) {
-        settingsModal.style.display = 'none';
-        updateAiModelBadge();
+      if (settingsModal.style.display === 'flex' || settingsModal.style.display === 'block') {
+        closeSettingsView();
+      } else {
+        openSettingsTab('tabAppearance');
       }
     });
   }
+
+  if (btnCloseSettingsModal) {
+    btnCloseSettingsModal.addEventListener('click', closeSettingsView);
+  }
+
+  if (btnBackToEditor) {
+    btnBackToEditor.addEventListener('click', closeSettingsView);
+  }
+
+  // Keyboard shortcut Esc to return to editor
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && settingsModal && (settingsModal.style.display === 'flex' || settingsModal.style.display === 'block')) {
+      closeSettingsView();
+    }
+  });
+
 
   modalTabs.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -687,41 +897,41 @@ export function initSettings(updateEditorCb) {
     });
   }
 
+  const btnClearAppCache = document.getElementById('btnClearAppCache');
+  if (btnClearAppCache) {
+    btnClearAppCache.addEventListener('click', async () => {
+      if (!window.confirm('Clear the application cache? Documents and API keys will be kept.')) return;
+      const result = await window.engineAPI.clearCache();
+      window.alert(result.success ? 'Application cache cleared.' : (result.error || 'Unable to clear cache.'));
+    });
+  }
+
+  const btnResetSettings = document.getElementById('btnResetSettings');
+  if (btnResetSettings) {
+    btnResetSettings.addEventListener('click', () => {
+      if (!window.confirm('Restore default settings and reload the editor?')) return;
+      localStorage.clear();
+      window.location.reload();
+    });
+  }
+
+  const btnReloadEditor = document.getElementById('btnReloadEditor');
+  if (btnReloadEditor) {
+    btnReloadEditor.addEventListener('click', () => {
+      if (window.confirm('Reload the editor now?')) window.location.reload();
+    });
+  }
+
+  const btnRestartApplication = document.getElementById('btnRestartApplication');
+  if (btnRestartApplication) {
+    btnRestartApplication.addEventListener('click', () => {
+      if (window.confirm('Restart VectOrEdit now?')) window.engineAPI.restartApp();
+    });
+  }
+
   // Initial apply
   applyEditorSettings();
   setLedStatus('conf', true, `1. CONFIG: Settings Restored`);
-}
-
-const btnClearAppCache = document.getElementById('btnClearAppCache');
-if (btnClearAppCache) {
-  btnClearAppCache.addEventListener('click', async () => {
-    if (!window.confirm('Clear the application cache? Documents and API keys will be kept.')) return;
-    const result = await window.engineAPI.clearCache();
-    window.alert(result.success ? 'Application cache cleared.' : (result.error || 'Unable to clear cache.'));
-  });
-}
-
-const btnResetSettings = document.getElementById('btnResetSettings');
-if (btnResetSettings) {
-  btnResetSettings.addEventListener('click', () => {
-    if (!window.confirm('Restore default settings and reload the editor?')) return;
-    localStorage.clear();
-    window.location.reload();
-  });
-}
-
-const btnReloadEditor = document.getElementById('btnReloadEditor');
-if (btnReloadEditor) {
-  btnReloadEditor.addEventListener('click', () => {
-    if (window.confirm('Reload the editor now?')) window.location.reload();
-  });
-}
-
-const btnRestartApplication = document.getElementById('btnRestartApplication');
-if (btnRestartApplication) {
-  btnRestartApplication.addEventListener('click', () => {
-    if (window.confirm('Restart VectOrEdit now?')) window.engineAPI.restartApp();
-  });
 }
 
 export function getTheme() {

@@ -139,6 +139,37 @@ export async function initEditor() {
     contextmenu: false
   });
 
+  // Inline AI Command & Prompt Trigger (Ctrl+K or Alt+Enter)
+  monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK, () => {
+    const selection = monacoEditorInstance.getSelection();
+    let promptText = '';
+    if (selection && !selection.isEmpty()) {
+      promptText = monacoEditorInstance.getModel().getValueInRange(selection);
+    } else {
+      const pos = monacoEditorInstance.getPosition();
+      if (pos) {
+        promptText = monacoEditorInstance.getModel().getLineContent(pos.lineNumber).trim();
+      }
+    }
+    window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: promptText } }));
+  });
+
+  // Inline Quick Trigger on Enter: Check for /ai or >> prompt commands
+  monacoEditorInstance.onKeyDown((e) => {
+    if (e.keyCode === monaco.KeyCode.Enter && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+      const pos = monacoEditorInstance.getPosition();
+      if (!pos) return;
+      const currentLine = monacoEditorInstance.getModel().getLineContent(pos.lineNumber).trim();
+      if (currentLine.startsWith('/ai ') || currentLine.startsWith('>> ')) {
+        e.preventDefault();
+        const prompt = currentLine.replace(/^(\/ai|>>)\s*/, '').trim();
+        if (prompt) {
+          window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt } }));
+        }
+      }
+    }
+  });
+
   bindPlaceholderEvents(monacoEditorInstance);
   registerMonacoSuggestAction(monacoEditorInstance, monaco);
   registerTabManagementActions(monacoEditorInstance);
@@ -202,6 +233,67 @@ export function insertTextIntoEditor(text) {
       }]);
     }
   }
+  ed.focus();
+}
+
+let activeAiDecorations = [];
+
+/**
+ * Inserts or replaces text in Monaco Editor with distinct visual decorations for AI output vs user text.
+ * @param {string} text The generated or rewritten text
+ * @param {'insert'|'replace'} mode Whether to insert at cursor or replace current selection
+ * @param {'generate'|'rewrite'} type Distinguishes generated text from rewritten text
+ */
+export function applyAiOutputToEditor(text, mode = 'insert', type = 'generate') {
+  const ed = getEditorInstance();
+  if (!ed || !monaco) return;
+
+  const model = ed.getModel();
+  if (!model) return;
+
+  let targetRange;
+  const selection = ed.getSelection();
+
+  if (mode === 'replace' && selection && !selection.isEmpty()) {
+    targetRange = selection;
+  } else {
+    const pos = ed.getPosition() || { lineNumber: 1, column: 1 };
+    targetRange = new monaco.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column);
+  }
+
+  // Calculate new text end position
+  const startLineNumber = targetRange.startLineNumber;
+  const startColumn = targetRange.startColumn;
+  const lines = text.split('\n');
+  const endLineNumber = startLineNumber + lines.length - 1;
+  const endColumn = lines.length === 1 ? startColumn + text.length : lines[lines.length - 1].length + 1;
+
+  // Execute edit
+  ed.executeEdits('aiOutput', [{
+    range: targetRange,
+    text: text,
+    forceMoveMarkers: true
+  }]);
+
+  // Apply decorative style to distinguish AI text from user's manual typing
+  const decorationRange = new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
+  const inlineClassName = type === 'rewrite' ? 'monaco-ai-rewritten-inline' : 'monaco-ai-generated-inline';
+  const hoverMessage = type === 'rewrite'
+    ? { value: '**AI Rewritten Text (推敲・リライト)**' }
+    : { value: '**AI Generated Output (LLM生成テキスト)**' };
+
+  activeAiDecorations = ed.deltaDecorations(activeAiDecorations, [
+    {
+      range: decorationRange,
+      options: {
+        isWholeLine: false,
+        className: inlineClassName,
+        hoverMessage,
+        glyphMarginClassName: 'monaco-ai-glyph-margin'
+      }
+    }
+  ]);
+
   ed.focus();
 }
 

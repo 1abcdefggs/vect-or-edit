@@ -60,6 +60,24 @@
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 6px rgba(0, 180, 216, 0.75));
 }
 
+.app-version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-family: var(--font-mono, monospace);
+  color: var(--accent-color, #38bdf8);
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 9999px;
+  line-height: 1.2;
+  letter-spacing: 0.3px;
+  user-select: none;
+  pointer-events: none;
+}
+
+
 /* Instant Tooltip (Zero Delay) */
 [data-instant-tooltip] {
   position: relative;
@@ -361,5 +379,20 @@
 #btnHeaderModelSettings.model-status-ready:hover {
   background: rgba(255, 255, 255, 0.14) !important;
   border-color: var(--accent-color, #38bdf8) !important;
+}
+
+/* Header Zoom Buttons (Minus / Plus) */
+.header-zoom-btn {
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.header-zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--accent-color, #38bdf8) !important;
+}
+
+.header-zoom-btn:active {
+  transform: scale(0.92);
 }
 

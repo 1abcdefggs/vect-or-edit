@@ -21,7 +21,7 @@ import {
   clearKnowledgeSlots
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
-import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, hasStoredGeminiApiKey, listGeminiModels, saveGeminiApiKey } from './ai/aiServices';
+import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, hasStoredGeminiApiKey, listGeminiModels, saveGeminiApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 
@@ -29,7 +29,9 @@ let customEmbedderPath: string | null = null;
 let currentKbPath: string = ""; // Default empty
 
 initLogger();
-app.commandLine.appendSwitch('disable-logging');
+if (app.isPackaged) {
+  app.commandLine.appendSwitch('disable-logging');
+}
 
 // 1. Single Instance Lock duplicate startup prevention
 const gotTheLock = app.requestSingleInstanceLock({ appVersion: app.getVersion() });
@@ -50,6 +52,8 @@ if (!gotTheLock) {
     }
 
     await initRustEngine();
+
+    ipcMain.handle('app:getVersion', () => app.getVersion());
 
     createWindow(
       path.join(__dirname, '../preload/index.cjs'),
@@ -88,8 +92,12 @@ if (!gotTheLock) {
     ipcMain.handle('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, undefined, payload.model));
     ipcMain.handle('app:saveGeminiApiKey', (_event, apiKey: string) => saveGeminiApiKey(apiKey));
     ipcMain.handle('app:hasGeminiApiKey', () => hasStoredGeminiApiKey());
-    ipcMain.handle('app:listGeminiModels', () => listGeminiModels());
+    ipcMain.handle('app:listGeminiModels', (_event, apiKey?: string) => listGeminiModels(apiKey));
     ipcMain.handle('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, payload.apiKey, payload.model));
+    // LLM-as-Embedding: converts text → pseudo-vector via LLM response
+    ipcMain.handle('app:llmEmbedding', (_event, payload) =>
+      fetchLLMEmbedding(payload.text, payload.provider, payload.model, payload.apiKey, payload.dimensions)
+    );
 
     // --- Engine IPC ---
     ipcMain.handle('engine:searchVector', async (_event, vector: number[], limit = 5) => {
