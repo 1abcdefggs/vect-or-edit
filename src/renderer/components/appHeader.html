@@ -1,13 +1,13 @@
 <header class="app-header">
-  <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
-    <div class="window-controls-left" style="display: flex; align-items: center; gap: 6px;">
+  <div class="app-header__left" >
+    <div class="app-header__window-controls" >
       <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon">
-      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;" data-i18n="app_title">VectOrEdit</span>
+      <span class="app-header__title" data-i18n="app_title">VectOrEdit</span>
       <span id="appVersionBadge" class="app-version-badge">v0.3.8</span>
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
-    <nav id="appMenuBar" class="app-menu-bar" aria-label="Application Menu" style="-webkit-app-region: no-drag;">
+    <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu" >
       <!-- File Menu -->
       <div class="menu-bar-item" data-menu="file">
         <button class="menu-bar-btn" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_file">File</button>
@@ -153,47 +153,47 @@
     </nav>
 
   </div>
-  <div class="toolbar app-header-toolbar"
-    style="display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: auto;">
+  <div class="app-header__toolbar"
+    class="header-toolbar">
 
     <!-- Global Theme Selector: Optimized with integrated icon -->
-    <div style="position: relative; display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 2px; height: 24px;">
+    <div class="app-header__theme-select-wrapper">
       <span class="material-symbols-outlined" style="position: absolute; left: 6px; font-size: 0.95rem; color: var(--text-muted); pointer-events: none;">&#xe40a;</span>
-      <select id="themeSelect" class="toolbar-select header-theme-select"
-        style="min-width: 86px; max-width: 110px; height: 22px; line-height: 20px; font-size: 0.70rem; padding: 0 20px 0 22px; border: none; background: transparent; flex-shrink: 0; text-overflow: ellipsis; white-space: nowrap;"
+      <select id="themeSelect" class="app-header__theme-select"
+        class="theme-select"
         data-i18n-title="label_theme"></select>
     </div>
     
     <!-- Language Toggle -->
-    <button id="btnLangToggle" class="toolbar-btn btn-lang-outline"
-      style="height: 24px; padding: 0 6px; display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 0.68rem; font-weight: 600; flex-shrink: 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);">
+    <button id="btnLangToggle" class="app-header__lang-toggle"
+      class="lang-toggle-btn">
       <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
       <span class="icon-label-text" id="langToggleLabel">EN</span>
     </button>
 
     <!-- Zoom / UI Scaling Relative Adjustment (Plus / Minus) -->
-    <div class="header-zoom-group" style="display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); height: 24px; padding: 0 1px;">
+    <div class="app-header__zoom-group" style="display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); height: 24px; padding: 0 1px;">
       <button id="btnHeaderZoomOut" class="toolbar-btn header-zoom-btn" type="button"
-        style="width: 22px; height: 22px; padding: 0; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 3px; cursor: pointer; color: var(--text-main);"
-        title="Zoom Out / 文字縮小 (Ctrl+-)" data-i18n="btnHeaderZoomOutTitle">
+        
+        title="Zoom Out (Ctrl+-)" data-i18n="btnHeaderZoomOutTitle">
         <span class="material-symbols-outlined" style="font-size: 0.95rem;">remove</span>
       </button>
       <button id="btnHeaderZoomIn" class="toolbar-btn header-zoom-btn" type="button"
-        style="width: 22px; height: 22px; padding: 0; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 3px; cursor: pointer; color: var(--text-main);"
-        title="Zoom In / 文字拡大 (Ctrl++)" data-i18n="btnHeaderZoomInTitle">
+        
+        title="Zoom In (Ctrl++)" data-i18n="btnHeaderZoomInTitle">
         <span class="material-symbols-outlined" style="font-size: 0.95rem;">add</span>
       </button>
     </div>
 
     <!-- Settings Button -->
-    <button id="btnSettings" class="toolbar-btn header-action-btn"
-      style="width: 26px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);"
+    <button id="btnSettings" class="app-header__action-btn"
+      
       data-i18n-title="btn_settings">
       <span class="material-symbols-outlined" style="font-size: 1rem;">settings</span>
     </button>
     <!-- Theme Toggle Button -->
-    <button id="btnThemeToggle" class="toolbar-btn header-action-btn"
-      style="width: 26px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);"
+    <button id="btnThemeToggle" class="app-header__action-btn"
+      
       data-i18n-title="btn_theme_toggle">
       <span class="material-symbols-outlined" style="font-size: 1rem;">brightness_6</span>
     </button>
