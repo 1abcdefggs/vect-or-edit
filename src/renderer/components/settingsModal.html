@@ -540,7 +540,8 @@
               <span class="tool-version" style="color: var(--accent-color, #38bdf8); font-weight: 600;">CLOUD API</span>
             </div>
             <div class="setting-desc" style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 14px;">
-              Google text-embedding-004 や OpenAI text-embedding-3 等のクラウドAPIを利用した高次元ベクトル化設定です。APIキーはLLMタブと共有されます。
+              Cloud vector embedding allows you to use external API services for semantic search and vectorization. This is useful for high-accuracy embeddings or when you want to offload processing to a cloud service. Please configure your API key in the LLM tab to enable this feature. 
+              
             </div>
 
             <div
@@ -549,12 +550,12 @@
                 Cloud Vectorizer Status
               </div>
               <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.5;">
-                現在、高精度オフライン検索（384次元 HNSW / ONNX）が標準で動作しています。クラウドAPIによる埋め込みを利用する場合は、LLMタブでAPIキーを設定し、対応アダプターを有効化してください。
+High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled by default. If you wish to use embeddings via a cloud API, please configure your API key in the LLM tab and enable the corresponding adapter.
               </div>
               <div style="margin-top: 4px;">
                 <button type="button" id="btnGoToLlmConfig" class="toolbar-btn"
                   style="padding: 6px 12px; font-size: 0.74rem; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 6px; cursor: pointer;">
-                  <span>LLMタブでAPIキーを設定</span> →
+                  <span>Configure API Key in LLM Tab</span> →
                 </button>
               </div>
             </div>
@@ -571,13 +572,13 @@
             style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px;">
             <h4 style="margin: 0; font-size: 0.82rem; color: #c084fc; display: flex; align-items: center; gap: 8px;">
               <span class="material-symbols-outlined" style="font-size: 1.1rem;">chat</span>
-              <span data-i18n="heading_llm_catalog">LLM一覧 (CHAT / 文章校正・リライト・対話支援)</span>
+              <span data-i18n="heading_llm_catalog">LLM Catalog (CHAT / Text Correction & Rewriting / Conversation Support)</span>
             </h4>
-            <span class="tool-version" style="color: #c084fc; font-weight: 600;">API連携 (コスト高)</span>
+            <span class="tool-version" style="color: #c084fc; font-weight: 600;">API Integration (High Cost)</span>
           </div>
           <div class="setting-desc" data-i18n="llm_card_desc"
             style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 12px;">
-            エディタ下部のチャット欄および右クリックからの直接リライト・推敲対話に使用します。APIキーを設定するとチャット機能が解放されます。
+            Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.
           </div>
 
           <div class="setting-item" style="border: none; padding: 0 0 12px 0; display: block;">
@@ -613,7 +614,7 @@
                   <div class="setting-label"
                     style="font-size: 0.8rem; font-weight: 600; color: var(--accent-color, #38bdf8);"
                     data-i18n="setting_gemini_key">Gemini API Key</div>
-                  <div class="setting-desc" data-i18n="setting_gemini_key_desc">安全にローカルデバイスへ保存されます。</div>
+                  <div class="setting-desc" data-i18n="setting_gemini_key_desc">Will be saved securely to your local device.</div>
                 </div>
                 <a href="https://aistudio.google.com/app/apikey" target="_blank"
                   style="font-size: 0.72rem; color: var(--accent-color, #38bdf8); text-decoration: none; display: flex; align-items: center; gap: 3px;">
@@ -628,7 +629,7 @@
                 <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." autocomplete="off"
                   spellcheck="false"
                   style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
-                <button type="button" id="btnToggleGeminiKeyVisibility" class="toolbar-btn" title="APIキーの表示/非表示を切り替え"
+                <button type="button" id="btnToggleGeminiKeyVisibility" class="toolbar-btn" title="Toggle API Key Visibility"
                   style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
                   <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
                 </button>
@@ -668,7 +669,7 @@
                 <div>
                   <div class="setting-label" style="font-size: 0.8rem; font-weight: 600; color: #10b981;"
                     data-i18n="setting_openai_key">OpenAI API Key</div>
-                  <div class="setting-desc" data-i18n="setting_openai_key_desc">安全にローカルデバイスへ保存されます。</div>
+                  <div class="setting-desc" data-i18n="setting_openai_key_desc">Will be saved securely to your local device.</div>
                 </div>
                 <a href="https://platform.openai.com/api-keys" target="_blank"
                   style="font-size: 0.72rem; color: #10b981; text-decoration: none; display: flex; align-items: center; gap: 3px;">
@@ -683,7 +684,7 @@
                 <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." autocomplete="off"
                   spellcheck="false"
                   style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
-                <button type="button" id="btnToggleOpenAiKeyVisibility" class="toolbar-btn" title="APIキーの表示/非表示を切り替え"
+                <button type="button" id="btnToggleOpenAiKeyVisibility" class="toolbar-btn" title="Toggle API Key Visibility"
                   style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
                   <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
                 </button>
@@ -695,7 +696,7 @@
                 <div class="setting-label" data-i18n="setting_openai_model">OpenAI Model</div>
               </div>
               <select id="modalOpenAiModelSelect" class="toolbar-select" style="min-width: 220px;">
-                <option value="gpt-4o-mini" selected>GPT-4o Mini (推奨)</option>
+                <option value="gpt-4o-mini" selected>GPT-4o Mini (Recommended)</option>
                 <option value="gpt-4o">GPT-4o</option>
               </select>
             </div>
@@ -710,7 +711,7 @@
                 <div>
                   <div class="setting-label" style="font-size: 0.8rem; font-weight: 600; color: #f97316;"
                     data-i18n="setting_claude_key">Anthropic API Key</div>
-                  <div class="setting-desc" data-i18n="setting_claude_key_desc">安全にローカルデバイスへ保存されます。</div>
+                  <div class="setting-desc" data-i18n="setting_claude_key_desc">Will be saved securely to your local device.</div>
                 </div>
                 <a href="https://console.anthropic.com/settings/keys" target="_blank"
                   style="font-size: 0.72rem; color: #f97316; text-decoration: none; display: flex; align-items: center; gap: 3px;">
@@ -725,7 +726,7 @@
                 <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"
                   spellcheck="false"
                   style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
-                <button type="button" id="btnToggleClaudeKeyVisibility" class="toolbar-btn" title="APIキーの表示/非表示を切り替え"
+                <button type="button" id="btnToggleClaudeKeyVisibility" class="toolbar-btn" title="Toggle API Key Visibility"
                   style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
                   <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
                 </button>
