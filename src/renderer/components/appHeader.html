@@ -1,48 +1,47 @@
 <header class="app-header">
-  <div class="app-header__left" >
-    <div class="app-header__window-controls" >
+  <div class="app-header__left">
+    <div class="app-header__window-controls">
       <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon">
-      <span class="app-header__title" data-i18n="app_title">VectOrEdit</span>
-      <span id="appVersionBadge" class="app-version-badge">v0.3.8</span>
+      <span class="app-header__title">VectOrEdit <span class="app-header__version-text">v0.3.8</span></span>
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
-    <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu" >
+    <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu">
       <!-- File Menu -->
       <div class="menu-bar-item" data-menu="file">
         <button class="menu-bar-btn" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_file">File</button>
         <div class="menu-dropdown" id="menuDropdownFile" role="menu">
-          <button class="menu-dropdown-item" id="menuItemNewFile" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemNewFile" role="menuitem" type="button" data-command="file.new">
             <span class="menu-item-label" data-i18n="menu_file_new">New File</span>
             <span class="menu-accelerator">Ctrl+N</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemOpenFile" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemOpenFile" role="menuitem" type="button" data-command="file.open">
             <span class="menu-item-label" data-i18n="menu_file_open">Open File...</span>
             <span class="menu-accelerator">Ctrl+O</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemOpenWorkspace" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemOpenWorkspace" role="menuitem" type="button" data-command="file.openWorkspace">
             <span class="menu-item-label" data-i18n="menu_file_open_workspace">Open Workspace...</span>
             <span class="menu-accelerator">Ctrl+K Ctrl+O</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemSaveFile" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemSaveFile" role="menuitem" type="button" data-command="file.save">
             <span class="menu-item-label" data-i18n="menu_file_save">Save</span>
             <span class="menu-accelerator">Ctrl+S</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemSaveAs" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemSaveAs" role="menuitem" type="button" data-command="file.saveAs">
             <span class="menu-item-label" data-i18n="menu_file_save_as">Save As...</span>
             <span class="menu-accelerator">Ctrl+Shift+S</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemSaveAll" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemSaveAll" role="menuitem" type="button" data-command="file.saveAll">
             <span class="menu-item-label" data-i18n="menu_file_save_all">Save All</span>
             <span class="menu-accelerator">Ctrl+K S</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemCloseTab" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemCloseTab" role="menuitem" type="button" data-command="file.closeTab">
             <span class="menu-item-label" data-i18n="menu_file_close">Close Tab</span>
             <span class="menu-accelerator">Ctrl+W</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemExit" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemExit" role="menuitem" type="button" data-command="file.exit">
             <span class="menu-item-label" data-i18n="menu_file_exit">Exit</span>
             <span class="menu-accelerator">Alt+F4</span>
           </button>
@@ -53,29 +52,29 @@
       <div class="menu-bar-item" data-menu="edit">
         <button class="menu-bar-btn" id="menuBtnEdit" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_edit">Edit</button>
         <div class="menu-dropdown" id="menuDropdownEdit" role="menu">
-          <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button" data-command="edit.undo">
             <span class="menu-item-label" data-i18n="menu_edit_undo">Undo</span>
             <span class="menu-accelerator">Ctrl+Z</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemRedo" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemRedo" role="menuitem" type="button" data-command="edit.redo">
             <span class="menu-item-label" data-i18n="menu_edit_redo">Redo</span>
             <span class="menu-accelerator">Ctrl+Y</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemCut" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemCut" role="menuitem" type="button" data-command="edit.cut">
             <span class="menu-item-label" data-i18n="menu_edit_cut">Cut</span>
             <span class="menu-accelerator">Ctrl+X</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemCopy" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemCopy" role="menuitem" type="button" data-command="edit.copy">
             <span class="menu-item-label" data-i18n="menu_edit_copy">Copy</span>
             <span class="menu-accelerator">Ctrl+C</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemPaste" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemPaste" role="menuitem" type="button" data-command="edit.paste">
             <span class="menu-item-label" data-i18n="menu_edit_paste">Paste</span>
             <span class="menu-accelerator">Ctrl+V</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemSelectAll" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemSelectAll" role="menuitem" type="button" data-command="edit.selectAll">
             <span class="menu-item-label" data-i18n="menu_edit_select_all">Select All</span>
             <span class="menu-accelerator">Ctrl+A</span>
           </button>
@@ -86,24 +85,24 @@
       <div class="menu-bar-item" data-menu="view">
         <button class="menu-bar-btn" id="menuBtnView" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_view">View</button>
         <div class="menu-dropdown" id="menuDropdownView" role="menu">
-          <button class="menu-dropdown-item" id="menuItemToggleSidebar" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemToggleSidebar" role="menuitem" type="button" data-command="view.toggleSidebar">
             <span class="menu-item-label" data-i18n="menu_view_toggle_sidebar">Toggle Suggest Sidebar</span>
             <span class="menu-accelerator">Ctrl+B</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemToggleLogs" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemToggleLogs" role="menuitem" type="button" data-command="view.toggleLogs">
             <span class="menu-item-label" data-i18n="menu_view_toggle_logs">Toggle System Logs</span>
             <span class="menu-accelerator">Ctrl+J</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemZoomIn" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemZoomIn" role="menuitem" type="button" data-command="view.zoomIn">
             <span class="menu-item-label" data-i18n="menu_view_zoom_in">Zoom In</span>
             <span class="menu-accelerator">Ctrl+=</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemZoomOut" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemZoomOut" role="menuitem" type="button" data-command="view.zoomOut">
             <span class="menu-item-label" data-i18n="menu_view_zoom_out">Zoom Out</span>
             <span class="menu-accelerator">Ctrl+-</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemResetZoom" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemResetZoom" role="menuitem" type="button" data-command="view.resetZoom">
             <span class="menu-item-label" data-i18n="menu_view_reset_zoom">Reset Zoom</span>
             <span class="menu-accelerator">Ctrl+0</span>
           </button>
@@ -114,16 +113,16 @@
       <div class="menu-bar-item" data-menu="window">
         <button class="menu-bar-btn" id="menuBtnWindow" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_window">Window</button>
         <div class="menu-dropdown" id="menuDropdownWindow" role="menu">
-          <button class="menu-dropdown-item" id="menuItemMinimize" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemMinimize" role="menuitem" type="button" data-command="window.minimize">
             <span class="menu-item-label" data-i18n="menu_window_minimize">Minimize</span>
             <span class="menu-accelerator">Win+Down</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemMaximize" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemMaximize" role="menuitem" type="button" data-command="window.maximize">
             <span class="menu-item-label" data-i18n="menu_window_maximize">Toggle Maximize</span>
             <span class="menu-accelerator">Win+Up</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemCloseWindow" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemCloseWindow" role="menuitem" type="button" data-command="window.close">
             <span class="menu-item-label" data-i18n="menu_window_close">Close Window</span>
             <span class="menu-accelerator">Alt+F4</span>
           </button>
@@ -134,68 +133,55 @@
       <div class="menu-bar-item" data-menu="help">
         <button class="menu-bar-btn" id="menuBtnHelp" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_help">Help</button>
         <div class="menu-dropdown" id="menuDropdownHelp" role="menu">
-          <button class="menu-dropdown-item" id="menuItemAiSetup" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemAiSetup" role="menuitem" type="button" data-command="help.aiSetup">
             <span class="menu-item-label" data-i18n="menu_help_ai_setup">AI Engine Setup...</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemOpenSettings" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemOpenSettings" role="menuitem" type="button" data-command="help.settings">
             <span class="menu-item-label" data-i18n="menu_help_settings">Preferences & Settings...</span>
             <span class="menu-accelerator">Ctrl+,</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemDocs" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemDocs" role="menuitem" type="button" data-command="help.docs">
             <span class="menu-item-label" data-i18n="menu_help_docs">Documentation</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemAbout" role="menuitem" type="button">
+          <button class="menu-dropdown-item" id="menuItemAbout" role="menuitem" type="button" data-command="help.about">
             <span class="menu-item-label" data-i18n="menu_help_about">About VectOrEdit</span>
           </button>
         </div>
       </div>
     </nav>
-
   </div>
-  <div class="app-header__toolbar"
-    class="header-toolbar">
 
-    <!-- Global Theme Selector: Optimized with integrated icon -->
+  <div class="app-header__toolbar header-toolbar">
+    <!-- Global Theme Selector -->
     <div class="app-header__theme-select-wrapper">
-      <span class="material-symbols-outlined" style="position: absolute; left: 6px; font-size: 0.95rem; color: var(--text-muted); pointer-events: none;">&#xe40a;</span>
-      <select id="themeSelect" class="app-header__theme-select"
-        class="theme-select"
-        data-i18n-title="label_theme"></select>
+      <span class="material-symbols-outlined theme-select-icon">&#xe40a;</span>
+      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"></select>
     </div>
     
     <!-- Language Toggle -->
-    <button id="btnLangToggle" class="app-header__lang-toggle"
-      class="lang-toggle-btn">
-      <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
+    <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button" data-command="view.toggleLang">
+      <span class="material-symbols-outlined lang-toggle-icon">&#xe8e2;</span>
       <span class="icon-label-text" id="langToggleLabel">EN</span>
     </button>
 
     <!-- Zoom / UI Scaling Relative Adjustment (Plus / Minus) -->
-    <div class="app-header__zoom-group" style="display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); height: 24px; padding: 0 1px;">
-      <button id="btnHeaderZoomOut" class="toolbar-btn header-zoom-btn" type="button"
-        
-        title="Zoom Out (Ctrl+-)" data-i18n="btnHeaderZoomOutTitle">
-        <span class="material-symbols-outlined" style="font-size: 0.95rem;">remove</span>
+    <div class="app-header__zoom-group header-zoom-group">
+      <button id="btnHeaderZoomOut" class="toolbar-btn header-zoom-btn" type="button" title="Zoom Out (Ctrl+-)" data-i18n="btnHeaderZoomOutTitle" data-command="view.zoomOut">
+        <span class="material-symbols-outlined">remove</span>
       </button>
-      <button id="btnHeaderZoomIn" class="toolbar-btn header-zoom-btn" type="button"
-        
-        title="Zoom In (Ctrl++)" data-i18n="btnHeaderZoomInTitle">
-        <span class="material-symbols-outlined" style="font-size: 0.95rem;">add</span>
+      <button id="btnHeaderZoomIn" class="toolbar-btn header-zoom-btn" type="button" title="Zoom In (Ctrl++)" data-i18n="btnHeaderZoomInTitle" data-command="view.zoomIn">
+        <span class="material-symbols-outlined header-zoom-icon">add</span>
       </button>
     </div>
 
     <!-- Settings Button -->
-    <button id="btnSettings" class="app-header__action-btn"
-      
-      data-i18n-title="btn_settings">
-      <span class="material-symbols-outlined" style="font-size: 1rem;">settings</span>
+    <button id="btnSettings" class="app-header__action-btn" type="button" data-i18n-title="btn_settings" data-command="help.settings">
+      <span class="material-symbols-outlined settings-icon">settings</span>
     </button>
     <!-- Theme Toggle Button -->
-    <button id="btnThemeToggle" class="app-header__action-btn"
-      
-      data-i18n-title="btn_theme_toggle">
-      <span class="material-symbols-outlined" style="font-size: 1rem;">brightness_6</span>
+    <button id="btnThemeToggle" class="app-header__action-btn" type="button" data-i18n-title="btn_theme_toggle" data-command="view.toggleTheme">
+      <span class="material-symbols-outlined theme-toggle-icon">brightness_6</span>
     </button>
   </div>
 </header>

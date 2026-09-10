@@ -1,0 +1,176 @@
+/* Header Extras – Consolidated stylesheet for Header Toolbar components */
+
+/* Toolbar wrapper */
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  -webkit-app-region: no-drag !important;
+}
+
+/* Header action button common style (Settings, Theme Toggle, etc.) */
+.app-header__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--header-fg, var(--text-main));
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  -webkit-app-region: no-drag !important;
+  outline: none;
+}
+
+.app-header__action-btn:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-main, #ffffff);
+}
+
+.app-header__action-btn:focus-visible {
+  outline: 1px solid var(--accent-color, #38bdf8);
+}
+
+/* Theme selector wrapper */
+.app-header__theme-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  -webkit-app-region: no-drag !important;
+}
+
+/* Theme selector */
+.app-header__theme-select {
+  appearance: none;
+  background: var(--bg-card, #111827);
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.25));
+  border-radius: var(--radius-sm, 4px);
+  height: 26px;
+  line-height: 24px;
+  padding: 0 24px 0 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--header-fg, var(--text-main));
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  -webkit-app-region: no-drag !important;
+  outline: none;
+}
+
+.app-header__theme-select:hover {
+  border-color: var(--accent-color, #38bdf8);
+  background: var(--hover-bg, rgba(255, 255, 255, 0.05));
+}
+
+.app-header__theme-select:focus-visible {
+  border-color: var(--accent-color, #38bdf8);
+}
+
+/* Theme select icon */
+.theme-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 14px;
+  color: var(--text-muted, #94a3b8);
+}
+
+/* Language toggle button (Clean inline-flex with icon + text) */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 8px;
+  min-width: 46px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--header-fg, var(--text-main));
+  background: transparent;
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.25));
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  -webkit-app-region: no-drag !important;
+  outline: none;
+  user-select: none;
+}
+
+.lang-toggle-btn:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
+  border-color: var(--accent-color, #38bdf8);
+  color: var(--text-main, #ffffff);
+}
+
+.lang-toggle-btn:focus-visible {
+  border-color: var(--accent-color, #38bdf8);
+}
+
+/* Language icon */
+.lang-toggle-icon {
+  font-size: 14px;
+  color: var(--accent-color, #38bdf8);
+}
+
+.icon-label-text {
+  line-height: 1;
+}
+
+/* Zoom group styling */
+.header-zoom-group {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  background: transparent;
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.25));
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+  -webkit-app-region: no-drag !important;
+}
+
+/* Zoom buttons */
+.header-zoom-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: var(--header-fg, var(--text-main));
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  padding: 0;
+  outline: none;
+}
+
+.header-zoom-btn:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-main, #ffffff);
+}
+
+.header-zoom-btn .material-symbols-outlined {
+  font-size: 14px;
+}
+
+/* Settings icon */
+.settings-icon {
+  font-size: 16px;
+}
+
+/* Theme toggle icon */
+.theme-toggle-icon {
+  font-size: 16px;
+}

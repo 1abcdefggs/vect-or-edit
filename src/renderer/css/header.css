@@ -38,6 +38,33 @@
   -webkit-app-region: drag;
 }
 
+/* Header Left: Branding & VS Code Inline Menu Bar */
+.app-header__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.app-header__window-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.app-header__title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--header-fg, var(--text-main));
+  white-space: nowrap;
+}
+
 .logo-icon {
   width: 20px;
   height: 20px;
@@ -60,19 +87,13 @@
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 6px rgba(0, 180, 216, 0.75));
 }
 
-.app-version-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 6px;
-  font-size: 0.65rem;
-  font-weight: 600;
+.app-header__version-text {
+  font-size: 0.72rem;
+  font-weight: 500;
   font-family: var(--font-mono, monospace);
-  color: var(--accent-color, #38bdf8);
-  background: rgba(56, 189, 248, 0.1);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: 9999px;
-  line-height: 1.2;
-  letter-spacing: 0.3px;
+  color: var(--text-muted, #94a3b8);
+  opacity: 0.75;
+  margin-left: 4px;
   user-select: none;
   pointer-events: none;
 }
@@ -82,6 +103,7 @@
 [data-instant-tooltip] {
   position: relative;
 }
+
 [data-instant-tooltip]:hover::after {
   content: attr(data-instant-tooltip);
   position: absolute;
@@ -98,7 +120,7 @@
   z-index: 99999;
   pointer-events: none;
   border: 1px solid var(--accent-color, rgba(56, 189, 248, 0.4));
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   min-width: 200px;
   text-align: left;
 }
@@ -166,6 +188,7 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
 .master-ai-pill.disabled .pill-slider {
   background: #64748b;
 }
@@ -183,7 +206,7 @@
 /* ==========================================================================
    VS Code Style Inline Menu Bar & Dropdowns
    ========================================================================== */
-.app-menu-bar {
+.app-header__menu {
   display: flex;
   align-items: center;
   gap: 2px;
@@ -192,7 +215,10 @@
 }
 
 .menu-bar-item {
+  display: inline-flex;
+  align-items: center;
   position: relative;
+  margin-right: 0;
   -webkit-app-region: no-drag !important;
 }
 
@@ -247,6 +273,7 @@
     opacity: 0;
     transform: translateY(-4px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -396,3 +423,24 @@
   transform: scale(0.92);
 }
 
+
+#theme-select,
+.theme-select,
+select {
+  background-color: var(--bg-secondary, #1e293b);
+  color: var(--text-main, #f8fafc);
+}
+
+#theme-select option,
+.theme-select option,
+select option {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+:root.light-theme #theme-select option,
+:root.light-theme .theme-select option,
+:root.light-theme select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
