@@ -382,7 +382,7 @@
   "update_restart": "再起動して更新 (v{version})",
   "update_restart_confirm": "VectOrEditを再起動して更新を適用しますか？",
   "update_check_label": "更新確認",
-  "placeholder_hint": "(*入力するとこのガイドは自動で消えます / Disappears when you start typing)",
+  "placeholder_hint": "(*入力するとこのガイドは自動で消えます)",
   "placeholder_ai_unset_hint": "(上部ヘッダーからモデルを設定・ダウンロード)",
   "placeholder_master_off_hint": "(上部スイッチまたはエディタの「Editor AI」ボタンを押して起動)",
   "placeholder_no_slots": "- ナレッジ登録: 右サイドバーの「＋ Add」から専門知識ファイル(.json/.venc)をセットして推敲を開始",

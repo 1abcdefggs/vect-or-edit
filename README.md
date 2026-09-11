@@ -1,7 +1,7 @@
 # VectOrEdit (`vect-or-edit`)
  **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
-[![Release](https://img.shields.io/badge/Release-v0.3.17-2563eb?style=flat&logo=github)](https://github.com/1abcdefggs/vect-or-edit/releases)
+[![Release](https://img.shields.io/badge/Release-v0.3.18-2563eb?style=flat&logo=github)](https://github.com/1abcdefggs/vect-or-edit/releases)
 [![Author](https://img.shields.io/badge/Author-1abcdefggs-1e293b?style=flat&logo=github)](https://github.com/1abcdefggs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-334155?style=flat)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows_10%2F11-0284c7?style=flat&logo=windows)](https://github.com/1abcdefggs/vect-or-edit)

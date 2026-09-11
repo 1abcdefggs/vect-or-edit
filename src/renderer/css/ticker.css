@@ -155,18 +155,18 @@
   color: #ffffff !important;
 }
 
-/* 1. Pending / Processing State: Standby Red Pulsing (#ef4444) */
+/* 1. Pending / Processing State: Standby Amber Pulsing (#fbbf24) */
 .status-led-dot.status-loading,
 .status-led-dot.status-pending {
-  background: #ef4444;
-  box-shadow: 0 0 5px rgba(239, 68, 68, 0.8), 0 0 8px rgba(239, 68, 68, 0.5);
-  animation: matrix-pulse-red 1.2s infinite alternate;
+  background: #fbbf24;
+  box-shadow: 0 0 5px rgba(251, 191, 36, 0.8), 0 0 8px rgba(251, 191, 36, 0.5);
+  animation: matrix-pulse-yellow 1.2s infinite alternate;
 }
 
 .status-pill.pill-pending {
-  color: #ef4444 !important;
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.35);
+  color: #fbbf24 !important;
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.35);
 }
 
 /* 2. Ready / Completed State: Emerald Success (#1b8) */
@@ -190,17 +190,17 @@
   color: #ffffff !important;
 }
 
-/* 3. Error State: Intense Warning Amber (#fa1) */
+/* 3. Error State: Alert Red (#ef4444) */
 .status-led-dot.status-error {
-  background: #fa1;
-  box-shadow: 0 0 5px rgba(255, 170, 17, 0.9), 0 0 9px #fa1;
-  animation: matrix-pulse-amber 0.8s infinite alternate;
+  background: #ef4444;
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
+  animation: matrix-pulse-red 0.8s infinite alternate;
 }
 
 .status-pill.pill-error {
-  color: #fa1 !important;
-  background: rgba(255, 170, 17, 0.12) !important;
-  border-color: rgba(255, 170, 17, 0.35) !important;
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
   box-shadow: 0 0 6px rgba(239, 68, 68, 0.3) !important;
 }
 

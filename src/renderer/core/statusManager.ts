@@ -16,14 +16,14 @@ export type SubsystemType = 'bin' | 'kb' | 'conf' | 'thm' | 'i18n' | 'monaco' | 
 export type SubsystemStatus = boolean | 'ready' | 'pending' | 'error';
 
 // Track all 7 subsystem readiness states
-const subsystemState: Record<SubsystemType, boolean> = {
-  bin: false,    // 1. Rust Binary
-  kb: false,     // 2. Knowledge Base & HNSW
-  conf: false,   // 3. User Config
-  thm: false,    // 4. Theme
-  i18n: false,   // 5. Locale i18n
-  monaco: false, // 6. Monaco Editor
-  ai: false      // 7. AI Model
+const subsystemState: Record<SubsystemType, SubsystemStatus> = {
+  bin: 'pending',    // 1. Rust Binary
+  kb: 'pending',     // 2. Knowledge Base & HNSW
+  conf: 'pending',   // 3. User Config
+  thm: 'pending',    // 4. Theme
+  i18n: 'pending',   // 5. Locale i18n
+  monaco: 'pending', // 6. Monaco Editor
+  ai: 'pending'      // 7. AI Model
 };
 
 const badgeMap: Record<SubsystemType, string> = {
@@ -62,7 +62,9 @@ function getCachedBadges(type: SubsystemType): CachedBadge[] {
       dot: badge.querySelector<HTMLElement>('.status-led-dot')
     }));
 
-  domCache.set(type, badges);
+  if (badges.length > 0) {
+    domCache.set(type, badges);
+  }
   return badges;
 }
 
@@ -87,7 +89,7 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
   const isError = status === 'error';
 
   if (subType in subsystemState) {
-    subsystemState[subType] = isReady;
+    subsystemState[subType] = status;
   }
 
   const cachedBadges = getCachedBadges(subType);
@@ -157,7 +159,12 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
  * Get current snapshot of all 7 subsystem states
  */
 export function getSubsystemStates(): Record<SubsystemType, boolean> {
-  return { ...subsystemState };
+  const result = {} as Record<SubsystemType, boolean>;
+  (Object.keys(subsystemState) as SubsystemType[]).forEach(k => {
+    const s = subsystemState[k];
+    result[k] = s === true || s === 'ready';
+  });
+  return result;
 }
 
 /**
