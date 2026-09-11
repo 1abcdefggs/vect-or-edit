@@ -5,6 +5,21 @@ All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.17] - 2026-09-11
+
+### Added
+
+- **AI Toolbar Toggle Logic & Multi-Provider Settings**:
+  - Connected Sidebar Embedding Toggle with central AI Master Switch and ONNX/Transformers.js models.
+  - Implemented secure API Key visibility toggles with password masking for Gemini, OpenAI, and Anthropic Claude keys.
+  - Added dedicated Clear API Keys action with customizable confirmation modal dialogues.
+- **Unified Custom Confirmation Modals**:
+  - Added `confirmModal.ts` to replace browser default `confirm()` prompts with theme-integrated, non-blocking modal dialogs.
+  - Provided full keyboard navigation (Enter to confirm, Escape to cancel) and focus-trap accessibility.
+- **Localization & Style Refinements**:
+  - Added complete bilingual (en / ja) i18n keys for confirmation dialogs, modal tooltips, and API key management.
+  - Refined modal animation curves, backdrop blur, toast alerts, and ticker styles.
+
 ## [0.3.16] - 2026-09-11
 
 ### Added
