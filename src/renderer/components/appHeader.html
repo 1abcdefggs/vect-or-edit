@@ -1,15 +1,15 @@
 <header class="app-header">
   <div class="app-header__left">
-    <div class="app-header__window-controls" data-ui="hdr:logo">
-      <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon">
-      <span class="app-header__title">VectOrEdit <span class="app-header__version-text">v0.3.12</span></span>
+    <div class="app-header__window-controls" data-ui="hdr:logo" title="VectOrEdit - Vector-Assisted Text Editor">
+      <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon" title="VectOrEdit v0.3.14">
+      <span class="app-header__title">VectOrEdit <span class="app-header__version-text">v0.3.14</span></span>
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
     <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu" data-ui="hdr:menu-bar">
       <!-- File Menu -->
       <div class="menu-bar-item" data-menu="file" data-ui="hdr:menu-file">
-        <button class="menu-bar-btn" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_file">File</button>
+        <button class="menu-bar-btn" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_file" title="File operations (New, Open, Save, Close, Exit)">File</button>
         <div class="menu-dropdown" id="menuDropdownFile" role="menu">
           <button class="menu-dropdown-item" id="menuItemNewFile" role="menuitem" type="button" data-command="file.new">
             <span class="menu-item-label" data-i18n="menu_file_new">New File</span>
@@ -50,7 +50,7 @@
 
       <!-- Edit Menu -->
       <div class="menu-bar-item" data-menu="edit" data-ui="hdr:menu-edit">
-        <button class="menu-bar-btn" id="menuBtnEdit" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_edit">Edit</button>
+        <button class="menu-bar-btn" id="menuBtnEdit" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_edit" title="Edit operations (Undo, Redo, Cut, Copy, Paste, Select All)">Edit</button>
         <div class="menu-dropdown" id="menuDropdownEdit" role="menu">
           <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button" data-command="edit.undo">
             <span class="menu-item-label" data-i18n="menu_edit_undo">Undo</span>
@@ -83,7 +83,7 @@
 
       <!-- View Menu -->
       <div class="menu-bar-item" data-menu="view" data-ui="hdr:menu-view">
-        <button class="menu-bar-btn" id="menuBtnView" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_view">View</button>
+        <button class="menu-bar-btn" id="menuBtnView" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_view" title="View & Zoom controls">View</button>
         <div class="menu-dropdown" id="menuDropdownView" role="menu">
           <button class="menu-dropdown-item" id="menuItemToggleSidebar" role="menuitem" type="button" data-command="view.toggleSidebar">
             <span class="menu-item-label" data-i18n="menu_view_toggle_sidebar">Toggle Suggest Sidebar</span>
@@ -111,7 +111,7 @@
 
       <!-- Window Menu -->
       <div class="menu-bar-item" data-menu="window" data-ui="hdr:menu-window">
-        <button class="menu-bar-btn" id="menuBtnWindow" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_window">Window</button>
+        <button class="menu-bar-btn" id="menuBtnWindow" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_window" title="Window operations (Minimize, Maximize, Close)">Window</button>
         <div class="menu-dropdown" id="menuDropdownWindow" role="menu">
           <button class="menu-dropdown-item" id="menuItemMinimize" role="menuitem" type="button" data-command="window.minimize">
             <span class="menu-item-label" data-i18n="menu_window_minimize">Minimize</span>
@@ -131,7 +131,7 @@
 
       <!-- Help Menu -->
       <div class="menu-bar-item" data-menu="help" data-ui="hdr:menu-help">
-        <button class="menu-bar-btn" id="menuBtnHelp" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_help">Help</button>
+        <button class="menu-bar-btn" id="menuBtnHelp" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_help" title="Help, AI Engine Setup, Docs & Settings">Help</button>
         <div class="menu-dropdown" id="menuDropdownHelp" role="menu">
           <button class="menu-dropdown-item" id="menuItemAiSetup" role="menuitem" type="button" data-command="help.aiSetup">
             <span class="menu-item-label" data-i18n="menu_help_ai_setup">AI Engine Setup...</span>
@@ -154,35 +154,30 @@
 
   <div class="app-header__toolbar header-toolbar">
     <!-- Global Theme Selector -->
-    <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select">
-      <span class="material-symbols-outlined theme-select-icon">&#xe40a;</span>
-      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"></select>
+    <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select" style="display: flex; align-items: center; gap: 4px; padding: 2px 6px;" title="Color Theme: Switch between Dark, Light, and High Contrast themes">
+      <span class="material-symbols-outlined theme-select-icon" style="font-size: 1.2rem; color: var(--accent-color, #38bdf8);" title="Theme Icon">&#xe40a;</span>
+      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme" title="Select Color Theme"></select>
     </div>
     
     <!-- Language Toggle -->
-    <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button" data-command="view.toggleLang" data-ui="hdr:locale-toggle">
-      <span class="material-symbols-outlined lang-toggle-icon">&#xe8e2;</span>
-      <span class="icon-label-text" id="langToggleLabel">EN</span>
+    <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button" data-command="view.toggleLang" data-ui="hdr:locale-toggle" style="padding: 2px 8px; gap: 5px;" title="Switch UI Language (English / 日本語)">
+      <span class="material-symbols-outlined lang-toggle-icon" style="font-size: 1.15rem; color: #10b981;">&#xe8e2;</span>
+      <span class="icon-label-text" id="langToggleLabel" style="font-size: 0.72rem; font-weight: 700;">EN</span>
     </button>
-
-    <!-- Zoom / UI Scaling Relative Adjustment (Plus / Minus) -->
-    <div class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select">
-      <button id="btnHeaderZoomOut" class="toolbar-btn header-zoom-btn" type="button" title="Zoom Out (Ctrl+-)" data-i18n="btnHeaderZoomOutTitle" data-command="view.zoomOut">
-        <span class="material-symbols-outlined">remove</span>
-      </button>
-      <button id="btnHeaderZoomIn" class="toolbar-btn header-zoom-btn" type="button" title="Zoom In (Ctrl++)" data-i18n="btnHeaderZoomInTitle" data-command="view.zoomIn">
-        <span class="material-symbols-outlined header-zoom-icon">add</span>
-      </button>
-    </div>
 
     <!-- Settings Button -->
-    <button id="btnSettings" class="app-header__action-btn" type="button" data-i18n-title="btn_settings" data-command="help.settings" data-ui="hdr:settings-btn">
-      <span class="material-symbols-outlined settings-icon">settings</span>
+    <button id="btnSettings" class="app-header__action-btn" type="button" data-i18n-title="btn_settings" data-command="help.settings" data-ui="hdr:settings-btn" title="Preferences & Settings (Ctrl+,)" style="width: 30px; height: 26px; display: flex; align-items: center; justify-content: center;">
+      <span class="material-symbols-outlined settings-icon" style="font-size: 1.15rem; color: #fbbf24;">settings</span>
     </button>
-    <!-- Theme Toggle Button -->
-    <button id="btnThemeToggle" class="app-header__action-btn" type="button" data-i18n-title="btn_theme_toggle" data-command="view.toggleTheme">
-      <span class="material-symbols-outlined theme-toggle-icon">brightness_6</span>
-    </button>
+
+    <!-- Visual Separator between Settings and Zoom Button -->
+    <span class="header-control-divider" aria-hidden="true"></span>
+
+    <!-- Zoom / UI Scaling Relative Adjustment (Mouse Wheel, Click Reset) -->
+    <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select" title="Zoom & UI Scale: Mouse wheel to zoom in/out, click to reset (100%)" style="height: 26px; padding: 2px 8px; gap: 4px;">
+      <span class="material-symbols-outlined header-zoom-icon" style="font-size: 1.15rem; color: var(--accent-color, #38bdf8);">zoom_in</span>
+      <span id="headerZoomPercent" class="header-zoom-text" style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text-main); min-width: 40px; text-align: center;">100%</span>
+    </div>
   </div>
 </header>
 <div id="headerFullBorderLine" class="header-full-border-line"></div>

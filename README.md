@@ -1,7 +1,7 @@
 # VectOrEdit (`vect-or-edit`)
  **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
-[![Release](https://img.shields.io/badge/Release-v0.3.13-2563eb?style=flat&logo=github)](https://github.com/1abcdefggs/vect-or-edit/releases)
+[![Release](https://img.shields.io/badge/Release-v0.3.14-2563eb?style=flat&logo=github)](https://github.com/1abcdefggs/vect-or-edit/releases)
 [![Author](https://img.shields.io/badge/Author-1abcdefggs-1e293b?style=flat&logo=github)](https://github.com/1abcdefggs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-334155?style=flat)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows_10%2F11-0284c7?style=flat&logo=windows)](https://github.com/1abcdefggs/vect-or-edit)
@@ -18,8 +18,8 @@
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-334155?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-1e293b?style=flat)](https://github.com/1abcdefggs/vect-or-edit/pulls)
 <p align="center">
-<p align="center"><b>v0.3.13, v0.3.12</b><br/>
-  <img src="docs/assets/repository-ui-v0312.gif" alt="VectOrEditOr v0.3.12 Demo" ... />
+<p align="center"><b>v0.3.14</b><br/>
+  <img src="docs/assets/repository-ui-v0312.gif" alt="VectOrEditOr v0.3.14 Demo" ... />
 </p>
 
 <p align="center"><b>v0.3.1</b><br/>
@@ -41,7 +41,8 @@
 
 ### 2. Knowledge Slots & Guideline Management (Right Sidebar)
 
-- **Open Sidebar**: Press <kbd>Ctrl</kbd>+<kbd>B</kbd> or click the blue sidebar toggle button on the editor toolbar.
+- **Open / Collapse Sidebar**: Press <kbd>Ctrl</kbd>+<kbd>B</kbd> or click the blue sidebar toggle button on the top-left of the sidebar.
+- **Embedding Toggle & Quick Settings**: Click **`[ ● EMBED OFF ]`** on the top-right of the sidebar to toggle real-time semantic vector assistance (synchronized with Master AI), or click the gear icon (**`⚙️`**) to open Vector and Knowledge settings.
 - **Add Knowledge Slot**: Click **`＋ Add`** in the Knowledge section to dynamically load and merge domain JSON datasets (`medical/`, `drama/`, `postcard/`, etc.).
 - **Load Presets / Guidelines**: Click **`＋ Preset`** to load drafting rules and linting schemas (`guideline_*.json`).
 - **Filter Thresholds**: Adjust the **`Min: %`** score input and **`Limit`** selector in the sidebar to control suggestion precision and candidate volume.
@@ -55,8 +56,9 @@
 ### 4. File Operations & Multi-Tab Drafting
 
 - **New / Open / Save**: Use standard shortcuts (<kbd>Ctrl</kbd>+<kbd>N</kbd>, <kbd>Ctrl</kbd>+<kbd>O</kbd>, <kbd>Ctrl</kbd>+<kbd>S</kbd>) or the top menu bar.
+- **AutoSave**: Click the green/gray LED dot in the `[💾 AUTO ● ▾]` button to toggle AutoSave on or off.
 - **Duplicate Tab**: Click the duplicate icon (`+`) on the tab bar to branch your current document into a new tab.
-- **Diff Comparison**: Toggle **`Diff`** mode on the editor toolbar to compare your draft against a saved baseline.
+- **Rename Tab**: Double-click any tab title to rename it with an instant high-contrast overlay input.
 
 ---
 

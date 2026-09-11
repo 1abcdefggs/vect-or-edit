@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "VectOrEdit ,Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
@@ -84,8 +84,8 @@
       "**/*.node"
     ],
     "win": {
-    "icon": "public/icon.ico",
-    "target": [
+      "icon": "public/icon.ico",
+      "target": [
         "nsis",
         "portable"
       ]

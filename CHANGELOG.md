@@ -5,6 +5,18 @@ All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.14] - 2026-09-11
+
+### Added
+
+- **Interactive Header Zoom Badge & Wheel Scaling**:
+  - Replaced legacy separate zoom buttons with an integrated `🔍 100%` badge in the header toolbar.
+  - Added vertical mouse wheel scroll listener for smooth scaling between 50% and 200%.
+  - Added single-click trigger to immediately reset UI scale to 100%.
+  - Added global <kbd>Ctrl</kbd> + Mouse Wheel scaling support.
+- **Header Navigation & Control Hover Tooltips**:
+  - Added informative hover tooltips across the App Header (Logo, Menus, Theme Selector, Language Toggle, Settings, and Zoom Badge).
+
 ## [0.3.13] - 2026-09-11
 
 ### Added

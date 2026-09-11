@@ -37,6 +37,11 @@ export function initZoomControls(): void {
     window.engineAPI?.setZoomFactor(currentZoom);
     localStorage.setItem(STORAGE_KEY, currentZoom.toString());
 
+    const percentEl = document.getElementById('headerZoomPercent');
+    if (percentEl) {
+      percentEl.textContent = `${Math.round(currentZoom * 100)}%`;
+    }
+
     if (modalZoomSelect) {
       modalZoomSelect.value = currentZoom.toString();
       if (!modalZoomSelect.value) {
@@ -49,19 +54,51 @@ export function initZoomControls(): void {
     }
   }
 
-  // Relative Zoom In (+)
+  // Relative Zoom In (+) if legacy button exists
   if (btnHeaderZoomIn) {
     btnHeaderZoomIn.addEventListener('click', () => {
       applyZoom(currentZoom + STEP);
     });
   }
 
-  // Relative Zoom Out (-)
+  // Relative Zoom Out (-) if legacy button exists
   if (btnHeaderZoomOut) {
     btnHeaderZoomOut.addEventListener('click', () => {
       applyZoom(currentZoom - STEP);
     });
   }
+
+  // Mouse wheel zoom support on header zoom group / badge
+  const zoomBadge = (document.getElementById('headerZoomBadge') || document.querySelector('.header-zoom-group')) as HTMLElement | null;
+  if (zoomBadge) {
+    zoomBadge.addEventListener('wheel', (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        applyZoom(currentZoom + STEP);
+      } else if (e.deltaY > 0) {
+        applyZoom(currentZoom - STEP);
+      }
+    }, { passive: false });
+
+    // Click on badge resets to 100%
+    zoomBadge.addEventListener('click', () => {
+      if (currentZoom !== 1.0) {
+        applyZoom(1.0);
+      }
+    });
+  }
+
+  // Ctrl + Mouse Wheel global zoom support
+  window.addEventListener('wheel', (e: WheelEvent) => {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        applyZoom(currentZoom + STEP);
+      } else if (e.deltaY > 0) {
+        applyZoom(currentZoom - STEP);
+      }
+    }
+  }, { passive: false });
 
   if (modalZoomSelect) {
     modalZoomSelect.addEventListener('change', (e) => {
