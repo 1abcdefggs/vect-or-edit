@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.17",
+  "version": "0.3.19",
   "description": "VectOrEdit ,Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
@@ -78,7 +78,19 @@
     ],
     "files": [
       "out/**/*",
-      "package.json"
+      "package.json",
+      "node_modules/@1abcdefggs/vect-or-engine/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../vect-or-engine",
+        "to": "vect-or-engine",
+        "filter": [
+          "*.node",
+          "index.js",
+          "package.json"
+        ]
+      }
     ],
     "asarUnpack": [
       "**/*.node"

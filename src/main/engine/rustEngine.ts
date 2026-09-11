@@ -17,15 +17,22 @@ export async function initRustEngine() {
   }
 
   const candidateEnginePaths = [
-    // 1. Versioned modern simple binary (v0.3.0)
-    path.join(__dirname, '../../../vect-or-engine/vect-or-engine-v0.3.0.node'),
-    path.join(process.cwd(), '../vect-or-engine/vect-or-engine-v0.3.0.node'),
-    path.join(process.resourcesPath || '', 'vect-or-engine-v0.3.0.node'),
-    // 2. Packaged Electron app (unpacked asar resources)
+    // 1. Packaged Electron app (unpacked asar resources or extraResources) - Check this first when packaged
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-v0.3.0.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine/index.js'),
+    path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
     path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-v0.3.0.node'),
     path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine-v0.3.0.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine-v0.3.0.node'),
     path.join(process.resourcesPath || '', 'vect-or-engine-napi.win32-x64-msvc.node'),
-    // 3. Development relative workspace paths
+    // 2. Development relative workspace paths
+    path.join(__dirname, '../../../vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
+    path.join(process.cwd(), '../vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
+    path.join(__dirname, '../../../vect-or-engine/vect-or-engine-v0.3.0.node'),
+    path.join(process.cwd(), '../vect-or-engine/vect-or-engine-v0.3.0.node'),
     path.join(__dirname, '../../../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
     path.join(process.cwd(), '../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
     path.join(__dirname, '../../../vect-or-engine/index.js'),

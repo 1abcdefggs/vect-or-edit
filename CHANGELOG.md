@@ -5,6 +5,35 @@ All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.19] - 2026-09-11
+
+### Added
+
+- **Portable & NSIS Package Engine Bundling (`5. RUST`)**:
+  - Added `extraResources` in `package.json` to bundle `vect-or-engine` native `.node` binaries directly under `resources/vect-or-engine/`.
+  - Added prioritized resolution paths (`process.resourcesPath + '/vect-or-engine/...'`) in `rustEngine.ts`, ensuring 100% reliable Rust N-API binding in both portable (`.exe`) and NSIS installer environments.
+- **Deep Status & Diagnostic Architecture (`statusManager.ts`)**:
+  - Redesigned subsystem status semantics into 4 strict states: `ready` (Emerald `#1b8`), `loading` (Amber `#fbbf24`), `standby` (Slate `#64748b`), and `error` (Red `#ef4444`).
+  - Prevented error masking where failed or unconnected states were ambiguously displayed as pending yellow.
+  - Required subsystems (`CONFIG`, `THEME`, `LOCALE`, `EDITOR`, `RUST`) immediately trigger Alert Red on failure or IPC disconnect.
+- **Fast-Path Locale Bootstrap (`3. LOCALE`)**:
+  - Moved `loadLocales()` to the very beginning of the `DOMContentLoaded` lifecycle, ensuring immediate locale dictionary application (`ja.json`) and instant green Ready status.
+  - Added protection guards in `initAllLedTooltips()` to prevent overwriting active Ready states during initialization.
+
+## [0.3.18] - 2026-09-11
+
+### Added
+
+- **Packaged Rust N-API Engine Binding Resolution**:
+  - Expanded candidate engine path resolution in `rustEngine.ts` to include `vect-or-engine-v0.3.0.win32-x64-msvc.node` unpacked ASAR resources.
+  - Enabled 100% offline Rust HNSW indexing and validation in both portable and NSIS installer packages.
+- **Pipeline LED Meter Stability & Color Semantics**:
+  - Re-mapped status colors: Amber (`#fbbf24`) for pending/loading standby and Red (`#ef4444`) exclusively for errors.
+  - Resolved `3. LOCALE` status persistence during runtime language toggles by retaining exact subsystem states in `statusManager.ts`.
+- **Streamlined Monaco Editor Placeholder UI**:
+  - Redesigned new document guidance list to align directly with line numbers at the top of the canvas, removing oversized dashed borders.
+  - Cleaned up bilingual hint strings in `ja.json` and `en.json` for concise localized guidance.
+
 ## [0.3.17] - 2026-09-11
 
 ### Added

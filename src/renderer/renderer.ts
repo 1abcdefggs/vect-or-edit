@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 0. Inject lazy HTML components (Modals, System Logs)
   injectLazyUIComponents();
   
+  // 0.2. Immediately apply Locale (Ensures 3. LOCALE is ready and UI text is localized instantly)
+  await loadLocales();
+
   // 0.5. Initialize LED tooltips consistently
   initAllLedTooltips();
 
@@ -55,8 +58,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 2. Setup Engine & Knowledge Base IPC Listeners
   if (window.engineAPI?.onEngineStatus) {
     window.engineAPI.onEngineStatus((status) => {
-      if (status.binReady) setLedStatus('bin', true, '5. RUST: Bound via N-API');
-      if (status.kbReady) setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
+      if (status.binReady) {
+        setLedStatus('bin', true, '5. RUST: Bound via N-API');
+      } else {
+        setLedStatus('bin', 'error', '5. RUST: Engine Not Available');
+      }
+
+      if (status.kbReady) {
+        setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
+      } else {
+        setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
+      }
+
       if (status.profileName) {
         const activeProfileEl = document.getElementById('activeProfileName');
         if (activeProfileEl) activeProfileEl.textContent = status.profileName;
@@ -66,13 +79,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (window.engineAPI?.getEngineStatus) {
     window.engineAPI.getEngineStatus().then((status) => {
-      if (status?.binReady) setLedStatus('bin', true, '5. RUST: Bound via N-API');
-      if (status?.kbReady) setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
+      if (status?.binReady) {
+        setLedStatus('bin', true, '5. RUST: Bound via N-API');
+      } else {
+        setLedStatus('bin', 'error', '5. RUST: Engine Not Available');
+      }
+
+      if (status?.kbReady) {
+        setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
+      } else {
+        setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
+      }
+
       if (status?.profileName) {
         const activeProfileEl = document.getElementById('activeProfileName');
         if (activeProfileEl) activeProfileEl.textContent = status.profileName;
       }
-    }).catch(() => {});
+    }).catch(() => {
+      setLedStatus('bin', 'error', '5. RUST: IPC Connection Failed');
+    });
   }
 
   // 3. Launch Editor & Core Modules in Parallel

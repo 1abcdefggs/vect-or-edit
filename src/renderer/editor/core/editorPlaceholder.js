@@ -76,8 +76,8 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     placeholderEl.innerHTML = `
     <!-- 1. Top System Bar (Typography & Dismiss Hint) -->
     <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: ${boxTextMuted}; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
-      <div style="display: inline-flex; align-items: center; gap: 6px;">
-        <span style="color: var(--accent-color, #38bdf8); font-weight: 600;">[ ${activeFontName} | ${activeFontSize}px Preview ]</span>
+      <div style="display: inline-flex; align-items: center; gap: 8px;">
+        <span style="color: var(--accent-color, #38bdf8); font-weight: 600;">[ ${activeFontName} | ${activeFontSize}px ]</span>
         <span style="opacity: 0.85;">${t('placeholder_hint')}</span>
       </div>
       <div style="display: inline-flex; align-items: center; gap: 8px;">
@@ -85,20 +85,13 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
       </div>
     </div>
 
-    <!-- 2. Interactive Guide Container (Directly reflecting Font & Size from line 1) -->
-    <div style="display: flex; flex-direction: column; gap: 8px; font-family: ${activeFontFamily}; color: ${boxTextMain}; border: ${boxBorder}; border-radius: 8px; padding: 14px 18px; background: ${boxBg}; margin-top: 4px; max-width: 760px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);">
-      <!-- Heading Line with dynamic size -->
-      <div style="font-size: ${Math.round(activeFontSize * 1.25)}px; font-weight: 700; line-height: 1.35; letter-spacing: -0.2px; color: ${boxTextMain};">
-        # VectOrEdit (${activeFontName} / ${Math.round(activeFontSize * 1.25)}px)
-      </div>
-
-      <!-- Core Guidance Lines directly rendered in activeFontSize -->
-      <div style="display: flex; flex-direction: column; gap: 6px; font-size: ${activeFontSize}px; line-height: 1.6; opacity: 0.95;">
-        <div>${kbLine}</div>
-        <div>- ${t('editor_placeholder_intellisense')}</div>
-        <div>- ${t('editor_placeholder_selection')}</div>
-        <div>- ${t('editor_placeholder_contextmenu')}</div>
-      </div>
+    <!-- 2. Clean Compact Guidance List (Aligned with line numbers) -->
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; line-height: 1.55; color: ${boxTextMuted}; margin-top: 6px; font-family: var(--font-family, sans-serif);">
+      <div>${kbLine}</div>
+      <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_intellisense')}</div>
+      <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_selection')}</div>
+      <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_contextmenu')}</div>
+      <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_aimodel')}</div>
     </div>
   `;
 }
