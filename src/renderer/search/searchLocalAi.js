@@ -82,7 +82,7 @@ export function initLocalAiWorker(getCurrentResults) {
       if (status === 'initiate' || status === 'download' || status === 'progress') {
         const pct = data.progress !== undefined ? Math.round(data.progress) : 0;
         const fileName = data.file || 'AI Model Weights';
-        setLedStatus('ai', false, `AI Model: Downloading ${pct}%`);
+        setLedStatus('ai', 'loading', `AI Model: Downloading ${pct}%`);
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct, fileName, status } }));
         
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'block';
@@ -164,7 +164,7 @@ export function initLocalAiWorker(getCurrentResults) {
       } else if (status === 'error') {
         isLocalAiDownloading = false;
         console.warn("Embedding worker reported error:", error);
-        setLedStatus('ai', false, `AI Model Error: ${error}`);
+        setLedStatus('ai', 'error', `AI Model Error: ${error}`);
         if (btnInitLocalAi) {
           btnInitLocalAi.disabled = false;
           btnInitLocalAi.style.opacity = '1';

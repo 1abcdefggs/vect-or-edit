@@ -17,7 +17,11 @@ export async function initRustEngine() {
   }
 
   const candidateEnginePaths = [
-    // 1. Packaged Electron app (unpacked asar resources) - Check this first when packaged
+    // 1. Packaged Electron app (unpacked asar resources or extraResources) - Check this first when packaged
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-v0.3.0.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine/index.js'),
     path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
     path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-v0.3.0.node'),
     path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),

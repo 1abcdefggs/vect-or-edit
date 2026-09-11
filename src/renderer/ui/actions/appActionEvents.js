@@ -154,7 +154,7 @@ export function bindAppActionEvents() {
     btnClearAllSlots.addEventListener('click', async () => {
       await clearAllKnowledgeSlots();
       showToast(t('toast_all_slots_unloaded'), 'info');
-      setLedStatus('kb', false, '7. HNSW: Unloaded');
+      setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
     });
   }
 

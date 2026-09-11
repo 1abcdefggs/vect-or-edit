@@ -28,7 +28,7 @@ export async function loadLocales(): Promise<void> {
     currentLang = 'en';
     i18n = LOCALES.en;
     applyI18n();
-    setLedStatus('i18n', false, `3. LOCALE: Error`);
+    setLedStatus('i18n', 'error', `3. LOCALE: Error`);
   }
 }
 

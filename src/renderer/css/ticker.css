@@ -129,14 +129,7 @@
   flex-shrink: 0;
 }
 
-/* Loading / Unready: Standby Pulse (Red: #ef4444) */
-.status-led-dot.status-loading {
-  background: #ef4444;
-  box-shadow: 0 0 4px #ef4444;
-  animation: matrix-pulse-red 1.2s infinite alternate;
-}
-
-/* Ready State: Emerald Success (#1b8) */
+/* 1. Ready State: Emerald Success (#1b8) */
 .status-led-dot.status-ready {
   background: #1b8;
   box-shadow: 0 0 4px #1b8, 0 0 8px #1b8;
@@ -146,16 +139,16 @@
 
 .status-pill.pill-ready {
   color: #1b8 !important;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+  background: rgba(17, 187, 136, 0.15) !important;
+  border-color: rgba(17, 187, 136, 0.4) !important;
 }
 
 .status-pill.pill-ready:hover {
   color: #ffffff !important;
+  background: rgba(17, 187, 136, 0.25) !important;
 }
 
-/* 1. Pending / Processing State: Standby Amber Pulsing (#fbbf24) */
+/* 2. Loading / Processing State: Amber Pulsing (#fbbf24) */
 .status-led-dot.status-loading,
 .status-led-dot.status-pending {
   background: #fbbf24;
@@ -163,34 +156,31 @@
   animation: matrix-pulse-yellow 1.2s infinite alternate;
 }
 
+.status-pill.pill-loading,
 .status-pill.pill-pending {
   color: #fbbf24 !important;
-  background: rgba(251, 191, 36, 0.12);
-  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.12) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
 }
 
-/* 2. Ready / Completed State: Emerald Success (#1b8) */
-.status-led-dot.status-ready {
-  background: #1b8;
-  box-shadow: 0 0 4px #1b8, 0 0 8px #1b8;
-  border-radius: 1px;
-  animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* 3. Standby / Unloaded State: Calm Slate (#64748b) */
+.status-led-dot.status-standby {
+  background: #64748b;
+  box-shadow: none;
+  opacity: 0.8;
 }
 
-.status-pill.pill-ready {
-  color: #1b8 !important;
-  background: rgba(17, 187, 136, 0.22);
-  border-color: rgba(17, 187, 136, 0.55);
-  box-shadow: 0 0 6px rgba(17, 187, 136, 0.3), inset 0 0 4px rgba(17, 187, 136, 0.15);
+.status-pill.pill-standby {
+  color: #94a3b8 !important;
+  background: rgba(100, 116, 139, 0.1) !important;
+  border-color: rgba(100, 116, 139, 0.25) !important;
 }
 
-.status-pill.pill-ready:hover {
-  background: rgba(17, 187, 136, 0.35);
-  border-color: #1b8;
-  color: #ffffff !important;
+.status-pill.pill-standby:hover {
+  color: #cbd5e1 !important;
 }
 
-/* 3. Error State: Alert Red (#ef4444) */
+/* 4. Error State: Alert Red Pulsing (#ef4444) */
 .status-led-dot.status-error {
   background: #ef4444;
   box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
@@ -199,8 +189,8 @@
 
 .status-pill.pill-error {
   color: #ef4444 !important;
-  background: rgba(239, 68, 68, 0.12) !important;
-  border-color: rgba(239, 68, 68, 0.35) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.45) !important;
   box-shadow: 0 0 6px rgba(239, 68, 68, 0.3) !important;
 }
 

@@ -13,17 +13,17 @@
 import { t } from './i18n';
 
 export type SubsystemType = 'bin' | 'kb' | 'conf' | 'thm' | 'i18n' | 'monaco' | 'ai';
-export type SubsystemStatus = boolean | 'ready' | 'pending' | 'error';
+export type SubsystemStatus = boolean | 'ready' | 'loading' | 'pending' | 'standby' | 'unloaded' | 'error';
 
 // Track all 7 subsystem readiness states
 const subsystemState: Record<SubsystemType, SubsystemStatus> = {
-  bin: 'pending',    // 1. Rust Binary
-  kb: 'pending',     // 2. Knowledge Base & HNSW
-  conf: 'pending',   // 3. User Config
-  thm: 'pending',    // 4. Theme
-  i18n: 'pending',   // 5. Locale i18n
-  monaco: 'pending', // 6. Monaco Editor
-  ai: 'pending'      // 7. AI Model
+  conf: 'loading',   // 1. User Config
+  thm: 'loading',    // 2. Theme
+  i18n: 'loading',   // 3. Locale i18n
+  monaco: 'loading', // 4. Monaco Editor
+  bin: 'loading',    // 5. Rust Binary
+  ai: 'standby',     // 6. AI Model
+  kb: 'standby'      // 7. Knowledge Base & HNSW
 };
 
 const badgeMap: Record<SubsystemType, string> = {
@@ -70,7 +70,7 @@ function getCachedBadges(type: SubsystemType): CachedBadge[] {
 
 /**
  * Main Status & Diagnostic Setter
- * Updates the 7-stage HTML badge indicators in the top SYSTEM LOG RUNTIME bar
+ * Updates the 7-stage HTML badge indicators in the top/bottom SYSTEM LOG RUNTIME bar
  */
 const lastTooltips: Partial<Record<SubsystemType, string>> = {};
 
@@ -85,8 +85,11 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
     tooltipText = lastTooltips[subType] || '';
   }
 
+  // Deep Status Classification
   const isReady = status === true || status === 'ready';
-  const isError = status === 'error';
+  const isError = status === 'error' || (status === false && (subType !== 'kb' && subType !== 'ai'));
+  const isStandby = status === 'standby' || status === 'unloaded' || (status === false && (subType === 'kb' || subType === 'ai'));
+  const isLoading = !isReady && !isError && !isStandby;
 
   if (subType in subsystemState) {
     subsystemState[subType] = status;
@@ -107,7 +110,7 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
   cachedBadges.forEach(({ badge, dot }) => {
     if (dot) {
       dot.className = 'status-led-dot'; // Reset classes
-      badge.classList.remove('pill-ready', 'pill-error', 'pill-pending');
+      badge.classList.remove('pill-ready', 'pill-error', 'pill-loading', 'pill-pending', 'pill-standby');
 
       if (isReady) {
         dot.classList.add('status-ready');
@@ -115,9 +118,13 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
       } else if (isError) {
         dot.classList.add('status-error');
         badge.classList.add('pill-error');
+      } else if (isStandby) {
+        dot.classList.add('status-standby');
+        badge.classList.add('pill-standby');
       } else {
-        // Pending / Processing (Yellow)
-        dot.classList.add('status-pending');
+        // Loading / In-Progress (Amber)
+        dot.classList.add('status-loading');
+        badge.classList.add('pill-loading');
       }
     }
     if (tooltipText) {
@@ -125,7 +132,7 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
       const info = tooltipExplanations[subType];
       if (info) {
         fullTitle += `\n\n${t('tt_meaning') || '[Meaning]'}\n${info.desc}`;
-        if (!isReady) {
+        if (!isReady && !isStandby) {
           fullTitle += `\n\n${t('tt_how_to_enable') || '[How to Enable]'}\n${info.active}`;
         }
       }
@@ -136,7 +143,7 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
   });
 
   if (tooltipText) {
-    const prefix = isReady ? '[OK]' : (isError ? '[ERROR]' : '[PENDING]');
+    const prefix = isReady ? '[OK]' : (isError ? '[ERROR]' : (isStandby ? '[STANDBY]' : '[LOADING]'));
     const msg = `[Pipeline] ${prefix} ${tooltipText}`;
     // Suppress spamming log lines during download progress (handled by progress bar row)
     const isDownloadingProgress = subType === 'ai' && tooltipText.includes('Downloading');
@@ -172,13 +179,27 @@ export function getSubsystemStates(): Record<SubsystemType, boolean> {
  * so they instantly get the formatted data-instant-tooltip.
  */
 export function initAllLedTooltips(): void {
-  setLedStatus('conf', 'pending', '1. CONFIG: Loading...');
-  setLedStatus('thm', 'pending', '2. THEME: Loading...');
-  setLedStatus('i18n', 'pending', '3. LOCALE: Loading...');
-  setLedStatus('monaco', 'pending', '4. EDITOR: Initializing...');
-  setLedStatus('bin', 'pending', '5. RUST: Initializing...');
-  setLedStatus('ai', 'pending', '6. AI-MODEL: Standby');
-  setLedStatus('kb', 'pending', '7. HNSW: Unloaded');
+  if (subsystemState.conf !== 'ready' && subsystemState.conf !== true) {
+    setLedStatus('conf', 'loading', '1. CONFIG: Loading...');
+  }
+  if (subsystemState.thm !== 'ready' && subsystemState.thm !== true) {
+    setLedStatus('thm', 'loading', '2. THEME: Loading...');
+  }
+  if (subsystemState.i18n !== 'ready' && subsystemState.i18n !== true) {
+    setLedStatus('i18n', 'loading', '3. LOCALE: Loading...');
+  }
+  if (subsystemState.monaco !== 'ready' && subsystemState.monaco !== true) {
+    setLedStatus('monaco', 'loading', '4. EDITOR: Initializing...');
+  }
+  if (subsystemState.bin !== 'ready' && subsystemState.bin !== true) {
+    setLedStatus('bin', 'loading', '5. RUST: Initializing...');
+  }
+  if (subsystemState.ai !== 'ready' && subsystemState.ai !== true) {
+    setLedStatus('ai', 'standby', '6. AI-MODEL: Standby');
+  }
+  if (subsystemState.kb !== 'ready' && subsystemState.kb !== true) {
+    setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
+  }
 }
 
 // Ensure tooltip translations update when language changes
