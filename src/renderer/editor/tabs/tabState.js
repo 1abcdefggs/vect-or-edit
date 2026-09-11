@@ -112,6 +112,16 @@ export async function closeTab(tabId, e) {
   }
 }
 
+export function duplicateTab(tabId = activeTabId) {
+  const sourceTab = tabs.find(t => t.id === tabId) || getActiveTab();
+  if (!sourceTab || !sourceTab.model) return null;
+  const content = sourceTab.model.getValue();
+  const baseTitle = sourceTab.title.replace(/\.[^/.]+$/, '');
+  const ext = sourceTab.title.includes('.') ? sourceTab.title.split('.').pop() : 'md';
+  const newTitle = `${baseTitle}-copy.${ext}`;
+  return createNewTab(newTitle, content, null);
+}
+
 export function markActiveTabSaved(savedFilePath) {
   const tab = getActiveTab();
   if (tab) {

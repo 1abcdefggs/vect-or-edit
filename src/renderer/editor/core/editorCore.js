@@ -8,6 +8,7 @@ import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
 import { toggleDiffMode as toggleDiffController, getIsDiffMode, getDiffEditorInstance } from './editorDiffMode.js';
+import { t } from '../../core/i18n.js';
 
 let monacoEditorInstance = null;
 let monaco = null;
@@ -279,8 +280,8 @@ export function applyAiOutputToEditor(text, mode = 'insert', type = 'generate') 
   const decorationRange = new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
   const inlineClassName = type === 'rewrite' ? 'monaco-ai-rewritten-inline' : 'monaco-ai-generated-inline';
   const hoverMessage = type === 'rewrite'
-    ? { value: '**AI Rewritten Text (推敲・リライト)**' }
-    : { value: '**AI Generated Output (LLM生成テキスト)**' };
+    ? { value: t('ai_hover_rewritten') || '**AI Rewritten Text**' }
+    : { value: t('ai_hover_generated') || '**AI Generated Text (LLM)**' };
 
   activeAiDecorations = ed.deltaDecorations(activeAiDecorations, [
     {

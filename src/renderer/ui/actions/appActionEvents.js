@@ -136,13 +136,18 @@ export function bindAppActionEvents() {
   }
 
   if (btnAddSlot) {
-    btnAddSlot.addEventListener('click', async () => {
+    const handleAddSlot = async () => {
       const res = await addKnowledgeSlot();
       if (res?.success) {
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
         setLedStatus('kb', true, `7. HNSW: Indexed (${res.totalCount?.toLocaleString()} items)`);
       }
-    });
+    };
+    btnAddSlot.addEventListener('click', handleAddSlot);
+    const btnAddSlot2 = document.getElementById('btnAddSlot2');
+    if (btnAddSlot2) {
+      btnAddSlot2.addEventListener('click', handleAddSlot);
+    }
   }
 
   if (btnClearAllSlots) {
@@ -154,7 +159,7 @@ export function bindAppActionEvents() {
   }
 
   if (btnImportPreset) {
-    btnImportPreset.addEventListener('click', async () => {
+    const handleImportPreset = async () => {
       const res = await changeGoalProfile();
       if (res?.success) {
         const profileName = res.profile?.domain_name || res.fileName || 'Preset';
@@ -162,7 +167,12 @@ export function bindAppActionEvents() {
         setLedStatus('guideline', true, `Guideline / Preset: Loaded (${profileName})`);
       }
       setTimeout(() => focusEditor(), 50);
-    });
+    };
+    btnImportPreset.addEventListener('click', handleImportPreset);
+    const btnImportDictionary2 = document.getElementById('btnImportDictionary2');
+    if (btnImportDictionary2) {
+      btnImportDictionary2.addEventListener('click', handleImportPreset);
+    }
   }
 
   const btnSaveAs = document.getElementById('btnSaveAs');
@@ -173,8 +183,8 @@ export function bindAppActionEvents() {
   // Save current active tab
   if (btnSave) {
     btnSave.addEventListener('click', async (e) => {
-      // If click originated from the inner autosave checkbox, don't trigger manual save
-      if (e.target && e.target.id === 'chkAutoSaveToggle') return;
+      // If click originated from the inner autosave checkbox or LED dot, don't trigger manual save
+      if (e.target && (e.target.id === 'chkAutoSaveToggle' || e.target.id === 'autoSaveLedDot')) return;
 
       const currentTab = getActiveTab();
       if (!currentTab) return;

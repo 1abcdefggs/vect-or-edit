@@ -595,13 +595,39 @@ export function initSettings(updateEditorCb) {
       if (icon) {
         icon.textContent = isPassword ? 'visibility' : 'visibility_off';
       }
-      btn.title = isPassword ? 'APIキーを隠す' : 'APIキーを表示';
+      btn.title = isPassword ? (t('hide_api_key') || 'Hide API Key') : (t('show_api_key') || 'Show API Key');
     });
   }
 
   setupPasswordToggle('modalGeminiKeyInput', 'btnToggleGeminiKeyVisibility');
   setupPasswordToggle('modalOpenAiKeyInput', 'btnToggleOpenAiKeyVisibility');
   setupPasswordToggle('modalClaudeKeyInput', 'btnToggleClaudeKeyVisibility');
+
+  // Clear API Keys from Editor Settings Tab
+  const btnEditorClearApiKey = document.getElementById('btnEditorClearApiKey');
+  if (btnEditorClearApiKey) {
+    btnEditorClearApiKey.addEventListener('click', () => {
+      if (!window.confirm('Clear all stored Cloud LLM API keys (Gemini, OpenAI, Claude)?')) return;
+      localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
+      localStorage.removeItem(STORAGE_KEYS.OPENAI_API_KEY);
+      localStorage.removeItem(STORAGE_KEYS.CLAUDE_API_KEY);
+      if (modalGeminiKeyInput) modalGeminiKeyInput.value = '';
+      if (modalOpenAiKeyInput) modalOpenAiKeyInput.value = '';
+      if (modalClaudeKeyInput) modalClaudeKeyInput.value = '';
+      const inpLlmQuickApiKey = document.getElementById('inpLlmQuickApiKey');
+      if (inpLlmQuickApiKey) inpLlmQuickApiKey.value = '';
+      updateAiModelBadge();
+      window.alert('Cloud LLM API keys cleared successfully.');
+    });
+  }
+
+  // Jump to AI & Knowledge tab from Editor settings tab
+  const btnJumpToAiTab = document.getElementById('btnJumpToAiTab');
+  if (btnJumpToAiTab) {
+    btnJumpToAiTab.addEventListener('click', () => {
+      switchTab('tabAiSearch');
+    });
+  }
 
   if (btnInitLocalAi) {
     btnInitLocalAi.addEventListener('click', () => {

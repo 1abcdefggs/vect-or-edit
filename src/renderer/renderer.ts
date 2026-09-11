@@ -15,6 +15,8 @@ import { bindAppActionEvents } from './ui/actions/appActionEvents.js';
 import { initZoomControls } from './ui/zoomController.js';
 import { injectLazyUIComponents } from './core/uiLoader';
 import { initMenuBar } from './ui/layout/menuBarController';
+import { settingsStore } from './core/settingsStore';
+import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 
 export { setLedStatus };
 
@@ -26,6 +28,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 0.5. Initialize LED tooltips consistently
   initAllLedTooltips();
+
+  // 0.7. Initialize master settings store & UI visibility
+  await settingsStore.syncWithBackend();
+  settingsStore.applyAllDomVisibility();
+  enhanceSettingsModalVisibilityControls();
+
+  // 0.8. Global keyboard shortcuts (Ctrl+, rescue to Settings)
+  window.addEventListener('keydown', (e: KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === ',') {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAppearance' } }));
+    }
+  });
+
+  window.addEventListener('app:resetUIVisibility', () => {
+    settingsStore.resetVisibility();
+  });
 
   // 1. Initialize UI Layout & Elements
   initTopBarRenderer();

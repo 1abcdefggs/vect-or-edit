@@ -15,7 +15,7 @@ coverage/
 Thumbs.db
 *.log
 .agents/
-
+.github/
 _DEVELOP/
 _CODE_REVIEW/
 pre/
@@ -26,3 +26,4 @@ CONTEXT.md
 test_original.json
 test.venc
 check.ps1
+

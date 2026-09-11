@@ -2,6 +2,7 @@ import { aiManager } from '../../core/aiStateManager.js';
 import { isAiModelConfigured } from '../settings/settingsState.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
+import { showConfirmModal } from '../notifications/confirmModal.js';
 import { queryLlmChat } from '../../search/searchProviders.js';
 import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editorManager.js';
 
@@ -93,11 +94,23 @@ export function initAiControls() {
     }
 
     const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
+    const sidebarEmbeddingNameEl = document.getElementById('sidebarEmbeddingModelName');
     if (btnSidebarEmbeddingModel) {
-      btnSidebarEmbeddingModel.style.opacity = state.master ? '1' : '0.65';
+      btnSidebarEmbeddingModel.style.opacity = state.master ? '1' : '0.5';
+      if (state.sidebar) {
+        btnSidebarEmbeddingModel.classList.add('active');
+      } else {
+        btnSidebarEmbeddingModel.classList.remove('active');
+      }
+      btnSidebarEmbeddingModel.style.background = '';
+      btnSidebarEmbeddingModel.style.borderColor = '';
+      btnSidebarEmbeddingModel.style.color = '';
+      if (sidebarEmbeddingNameEl) {
+        sidebarEmbeddingNameEl.textContent = state.sidebar ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
+      }
     }
     if (activeAiModelStatusDot) {
-      activeAiModelStatusDot.style.color = window.__isLocalAiModelReady ? 'var(--success-color, #10b981)' : '#f59e0b';
+      activeAiModelStatusDot.style.color = state.sidebar ? 'var(--success-color, #10b981)' : '#ef4444';
     }
 
     if (state.master) {
@@ -154,10 +167,14 @@ export function initAiControls() {
 
 
     const sidebarEmbeddingNameEl = document.getElementById('sidebarEmbeddingModelName');
+    const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
     if (sidebarEmbeddingNameEl) {
       const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
-      sidebarEmbeddingNameEl.textContent = window.__isLocalAiModelReady ? localModel : 'No Embedding';
-      sidebarEmbeddingNameEl.style.opacity = window.__isLocalAiModelReady ? '1' : '0.65';
+      const state = aiManager.getState();
+      sidebarEmbeddingNameEl.textContent = state.sidebar ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
+      if (btnSidebarEmbeddingModel) {
+        btnSidebarEmbeddingModel.title = `Vector Embedding (${window.__isLocalAiModelReady ? localModel : 'Ready'}): Click to toggle ON/OFF`;
+      }
     }
   }
 
@@ -180,14 +197,22 @@ export function initAiControls() {
   });
 
   if (masterAiTogglePill) {
-    masterAiTogglePill.addEventListener('click', () => {
+    masterAiTogglePill.addEventListener('click', async () => {
       const state = aiManager.getState();
       if (!state.master) {
         if (!state.modelConfigured) {
-          showToast(t('ai_model_unset_toast'), 'warning', {
-            label: t('btn_open_settings') || 'Open Settings',
-            onClick: openAiSettingsTab
+          const confirmed = await showConfirmModal({
+            title: t('ai_setup_required_title') || 'AI Setup Required',
+            message: t('ai_setup_required_msg') || 'AI model is not configured yet.',
+            detail: t('ai_setup_required_detail') || 'Would you like to open the AI Settings tab now to configure API keys or local models?',
+            confirmText: t('btn_open_settings') || 'Open Settings',
+            cancelText: t('btn_cancel') || 'Cancel',
+            type: 'info',
+            icon: 'cloud'
           });
+          if (confirmed) {
+            openAiSettingsTab();
+          }
           return;
         }
         aiManager.setMasterAi(true);
@@ -200,14 +225,21 @@ export function initAiControls() {
   }
 
   if (btnEditorAiToggle) {
-    btnEditorAiToggle.addEventListener('click', () => {
+    btnEditorAiToggle.addEventListener('click', async () => {
       const state = aiManager.getState();
       if (!state.modelConfigured) {
-        showToast(t('ai_model_unset_toast'), 'warning', {
-          label: t('btn_open_settings') || 'Open Settings',
-          onClick: openAiSettingsTab
+        const confirmed = await showConfirmModal({
+          title: t('ai_setup_required_title') || 'AI Setup Required',
+          message: t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.',
+          detail: t('ai_setup_required_detail') || 'Would you like to navigate to Settings to configure your Gemini or OpenAI API key?',
+          confirmText: t('btn_open_settings') || 'Open Settings',
+          cancelText: t('btn_cancel') || 'Stay in Editor',
+          type: 'info',
+          icon: 'cloud'
         });
-        openAiSettingsTab();
+        if (confirmed) {
+          openAiSettingsTab();
+        }
         return;
       }
       if (!state.master) {
@@ -223,10 +255,28 @@ export function initAiControls() {
     });
   }
 
-  // Sidebar Embedding Model Badge Click: jump to settings embedding tab
+  // Sidebar Embedding Model Pill Click: Toggle Sidebar AI (ON/OFF) matching Editor AI UX
   const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
   if (btnSidebarEmbeddingModel) {
-    btnSidebarEmbeddingModel.addEventListener('click', () => {
+    btnSidebarEmbeddingModel.addEventListener('click', async () => {
+      const state = aiManager.getState();
+      if (!state.master) {
+        // Auto-turn on Master AI when user wants to use Sidebar Embedding AI
+        aiManager.setMasterAi(true);
+        aiManager.setSidebarAi(true);
+        showToast(t('toast_sidebar_ai_auto_enabled') || 'Master AI activated; Embedding turned ON', 'success');
+        return;
+      }
+      const nextSidebar = !state.sidebar;
+      aiManager.setSidebarAi(nextSidebar);
+      showToast(nextSidebar ? (t('toast_sidebar_ai_on') || 'Embedding: ON') : (t('toast_sidebar_ai_off') || 'Embedding: OFF'), nextSidebar ? 'success' : 'info');
+    });
+  }
+
+  // Settings Gear Icon on Sidebar: Jump to settings embedding tab
+  const btnSidebarQuickSettings = document.getElementById('btnSidebarQuickSettings');
+  if (btnSidebarQuickSettings) {
+    btnSidebarQuickSettings.addEventListener('click', () => {
       openAiSettingsTab();
     });
   }
@@ -323,7 +373,7 @@ function initLlmChatDock() {
       if (icon) {
         icon.textContent = isPassword ? 'visibility' : 'visibility_off';
       }
-      btnToggleQuickVisibility.title = isPassword ? 'APIキーを隠す' : 'APIキーを表示';
+      btnToggleQuickVisibility.title = isPassword ? (t('hide_api_key') || 'Hide API Key') : (t('show_api_key') || 'Show API Key');
     });
   }
 
@@ -332,15 +382,15 @@ function initLlmChatDock() {
       const provider = selQuickProvider.value;
       const key = quickApiKeyInput.value.trim();
 
-      if (!key && provider !== 'gemini') {
-        showToast('Please enter an API key', 'warning');
+      if (!key) {
+        showToast('Please enter an API key before saving.', 'warning');
+        quickApiKeyInput.focus();
         return;
       }
 
       localStorage.setItem('ai_provider', provider);
       if (provider === 'gemini') {
-        if (key) {
-          const res = await window.engineAPI.saveGeminiApiKey(key);
+        const res = await window.engineAPI.saveGeminiApiKey(key);
           if (!res.success) {
             showToast(res.error || 'Failed to save Gemini key', 'error');
             return;
@@ -355,12 +405,12 @@ function initLlmChatDock() {
               if (!localStorage.getItem('gemini_model')) {
                 localStorage.setItem('gemini_model', models[0].name);
               }
-              showToast(`Google公式から ${models.length} models has been loaded`, 'info');
+              const msg = t('toast_models_loaded', { count: models.length }) || `Successfully loaded ${models.length} models from Google official API`;
+              showToast(msg, 'info');
             }
           } catch (modelErr) {
             console.warn('[Gemini] Automatic model fetch warning:', modelErr);
           }
-        }
       } else if (provider === 'openai') {
         localStorage.setItem('vect_openai_api_key', key);
       } else if (provider === 'claude') {

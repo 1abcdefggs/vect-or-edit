@@ -5,25 +5,41 @@
 /* Settings Modal Backdrop & Header */
 .modal-backdrop {
   position: fixed;
-  top: 48px; /* Below custom app titlebar header */
+  top: 38px; /* Aligns seamlessly under custom 38px titlebar */
   left: 0;
   width: 100vw;
-  height: calc(100vh - 48px);
+  height: calc(100vh - 38px);
   background: var(--bg-primary, #080c16);
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
   z-index: 1000;
-  animation: fadeInModal 0.15s ease-out;
+  animation: fadeInModal 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root.light-theme .modal-backdrop {
   background: var(--bg-primary, #ffffff);
 }
 
+/* Standalone Popup Modal Overlay (Dimmed Backdrop with Deep Contrast) */
+.settings-modal-overlay,
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  top: 38px;
+  background: rgba(2, 6, 23, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeInModal 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @keyframes fadeInModal {
-  from { opacity: 0; transform: scale(0.99); }
+  from { opacity: 0; transform: scale(0.985); }
   to { opacity: 1; transform: scale(1); }
 }
 
@@ -57,6 +73,18 @@
   overflow: hidden;
   position: relative;
   flex: 1;
+}
+
+/* Elevated Dialog Card (Used in Update, Workspace & Confirmation Modals) */
+.settings-modal-overlay .settings-modal-dialog,
+.modal-overlay .settings-modal-dialog,
+.elevated-modal-card {
+  background: var(--bg-secondary, #0f172a) !important;
+  border: 1px solid rgba(56, 189, 248, 0.32) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 0 1px rgba(56, 189, 248, 0.4), 0 0 24px rgba(56, 189, 248, 0.12) !important;
+  flex: none !important;
+  overflow: hidden;
 }
 
 :root.light-theme .settings-modal-dialog {
