@@ -4,30 +4,39 @@
 <!-- Vector Suggestion Sidebar -->
 <aside id="suggestionSidebar" class="suggestion-sidebar" data-ui="sbr:sidebar">
   <div class="sidebar-header">
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
-      <h3 style="display: flex; align-items: center; gap: 6px; margin: 0; min-width: 0;">
-        <!-- Single Unified Embedding / Vector Suggest Button -->
-        <button id="btnSidebarEmbeddingModel" class="ai-chip-pill"
-          style="background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.25); color: var(--accent-color, #38bdf8); cursor: pointer; display: flex; align-items: center; gap: 5px;"
-          title="Active Embedding Model / Dictionary (Click to configure)">
-          <span id="activeAiModelStatusDot" style="color: var(--success-color, #10b981); font-size: 0.65rem; transition: color 0.3s ease;">●</span>
-          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8); flex-shrink: 0;">menu_book</span>
-          <span id="sidebarEmbeddingModelName" style="font-size: 0.68rem; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Embedding</span>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; width: 100%;">
+      <!-- Sidebar Toggle / Collapse Button on the Top-Left of Sidebar -->
+      <button id="btnHeaderToggleSidebar" class="toolbar-btn" data-i18n-title="btn_toggle_sidebar" title="Collapse Sidebar (Ctrl+B)"
+        style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 4px; flex-shrink: 0;">
+        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="font-size: 1.15rem; color: var(--accent-color, #38bdf8);">&#xf705;</span>
+      </button>
+
+      <!-- Right-Aligned Action Group: [ Embedding Toggle Pill | Gear Icon ] -->
+      <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+        <!-- Embedding ON/OFF Status Pill (Shared UI/UX with Editor LLM Button) -->
+        <button id="btnSidebarEmbeddingModel" class="ai-chip-pill" data-ui="sbr:embedding-toggle"
+          title="Embedding Assistant: Click to toggle real-time semantic suggestions (ON/OFF)">
+          <span id="activeAiModelStatusDot" style="color: #ef4444; font-size: 0.65rem; transition: color 0.3s ease;">●</span>
+          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8); flex-shrink: 0;">neurology</span>
+          <span id="sidebarEmbeddingModelName" data-i18n="sidebar_ai_off">EMBED OFF</span>
         </button>
-      </h3>
-      <div style="display: flex; align-items: center; gap: 6px;">
+
+        <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
+
+        <!-- Settings Gear Icon -->
         <button id="btnSidebarQuickSettings" class="toolbar-btn" data-ui="sbr:quick-settings" data-tab-target="tabAiSearch"
-          title="Knowledge & Vector Settings" style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 4px;">
-          <span class="material-symbols-outlined" style="font-size: 1.05rem;">settings</span>
-        </button>
-        <!-- JSON Copy Button: Smartly displayed only when results exist -->
-        <button id="btnCopyAllResults" class="toolbar-btn"
-          style="display: none; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 0.72rem;  color: var(--text-main); align-items: center; gap: 4px; cursor: pointer;"
-          data-i18n-title="btn_copy_json">
-          <span id="copyAllIcon" style="display: flex; align-items: center;"></span>
-          <span data-i18n="btn_copy_json_short">JSON</span>
+          title="Vector & Knowledge Settings (Click to configure)" style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 4px;">
+          <span class="material-symbols-outlined" style="font-size: 1.05rem; color: #fbbf24;">settings</span>
         </button>
       </div>
+
+      <!-- JSON Copy Button: Smartly displayed only when results exist -->
+      <button id="btnCopyAllResults" class="toolbar-btn"
+        style="display: none; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 0.72rem; color: var(--text-main); align-items: center; gap: 4px; cursor: pointer;"
+        data-i18n-title="btn_copy_json" title="Copy all vector search results as JSON">
+        <span id="copyAllIcon" style="display: flex; align-items: center;"></span>
+        <span data-i18n="btn_copy_json_short">JSON</span>
+      </button>
     </div>
 
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
@@ -39,58 +48,70 @@
       </style>
       <!-- 1. Guidelines & Presets Section (Active) -->
       <div id="guidelineModuleCard" class="profile-control-card semantic-module-card">
-        <div class="semantic-module-header" style="cursor: pointer;" onclick="this.parentElement.classList.toggle('collapsed')">
-          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 4px;">
-            <span class="material-symbols-outlined collapse-icon" style="font-size: 1rem; color: var(--text-muted);">expand_more</span>
-            <span id="profileIcon" style="display: flex; align-items: center; color: var(--text-main);">
-              <span class="material-symbols-outlined" style="font-size: 1.1rem; flex-shrink: 0;">&#xf1c9;</span>
+        <div class="semantic-module-header" style="cursor: pointer; padding: 6px 10px;" onclick="this.parentElement.classList.toggle('collapsed')"
+          title="Click to expand/collapse Guideline & Presets section">
+          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
+            <span class="material-symbols-outlined collapse-icon" style="font-size: 1.05rem; color: var(--text-muted);">expand_more</span>
+            <span id="profileIcon" style="display: flex; align-items: center; color: #10b981;">
+              <span class="material-symbols-outlined" style="font-size: 1.2rem; flex-shrink: 0;">&#xf1c9;</span>
             </span>
-            <span id="profileHeaderLabel" data-i18n="active_guideline_preset_label">Guideline</span>
+            <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
+            <span id="profileHeaderLabel" style="font-weight: 600; font-size: 0.8rem;" data-i18n="active_guideline_preset_label">Guideline</span>
           </span>
           <div style="display: flex; align-items: center; gap: 4px;" onclick="event.stopPropagation()">
             <button id="btnInsertTemplate" class="toolbar-btn"
               style="padding: 2px 7px; font-size: 0.68rem;  border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color);"
-              data-i18n-title="btn_insert_template">
+              data-i18n-title="btn_insert_template" title="Insert guideline template structure into active editor">
               <span data-i18n="btn_insert_template">Template</span>
             </button>
-            <button id="btnImportDictionary" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_import_preset">
+            <button id="btnImportDictionary" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_import_preset" title="Import guideline preset JSON or rulebook (Slot 1)">
+              <span style="font-size: 0.85rem; ">＋</span>
+              <span data-i18n="btn_import_preset_short">Preset</span>
+            </button>
+            <button id="btnImportDictionary2" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_import_preset" title="Import guideline preset JSON or rulebook (Slot 2)">
               <span style="font-size: 0.85rem; ">＋</span>
               <span data-i18n="btn_import_preset_short">Preset</span>
             </button>
             <button id="btnResetGoal" class="toolbar-btn semantic-btn-clear" style="display: none;"
-              data-i18n-title="btn_reset_profile">
+              data-i18n-title="btn_reset_profile" title="Unload active guideline and reset to default">
               <span class="material-symbols-outlined" style="font-size: 0.9rem; color: #ef4444;">&#xe419;</span>
               <span data-i18n="btn_unload_profile">Unload</span>
             </button>
           </div>
         </div>
-        <div class="semantic-module-body" style="padding-top: 4px;">
+        <div class="semantic-module-body" style="padding: 6px 10px 8px 10px;">
           <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden;">
             <span id="activeProfileName"
               style="font-size: 0.8rem;  color: var(--success-color, #10b981); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-              data-i18n="default_profile">Default Profile (Unrestricted)</span>
+              data-i18n="default_profile" title="Currently loaded guideline preset">Default Profile (Unrestricted)</span>
             <span id="activeGoalRuleCount" style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;"
-              data-i18n="rule_count_zero">0 rules</span>
+              data-i18n="rule_count_zero" title="Active validation rules count">0 rules</span>
           </div>
         </div>
       </div>
 
       <!-- 2. Knowledge Section -->
       <div id="knowledgeModuleCard" class="slots-control-card semantic-module-card">
-        <div class="semantic-module-header" style="cursor: pointer;" onclick="this.parentElement.classList.toggle('collapsed')">
-          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 4px;">
-            <span class="material-symbols-outlined collapse-icon" style="font-size: 1rem; color: var(--text-muted);">expand_more</span>
-            <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-main); flex-shrink: 0;">&#xea19;</span>
-            <span data-i18n="knowledge_slots_label">Knowledge</span>
-            <span id="knowledgeSlotsCountBadge" style="display: none;">0 Slots</span>
+        <div class="semantic-module-header" style="cursor: pointer; padding: 6px 10px;" onclick="this.parentElement.classList.toggle('collapsed')"
+          title="Click to expand/collapse Knowledge Base slots section">
+          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
+            <span class="material-symbols-outlined collapse-icon" style="font-size: 1.05rem; color: var(--text-muted);">expand_more</span>
+            <span class="material-symbols-outlined" style="font-size: 1.2rem; color: var(--accent-color, #38bdf8); flex-shrink: 0;">&#xea19;</span>
+            <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
+            <span style="font-weight: 600; font-size: 0.8rem;" data-i18n="knowledge_slots_label">Knowledge</span>
+            <span id="knowledgeSlotsCountBadge" style="display: none;" title="Number of loaded slots">0 Slots</span>
           </span>
           <div style="display: flex; align-items: center; gap: 4px;" onclick="event.stopPropagation()">
             <button id="btnClearAllSlots" class="toolbar-btn semantic-btn-clear" style="display: none;"
-              data-i18n-title="btn_clear_all_slots">
+              data-i18n-title="btn_clear_all_slots" title="Unload all loaded knowledge base slots">
               <span class="material-symbols-outlined" style="font-size: 0.9rem; color: #ef4444;">&#xe419;</span>
               <span data-i18n="btn_clear_slots">Unload</span>
             </button>
-            <button id="btnAddSlot" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_add_slot">
+            <button id="btnAddSlot" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_add_slot" title="Load knowledge base dictionary (JSON / VENC / TXT) into Slot 1">
+              <span style="font-size: 0.85rem; ">＋</span>
+              <span data-i18n="btn_add_slot_short">Add</span>
+            </button>
+            <button id="btnAddSlot2" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_add_slot" title="Load knowledge base dictionary into Slot 2">
               <span style="font-size: 0.85rem; ">＋</span>
               <span data-i18n="btn_add_slot_short">Add</span>
             </button>
@@ -100,7 +121,8 @@
         <div class="semantic-module-body" style="display: flex; flex-direction: column; gap: 4px; padding-top: 4px;">
           <!-- Dynamic Slots List (SLOT 1, SLOT 2, ...) -->
           <div id="knowledgeSlotsList"
-            style="display: flex; flex-direction: column; gap: 4px; max-height: 140px; overflow-y: auto;">
+            style="display: flex; flex-direction: column; gap: 4px; max-height: 140px; overflow-y: auto;"
+            title="Loaded knowledge base slots">
             <div style="font-size: 0.72rem; color: var(--text-muted); padding: 2px 0;"
               data-i18n="slots_empty_placeholder">No knowledge base loaded. Click ＋ Add to load JSON / VENC.</div>
           </div>
@@ -110,14 +132,16 @@
             style="display: none; flex-direction: column; gap: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; margin-top: 2px;">
             <div
               style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 0.72rem; color: var(--text-muted);">
-              <label style="display: flex; align-items: center; gap: 4px;" data-ui="sbr:score-filter">
+              <label style="display: flex; align-items: center; gap: 4px;" data-ui="sbr:score-filter" title="Minimum similarity score threshold percentage (50% - 99%)">
                 <span data-i18n="label_min_score">Min:</span>
                 <input type="number" id="numMinScore" min="50" max="99" value="70"
+                  title="Minimum similarity score threshold (50% - 99%)"
                   style="width: 42px; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">%
               </label>
-              <label style="display: flex; align-items: center; gap: 4px;" data-ui="sbr:limit-select">
+              <label style="display: flex; align-items: center; gap: 4px;" data-ui="sbr:limit-select" title="Maximum count of vector suggestions to retrieve">
                 <span data-i18n="label_limit">Limit:</span>
                 <select id="selSearchLimit"
+                  title="Maximum suggestion count"
                   style="background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 4px; font-size: 0.72rem;">
                   <option value="5" selected>5</option>
                   <option value="10">10</option>
@@ -136,11 +160,14 @@
                   data-i18n="setting_embedder_path_desc">Embedding Module Path</div>
               </div>
               <input id="sidebarEmbedderPathInput" type="text" placeholder="../../vect-or-data/embedder.mjs"
+                title="Path to local or remote vector embedding module script (.mjs)"
                 style="width: 100%; box-sizing: border-box; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 6px; font-size: 0.7rem; color: var(--text-main);" />
             </div>
             <label data-ui="sbr:metadata-toggle"
+              title="Show complete ontological and metadata details in suggestion results"
               style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; user-select: none;">
               <input type="checkbox" id="chkShowFullMetadata"
+                title="Toggle full metadata display"
                 style="accent-color: var(--accent-color, #818cf8); cursor: pointer;">
               <span data-i18n="opt_show_full_metadata">Full Meta</span>
             </label>
@@ -156,10 +183,10 @@
       <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--accent-color, #38bdf8);">&#xf705;</span>
     </button>
     <div style="width: 20px; height: 1px; background: var(--border-color); opacity: 0.6; margin: 2px 0;"></div>
-    <button id="btnRailGuideline" class="rail-icon-btn" data-i18n-title="active_guideline_preset_label" title="Guideline">
+    <button id="btnRailGuideline" class="rail-icon-btn" data-i18n-title="active_guideline_preset_label" title="Guideline & Presets (Expand Sidebar)">
       <span class="material-symbols-outlined" style="font-size: 1.25rem;">&#xf1c9;</span>
     </button>
-    <button id="btnRailKnowledge" class="rail-icon-btn" data-i18n-title="knowledge_slots_label" title="Knowledge">
+    <button id="btnRailKnowledge" class="rail-icon-btn" data-i18n-title="knowledge_slots_label" title="Knowledge Base Slots (Expand Sidebar)">
       <span class="material-symbols-outlined" style="font-size: 1.25rem;">&#xea19;</span>
     </button>
   </div>

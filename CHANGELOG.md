@@ -5,6 +5,18 @@ All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.16] - 2026-09-11
+
+### Added
+
+- **Sidebar Embedding Toggle & Settings Gear (Unified UI/UX)**:
+  - Aligned the top action group to the right in the Suggestion Sidebar: `[ ● 🧠 EMBED OFF ] | [ ⚙️ ]`.
+  - Matched Editor AI button UI/UX with identical `.ai-chip-pill` style, LED state dot (emerald green/red), and auto-master activation logic.
+  - Added dedicated Settings Gear icon on sidebar for direct navigation to Knowledge & Vector settings.
+  - Added comprehensive hover tooltips to all sidebar modules, slot loaders, preset buttons, and search filters.
+- **Improved Knowledge Base Count Display**:
+  - Sanitized i18n label fallback for items count in slot display.
+
 ## [0.3.15] - 2026-09-11
 
 ### Added

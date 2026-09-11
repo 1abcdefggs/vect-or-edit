@@ -116,12 +116,13 @@ export async function updateSemanticStateDisplay() {
     if (slotsListEl) {
       slotsListEl.innerHTML = '';
       if (!state?.slots || state.slots.length === 0) {
+        const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
         slotsListEl.innerHTML = `
           <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden; padding: 2px 0;">
             <span style="font-size: 0.8rem;  color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-i18n="slots_empty_placeholder">
               ${t('slots_empty_placeholder') || 'No Knowledge Base'}
             </span>
-            <span style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;">0 ${t('label_items') || 'items'}</span>
+            <span style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;">0 ${itemLabel}</span>
           </div>
         `;
       } else {
@@ -149,7 +150,8 @@ export async function updateSemanticStateDisplay() {
 
           const countBadge = document.createElement('span');
           countBadge.style.cssText = 'font-size: 0.65rem; color: var(--text-muted); ';
-          countBadge.textContent = `${slot.itemCount.toLocaleString()} ${t('label_items') || 'items'}`;
+          const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
+          countBadge.textContent = `${slot.itemCount.toLocaleString()} ${itemLabel}`;
 
           const btnDel = document.createElement('button');
           btnDel.className = 'toolbar-btn';
