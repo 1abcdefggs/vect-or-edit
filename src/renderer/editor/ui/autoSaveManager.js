@@ -33,33 +33,52 @@ const domCache = {
 
 function getDomElements() {
   if (!domCache.chkToggle) domCache.chkToggle = document.getElementById('chkAutoSaveToggle');
-  if (!domCache.labelEl) domCache.labelEl = document.getElementById('autoSaveLabel');
+  if (!domCache.labelEl) domCache.labelEl = document.getElementById('autoSaveLabel') || document.getElementById('btnSaveLabel');
   if (!domCache.iconEl) domCache.iconEl = document.getElementById('autoSaveIcon');
   if (!domCache.saveInd) domCache.saveInd = document.getElementById('statusSaveIndicator');
+  if (!domCache.ledDot) domCache.ledDot = document.getElementById('autoSaveLedDot');
   return domCache;
 }
 
 export function updateAutoSaveUI() {
   const isAutoSaveEnabled = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
-  const { chkToggle } = getDomElements();
+  const { chkToggle, ledDot } = getDomElements();
 
   if (chkToggle) {
     chkToggle.checked = isAutoSaveEnabled;
   }
+  if (ledDot) {
+    if (isAutoSaveEnabled) {
+      ledDot.className = 'status-led-dot status-ready';
+      ledDot.style.background = '#10b981';
+      ledDot.style.boxShadow = '0 0 6px rgba(16, 185, 129, 0.7)';
+      ledDot.title = 'AutoSave: ON (Click to toggle)';
+    } else {
+      ledDot.className = 'status-led-dot';
+      ledDot.style.background = '#64748b';
+      ledDot.style.boxShadow = 'none';
+      ledDot.title = 'AutoSave: OFF (Click to toggle)';
+    }
+  }
 }
 
 export function initAutoSaveControls() {
-  const { chkToggle } = getDomElements();
+  const { chkToggle, ledDot } = getDomElements();
   if (chkToggle) {
-    // Add change listener instead of click
     chkToggle.addEventListener('change', (e) => {
       localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(e.target.checked));
       updateAutoSaveUI();
     });
-    
-    // Prevent the change from triggering a save button click
     chkToggle.addEventListener('click', (e) => {
       e.stopPropagation();
+    });
+  }
+  if (ledDot) {
+    ledDot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const current = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
+      localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(!current));
+      updateAutoSaveUI();
     });
   }
   updateAutoSaveUI();

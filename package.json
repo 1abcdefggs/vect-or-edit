@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "VectOrEdit ,Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",

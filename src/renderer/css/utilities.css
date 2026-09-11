@@ -104,11 +104,13 @@
 }
 
 .semantic-module-title {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  letter-spacing: 0.2px;
 }
 
 .semantic-btn-add {
@@ -347,6 +349,42 @@ button,
 @media (max-width: 768px) {
   .icon-label-text {
     display: none;
+  }
+}
+
+/* ==========================================================================
+   Responsive Area Titles Typography (Unified Component Hierarchy)
+   - Window Width <= 700px: Compact font size (0.75rem)
+   - Window Width > 700px: Prominent font size (1.0rem+)
+   ========================================================================== */
+@media (max-width: 700px) {
+  .semantic-module-title {
+    font-size: 0.75rem !important;
+  }
+  .semantic-module-title .material-symbols-outlined {
+    font-size: 0.95rem !important;
+  }
+  .system-status-panel span[data-i18n="log_panel_title"] {
+    font-size: 0.65rem !important;
+  }
+  .llm-dock-title {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (min-width: 701px) {
+  .semantic-module-title {
+    font-size: 1.05rem !important;
+    font-weight: 600;
+  }
+  .semantic-module-title .material-symbols-outlined {
+    font-size: 1.25rem !important;
+  }
+  .system-status-panel span[data-i18n="log_panel_title"] {
+    font-size: 0.82rem !important;
+  }
+  .llm-dock-title {
+    font-size: 1.0rem !important;
   }
 }
 

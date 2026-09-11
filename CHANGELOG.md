@@ -5,6 +5,18 @@ All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.15] - 2026-09-11
+
+### Added
+
+- **Streamlined Editor Toolbar & Integrated Typography**:
+  - Slimmed save action into `[💾 AUTO ● ▾]` with decoupled instant-save button and LED-dot click toggle for AutoSave.
+  - Unified editor styling into `[BG/FG | FONT | SIZE]` grouping, replacing legacy TONE terminology with intuitive Background/Foreground color themes.
+  - Added dedicated duplicate document tab button (`+`) and inline new tab action.
+- **Enhanced Multi-Document Tab Renaming & Persistence**:
+  - Improved tab double-click rename input with high-contrast, glowing overlay ensuring no text truncation.
+  - Automatically persists renamed document titles to local autosave cache.
+
 ## [0.3.14] - 2026-09-11
 
 ### Added
