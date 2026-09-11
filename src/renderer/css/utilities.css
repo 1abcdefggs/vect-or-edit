@@ -349,3 +349,8 @@ button,
     display: none;
   }
 }
+
+/* Master Settings UI Visibility rule: Ensure hidden elements are strictly eliminated even inside flex layouts */
+[hidden] {
+  display: none !important;
+}

@@ -1,14 +1,14 @@
 <header class="app-header">
   <div class="app-header__left">
-    <div class="app-header__window-controls">
+    <div class="app-header__window-controls" data-ui="hdr:logo">
       <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon">
       <span class="app-header__title">VectOrEdit <span class="app-header__version-text">v0.3.12</span></span>
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
-    <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu">
+    <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu" data-ui="hdr:menu-bar">
       <!-- File Menu -->
-      <div class="menu-bar-item" data-menu="file">
+      <div class="menu-bar-item" data-menu="file" data-ui="hdr:menu-file">
         <button class="menu-bar-btn" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_file">File</button>
         <div class="menu-dropdown" id="menuDropdownFile" role="menu">
           <button class="menu-dropdown-item" id="menuItemNewFile" role="menuitem" type="button" data-command="file.new">
@@ -49,7 +49,7 @@
       </div>
 
       <!-- Edit Menu -->
-      <div class="menu-bar-item" data-menu="edit">
+      <div class="menu-bar-item" data-menu="edit" data-ui="hdr:menu-edit">
         <button class="menu-bar-btn" id="menuBtnEdit" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_edit">Edit</button>
         <div class="menu-dropdown" id="menuDropdownEdit" role="menu">
           <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button" data-command="edit.undo">
@@ -82,7 +82,7 @@
       </div>
 
       <!-- View Menu -->
-      <div class="menu-bar-item" data-menu="view">
+      <div class="menu-bar-item" data-menu="view" data-ui="hdr:menu-view">
         <button class="menu-bar-btn" id="menuBtnView" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_view">View</button>
         <div class="menu-dropdown" id="menuDropdownView" role="menu">
           <button class="menu-dropdown-item" id="menuItemToggleSidebar" role="menuitem" type="button" data-command="view.toggleSidebar">
@@ -110,7 +110,7 @@
       </div>
 
       <!-- Window Menu -->
-      <div class="menu-bar-item" data-menu="window">
+      <div class="menu-bar-item" data-menu="window" data-ui="hdr:menu-window">
         <button class="menu-bar-btn" id="menuBtnWindow" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_window">Window</button>
         <div class="menu-dropdown" id="menuDropdownWindow" role="menu">
           <button class="menu-dropdown-item" id="menuItemMinimize" role="menuitem" type="button" data-command="window.minimize">
@@ -130,7 +130,7 @@
       </div>
 
       <!-- Help Menu -->
-      <div class="menu-bar-item" data-menu="help">
+      <div class="menu-bar-item" data-menu="help" data-ui="hdr:menu-help">
         <button class="menu-bar-btn" id="menuBtnHelp" type="button" aria-haspopup="true" aria-expanded="false" data-i18n="menu_help">Help</button>
         <div class="menu-dropdown" id="menuDropdownHelp" role="menu">
           <button class="menu-dropdown-item" id="menuItemAiSetup" role="menuitem" type="button" data-command="help.aiSetup">
@@ -154,19 +154,19 @@
 
   <div class="app-header__toolbar header-toolbar">
     <!-- Global Theme Selector -->
-    <div class="app-header__theme-select-wrapper">
+    <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select">
       <span class="material-symbols-outlined theme-select-icon">&#xe40a;</span>
       <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"></select>
     </div>
     
     <!-- Language Toggle -->
-    <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button" data-command="view.toggleLang">
+    <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button" data-command="view.toggleLang" data-ui="hdr:locale-toggle">
       <span class="material-symbols-outlined lang-toggle-icon">&#xe8e2;</span>
       <span class="icon-label-text" id="langToggleLabel">EN</span>
     </button>
 
     <!-- Zoom / UI Scaling Relative Adjustment (Plus / Minus) -->
-    <div class="app-header__zoom-group header-zoom-group">
+    <div class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select">
       <button id="btnHeaderZoomOut" class="toolbar-btn header-zoom-btn" type="button" title="Zoom Out (Ctrl+-)" data-i18n="btnHeaderZoomOutTitle" data-command="view.zoomOut">
         <span class="material-symbols-outlined">remove</span>
       </button>
@@ -176,7 +176,7 @@
     </div>
 
     <!-- Settings Button -->
-    <button id="btnSettings" class="app-header__action-btn" type="button" data-i18n-title="btn_settings" data-command="help.settings">
+    <button id="btnSettings" class="app-header__action-btn" type="button" data-i18n-title="btn_settings" data-command="help.settings" data-ui="hdr:settings-btn">
       <span class="material-symbols-outlined settings-icon">settings</span>
     </button>
     <!-- Theme Toggle Button -->

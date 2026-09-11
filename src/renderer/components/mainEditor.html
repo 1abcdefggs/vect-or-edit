@@ -1,5 +1,5 @@
 <section class="editor-section" style="display: flex; flex-direction: column;">
-  <div class="section-title"
+  <div class="section-title" data-ui="edt:toolbar"
     style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px;">
     <!-- Center: Editor Header Actions (Save, AutoSave, Typography, Tone) -->
     <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
@@ -45,31 +45,35 @@
       <div class="font-control-integrated-group"
         style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px;">
         <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-muted); margin-right: 2px;">&#xe165;</span>
-        <select id="fontFamilySelect" class="editor-toolbar-select"
-          style="border: none; background: transparent; height: 28px; padding: 0 16px 0 2px;">
-          <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
-            data-i18n="font_serif">Source Serif 4</option>
-          <option
-            value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-            data-i18n="font_sans_serif">Source Sans 3</option>
-          <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">
-            Source Code Pro</option>
-        </select>
+        <div data-ui="edt:font-family" style="display: inline-flex; align-items: center;">
+          <select id="fontFamilySelect" class="editor-toolbar-select"
+            style="border: none; background: transparent; height: 28px; padding: 0 16px 0 2px;">
+            <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
+              data-i18n="font_serif">Source Serif 4</option>
+            <option
+              value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              data-i18n="font_sans_serif">Source Sans 3</option>
+            <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">
+              Source Code Pro</option>
+          </select>
+        </div>
         <span
           style="display: inline-block; width: 1px; height: 14px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
-        <select id="fontSizeSelect" class="editor-toolbar-select"
-          style="border: none; background: transparent; height: 28px; max-width: 85px; padding: 0 16px 0 2px;">
-          <option value="14" data-i18n="font_small">14px</option>
-          <option value="16" selected data-i18n="font_normal">16px</option>
-          <option value="18" data-i18n="font_large">18px</option>
-          <option value="20" data-i18n="font_xlarge">20px</option>
-        </select>
+        <div data-ui="edt:font-size" style="display: inline-flex; align-items: center;">
+          <select id="fontSizeSelect" class="editor-toolbar-select"
+            style="border: none; background: transparent; height: 28px; max-width: 85px; padding: 0 16px 0 2px;">
+            <option value="14" data-i18n="font_small">14px</option>
+            <option value="16" selected data-i18n="font_normal">16px</option>
+            <option value="18" data-i18n="font_large">18px</option>
+            <option value="20" data-i18n="font_xlarge">20px</option>
+          </select>
+        </div>
       </div>
 
 
       <!-- Right: Editor AI Toggle Chip Button (Unified with Sidebar AI component) -->
       <div class="editor-ai-divider" aria-hidden="true"></div>
-      <button id="btnEditorAiToggle" class="ai-chip-pill"
+      <button id="btnEditorAiToggle" class="ai-chip-pill" data-ui="edt:ai-toggle"
         data-i18n-title="ai_model_badge_tooltip" title="Editor AI">
         <span id="editorAiStatusDot" style="color: #ef4444; font-size: 0.65rem; transition: color 0.3s ease;">●</span>
         <span id="editorAiLabel" data-i18n="editor_ai_off">Editor AI OFF</span>
@@ -83,8 +87,12 @@
       </div>
     </div>
 
-    <!-- Right: Editor Header Actions (Sidebar Toggle) -->
+    <!-- Right: Editor Header Actions (Sidebar Toggle & Quick Settings) -->
     <div class="editor-header-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+      <button id="btnEditorQuickSettings" class="toolbar-btn" data-ui="edt:quick-settings" data-tab-target="tabEditor"
+        title="Editor Settings" style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 4px;">
+        <span class="material-symbols-outlined" style="font-size: 1.05rem;">settings</span>
+      </button>
       <button id="btnHeaderToggleSidebar" class="sidebar-toggle-btn"
         data-i18n-title="btn_toggle_sidebar" title="Toggle Suggest Sidebar (Ctrl+B)">
         <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="font-size: 1.15rem; color: var(--accent-color, #38bdf8);">&#xf705;</span>

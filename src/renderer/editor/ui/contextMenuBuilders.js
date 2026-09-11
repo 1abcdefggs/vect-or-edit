@@ -282,15 +282,22 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
   separator2.className = 'custom-context-menu-separator';
   menu.appendChild(separator2);
 
-  const btnSettings = createMenuButton({
+  const btnResetLayout = createMenuButton({
     className: 'custom-context-menu-item',
-    innerHTML: `${icons.settings} <span>Settings...</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: 1.05rem;">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
     onClick: () => {
       onDismiss();
-      const btnSettingsEl = document.getElementById('btnSettings');
-      if (btnSettingsEl) btnSettingsEl.click();
-      const tabBtn = document.querySelector('.settings-tab-btn[data-tab="tabAiSearch"]');
-      if (tabBtn) tabBtn.click();
+      window.dispatchEvent(new CustomEvent('app:resetUIVisibility'));
+    }
+  });
+  menu.appendChild(btnResetLayout);
+
+  const btnSettings = createMenuButton({
+    className: 'custom-context-menu-item',
+    innerHTML: `${icons.settings} <span>Settings (Ctrl+,)...</span>`,
+    onClick: () => {
+      onDismiss();
+      window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAppearance' } }));
     }
   });
   menu.appendChild(btnSettings);

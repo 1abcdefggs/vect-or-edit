@@ -1,7 +1,7 @@
-<div id="nativeBottomBar" style="height: 24px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; font-size: 0.65rem;">
+<div id="nativeBottomBar" data-ui="sys:bottom-bar" style="height: 24px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; font-size: 0.65rem;">
   
   <div style="display: flex; align-items: center; gap: 8px;">
-    <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
+    <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_console" data-ui="sys:log-console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
       <span class="material-symbols-outlined" style="font-size: 1.1rem; flex-shrink: 0;">&#xeb8e;</span>
       <span data-i18n="btn_console">LOGS</span>
       <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: 0.6rem; height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
@@ -10,7 +10,7 @@
     <div style="width: 1px; height: 12px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></div>
 
     <!-- Integrated 7-Stage Pipeline Status LED Meter -->
-    <div class="system-status-panel" style="margin: 0; display: flex; align-items: center; gap: 4px;">
+    <div class="system-status-panel" data-ui="sys:pipeline-meter" style="margin: 0; display: flex; align-items: center; gap: 4px;">
       <span style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; opacity: 0.8; margin-right: 2px;" data-i18n="log_panel_title">PIPELINE</span>
       <div id="badgeLedConf" class="status-pill" title="1. User Settings: Loading...">
         <span class="status-led-dot status-loading" style="width: 7px; height: 7px;"></span>
@@ -50,12 +50,16 @@
   </div>
 
   <div style="display: flex; align-items: center; gap: 8px;">
+    <button id="btnSystemQuickSettings" class="toolbar-btn" data-ui="sys:quick-settings" data-tab-target="tabSystem"
+      title="System & Log Settings" style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 4px;">
+      <span class="material-symbols-outlined" style="font-size: 0.95rem;">settings</span>
+    </button>
     <div id="updateLedContainer" style="display: none; align-items: center; gap: 4px; color: var(--text-main); cursor: pointer; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2);">
       <span id="updateLedIcon" class="material-symbols-outlined" style="font-size: 0.95rem; line-height: 1;">&#xe86a;</span>
       <span id="updateLedText" data-i18n="update_check_label" style="font-size: 0.65rem;">Check Updates</span>
     </div>
 
-    <span class="status-bar-item" style="color: var(--text-main); display: flex; align-items: center; gap: 4px;">
+    <span class="status-bar-item" data-ui="sys:status-meta" style="color: var(--text-main); display: flex; align-items: center; gap: 4px;">
       <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-muted); flex-shrink: 0;">&#xe322;</span>
       <span id="statusMemoryUsage" data-i18n="label_ram">RAM: ~45 MB</span>
     </span>

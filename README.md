@@ -31,6 +31,8 @@
 
 ## Core Features & Capabilities
 
+- **Registry-Driven Settings & UI Visibility Binding**: Fully synchronized preferences and layout visibility via `data-ui="{area}:{element}"` architecture, allowing granular element show/hide toggles with instant CSS-level reflection and zero-overhead state persistence (`.settings.json`).
+
 - **Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting powered by native Rust N-API bindings (`@1abcdefggs/vect-or-engine`).
 - **100% Offline & Private (Local Mode)**: Zero external telemetry required. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
 - **Hybrid AI Provider Integration**: Seamless switching between Local Offline Embeddings, Google Gemini (`@google/genai`), OpenAI, and Anthropic Claude.
@@ -110,6 +112,22 @@ npm run build:win
 - **Context Isolation & Sandbox**: Renderer runs with complete process isolation.
 - **Typed IPC Bridge**: Direct `ipcRenderer.invoke` is strictly prohibited. Only explicit, typed methods (`engineAPI.querySemantics`) are exposed via `contextBridge`.
 - **Knowledge Vault & Decryption**: Complies with the system-wide [Security and Encryption Architecture Specification](file:///c:/VectOrEditOr-dev/docs/domain-and-pipeline-rules/SECURITY_AND_ENCRYPTION_ARCHITECTURE_SPEC.md).
+
+
+---
+
+## UI Architecture & Element Binding Standard
+
+`vect-or-edit` employs a declarative, zero-UI-framework binding architecture to manage top-page controls and settings modal synchronization:
+
+- **Strict Area Scoping (`data-ui`)**: Every customizable UI component is tagged with a standardized 4-quadrant area scope:
+  - `hdr:` — **Header & TitleBar Area** (Logo, menus, theme/locale selectors, settings button)
+  - `edt:` — **Editor & Toolbar Area** (Monaco typography, diff mode, inline AI toggles)
+  - `sbr:` — **Knowledge Sidebar Area** (Vector search input, similarity thresholds, metadata views)
+  - `sys:` — **System & Bottom Bar Area** (Status metadata, 7-stage LED pipeline, log console)
+- **Zero-DOM-Destruction Toggling**: Elements are toggled using native `[hidden]` CSS enforcement (`display: none !important;`), preserving editor focus, undo history, and event listeners without re-rendering.
+- **Dual-Sync Persistence**: Fast memory caching (`localStorage`) coupled with asynchronous IPC `.settings.json` disk persistence for seamless VS Code-compatible settings management.
+- **Fail-Safe Rescue**: Permanent fallback access via global keybinding (<kbd>Ctrl</kbd>+<kbd>,</kbd>) and status bar context menus ("Reset Layout to Default").
 
 ---
 
