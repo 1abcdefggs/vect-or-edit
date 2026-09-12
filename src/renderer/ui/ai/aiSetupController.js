@@ -14,90 +14,73 @@ export function initAiSetup(onComplete) {
   // Apply internationalization translations to modal components
   applyI18n();
 
-  const radios = document.querySelectorAll('input[name="ai_setup_provider"]');
-  const cloudOptions = document.getElementById('aiSetupCloudOptions');
-  const localOptions = document.getElementById('aiSetupLocalOptions');
+  const radiosEmb = document.querySelectorAll('input[name="ai_setup_embedding"]');
+  const localModelSelect = document.getElementById('aiSetupLocalModel');
+  const selCloudProvider = document.getElementById('aiSetupCloudProvider');
+  const inputCloudKey = document.getElementById('aiSetupCloudKey');
+  const btnToggleKey = document.getElementById('btnToggleAiSetupKeyVisibility');
 
   const btnSave = document.getElementById('btnAiSetupSave');
   const btnCancel = document.getElementById('btnAiSetupCancel');
 
-  const updateCardSelection = (selectedVal) => {
-    document.querySelectorAll('.ai-setup-card').forEach(card => {
-      const radio = card.querySelector('input[name="ai_setup_provider"]');
-      if (radio && radio.value === selectedVal) {
-        card.classList.add('selected');
-      } else {
-        card.classList.remove('selected');
-      }
+  // Key Visibility Toggle
+  if (btnToggleKey && inputCloudKey) {
+    btnToggleKey.addEventListener('click', () => {
+      const isPass = inputCloudKey.type === 'password';
+      inputCloudKey.type = isPass ? 'text' : 'password';
+      const icon = btnToggleKey.querySelector('.material-symbols-outlined');
+      if (icon) icon.textContent = isPass ? 'visibility' : 'visibility_off';
     });
-  };
+  }
 
-  const updateSaveButtonText = (provider) => {
+  // Dynamic button text based on Embedding radio selection
+  const updateSaveButtonText = () => {
+    const selectedEmb = document.querySelector('input[name="ai_setup_embedding"]:checked')?.value || 'local';
     if (btnSave) {
-      if (provider === 'local') {
-        btnSave.textContent = t('btn_download_start') || 'Download & Start';
+      if (selectedEmb === 'local') {
+        btnSave.textContent = t('btn_download_start') || 'Download';
       } else {
         btnSave.textContent = t('btn_save_start') || 'Save & Start';
       }
     }
   };
 
-  radios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      const val = e.target.value;
-      cloudOptions.style.display = val === 'cloud' ? 'flex' : 'none';
-      localOptions.style.display = val === 'local' ? 'flex' : 'none';
-      
-      // Update visual card highlight
-      updateCardSelection(val);
-
-      // Update button text dynamically using i18n
-      updateSaveButtonText(val);
-    });
+  radiosEmb.forEach(radio => {
+    radio.addEventListener('change', updateSaveButtonText);
   });
+  updateSaveButtonText();
 
-  // Set initial button text and card selection based on default selection
-  const initialSelected = document.querySelector('input[name="ai_setup_provider"]:checked')?.value || 'local';
-  updateCardSelection(initialSelected);
-  updateSaveButtonText(initialSelected);
-
+  // Save / Action Handlers
   btnSave.addEventListener('click', async () => {
-    const selected = document.querySelector('input[name="ai_setup_provider"]:checked')?.value;
-    if (!selected) return;
+    const selectedEmb = document.querySelector('input[name="ai_setup_embedding"]:checked')?.value || 'local';
+    const chosenProvider = selCloudProvider?.value || 'gemini';
+    const rawApiKey = inputCloudKey?.value?.trim() || '';
 
-    if (selected === 'cloud') {
-      const provider = document.getElementById('aiSetupCloudProvider').value;
-      const key = document.getElementById('aiSetupCloudKey').value;
-
-      if (!key) {
-        showToast('API Key is required for Cloud AI.', 'error');
-        return;
-      }
-
-      localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, provider);
-      if (provider === 'gemini') {
-        const result = await window.engineAPI.saveGeminiApiKey(key);
-        if (!result.success) {
-          showToast(result.error || 'Unable to save Gemini API key securely.', 'error');
-          return;
+    // 1. Save LLM configuration if provided
+    if (rawApiKey) {
+      localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, chosenProvider);
+      if (chosenProvider === 'gemini') {
+        if (window.engineAPI?.saveGeminiApiKey) {
+          await window.engineAPI.saveGeminiApiKey(rawApiKey);
         }
         localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
+      } else if (chosenProvider === 'openai') {
+        localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, rawApiKey);
+      } else if (chosenProvider === 'claude') {
+        localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, rawApiKey);
       }
-      if (provider === 'openai') localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, key);
-      if (provider === 'claude') localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, key);
+    }
 
-      finalizeSetup();
-    } else if (selected === 'local') {
-      const modelSelect = document.getElementById('aiSetupLocalModel');
-      const model = modelSelect?.value || DEFAULTS.LOCAL_EMBEDDING_MODEL;
-      localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, 'local');
+    // 2. Handle Embedding Configuration
+    if (selectedEmb === 'local') {
+      const model = localModelSelect?.value || DEFAULTS.LOCAL_EMBEDDING_MODEL;
       localStorage.setItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, model);
+      localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, 'local');
 
       // Start Download / Init Process
       const progressArea = document.getElementById('aiSetupProgressArea');
       if (progressArea) progressArea.style.display = 'block';
 
-      // Clean up any existing listeners before adding new one
       const handleAiProgress = (e) => {
         const { pct, status } = e.detail || {};
         if (status === 'initiate' || status === 'download' || status === 'progress') {
@@ -117,11 +100,12 @@ export function initAiSetup(onComplete) {
       };
 
       window.addEventListener('app:aiModelProgress', handleAiProgress);
-
-      // trigger initialization via single clean seam
       window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model } }));
-    } else if (selected === 'none') {
-      localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, 'none');
+    } else if (selectedEmb === 'cloud') {
+      localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, 'llm-embed-gemini');
+      finalizeSetup();
+    } else if (selectedEmb === 'none') {
+      localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, 'none');
       finalizeSetup();
     }
   });
@@ -135,10 +119,10 @@ export function initAiSetup(onComplete) {
     });
   }
 
+  // 'あとで設定' handler: Dismiss modal, mark setup completed to avoid blocking user
   if (btnCancel) {
     btnCancel.addEventListener('click', () => {
-      overlay.style.display = 'none';
-      if (setupCompleteCallback) setupCompleteCallback();
+      finalizeSetup();
     });
   }
 }

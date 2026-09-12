@@ -10,7 +10,7 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
   if (!placeholderEl) {
     placeholderEl = document.createElement('div');
     placeholderEl.className = 'monaco-custom-placeholder';
-    placeholderEl.style.cssText = 'position: absolute; top: 12px; left: 54px; right: 40px; color: var(--text-muted, #cbd5e1); opacity: 0.9; pointer-events: none; user-select: none; z-index: 1; transition: opacity 0.2s ease; display: flex; flex-direction: column; gap: 8px;';
+    placeholderEl.style.cssText = 'position: absolute; top: 16px; left: 62px; right: 48px; max-width: 820px; color: var(--text-muted, #cbd5e1); opacity: 0.95; pointer-events: none; user-select: none; z-index: 1; transition: opacity 0.2s ease; display: flex; flex-direction: column; gap: 8px; padding: 14px 18px; border-radius: 8px; backdrop-filter: blur(4px);';
     domNode.appendChild(placeholderEl);
   }
 
@@ -72,6 +72,9 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     }
 
     placeholderEl.style.fontFamily = activeFontFamily;
+    placeholderEl.style.background = boxBg;
+    placeholderEl.style.border = boxBorder;
+    placeholderEl.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.2)';
 
     placeholderEl.innerHTML = `
     <!-- 1. Top System Bar (Typography & Dismiss Hint) -->

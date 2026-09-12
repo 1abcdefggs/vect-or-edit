@@ -8,8 +8,12 @@ const LOCALES: Record<string, Record<string, string>> = {
   en: enLocale as Record<string, string>
 };
 
-export let i18n: Record<string, string> = {};
-export let currentLang: string = DEFAULTS.APP_LANG;
+const savedLangInit = (typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEYS.APP_LANG) : null);
+const systemLangInit = (typeof navigator !== 'undefined' ? (navigator.language || DEFAULTS.APP_LANG).split('-')[0] : DEFAULTS.APP_LANG);
+const initialLang = (savedLangInit || systemLangInit) === 'ja' ? 'ja' : 'en';
+
+export let currentLang: string = initialLang;
+export let i18n: Record<string, string> = LOCALES[initialLang] || LOCALES.ja;
 
 export async function loadLocales(): Promise<void> {
   try {

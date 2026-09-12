@@ -5,6 +5,30 @@ All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.20] - 2026-09-12
+
+### Added
+
+- **Dual-Model AI Setup Modal Architecture (`aiSetupModal.html` / `aiSetupController.js`)**:
+  - Re-architected startup AI configuration dialog into two independent, unbundled sections:
+    1. **Embedding Model Setup**: Local HNSW vector models (`multilingual-e5-small`, `bge-small-en`, `nomic-embed-text`), Cloud API, or exact-match only (no embedding).
+    2. **LLM Model Setup**: Cloud LLM provider configuration (Gemini Flash, OpenAI GPT-4o mini, Anthropic Claude v3) with masked API key input and visibility toggle.
+  - Scaled up dialog dimensions (`860px` width, `90vh` max-height, `42px` input heights) and enhanced typography/layout to adapt cleanly to standard desktop windows.
+  - Aligned action buttons with intuitive flow: "Configure Later" (`btn_ai_setup_later`) and "Download" / "Save & Start" (`btn_download_start` / `btn_save_start`).
+
+### Changed
+
+- **Monaco Placeholder Guide Card (`editorPlaceholder.js`)**:
+  - Transformed the plain inline placeholder text into a distinct, elevated floating guide card with subtle backdrop styling and left margin offset (`left: 62px`), eliminating confusion with line 1 editor text.
+  - Pre-bound initial locale dictionary to `i18n` on module evaluation to eliminate unlocalized raw translation key flashes (`placeholder_hint`).
+- **Tooltip Positioning Ergonomics (`header.css`)**:
+  - Increased `[data-instant-tooltip]` hover offset to `calc(100% + 14px)` to avoid cursor pointer obstruction.
+
+### Fixed
+
+- **Strict English-based Coding & Fallback Invariant**:
+  - Replaced all hardcoded Japanese string fallbacks across controller scripts and modal HTML templates with standard English literals, delegating all localization strictly to `ja.json` / `en.json` dictionaries.
+
 ## [0.3.19] - 2026-09-11
 
 ### Added
