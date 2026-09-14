@@ -639,12 +639,15 @@
 .ai-setup-select,
 .ai-setup-input {
   width: 100%;
-  padding: 8px 10px;
+  height: 38px;
+  min-height: 38px;
+  line-height: 1.5;
+  padding: 6px 12px;
   background: var(--bg-primary, #0f172a);
   color: var(--text-main, #f8fafc);
   border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
   border-radius: var(--radius-sm, 6px);
-  font-size: 0.80rem;
+  font-size: 0.82rem;
   outline: none;
   box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;

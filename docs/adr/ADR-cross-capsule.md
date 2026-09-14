@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-VectOrEditOr was originally tightly bound to:
+VectOrEdit was originally tightly bound to:
 1. Local Transformers.js in Web Worker for text vectorization / embeddings.
 2. Direct LLM provider calls (Gemini, Claude, OpenAI) for text completions and semantic suggestions.
 

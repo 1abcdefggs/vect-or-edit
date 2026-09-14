@@ -1,9 +1,53 @@
 # Changelog
 
-All notable changes to the **VectOrEditOr** (`vect-or-edit`) desktop application will be documented in this file.
+All notable changes to the **VectOrEdit** (`vect-or-edit`) desktop application will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.3.21] - 2026-09-14
+
+### Added
+- **Deep Module About Modal (boutModalController.ts & ppHeader.html)**:
+  - Implemented AboutModalController with a minimal public API (showAboutModal, hideAboutModal) and deep internal implementation (DOM caching, responsive layout, safe external link opening).
+  - Made application logo and version pill in the top header clickable to display the About modal.
+- **Multilingual Initial Document Setup (n.json, ja.json, 	abState.js)**:
+  - Added localized initial document guidance text dynamically populated into new tabs on launch and responsive to language toggle.
+
+### Changed
+- **Branding & Packaging Alignment**:
+  - Updated package.json build ppId to com.vectoredit.app and author to ect-organization.
+  - Updated application user model ID in src/main/index.ts to com.vectoredit.app.
+  - Updated documentation repository links in menuBarController.ts to https://github.com/vect-organization/vect-or-edit.
+- **AutoSave & Save UX (Plan A - utoSaveManager.js)**:
+  - Differentiated unsaved new files (Doc-1.md) with amber LED indicator and SAVE prompt guiding users to Ctrl+S / Save As.
+  - Retained emerald LED and AUTO background saving for existing files with valid filesystem paths.
+- **UI & Settings Feedback (header-extras.css)**:
+  - Harmonized settings gear icons with muted slate appearance and interactive amber hover with smooth rotation.
+
+## [0.3.20] - 2026-09-12
+
+### Added
+
+- **Dual-Model AI Setup Modal Architecture (`aiSetupModal.html` / `aiSetupController.js`)**:
+  - Re-architected startup AI configuration dialog into two independent, unbundled sections:
+    1. **Embedding Model Setup**: Local HNSW vector models (`multilingual-e5-small`, `bge-small-en`, `nomic-embed-text`), Cloud API, or exact-match only (no embedding).
+    2. **LLM Model Setup**: Cloud LLM provider configuration (Gemini Flash, OpenAI GPT-4o mini, Anthropic Claude v3) with masked API key input and visibility toggle.
+  - Scaled up dialog dimensions (`860px` width, `90vh` max-height, `42px` input heights) and enhanced typography/layout to adapt cleanly to standard desktop windows.
+  - Aligned action buttons with intuitive flow: "Configure Later" (`btn_ai_setup_later`) and "Download" / "Save & Start" (`btn_download_start` / `btn_save_start`).
+
+### Changed
+
+- **Monaco Placeholder Guide Card (`editorPlaceholder.js`)**:
+  - Transformed the plain inline placeholder text into a distinct, elevated floating guide card with subtle backdrop styling and left margin offset (`left: 62px`), eliminating confusion with line 1 editor text.
+  - Pre-bound initial locale dictionary to `i18n` on module evaluation to eliminate unlocalized raw translation key flashes (`placeholder_hint`).
+- **Tooltip Positioning Ergonomics (`header.css`)**:
+  - Increased `[data-instant-tooltip]` hover offset to `calc(100% + 14px)` to avoid cursor pointer obstruction.
+
+### Fixed
+
+- **Strict English-based Coding & Fallback Invariant**:
+  - Replaced all hardcoded Japanese string fallbacks across controller scripts and modal HTML templates with standard English literals, delegating all localization strictly to `ja.json` / `en.json` dictionaries.
 
 ## [0.3.19] - 2026-09-11
 

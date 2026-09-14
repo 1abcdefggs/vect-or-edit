@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import path from 'node:path';
 import fs from 'node:fs';
 
-describe('VectOrEditOr (vect-or-edit) Core Validation Tests', () => {
+describe('VectOrEdit (vect-or-edit) Core Validation Tests', () => {
   it('should locate Rust engine binary or package definition', () => {
     const localNodeBinary = path.resolve(__dirname, '../../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node');
     const localPkg = path.resolve(__dirname, '../../vect-or-engine/package.json');

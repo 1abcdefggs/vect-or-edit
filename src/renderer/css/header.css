@@ -107,7 +107,7 @@
 [data-instant-tooltip]:hover::after {
   content: attr(data-instant-tooltip);
   position: absolute;
-  top: 120%;
+  top: calc(100% + 14px);
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg-card, rgba(0, 0, 0, 0.95));
@@ -128,7 +128,7 @@
 /* For elements inside the system log panel (bottom bar), show tooltip above to avoid overlapping mouse */
 .system-status-panel [data-instant-tooltip]:hover::after {
   top: auto;
-  bottom: 130%;
+  bottom: calc(100% + 14px);
 }
 
 /* Master AI Toggle Pill (Compact Modern) */

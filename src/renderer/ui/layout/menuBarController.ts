@@ -1,3 +1,4 @@
+import { showAboutModal } from '../modals/aboutModalController.js';
 /**
  * Menu Bar Controller (VS Code Style Inline Menu Bar)
  * Handles dropdown open/close, hover switching, click-outside dismissal,
@@ -419,7 +420,7 @@ export function registerAppCommands(): void {
       title: 'Documentation',
       category: 'Help',
       handler: () => {
-        const url = 'https://github.com/1abcdefggs/vect-or-edit';
+        const url = 'https://github.com/vect-organization/vect-or-edit';
         if (window.engineAPI?.openExternal) {
           window.engineAPI.openExternal(url);
         } else {
@@ -431,9 +432,7 @@ export function registerAppCommands(): void {
       id: 'help.about',
       title: 'About VectOrEdit',
       category: 'Help',
-      handler: () => {
-        showToast('VectOrEditOr v0.3.8 - Vector-Native Knowledge Base Editor', 'info');
-      }
+      handler: () => showAboutModal()
     }
   ]);
 }
@@ -445,6 +444,8 @@ export function initMenuBar(): void {
   // Ensure commands are registered
   registerAppCommands();
 
+    const logoTrigger = document.getElementById('appHeaderLogoTrigger');
+  logoTrigger?.addEventListener('click', () => showAboutModal());
   const menuBar = document.getElementById('appMenuBar');
   if (!menuBar) return;
 

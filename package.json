@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.19",
+  "version": "0.3.21",
   "description": "VectOrEdit ,Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
@@ -18,14 +18,14 @@
     "local-first"
   ],
   "main": "out/main/index.js",
-  "author": "1abcdefggs",
-  "homepage": "https://github.com/1abcdefggs/vect-or-edit#readme",
+  "author": "vect-organization",
+  "homepage": "https://github.com/vect-organization/vect-or-edit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1abcdefggs/vect-or-edit.git"
+    "url": "git+https://github.com/vect-organization/vect-or-edit.git"
   },
   "bugs": {
-    "url": "https://github.com/1abcdefggs/vect-or-edit/issues"
+    "url": "https://github.com/vect-organization/vect-or-edit/issues"
   },
   "license": "MIT",
   "scripts": {
@@ -64,7 +64,7 @@
     "vitest": "^1.6.0"
   },
   "build": {
-    "appId": "com.vectoreditor.app",
+    "appId": "com.vectoredit.app",
     "productName": "VectOrEdit",
     "directories": {
       "output": "dist"

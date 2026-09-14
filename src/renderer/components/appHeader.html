@@ -1,8 +1,8 @@
 <header class="app-header">
   <div class="app-header__left">
-    <div class="app-header__window-controls" data-ui="hdr:logo" title="VectOrEdit - Vector-Assisted Text Editor">
-      <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon" title="VectOrEdit v0.3.19">
-      <span class="app-header__title">VectOrEdit <span class="app-header__version-text">v0.3.19</span></span>
+    <div class="app-header__window-controls" id="appHeaderLogoTrigger" data-ui="hdr:logo" title="VectOrEdit v0.3.21 - Click for About & Details" style="cursor: pointer; -webkit-app-region: no-drag;">
+      <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon" title="Click to view About VectOrEdit" style="cursor: pointer;">
+      <span class="app-header__title">VectOrEdit <span class="app-header__version-text">v0.3.21</span></span>
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
@@ -160,14 +160,14 @@
     </div>
     
     <!-- Language Toggle -->
-    <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button" data-command="view.toggleLang" data-ui="hdr:locale-toggle" style="padding: 2px 8px; gap: 5px;" title="Switch UI Language (English / 日本語)">
+    <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button" data-command="view.toggleLang" data-ui="hdr:locale-toggle" style="padding: 2px 8px; gap: 5px;" title="Switch UI Language (English / Japanese)">
       <span class="material-symbols-outlined lang-toggle-icon" style="font-size: 1.15rem; color: #10b981;">&#xe8e2;</span>
       <span class="icon-label-text" id="langToggleLabel" style="font-size: 0.72rem; font-weight: 700;">EN</span>
     </button>
 
     <!-- Settings Button -->
     <button id="btnSettings" class="app-header__action-btn" type="button" data-i18n-title="btn_settings" data-command="help.settings" data-ui="hdr:settings-btn" title="Preferences & Settings (Ctrl+,)" style="width: 30px; height: 26px; display: flex; align-items: center; justify-content: center;">
-      <span class="material-symbols-outlined settings-icon" style="font-size: 1.15rem; color: #fbbf24;">settings</span>
+      <span class="material-symbols-outlined settings-icon" style="font-size: 1.15rem; ">settings</span>
     </button>
 
     <!-- Visual Separator between Settings and Zoom Button -->
