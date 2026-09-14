@@ -29,13 +29,14 @@ function generateDefaultDocumentTitle() {
   return `Doc-${n}.md`;
 }
 
-export function createNewTab(title = null, initialContent = '', filePath = null) {
+export function createNewTab(title = null, initialContent = null, filePath = null) {
   const monaco = getMonaco();
   if (!monaco) return null;
 
   const id = `tab_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
   const tabTitle = title || generateDefaultDocumentTitle();
-  const model = monaco.editor.createModel(initialContent, 'markdown');
+    const contentToSet = initialContent !== null ? initialContent : (t('initial_document_content') || '');
+  const model = monaco.editor.createModel(contentToSet, 'markdown');
 
   model.onDidChangeContent((e) => {
     const tab = tabs.find(t => t.id === id);
@@ -135,4 +136,22 @@ export function markActiveTabSaved(savedFilePath) {
     editorEvents.emit('triggerRpgSavedExpFloat', tab.id);
     editorEvents.emit('onStatusBarUpdateNeeded', tab.title);
   }
+}
+
+// Listen for language switch and update welcome doc if user hasn't modified it
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:languageChanged', () => {
+    tabs.forEach(tab => {
+      if (tab.model) {
+        const currentVal = tab.model.getValue();
+        const isWelcomeText = currentVal.includes('# Welcome to VectOrEdit') || currentVal.includes('# VectOrEdit へようこそ');
+        if (tab.isWelcomeDoc || isWelcomeText) {
+          const newContent = t('initial_document_content') || '';
+          tab.model.setValue(newContent);
+          tab.isDirty = false;
+          editorEvents.emit('onTabRenderNeeded');
+        }
+      }
+    });
+  });
 }

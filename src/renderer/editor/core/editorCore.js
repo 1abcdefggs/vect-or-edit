@@ -99,7 +99,7 @@ export async function initEditor() {
   } catch (_) {}
 
   monacoEditorInstance = monaco.editor.create(monacoContainer, {
-    value: '',
+    value: t('initial_document_content') || '',
     language: 'markdown',
     theme: currentTheme || 'vs-dark',
     fontSize: getFontSize(),

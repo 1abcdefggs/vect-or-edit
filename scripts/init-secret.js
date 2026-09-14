@@ -47,7 +47,7 @@ async function getVaultPassword() {
  * Appends the generated secrets to the .env file.
  */
 async function appendSecretsToEnv(secret, vaultPassword) {
-  const envContent = `\n# VectOrEditOr Core Secret (DO NOT SHARE)\nVECTOR_APP_SECRET="${secret}"\n\n# Vault Password (CHANGE ME!)\nVECTOR_VAULT_PASSWORD="${vaultPassword}"\n`;
+  const envContent = `\n# VectOrEdit Core Secret (DO NOT SHARE)\nVECTOR_APP_SECRET="${secret}"\n\n# Vault Password (CHANGE ME!)\nVECTOR_VAULT_PASSWORD="${vaultPassword}"\n`;
   await fs.appendFile(ENV_PATH, envContent, 'utf8');
 }
 

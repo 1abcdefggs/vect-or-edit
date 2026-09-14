@@ -51,7 +51,7 @@
   "font_xlarge": "20px",
   "prompt_save_on_close": "タブを閉じます。内容を保存しますか？\n\n[OK] 保存して閉じる\n[キャンセル] 保存せずに閉じる",
   "btn_cancel": "CANCEL",
-  "btn_save_start": "SAVE & START",
+  "btn_save_start": "保存して開始",
   "master_ai_label": "Master AI",
   "label_model": "MODEL(select)",
   "btn_reload_ai": "Reload",
@@ -203,7 +203,7 @@
   "opt_bg_ivory": "Ivory Cream (#FFFFF0)",
   "opt_bg_warm": "Warm Off-White (#FAFAF9)",
   "opt_bg_paper": "Japanese Paper Light (#FDFBF7)",
-  "opt_bg_custom": "Custom Color",
+  "opt_bg_custom": "Custom Colors (Hex)",
   "setting_theme_desc": "カラーパレットとタイトルバーのテーマを切り替えます。",
   "setting_language_desc": "アプリケーションの表示言語を切り替えます。",
   "setting_min_score": "Minimum Similarity Score (%)",
@@ -274,7 +274,6 @@
   "tooltip_autosave_on": "Adaptive Auto-Save: 有効 (メモリ高負荷時は遅延を自動延長して快適性を維持)",
   "tooltip_autosave_off": "Auto-Save: 無効 (手動 Ctrl+S 保存が必要です)",
   "tone_custom": "Custom Tone",
-  "opt_bg_custom": "Custom Colors (Hex)",
   "setting_custom_colors": "Custom Canvas Tone & Text Colors",
   "setting_custom_colors_desc": "Monacoエディタの背景色(HEX)および文字色を任意の色に自由設定できます。",
   "label_bg": "Background:",
@@ -318,7 +317,6 @@
   "ai_setup_model_nomic": "nomic-embed-text (137MB / 高精度)",
   "btn_ai_setup_later": "あとで設定",
   "btn_download_start": "ダウンロード",
-  "btn_save_start": "保存して開始",
   "card_local_desc": "OFFLINE",
   "card_cloud_desc": "CLOUD",
   "setting_context_menu_layout": "コンテキストメニューのレイアウト",
@@ -405,5 +403,6 @@
   "toast_models_loaded": "Google公式から {count} 件のモデルを読み込みました",
   "ai_hover_rewritten": "**AI 推敲テキスト (リライト)**",
   "ai_hover_generated": "**AI 生成テキスト (LLM)**",
-  "btn_llm_key_config_title": "APIキー設定"
+  "btn_llm_key_config_title": "APIキー設定",
+  "initial_document_content": "# VectOrEdit へようこそ\n次世代ベクトル知識エディタ＆リアルタイム・リンター (vect-organization)\n\n本エディタは、10層セマンティック知識体系（W3C / DIKWP準拠）に基づき、ローカル完結で動作する執筆・推敲支援ツールです。\n\n## 主な機能とキー操作\n- **用語サジェスト**: 入力中に Ctrl+Space で専門用語や辞書定義をインライン補完\n- **セマンティック検索**: テキストをマウスで範囲選択すると、右サイドバーに関連ナレッジが即時引き当て\n- **右クリックメニュー**: 切り取り・コピー・貼り付けや、AI推敲メニューを表示\n- **AI / ナレッジ設定**: 上部バーまたは Ctrl+, で設定画面を開き、モデルや辞書スロットを追加\n\n---\n*このテキストは自由に編集・削除して執筆を開始してください。*"
 }

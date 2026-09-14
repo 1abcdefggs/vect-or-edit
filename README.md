@@ -19,11 +19,11 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-1e293b?style=flat)](https://github.com/1abcdefggs/vect-or-edit/pulls)
 <p align="center">
 <p align="center"><b>v0.3.14</b><br/>
-  <img src="docs/assets/repository-ui-v0312.gif" alt="VectOrEditOr v0.3.14 Demo" ... />
+  <img src="docs/assets/repository-ui-v0312.gif" alt="VectOrEdit v0.3.14 Demo" ... />
 </p>
 
 <p align="center"><b>v0.3.1</b><br/>
-  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEditOr v0.3.1 Demo" ... />
+  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEdit v0.3.1 Demo" ... />
 </p>
 
 
@@ -153,7 +153,7 @@ npm run build:win
 `vect-or-edit` follows the official **Electron Security Guidelines**:
 - **Context Isolation & Sandbox**: Renderer runs with complete process isolation.
 - **Typed IPC Bridge**: Direct `ipcRenderer.invoke` is strictly prohibited. Only explicit, typed methods (`engineAPI.querySemantics`) are exposed via `contextBridge`.
-- **Knowledge Vault & Decryption**: Complies with the system-wide [Security and Encryption Architecture Specification](file:///c:/VectOrEditOr-dev/docs/domain-and-pipeline-rules/SECURITY_AND_ENCRYPTION_ARCHITECTURE_SPEC.md).
+- **Knowledge Vault & Decryption**: Complies with the system-wide [Security and Encryption Architecture Specification](file:///c:/vect/docs/domain-and-pipeline-rules/SECURITY_AND_ENCRYPTION_ARCHITECTURE_SPEC.md).
 
 
 ---

@@ -48,7 +48,7 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     if (app.isPackaged) {
-      app.setAppUserModelId('com.vectoreditor.app');
+      app.setAppUserModelId('com.vectoredit.app');
     }
 
     await initRustEngine();
