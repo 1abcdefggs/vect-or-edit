@@ -15,7 +15,6 @@ coverage/
 Thumbs.db
 *.log
 .agents/
-.github/
 _DEVELOP/
 _CODE_REVIEW/
 pre/
@@ -27,3 +26,6 @@ test_original.json
 test.venc
 check.ps1
 
+
+# Ignore workflows prefixed with underscore
+.github/workflows/_*
