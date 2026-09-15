@@ -1,0 +1,53 @@
+name: Update Commits Difference Badge
+
+on:
+  push:
+    branches:
+      - main
+      - 'dev*'
+      - 'dev/**'
+      - 'feat/**'
+      - 'fix/**'
+      - 'chore/**'
+      - 'docs/**'
+      - 'refactor/**'
+      - 'test/**'
+  workflow_dispatch:
+
+jobs:
+  update-badge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch branch difference and update Gist
+        env:
+          GH_TOKEN: ${{ secrets.GIST_TOKEN }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get current branch name (e.g. dev, dev/test1, feat/ai)
+          CURRENT_BRANCH=${GITHUB_REF#refs/heads/}
+
+          # Default comparison target relative to main
+          TARGET_BRANCH="$CURRENT_BRANCH"
+          if [ "$TARGET_BRANCH" = "main" ]; then
+            TARGET_BRANCH="dev"
+          fi
+
+          echo "Comparing main with $TARGET_BRANCH"
+
+          RES=$(curl -s -H "Authorization: Bearer $REPO_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/compare/main...${TARGET_BRANCH})
+          AHEAD=$(echo "$RES" | jq .ahead_by)
+          BEHIND=$(echo "$RES" | jq .behind_by)
+
+          # Determine badge color based on behind status
+          if [ "$BEHIND" -eq 0 ]; then
+            COLOR="brightgreen"
+          else
+            COLOR="orange"
+          fi
+
+          # Shields Endpoint JSON generation with explicit subject and reference
+          echo "{\"schemaVersion\": 1, \"label\": \"${TARGET_BRANCH} vs main\", \"message\": \"+${AHEAD} / -${BEHIND}\", \"color\": \"${COLOR}\"}" > commits-difference.json
+
+          # Gist Update
+          gh gist edit 10ac4e5fabd3808105b913c923b8cf43 commits-difference.json
