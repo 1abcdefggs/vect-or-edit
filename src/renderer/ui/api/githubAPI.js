@@ -1,5 +1,20 @@
-export const CURRENT_APP_VERSION = '0.2.1';
+export const CURRENT_APP_VERSION = '0.3.21';
 export const GITHUB_REPO_URL = 'https://github.com/1abcdefggs/vect-or-edit';
+
+/**
+ * Returns current app version dynamically from Electron main process, or fallback.
+ */
+export async function getCurrentAppVersion() {
+  try {
+    if (window.engineAPI && typeof window.engineAPI.getAppVersion === 'function') {
+      const v = await window.engineAPI.getAppVersion();
+      if (v) return v.replace(/^v/, '');
+    }
+  } catch {
+    // ignore
+  }
+  return CURRENT_APP_VERSION;
+}
 
 /**
  * Checks if latest version has a Major or Minor update compared to current version.

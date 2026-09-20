@@ -1,4 +1,4 @@
-import { GITHUB_REPO_URL, CURRENT_APP_VERSION } from '../api/githubAPI.js';
+import { GITHUB_REPO_URL, CURRENT_APP_VERSION, getCurrentAppVersion } from '../api/githubAPI.js';
 
 export function bindUpdateModalEvents() {
   const btnGitHub = document.getElementById('btnGitHub');
@@ -19,7 +19,11 @@ export function bindUpdateModalEvents() {
   const updateCurrentVersion = document.getElementById('updateCurrentVersion');
 
   if (updateCurrentVersion) {
-    updateCurrentVersion.textContent = `v${CURRENT_APP_VERSION}`;
+    getCurrentAppVersion().then((ver) => {
+      updateCurrentVersion.textContent = `v${ver}`;
+    }).catch(() => {
+      updateCurrentVersion.textContent = `v${CURRENT_APP_VERSION}`;
+    });
   }
 
   if (btnCloseUpdateModal && updateModal) {
