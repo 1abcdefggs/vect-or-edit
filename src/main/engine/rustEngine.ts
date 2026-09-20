@@ -16,26 +16,22 @@ export async function initRustEngine() {
     // optional
   }
 
+
+  // Change code20260920, When searching for the engine binary, the editor checks candidate paths in order and loads the first one it finds. Near the beginning of this list of candidates, there are ten entries with version-specific filenames—such as `vect-or-engine-v0.3.0.win32-x64-msvc.node`. I have fixed the issue here, mirroring the change made on the engine side to use a version-agnostic filename.
   const candidateEnginePaths = [
-    // 1. Packaged Electron app (unpacked asar resources or extraResources) - Check this first when packaged
-    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
-    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-v0.3.0.node'),
-    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+    // 1. Packaged Electron app (unpacked asar resources or extraResources)
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine.node'),
     path.join(process.resourcesPath || '', 'vect-or-engine/index.js'),
-    path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
-    path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-v0.3.0.node'),
-    path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
-    path.join(process.resourcesPath || '', 'vect-or-engine-v0.3.0.win32-x64-msvc.node'),
-    path.join(process.resourcesPath || '', 'vect-or-engine-v0.3.0.node'),
-    path.join(process.resourcesPath || '', 'vect-or-engine-napi.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/vect-or-engine.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'app.asar.unpacked/node_modules/@1abcdefggs/vect-or-engine/index.js'),
+    path.join(process.resourcesPath || '', 'vect-or-engine.win32-x64-msvc.node'),
+    path.join(process.resourcesPath || '', 'vect-or-engine.node'),
+
     // 2. Development relative workspace paths
-    path.join(__dirname, '../../../vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
-    path.join(process.cwd(), '../vect-or-engine/vect-or-engine-v0.3.0.win32-x64-msvc.node'),
-    path.join(__dirname, '../../../vect-or-engine/vect-or-engine-v0.3.0.node'),
-    path.join(process.cwd(), '../vect-or-engine/vect-or-engine-v0.3.0.node'),
-    path.join(__dirname, '../../../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
-    path.join(process.cwd(), '../vect-or-engine/vect-or-engine-napi.win32-x64-msvc.node'),
+    path.join(__dirname, '../../../vect-or-engine/vect-or-engine.win32-x64-msvc.node'),
     path.join(__dirname, '../../../vect-or-engine/index.js'),
+    path.join(process.cwd(), '../vect-or-engine/vect-or-engine.win32-x64-msvc.node'),
     path.join(process.cwd(), '../vect-or-engine/index.js'),
     path.join(__dirname, '../../vect-or-engine/index.js'),
     path.join(process.cwd(), 'node_modules/@1abcdefggs/vect-or-engine/index.js'),
