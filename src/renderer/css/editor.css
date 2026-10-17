@@ -85,7 +85,7 @@
 
 .editor-header-btn {
   background: var(--bg-card, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   color: var(--text-main);
   width: auto;
   min-width: 28px;
@@ -202,7 +202,7 @@
   top: 100%;
   left: 0;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   border-radius: var(--radius-md);
   z-index: 100;
   flex-direction: column;
@@ -247,8 +247,8 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-card, #0f172a);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  border-top: var(--border-width) solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
   height: 220px;
   min-height: 140px;
   max-height: 380px;
@@ -269,7 +269,7 @@
   justify-content: space-between;
   padding: 6px 12px;
   background: rgba(0, 0, 0, 0.25);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
 }
 
 .llm-dock-title {
@@ -313,7 +313,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
@@ -327,7 +327,7 @@
 /* Inline Quick API Key Banner */
 .llm-quick-api-banner {
   background: rgba(15, 23, 42, 0.85);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
   padding: 6px 12px;
   animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -422,7 +422,7 @@
   font-size: 0.68rem;
   font-weight: 600;
   border-radius: 4px;
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
   cursor: pointer;
@@ -442,7 +442,7 @@
   gap: 8px;
   padding: 8px 12px;
   background: rgba(0, 0, 0, 0.35);
-  border-top: 1px solid var(--border-color);
+  border-top: var(--border-width) solid var(--border-color);
 }
 
 .llm-chat-input {
@@ -452,7 +452,7 @@
   padding: 6px 10px;
   font-size: 0.78rem;
   border-radius: 6px;
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   background: var(--bg-primary, #0f172a);
   color: var(--text-main);
   outline: none;

@@ -27,7 +27,7 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     },
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#080c16',
+      color: '#09131d',
       symbolColor: '#94a3b8',
       height: 38
     },

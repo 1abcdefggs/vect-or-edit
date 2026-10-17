@@ -26,7 +26,7 @@ function createAboutModalElement(): HTMLElement {
   div.className = 'settings-modal-overlay';
   div.style.display = 'none';
   div.innerHTML = `
-    <div class="settings-modal-dialog" style="width: 480px; max-width: calc(100vw - 2rem); margin: 1rem; border-radius: 12px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65); border: 1px solid var(--border-color); overflow: hidden;">
+    <div class="settings-modal-dialog" style="width: 480px; max-width: calc(100vw - 2rem); margin: 1rem; border-radius: 12px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65); border: var(--border-width) solid var(--border-color); overflow: hidden;">
       <div class="modal-header" style="padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="./assets/icon.png" alt="VectOrEdit" style="width: 22px; height: 22px; border-radius: 4px;">
@@ -51,7 +51,7 @@ function createAboutModalElement(): HTMLElement {
           Next-Generation Vector-Native Semantic Knowledge Editor & Real-Time Linter.<br>
           10-Layer Semantic Knowledge Representation Standard (W3C / DIKWP Compliant).
         </p>
-        <div style="width: 100%; display: flex; flex-direction: column; gap: 6px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; text-align: left; font-size: 0.78rem; box-sizing: border-box;">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 6px; background: var(--bg-primary); border: var(--border-width) solid var(--border-color); border-radius: 8px; padding: 12px 16px; text-align: left; font-size: 0.78rem; box-sizing: border-box;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Organization</span>
             <span style="font-weight: 600; color: var(--text-main);">vect-organization</span>
@@ -69,7 +69,7 @@ function createAboutModalElement(): HTMLElement {
             <a id="btnAboutOpenRepo" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none; font-weight: 500;">vect-organization/vect-or-edit ↙</a>
           </div>
         </div>
-        <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 0.72rem; color: var(--text-muted);">
+        <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: var(--border-width) solid var(--border-color); font-size: 0.72rem; color: var(--text-muted);">
           <span>© 2026 vect-organization.</span>
           <button id="btnAboutOk" class="toolbar-btn" style="padding: 6px 18px; background: var(--accent-color, #38bdf8); color: #020617; font-weight: 600; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">OK</button>
         </div>

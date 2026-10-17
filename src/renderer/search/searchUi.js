@@ -171,7 +171,7 @@ function renderSingleCard(r, isPreliminary = false) {
   }
 
   if (showFullMetadata && tooltipParts.length > 0) {
-    metadataHtml = `<div class="metadata-grid" style="margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 3px;">`;
+    metadataHtml = `<div class="metadata-grid" style="margin-top: 6px; padding-top: 6px; border-top: var(--border-width) solid var(--border-color); display: flex; flex-direction: column; gap: 3px;">`;
     for (const part of tooltipParts) {
       metadataHtml += `<div class="item-subtitle" style="font-size: 0.75rem; line-height: 1.35; color: var(--text-muted);">${part}</div>`;
     }
@@ -186,7 +186,7 @@ function renderSingleCard(r, isPreliminary = false) {
   const encodedJson = encodeURIComponent(JSON.stringify(r, null, 2));
 
   return `
-    <div class="result-card vector-widget-card" data-insert-text="${insertPayload.replace(/"/g, '&quot;')}" title="${tooltip}" style="padding: 6px 8px; margin-bottom: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s ease; ${isPreliminary ? 'opacity: 0.85; border-left: 3px solid #818cf8;' : ''}">
+    <div class="result-card vector-widget-card" data-insert-text="${insertPayload.replace(/"/g, '&quot;')}" title="${tooltip}" style="padding: 6px 8px; margin-bottom: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color); cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s ease; ${isPreliminary ? 'opacity: 0.85; border-left: 3px solid #818cf8;' : ''}">
       <div class="score-progress-bar" style="width: ${scorePct}%;"></div>
       <!-- Line 1: Code + Score + Title (Left) and Action Buttons (Right) -->
       <div class="card-header" style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">

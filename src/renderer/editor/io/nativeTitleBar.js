@@ -37,11 +37,12 @@ export function updateNativeTitleBarOverlay(theme) {
   if (!window.engineAPI?.setTitleBarOverlay || !theme) return;
 
   const defaultHex = theme.base === 'vs' ? '#f6f8fa' : '#171a1d';
-  const rawHeaderColor = theme.colors?.['titleBar.activeBackground']
-    || theme.colors?.['editor.background']
-    || defaultHex;
+  // The caption buttons sit on the app header strip (--header-bg), so they read as part of
+  // the header while --window-border stays a thin frame. applyThemeToDOM() toggles
+  // .light-theme before this runs, so the value is current.
+  const headerBg = getComputedStyle(document.documentElement).getPropertyValue('--header-bg');
 
-  const headerColor = sanitizeHexColor(rawHeaderColor, defaultHex);
+  const headerColor = sanitizeHexColor(headerBg, defaultHex);
   const symbolColor = getContrastingSymbolColor(headerColor, theme.base === 'vs');
 
   // Skip IPC dispatch if color values haven't changed (memoization)

@@ -21,7 +21,7 @@ body.resizing-sidebar .workspace-resizer {
 
 .suggestion-sidebar {
   width: var(--sidebar-width, 360px);
-  min-width: 240px;
+  min-width: 320px;
   max-width: 800px;
   background: var(--bg-card);
   border: 1px solid rgba(56, 189, 248, 0.22);
@@ -39,7 +39,7 @@ body.resizing-sidebar .workspace-resizer {
 .suggestion-sidebar.collapsed {
   width: 44px !important;
   min-width: 44px !important;
-  border-left: 1px solid var(--border-color, rgba(56, 189, 248, 0.22));
+  border-left: var(--border-width) solid var(--border-color, rgba(56, 189, 248, 0.22));
 }
 
 .sidebar-collapsed-rail {

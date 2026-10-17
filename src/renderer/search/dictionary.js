@@ -128,7 +128,7 @@ export async function updateSemanticStateDisplay() {
       } else {
         state.slots.forEach((slot, idx) => {
           const itemEl = document.createElement('div');
-          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: 1px solid var(--border-color); font-size: 0.75rem; gap: 6px;';
+          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); font-size: 0.75rem; gap: 6px;';
           
           const leftContainer = document.createElement('div');
           leftContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;';
@@ -192,7 +192,7 @@ function promptForPassword(filePath) {
     overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(2px);';
     
     const modal = document.createElement('div');
-    modal.style.cssText = 'background:var(--bg-panel);border:1px solid var(--border-color);border-radius:8px;padding:20px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:15px;font-family:inherit;';
+    modal.style.cssText = 'background:var(--bg-panel);border:var(--border-width) solid var(--border-color);border-radius:8px;padding:20px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:15px;font-family:inherit;';
     
     const title = document.createElement('div');
     title.textContent = `Encrypted Knowledge Slot`;
@@ -205,14 +205,14 @@ function promptForPassword(filePath) {
     const input = document.createElement('input');
     input.type = 'password';
     input.placeholder = 'Enter password...';
-    input.style.cssText = 'padding:10px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-input);color:var(--text-color);outline:none;font-size:14px;';
+    input.style.cssText = 'padding:10px;border:var(--border-width) solid var(--border-color);border-radius:6px;background:var(--bg-input);color:var(--text-color);outline:none;font-size:14px;';
     
     const btnRow = document.createElement('div');
     btnRow.style.cssText = 'display:flex;justify-content:flex-end;gap:10px;margin-top:5px;';
     
     const btnCancel = document.createElement('button');
     btnCancel.textContent = 'Cancel';
-    btnCancel.style.cssText = 'padding:6px 12px;border:1px solid var(--border-color);border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;';
+    btnCancel.style.cssText = 'padding:6px 12px;border:var(--border-width) solid var(--border-color);border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;';
     
     const btnSubmit = document.createElement('button');
     btnSubmit.textContent = 'Unlock';

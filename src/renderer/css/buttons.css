@@ -81,7 +81,7 @@ body.resizing-sidebar * {
 .btn-lang-outline {
   background: transparent !important;
   color: var(--text-main) !important;
-  border: 1px solid var(--border-color) !important;
+  border: var(--border-width) solid var(--border-color) !important;
   
   box-shadow: none !important;
   transition: all 0.2s ease;
@@ -108,7 +108,7 @@ body.resizing-sidebar * {
 
 .editor-toolbar-select {
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   color: var(--text-main);
   border-radius: var(--radius-sm);
   height: 26px;
@@ -151,7 +151,7 @@ body.resizing-sidebar * {
 .setting-select {
   background: var(--bg-primary);
   color: var(--text-main);
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 0.95rem;
@@ -197,7 +197,7 @@ body.resizing-sidebar * {
   display: flex;
   align-items: center;
   background: var(--bg-secondary, #080c14);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
   padding: 4px 8px 0 8px;
   gap: 4px;
   overflow-x: auto;
@@ -290,7 +290,7 @@ body.resizing-sidebar * {
 /* Clean Open Folder Button without excess margin */
 .editor-header-btn {
   background: transparent;
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   border-radius: var(--radius-md);
   color: var(--text-main);
   cursor: pointer;
@@ -381,7 +381,7 @@ body.resizing-sidebar * {
   align-items: center !important;
   justify-content: center !important;
   gap: 6px !important;
-  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.25)) !important;
+  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25)) !important;
   background: rgba(255, 255, 255, 0.04) !important;
   color: var(--text-muted, #94a3b8) !important;
   cursor: pointer !important;
@@ -416,7 +416,7 @@ body.resizing-sidebar * {
   min-width: 28px !important;
   padding: 0 !important;
   border-radius: var(--radius-md, 6px) !important;
-  border: 1px solid var(--border-color) !important;
+  border: var(--border-width) solid var(--border-color) !important;
   background: var(--bg-card, rgba(255, 255, 255, 0.05)) !important;
   color: var(--text-main) !important;
   display: inline-flex !important;

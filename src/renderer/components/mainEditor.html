@@ -4,7 +4,7 @@
     <!-- Center: Editor Header Actions (Save, AutoSave, Typography, Tone) -->
     <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
       <!-- Integrated File Save Group -->
-      <div class="font-control-integrated-group save-dropdown-container" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px; position: relative;">
+      <div class="font-control-integrated-group save-dropdown-container" style="display: flex; align-items: center; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: 30px; position: relative;">
 
         <!-- Combined Save & AutoSave Button -->
         <button id="btnSave" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 4px 0 6px; display: flex; align-items: center; gap: 5px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" data-i18n-title="btn_save" title="Save File (Ctrl+S) - Click LED dot to toggle AutoSave">
@@ -30,7 +30,7 @@
       <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.7; margin: 0 4px;"></span>
 
       <!-- Unified Editor Style Group [BG/FG | Font Family | Font Size] -->
-      <div class="font-control-integrated-group" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 8px; height: 32px; gap: 4px;" title="Editor Appearance & Typography">
+      <div class="font-control-integrated-group" style="display: flex; align-items: center; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md); padding: 0 8px; height: 32px; gap: 4px;" title="Editor Appearance & Typography">
         <!-- BG/FG Theme -->
         <span class="material-symbols-outlined" style="font-size: 1.15rem; color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" title="Editor Background & Text Color Theme">&#xe41d;</span>
         <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-main); margin-right: 2px;" title="Editor Background & Text Color">BG/FG</span>
@@ -79,9 +79,9 @@
 
       <div id="quickCustomColorGroup" style="display: none; align-items: center; gap: 4px;">
         <input type="color" id="quickCustomBgPicker" value="#1e1e2e" data-i18n-title="label_bg" title="Custom Background Color"
-          style="width: 22px; height: 22px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+          style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
         <input type="color" id="quickCustomFgPicker" value="#cdd6f4" data-i18n-title="label_text" title="Custom Text Color"
-          style="width: 22px; height: 22px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+          style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
       </div>
     </div>
 
@@ -104,7 +104,7 @@
     </div>
   </div>
   <!-- Chrome-style Multi-Document Tab Bar -->
-  <div class="editor-tab-bar" id="editorTabBar" style="display: flex; align-items: center; background: var(--bg-card); border-bottom: 1px solid var(--border-color);">
+  <div class="editor-tab-bar" id="editorTabBar" style="display: flex; align-items: center; background: var(--bg-card); border-bottom: var(--border-width) solid var(--border-color);">
     <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" title="Open document tabs (Double click to rename tab)"></div>
   </div>
   <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
@@ -149,7 +149,7 @@
             <option value="claude">Anthropic Claude</option>
           </select>
         </div>
-        <div class="api-key-input-container" style="flex: 1; display: flex; align-items: center; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 6px; padding: 0 4px 0 8px; height: 28px;">
+        <div class="api-key-input-container" style="flex: 1; display: flex; align-items: center; background: rgba(0, 0, 0, 0.4); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 0 4px 0 8px; height: 28px;">
           <input type="password" id="llmQuickApiKeyInput" placeholder="Enter API Key (AIzaSy... / sk-...)" autocomplete="off" spellcheck="false"
             title="Paste your API key here"
             style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: 0.75rem; letter-spacing: 0.5px; height: 100%;">

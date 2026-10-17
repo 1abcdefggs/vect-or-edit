@@ -27,7 +27,7 @@ export function showToast(message: string, type: ToastType = 'info', action?: To
   const actionHtml = actionsList.map((act, idx) => {
     const isSecondary = act.secondary;
     const btnClass = isSecondary ? 'toast-action-btn secondary' : 'toast-action-btn';
-    const extraStyle = isSecondary ? 'background: rgba(255, 255, 255, 0.12); color: var(--text-main); border: 1px solid var(--border-color);' : '';
+    const extraStyle = isSecondary ? 'background: rgba(255, 255, 255, 0.12); color: var(--text-main); border: var(--border-width) solid var(--border-color);' : '';
     return `<button class="${btnClass}" type="button" data-toast-action-idx="${idx}" style="${extraStyle}">${act.label}</button>`;
   }).join('');
 

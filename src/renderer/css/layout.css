@@ -11,6 +11,16 @@ body {
   height: 100vh;
 }
 
+/* Window frame: drawn above all content so it stays visible on same-colored backgrounds */
+.app-container::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  border: var(--window-border-width) solid var(--window-border);
+  pointer-events: none;
+  z-index: 9999;
+}
+
 .app-header {
   height: 38px;
   background-color: var(--header-bg, #080c16);
@@ -140,7 +150,7 @@ body.master-ai-standby .header-full-border-line {
 
 .sidebar-header {
   padding: 10px 14px 10px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
   background: var(--header-bg, var(--bg-secondary));
   flex-shrink: 0;
   max-height: 55vh;
