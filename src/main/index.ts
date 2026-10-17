@@ -15,6 +15,7 @@ import {
   loadProfileFile,
   resolveProfilePathForKb,
   readStrippedKnowledgeItems,
+  normalizeKbPayload,
   reloadCombinedKnowledgeIndex,
   setActiveProfile,
   resetActiveProfile,
@@ -240,10 +241,10 @@ if (!gotTheLock) {
             if (isVenc && _vault && resolvedPassword) {
               console.log(`[App] Decrypting ${fp} with password length: ${resolvedPassword.length}`);
               const rawBuf = await fsPromises.readFile(fp);
-              arr = await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword);
+              arr = normalizeKbPayload(await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword)).items;
             } else if (!isVenc) {
               const raw = await fsPromises.readFile(fp, 'utf-8');
-              arr = JSON.parse(raw);
+              arr = normalizeKbPayload(JSON.parse(raw)).items;
             }
           } catch (e) {
             arr = [];
@@ -397,8 +398,7 @@ if (!gotTheLock) {
           let count = 0;
           try {
             const raw = await fsPromises.readFile(fp, 'utf-8');
-            const arr = JSON.parse(raw);
-            count = Array.isArray(arr) ? arr.length : 0;
+            count = normalizeKbPayload(JSON.parse(raw)).items.length;
           } catch (e) { }
 
           knowledgeSlots.push({ id: slotId, name: base, filePath: fp, itemCount: count });

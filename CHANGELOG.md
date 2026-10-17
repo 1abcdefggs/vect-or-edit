@@ -5,6 +5,16 @@ All notable changes to the **VectOrEdit** (`vect-or-edit`) desktop application w
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.23] - 2026-10-01
+
+### Fixed
+- KB slots accepted only a top-level JSON array; Generate's compiled payload (`{domain, entities}`, also inside `.venc`) and schema v2 (`{concepts}`) loaded as 0 items without error → `normalizeKbPayload()`
+- Profile files were never passed to the Rust linter (`engine.loadProfile` unused) → `pushProfileToEngine()`
+- Vector search with a mismatched embedder (LLM / cloud vs e5-small KB) returned meaningless scores → engine `DimensionMismatch` mapped to `{ code: DIMENSION_MISMATCH, fallback: 'P.scan' }`; renderer falls back to dictionary results
+
+### Removed
+- `resolveReferencePathForKb()` (contradicted ADR-0005: Reference = `labels[].provenance`, not a separate file)
+
 ## [0.3.22] - 2026-09-20
 
 ### Added
