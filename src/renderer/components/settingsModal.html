@@ -90,7 +90,7 @@
           </div>
           <div style="display: flex; gap: 8px;">
             <button id="btnExportWorkspace" class="toolbar-btn"
-              style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
+              style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: var(--border-width) solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
               <span data-i18n="btn_export_workspace">Save Workspace</span>
             </button>
             <button id="btnImportWorkspace" class="toolbar-btn"
@@ -181,12 +181,12 @@
             <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
               <span data-i18n="label_bg">Background:</span>
               <input type="color" id="modalCustomBgPicker" value="#1e1e2e"
-                style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+                style="width: 28px; height: 28px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
             </label>
             <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
               <span data-i18n="label_text">Text:</span>
               <input type="color" id="modalCustomFgPicker" value="#cdd6f4"
-                style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+                style="width: 28px; height: 28px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
             </label>
           </div>
         </div>
@@ -418,7 +418,7 @@
               </div>
               <!-- Text Embedding Models Reference Table (English) -->
               <details
-                style="margin-top: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 10px; transition: all 0.2s ease;">
+                style="margin-top: 8px; background: rgba(0, 0, 0, 0.2); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 6px 10px; transition: all 0.2s ease;">
                 <summary
                   style="font-size: 0.74rem; font-weight: 600; color: var(--accent-color, #38bdf8); cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; outline: none; padding: 4px 0;">
                   <span style="display: flex; align-items: center; gap: 6px;">
@@ -460,7 +460,7 @@
                         <td style="padding: 5px 6px;">Multilingual (JA/EN/etc). Ultra-fast, low memory footprint.</td>
                         <td style="padding: 5px 6px; text-align: center;">
                           <button type="button" class="btn-switch-model" data-model="Xenova/multilingual-e5-small"
-                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
                         </td>
                       </tr>
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
@@ -473,7 +473,7 @@
                           embedding.</td>
                         <td style="padding: 5px 6px; text-align: center;">
                           <button type="button" class="btn-switch-model" data-model="Xenova/all-MiniLM-L6-v2"
-                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
                         </td>
                       </tr>
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
@@ -486,7 +486,7 @@
                         </td>
                         <td style="padding: 5px 6px; text-align: center;">
                           <button type="button" class="btn-switch-model" data-model="Xenova/bge-small-en-v1.5"
-                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
                         </td>
                       </tr>
                     </tbody>
@@ -557,18 +557,18 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
             <div class="provider-cards-grid"
               style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
               <div class="provider-card" data-provider="gemini"
-                style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                style="padding: 12px 8px; border: var(--border-width) solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
                 <div class="provider-name">Google Gemini <span class="tool-version">v1beta</span></div>
                 <div style="font-size: 0.65rem; color: var(--accent-color, #38bdf8);" data-i18n="card_cloud_desc">CLOUD
                   API</div>
               </div>
               <div class="provider-card" data-provider="openai"
-                style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                style="padding: 12px 8px; border: var(--border-width) solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
                 <div class="provider-name">OpenAI <span class="tool-version">v1</span></div>
                 <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
               </div>
               <div class="provider-card" data-provider="claude"
-                style="padding: 12px 8px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
+                style="padding: 12px 8px; border: var(--border-width) solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
                 <div class="provider-name">Claude <span class="tool-version">v3</span></div>
                 <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
               </div>
@@ -594,7 +594,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
                 </a>
               </div>
               <div class="api-key-input-container"
-                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
+                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
                 <span class="material-symbols-outlined"
                   style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
                 <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." autocomplete="off"
@@ -649,7 +649,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
                 </a>
               </div>
               <div class="api-key-input-container"
-                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
+                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
                 <span class="material-symbols-outlined"
                   style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
                 <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." autocomplete="off"
@@ -691,7 +691,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
                 </a>
               </div>
               <div class="api-key-input-container"
-                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
+                style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
                 <span class="material-symbols-outlined"
                   style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
                 <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"
@@ -899,7 +899,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
               definitions into HNSW index.</div>
           </div>
           <button id="btnModalImportDict" class="toolbar-btn"
-            style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;  cursor: pointer;">
+            style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: var(--border-width) solid var(--border-color); color: var(--text-main); border-radius: 6px;  cursor: pointer;">
             <span data-i18n="btn_import_dict">Import Dictionary</span>
           </button>
         </div>
@@ -922,7 +922,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
     <div id="tabSystem" class="settings-tab-content">
 
       <!-- Log & Console Display Preferences Card -->
-      <div class="settings-section-card" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color, rgba(255,255,255,0.08)); border-radius: 8px; padding: 14px 16px;">
+      <div class="settings-section-card" style="background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color, rgba(255,255,255,0.08)); border-radius: 8px; padding: 14px 16px;">
         <h4 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
           <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">terminal</span>
           <span data-i18n="system_logs_title">System Logs & Console</span>
@@ -938,7 +938,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
       </div>
 
       <!-- Application Maintenance Card -->
-      <div class="settings-section-card settings-maintenance-card" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color, rgba(255,255,255,0.08)); border-radius: 8px; padding: 14px 16px;">
+      <div class="settings-section-card settings-maintenance-card" style="background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color, rgba(255,255,255,0.08)); border-radius: 8px; padding: 14px 16px;">
         <h4 style="margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
           <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #fbbf24;">build</span>
           <span>Application Maintenance</span>
@@ -948,7 +948,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
             <div class="setting-label">Clear Application Cache</div>
             <div class="setting-desc">Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys.</div>
           </div>
-          <button id="btnClearAppCache" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Clear Cache</button>
+          <button id="btnClearAppCache" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(255,255,255,0.06); border: var(--border-width) solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Clear Cache</button>
         </div>
         <div class="setting-item" style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
           <div>
@@ -969,7 +969,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
             <div class="setting-label">Restart Application</div>
             <div class="setting-desc">Closes and relaunches the Electron application. It keeps settings, documents, cached models, Knowledge Slots, and encrypted API keys.</div>
           </div>
-          <button id="btnRestartApplication" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Restart</button>
+          <button id="btnRestartApplication" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(255, 255, 255, 0.08); border: var(--border-width) solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Restart</button>
         </div>
       </div>
     </div>

@@ -55,6 +55,24 @@ export function resolveProfilePathForKb(kbPath: string): string | null {
   return null;
 }
 
+/**
+ * Hand the profile file to the Rust linter (validateSync / validate). Previously Edit only
+ * kept the profile in TS (substring checks in semantics:query), so the engine ran with an
+ * empty Profile. Engine >= this change adapts guideline_*.json (ADR-0005 Q5) and keeps the
+ * loaded KB; failure is non-fatal (TS-side checks still run).
+ */
+async function pushProfileToEngine(profilePath: string, data: any): Promise<void> {
+  const engine: any = getEngine();
+  if (!engine || typeof engine.loadProfile !== 'function') return;
+  if (Array.isArray(data?.rules) && data.rules.length === 0) return; // preset/template-only file: nothing for the linter
+  try {
+    await engine.loadProfile(profilePath);
+    console.log(`[App] Rust linter profile loaded: ${path.basename(profilePath)}`);
+  } catch (err: any) {
+    console.warn(`[App] Rust linter did not accept ${path.basename(profilePath)}: ${err?.message || err}`);
+  }
+}
+
 export async function loadProfileFile(profilePath: string): Promise<any> {
   try {
     if (fs.existsSync(profilePath)) {
@@ -77,6 +95,7 @@ export async function loadProfileFile(profilePath: string): Promise<any> {
         };
       }
       console.log(`[App] Loaded Lint Profile from ${path.basename(profilePath)}: ${data.domain_name || data.profile_id || 'OK'}`);
+      await pushProfileToEngine(profilePath, data);
       return data;
     }
   } catch (err) {
@@ -85,12 +104,62 @@ export async function loadProfileFile(profilePath: string): Promise<any> {
   return null;
 }
 
+/**
+ * Mirror of vect-or-generate/core/compiler/projectV2.mjs#normalizeKbPayload (keep in sync;
+ * shared fixture: vect-or-generate/tests/migrate.test.mjs Test 6).
+ * Accepts every KB shape Generate emits and returns the flat item array that
+ * vect-or-engine's load_knowledge_base expects ({ id, vector, ...metadata }).
+ * Previously only a top-level array was accepted, so Generate's compiled payload
+ * ({ domain, entities[] }) and schema v2 ({ concepts[] }) loaded as 0 items without an error.
+ */
+export function normalizeKbPayload(payload: any): { items: any[]; format: string; skipped: number } {
+  if (Array.isArray(payload)) return { items: payload, format: 'array', skipped: 0 };
+  if (payload && Array.isArray(payload.concepts)) {
+    const concepts: any[] = payload.concepts;
+    let facet: string | null = null;
+    for (const c of concepts) {
+      const e = (c.embeddings || []).find((x: any) => Array.isArray(x.vector) && x.vector.length > 0);
+      if (e) { facet = e.facet; break; }
+    }
+    const readingBySense = new Map<string, string>();
+    for (const f of Array.isArray(payload.forms) ? payload.forms : []) {
+      const r = Array.isArray(f.reading) && f.reading[0] ? f.reading[0].value : undefined;
+      if (r) for (const sid of f.senses || []) readingBySense.set(sid, r);
+    }
+    const items: any[] = [];
+    let skipped = 0;
+    for (const c of concepts) {
+      const emb = (c.embeddings || []).find((e: any) => e.facet === facet && Array.isArray(e.vector) && e.vector.length > 0);
+      if (!emb) { skipped++; continue; }
+      const labels: any[] = c.labels || [];
+      const pref = labels.find((l) => l.kind === 'pref') || labels[0];
+      const sense = (c.senses || [])[0];
+      const code = (c.notations || []).find((n: any) => n.scheme && n.scheme !== 'legacy-id');
+      items.push({
+        id: c.id,
+        name: pref ? pref.text : c.id,
+        reading: (sense && readingBySense.get(sense.id)) || '',
+        definition: sense ? sense.definition : '',
+        code: code ? `${code.scheme}: ${code.value}` : '',
+        synonyms: labels.filter((l) => l.kind === 'alt').map((l) => l.text),
+        category: c.category || '',
+        facet: c.facet || 'F.concept',
+        embeddingFacet: facet,
+        ...(pref && pref.provenance ? { provenance: pref.provenance } : {}),
+        vector: emb.vector
+      });
+    }
+    return { items, format: 'concepts', skipped };
+  }
+  if (payload && Array.isArray(payload.entities)) return { items: payload.entities, format: 'entities', skipped: 0 };
+  return { items: [], format: 'unknown', skipped: 0 };
+}
+
 export async function readStrippedKnowledgeItems(targetPath: string): Promise<any[]> {
   if (!targetPath || !fs.existsSync(targetPath)) return [];
   try {
     const content = await fsPromises.readFile(targetPath, 'utf-8');
-    const list = JSON.parse(content);
-    if (!Array.isArray(list)) return [];
+    const list = normalizeKbPayload(JSON.parse(content)).items;
     return list.map((item: any) => {
       const { vector, ...rest } = item;
       return rest;
@@ -98,6 +167,13 @@ export async function readStrippedKnowledgeItems(targetPath: string): Promise<an
   } catch {
     return [];
   }
+}
+
+function logNormalized(slotName: string, payload: any): any[] {
+  const n = normalizeKbPayload(payload);
+  if (n.format === 'unknown') console.warn(`[App] ${slotName}: unrecognized KB shape, 0 items loaded`);
+  if (n.skipped > 0) console.warn(`[App] ${slotName}: ${n.skipped} concept(s) without a usable embedding were skipped`);
+  return n.items;
 }
 
 export async function reloadCombinedKnowledgeIndex(): Promise<number> {
@@ -128,12 +204,10 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
             continue;
           }
           const rawBuf = await fsPromises.readFile(slot.filePath);
-          parsed = await _vault.decryptKnowledgeBase(rawBuf, slot.vencPassword);
-          if (!Array.isArray(parsed)) parsed = [];
+          parsed = logNormalized(slot.name, await _vault.decryptKnowledgeBase(rawBuf, slot.vencPassword));
         } else {
           const raw = await fsPromises.readFile(slot.filePath, 'utf-8');
-          parsed = JSON.parse(raw);
-          if (!Array.isArray(parsed)) parsed = [];
+          parsed = logNormalized(slot.name, JSON.parse(raw));
         }
 
         allItems.push(...parsed);

@@ -1,7 +1,7 @@
 /* Theme-aware select styling */
 .toolbar-select {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   color: var(--header-fg, var(--text-main));
   height: 32px;
   line-height: 30px;
@@ -141,7 +141,7 @@
   width: 50px;
   height: 20px;
   cursor: pointer;
-  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.25));
+  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
   overflow: hidden;
   user-select: none;
   margin: 0;
@@ -257,7 +257,7 @@
   margin-top: 4px;
   min-width: 210px;
   background-color: var(--bg-card, #111827);
-  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.2));
+  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.2));
   border-radius: var(--radius-md, 6px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
   padding: 4px 0;
@@ -391,7 +391,7 @@
 /* Configured / Active State: Clean theme-integrated pill */
 #btnHeaderModelSettings.model-status-ready {
   background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15)) !important;
+  border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.15)) !important;
 }
 
 #btnHeaderModelSettings.model-status-ready .material-symbols-outlined {

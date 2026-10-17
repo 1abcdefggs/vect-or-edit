@@ -15,6 +15,7 @@ import {
   loadProfileFile,
   resolveProfilePathForKb,
   readStrippedKnowledgeItems,
+  normalizeKbPayload,
   reloadCombinedKnowledgeIndex,
   setActiveProfile,
   resetActiveProfile,
@@ -25,7 +26,6 @@ import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISema
 import { createWindow, getMainWindow } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 
-let customEmbedderPath: string | null = null;
 let currentKbPath: string = ""; // Default empty
 
 initLogger();
@@ -137,15 +137,6 @@ if (!gotTheLock) {
     });
 
 
-    ipcMain.handle('embedder:getPath', () => {
-      return customEmbedderPath || path.join(process.cwd(), 'node_modules/@vect-or-engine/core/models/onnx');
-    });
-
-    ipcMain.handle('embedder:setPath', async (_event, newPath: string) => {
-      customEmbedderPath = newPath;
-      return { success: true };
-    });
-
     // --- Multi-Slot Knowledge & Goal Profile IPC Handlers ---
     ipcMain.handle('engine:getSemanticState', () => {
       return {
@@ -240,10 +231,10 @@ if (!gotTheLock) {
             if (isVenc && _vault && resolvedPassword) {
               console.log(`[App] Decrypting ${fp} with password length: ${resolvedPassword.length}`);
               const rawBuf = await fsPromises.readFile(fp);
-              arr = await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword);
+              arr = normalizeKbPayload(await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword)).items;
             } else if (!isVenc) {
               const raw = await fsPromises.readFile(fp, 'utf-8');
-              arr = JSON.parse(raw);
+              arr = normalizeKbPayload(JSON.parse(raw)).items;
             }
           } catch (e) {
             arr = [];
@@ -397,8 +388,7 @@ if (!gotTheLock) {
           let count = 0;
           try {
             const raw = await fsPromises.readFile(fp, 'utf-8');
-            const arr = JSON.parse(raw);
-            count = Array.isArray(arr) ? arr.length : 0;
+            count = normalizeKbPayload(JSON.parse(raw)).items.length;
           } catch (e) { }
 
           knowledgeSlots.push({ id: slotId, name: base, filePath: fp, itemCount: count });

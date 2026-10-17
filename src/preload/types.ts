@@ -93,8 +93,6 @@ export interface SemanticState {
 }
 
 export interface EngineAPI {
-  getEmbedderPath: () => Promise<string>;
-  setEmbedderPath: (path: string) => Promise<{ success: boolean; error?: string }>;
   searchVector: (vector: number[], limit?: number) => Promise<SearchVectorResponse>;
   saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => Promise<{ success: boolean, path?: string, filePath?: string, error?: string }>;
   openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, error?: string }>;

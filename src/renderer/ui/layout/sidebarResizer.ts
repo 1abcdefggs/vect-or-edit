@@ -7,7 +7,7 @@ export function initSidebarResizer(): void {
   const savedWidth = localStorage.getItem('vectoreditor_sidebar_width');
   if (savedWidth) {
     const parsed = parseInt(savedWidth, 10);
-    if (parsed >= 240 && parsed <= 800) {
+    if (parsed >= 320 && parsed <= 800) {
       document.documentElement.style.setProperty('--sidebar-width', `${parsed}px`);
     }
   }
@@ -28,7 +28,7 @@ export function initSidebarResizer(): void {
       if (!isDragging) return;
       const deltaX = startX - moveEvent.clientX;
       const maxWidth = Math.min(window.innerWidth * 0.65, 800);
-      const newWidth = Math.max(240, Math.min(maxWidth, startWidth + deltaX));
+      const newWidth = Math.max(320, Math.min(maxWidth, startWidth + deltaX));
       document.documentElement.style.setProperty('--sidebar-width', `${newWidth}px`);
       if ((window as any).monacoEditorInstance) {
         (window as any).monacoEditorInstance.layout();
