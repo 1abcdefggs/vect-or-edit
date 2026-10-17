@@ -2,6 +2,11 @@ import { editorEvents } from '../core/editorEvents.js';
 import { getEditorInstance, getMonaco } from '../core/editorCore.js';
 import { triggerAdaptiveAutoSave } from '../ui/autoSaveManager.js';
 import { t } from '../../core/i18n.js';
+import jaLocale from '../../locales/ja.json';
+import enLocale from '../../locales/en.json';
+
+// First heading of the welcome document in every locale, read from the dictionaries (not hardcoded)
+const WELCOME_HEADINGS = [enLocale, jaLocale].map(dict => dict.initial_document_content.split('\n')[0]);
 
 export let tabs = [];
 export let activeTabId = null;
@@ -144,7 +149,7 @@ if (typeof window !== 'undefined') {
     tabs.forEach(tab => {
       if (tab.model) {
         const currentVal = tab.model.getValue();
-        const isWelcomeText = currentVal.includes('# Welcome to VectOrEdit') || currentVal.includes('# VectOrEdit へようこそ');
+        const isWelcomeText = WELCOME_HEADINGS.some(heading => currentVal.includes(heading));
         if (tab.isWelcomeDoc || isWelcomeText) {
           const newContent = t('initial_document_content') || '';
           tab.model.setValue(newContent);
