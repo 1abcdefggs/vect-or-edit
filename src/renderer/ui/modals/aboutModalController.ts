@@ -44,7 +44,7 @@ function createAboutModalElement(): HTMLElement {
           <img src="./assets/icon.png" alt="VectOrEdit" style="width: 48px; height: 48px; border-radius: 14px; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);">
           <div style="font-size: 1.35rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;">VectOrEdit</div>
           <div style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 20px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-color, #38bdf8); font-size: 0.8rem; font-family: monospace; font-weight: 600;">
-            v0.3.21 (Stable)
+            <span id="aboutVersionBadge"></span>
           </div>
         </div>
         <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin: 0;">

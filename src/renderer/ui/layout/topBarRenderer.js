@@ -10,9 +10,12 @@ export function initTopBarRenderer() {
 
   if (window.engineAPI?.getAppVersion) {
     window.engineAPI.getAppVersion().then((version) => {
-      const versionEl = document.getElementById('appVersionBadge');
-      if (versionEl && version) {
-        versionEl.textContent = `v${version}`;
+      if (!version) return;
+      const label = `v${version}`;
+      const badgeEls = ['appVersionBadge', 'aboutVersionBadge'];
+      for (const id of badgeEls) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = label;
       }
     }).catch(() => {});
   }
