@@ -26,7 +26,6 @@ import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISema
 import { createWindow, getMainWindow } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 
-let customEmbedderPath: string | null = null;
 let currentKbPath: string = ""; // Default empty
 
 initLogger();
@@ -137,15 +136,6 @@ if (!gotTheLock) {
       }
     });
 
-
-    ipcMain.handle('embedder:getPath', () => {
-      return customEmbedderPath || path.join(process.cwd(), 'node_modules/@vect-or-engine/core/models/onnx');
-    });
-
-    ipcMain.handle('embedder:setPath', async (_event, newPath: string) => {
-      customEmbedderPath = newPath;
-      return { success: true };
-    });
 
     // --- Multi-Slot Knowledge & Goal Profile IPC Handlers ---
     ipcMain.handle('engine:getSemanticState', () => {

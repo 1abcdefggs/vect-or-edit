@@ -17,7 +17,6 @@ export async function initRustEngine() {
   }
 
 
-  // Change code20260920, When searching for the engine binary, the editor checks candidate paths in order and loads the first one it finds. Near the beginning of this list of candidates, there are ten entries with version-specific filenames—such as `vect-or-engine-v0.3.0.win32-x64-msvc.node`. I have fixed the issue here, mirroring the change made on the engine side to use a version-agnostic filename.
   const candidateEnginePaths = [
     // 1. Packaged Electron app (unpacked asar resources or extraResources)
     path.join(process.resourcesPath || '', 'vect-or-engine/vect-or-engine.win32-x64-msvc.node'),
@@ -34,8 +33,7 @@ export async function initRustEngine() {
     path.join(process.cwd(), '../vect-or-engine/vect-or-engine.win32-x64-msvc.node'),
     path.join(process.cwd(), '../vect-or-engine/index.js'),
     path.join(__dirname, '../../vect-or-engine/index.js'),
-    path.join(process.cwd(), 'node_modules/@1abcdefggs/vect-or-engine/index.js'),
-    path.join(process.cwd(), 'node_modules/@vect-or-engine/core/index.js')
+    path.join(process.cwd(), 'node_modules/@1abcdefggs/vect-or-engine/index.js')
   ];
 
   for (const candidate of candidateEnginePaths) {
@@ -60,13 +58,7 @@ export async function initRustEngine() {
       rustBinaryLoaded = true;
       console.log('[App] Successfully bound Rust N-API engine from package @1abcdefggs/vect-or-engine');
     } catch (e1) {
-      try {
-        engine = require('@vect-or-engine/core');
-        rustBinaryLoaded = true;
-        console.log('[App] Successfully bound Rust N-API engine from legacy package @vect-or-engine/core');
-      } catch (e2) {
-        console.error('[App] Failed to bind Rust N-API engine binary:', e1);
-      }
+      console.error('[App] Failed to bind Rust N-API engine binary:', e1);
     }
   }
 

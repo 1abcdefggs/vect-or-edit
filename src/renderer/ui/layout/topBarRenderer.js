@@ -17,12 +17,6 @@ export function initTopBarRenderer() {
     }).catch(() => {});
   }
 
-  const btnOpenEl = document.getElementById('btnOpen');
-  // if (btnOpenEl) btnOpenEl.innerHTML = icons.open;
-
-  const btnSaveEl = document.getElementById('btnSave');
-  // if (btnSaveEl) btnSaveEl.innerHTML = icons.save;
-
   const copyAllIconEl = document.getElementById('copyAllIcon');
   if (copyAllIconEl) copyAllIconEl.innerHTML = icons.copy;
 
