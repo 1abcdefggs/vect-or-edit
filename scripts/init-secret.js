@@ -5,7 +5,6 @@ import crypto from 'node:crypto';
 
 
 const ENV_PATH = path.resolve(process.cwd(), '.env');
-const FALLBACK_PASSWORD = 'vectoreditor_default_password_change_me_soon';
 
 /**
  * Generates a secure random 32-byte hex string.
@@ -24,23 +23,24 @@ async function hasExistingSecret() {
 }
 
 /**
- * Extracts the vault password from the existing .env file, or returns a fallback.
+ * Returns the vault password from the existing .env file, or generates a new random one.
+ * No public default is used, so a fresh checkout never writes a guessable password.
  */
 async function getVaultPassword() {
-  if (!existsSync(ENV_PATH)) return FALLBACK_PASSWORD;
-
-  try {
-    const currentEnv = await fs.readFile(ENV_PATH, 'utf8');
-    const match = currentEnv.match(/VECTOR_VAULT_PASSWORD=["']?([^"'\n]+)["']?/);
-    if (match && match[1]) {
-      return match[1];
+  if (existsSync(ENV_PATH)) {
+    try {
+      const currentEnv = await fs.readFile(ENV_PATH, 'utf8');
+      const match = currentEnv.match(/VECTOR_VAULT_PASSWORD=["']?([^"'\n]+)["']?/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    } catch (e) {
+      console.warn('Failed to read vault password from .env, generating a new one.', e);
     }
-  } catch (e) {
-    console.warn('Failed to read vault password from .env, using fallback.', e);
   }
 
-  console.warn('Vault password not found in .env, using fallback.');
-  return FALLBACK_PASSWORD;
+  console.log('Vault password not found in .env, generating a new random one.');
+  return generateSecret();
 }
 
 /**
