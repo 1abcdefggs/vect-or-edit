@@ -33,7 +33,7 @@
     "clear": "npm run clean",
     "prebuild": "npm run clean",
     "predev": "node -e \"const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} try{cp.execSync('taskkill /F /IM VectOrEdit.exe /T',{stdio:'ignore'});}catch(e){}\"",
-    "dev": "electron-vite dev",
+    "dev": "node scripts/dev.js",
     "dev:reset": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){fs.rmSync(appData, {recursive:true, force:true}); console.log('VectOrEdit development app data reset.');}\"",
     "build": "electron-vite build",
     "build:win": "electron-vite build && electron-builder --win",
@@ -43,7 +43,7 @@
     "test": "vitest run",
     "init:secret": "node scripts/init-secret.js",
     "postinstall": "npm run init:secret",
-    "dev:debug": "electron-vite dev -- --inspect=5858 --remote-debugging-port=9222"
+    "dev:debug": "node scripts/dev.js -- --inspect=5858 --remote-debugging-port=9222"
   },
   "dependencies": {
     "@1abcdefggs/vect-or-engine": "file:../vect-or-engine",
