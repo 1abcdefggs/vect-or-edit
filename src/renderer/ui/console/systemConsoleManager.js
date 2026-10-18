@@ -165,6 +165,8 @@ export function initSystemConsole() {
     });
   }
 
+  // The LOGS panel opens on every launch (not persisted).
+  if (systemLogPanel) systemLogPanel.style.display = 'flex';
   updateConsoleButtonState();
 
   if (btnClearLogs && logEntriesContainer) {
