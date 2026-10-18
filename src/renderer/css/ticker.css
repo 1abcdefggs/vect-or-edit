@@ -440,6 +440,11 @@
   background: #fa1;
 }
 
+/* Icons keep the arrow pointer even inside clickable controls (the control itself keeps its pointer) */
+.material-symbols-outlined {
+  cursor: default;
+}
+
 /* Flow Arrow between pipeline stages */
 .flow-arrow {
   display: inline-flex;
