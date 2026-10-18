@@ -488,7 +488,8 @@ function initLlmChatDock() {
   // Disable input when Master AI is OFF
   const updateChatInputState = () => {
     const state = aiManager.getState?.() ?? {};
-    const disabled = !state.master;
+    // Input needs both the master switch and a configured model (key present).
+    const disabled = !state.master || !state.modelConfigured;
     if (chatInput) chatInput.disabled = disabled;
     if (btnSend) btnSend.disabled = disabled;
     if (btnClear) btnClear.disabled = disabled;
