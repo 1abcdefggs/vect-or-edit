@@ -71,11 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
       }
-
-      if (status.profileName) {
-        const activeProfileEl = document.getElementById('activeProfileName');
-        if (activeProfileEl) activeProfileEl.textContent = status.profileName;
-      }
     });
   }
 
@@ -91,11 +86,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
       } else {
         setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
-      }
-
-      if (status?.profileName) {
-        const activeProfileEl = document.getElementById('activeProfileName');
-        if (activeProfileEl) activeProfileEl.textContent = status.profileName;
       }
     }).catch(() => {
       setLedStatus('bin', 'error', '5. RUST: IPC Connection Failed');

@@ -45,8 +45,6 @@ export function setKnowledgeItems(kbItems) {
 }
 
 export async function updateSemanticStateDisplay() {
-  const activeProfileEl = document.getElementById('activeProfileName');
-  const activeRuleCountEl = document.getElementById('activeGoalRuleCount');
   const btnInsertTemplate = document.getElementById('btnInsertTemplate');
   const slotsListEl = document.getElementById('knowledgeSlotsList');
 
@@ -76,21 +74,12 @@ export async function updateSemanticStateDisplay() {
       if (btnResetGoal) {
         btnResetGoal.style.display = 'inline-flex';
       }
-      if (activeProfileEl) {
-        activeProfileEl.textContent = g.domain_name || g.profile_id || 'Custom Profile';
-        activeProfileEl.title = `${g.domain_name || g.profile_id}\n${g.description || ''}`;
-      }
-      if (activeRuleCountEl) {
-        activeRuleCountEl.textContent = `${ruleCount} ${t('label_rules') || 'rules'}`;
-      }
       if (btnInsertTemplate) {
         btnInsertTemplate.style.display = hasTemplate ? 'inline-flex' : 'none';
       }
     } else {
       const btnResetGoal = document.getElementById('btnResetGoal');
       if (btnResetGoal) btnResetGoal.style.display = 'none';
-      if (activeProfileEl) activeProfileEl.textContent = t('default_profile') || 'Default Profile (Unrestricted)';
-      if (activeRuleCountEl) activeRuleCountEl.textContent = t('rule_count_zero') || '0 rules';
       if (btnInsertTemplate) btnInsertTemplate.style.display = 'none';
     }
 
@@ -115,17 +104,7 @@ export async function updateSemanticStateDisplay() {
 
     if (slotsListEl) {
       slotsListEl.innerHTML = '';
-      if (!state?.slots || state.slots.length === 0) {
-        const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
-        slotsListEl.innerHTML = `
-          <div style="display: flex; align-items: center; justify-content: space-between; overflow: hidden; padding: 2px 0;">
-            <span style="font-size: 0.8rem;  color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-i18n="slots_empty_placeholder">
-              ${t('slots_empty_placeholder') || 'No Knowledge Base'}
-            </span>
-            <span style="font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;">0 ${itemLabel}</span>
-          </div>
-        `;
-      } else {
+      if (state?.slots?.length) {
         state.slots.forEach((slot, idx) => {
           const itemEl = document.createElement('div');
           itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); font-size: 0.75rem; gap: 6px;';
