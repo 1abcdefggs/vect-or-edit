@@ -5,20 +5,8 @@ export const TONE_COLORS = {
   default: null,
   oled: { bg: '#000000', fg: '#f8fafc', gutter: '#000000', lineNo: '#475569', isDark: true },
   dark_oled: { bg: '#000000', fg: '#f8fafc', gutter: '#000000', lineNo: '#475569', isDark: true },
-  obsidian: { bg: '#0d1117', fg: '#e6edf3', gutter: '#0d1117', lineNo: '#6e7681', isDark: true },
-  dark_obsidian: { bg: '#0d1117', fg: '#e6edf3', gutter: '#0d1117', lineNo: '#6e7681', isDark: true },
-  charcoal: { bg: '#1c1c1e', fg: '#f2f2f7', gutter: '#1c1c1e', lineNo: '#8e8e93', isDark: true },
-  dark_charcoal: { bg: '#1c1c1e', fg: '#f2f2f7', gutter: '#1c1c1e', lineNo: '#8e8e93', isDark: true },
-  slate: { bg: '#1e293b', fg: '#f8fafc', gutter: '#1e293b', lineNo: '#64748b', isDark: true },
-  dark_slate: { bg: '#1e293b', fg: '#f8fafc', gutter: '#1e293b', lineNo: '#64748b', isDark: true },
-  ivory: { bg: '#FFFFF0', fg: '#1c1917', gutter: '#fbfbf0', lineNo: '#78716c', isDark: false },
-  light_ivory: { bg: '#FFFFF0', fg: '#1c1917', gutter: '#fbfbf0', lineNo: '#78716c', isDark: false },
-  warmWhite: { bg: '#FAFAF9', fg: '#292524', gutter: '#f5f5f4', lineNo: '#78716c', isDark: false },
-  light_warm: { bg: '#FAFAF9', fg: '#292524', gutter: '#f5f5f4', lineNo: '#78716c', isDark: false },
   snow: { bg: '#FFFFFF', fg: '#0f172a', gutter: '#f8fafc', lineNo: '#94a3b8', isDark: false },
   light_snow: { bg: '#FFFFFF', fg: '#0f172a', gutter: '#f8fafc', lineNo: '#94a3b8', isDark: false },
-  paper: { bg: '#FDFBF7', fg: '#332f2c', gutter: '#f7f4ee', lineNo: '#78716c', isDark: false },
-  light_paper: { bg: '#FDFBF7', fg: '#332f2c', gutter: '#f7f4ee', lineNo: '#78716c', isDark: false }
 };
 
 export function updateEditorOptions(options, editorInstances = []) {
