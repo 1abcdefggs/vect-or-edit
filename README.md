@@ -146,6 +146,8 @@ npm run build
 npm run build:win
 ```
 
+> **Updates**: The installer build is the primary distribution and updates itself. The portable build does **not** update itself. When a new version is available it shows a notice that links to the release page, and you download the new portable build from there.
+
 ---
 
 ## Security Architecture & Dual-Lock Spec

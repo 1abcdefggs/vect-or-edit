@@ -20,10 +20,18 @@ export function initUpdateChecker(): void {
           container.style.background = 'rgba(0, 0, 0, 0.2)';
           break;
         case 'available':
-          textEl.textContent = t('update_available', { version: data.version });
           iconEl.style.color = '#e67e22'; // orange alert
           iconEl.innerHTML = '&#xe8d3;'; // notification/update icon
           container.style.background = 'rgba(230, 126, 34, 0.25)';
+          if (data.portable) {
+            // Portable builds cannot self-update; open the release page instead.
+            textEl.textContent = t('update_available_portable', { version: data.version });
+            container.onclick = () => {
+              (window.engineAPI as any)?.openExternal?.(data.url);
+            };
+            break;
+          }
+          textEl.textContent = t('update_available', { version: data.version });
           container.onclick = async () => {
             if (confirm(t('update_confirm', { version: data.version }))) {
               textEl.textContent = t('update_preparing');

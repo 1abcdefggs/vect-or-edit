@@ -5,6 +5,11 @@ import { ipcMain, BrowserWindow } from 'electron';
 // Fake update events for UI testing. Enabled only when explicitly requested.
 const SIMULATE_UPDATER = process.env.VECTOR_UPDATER_SIMULATE === '1';
 
+// The portable build cannot replace itself. It only notifies, and the user downloads from the release page.
+// electron-builder's portable launcher sets PORTABLE_EXECUTABLE_FILE.
+const IS_PORTABLE = Boolean(process.env.PORTABLE_EXECUTABLE_FILE);
+export const RELEASES_URL = 'https://github.com/vect-organization/vect-or-edit/releases/latest';
+
 export function setupAutoUpdater(mainWindow: BrowserWindow) {
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
@@ -14,7 +19,7 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
   });
 
   autoUpdater.on('update-available', (info) => {
-    mainWindow.webContents.send('updater:status', { status: 'available', version: info.version });
+    mainWindow.webContents.send('updater:status', { status: 'available', version: info.version, portable: IS_PORTABLE, url: RELEASES_URL });
   });
 
   autoUpdater.on('update-not-available', () => {
@@ -43,6 +48,9 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
   });
 
   ipcMain.handle('updater:download', async () => {
+    if (IS_PORTABLE && !SIMULATE_UPDATER) {
+      throw new Error('Portable build cannot self-update. Download the new version from the release page.');
+    }
     if (SIMULATE_UPDATER) {
       console.log('[Updater] Simulation mode: faking download on user request...');
       mainWindow.webContents.send('updater:status', { status: 'downloading', percent: 25 });

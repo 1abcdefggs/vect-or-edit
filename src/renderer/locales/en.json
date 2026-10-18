@@ -361,6 +361,7 @@
   "btn_create": "Create Workspace",
   "update_checking": "Checking for updates...",
   "update_available": "New version available (v{version}) - Update",
+  "update_available_portable": "New version available (v{version}) - Download from release page",
   "update_confirm": "A new version (v{version}) is available.\nStart download and install update?",
   "update_preparing": "Preparing download...",
   "update_download_failed": "Failed to start download: {message}",
