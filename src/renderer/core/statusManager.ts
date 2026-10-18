@@ -169,6 +169,15 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
 let pipelineOpenedByUser = false;
 let pipelineDismissedDuringError = false;
 
+// Warning: a subsystem still loading after startup has taken too long (STARTUP_WARN_MS).
+const STARTUP_WARN_MS = 30000;
+let startupTimedOut = false;
+let startupWatchStarted = false;
+
+function isLoadingStatus(status: SubsystemStatus): boolean {
+  return status === 'loading' || status === 'pending';
+}
+
 function hasPipelineError(): boolean {
   return (Object.keys(subsystemState) as SubsystemType[]).some(type => {
     const s = subsystemState[type];
@@ -176,15 +185,32 @@ function hasPipelineError(): boolean {
   });
 }
 
+function hasPipelineWarning(): boolean {
+  return startupTimedOut && Object.values(subsystemState).some(isLoadingStatus);
+}
+
+function startStartupWatch(): void {
+  if (startupWatchStarted) return;
+  startupWatchStarted = true;
+  setTimeout(() => {
+    const stuck = (Object.keys(subsystemState) as SubsystemType[]).filter(type => isLoadingStatus(subsystemState[type]));
+    if (stuck.length > 0) {
+      startupTimedOut = true;
+      (window as any).appendSystemLog?.(`[Pipeline] [WARN] Still loading after ${STARTUP_WARN_MS / 1000}s: ${stuck.join(', ')}`, 'warn');
+    }
+    updatePipelineVisibility();
+  }, STARTUP_WARN_MS);
+}
+
 export function updatePipelineVisibility(): void {
   const strip = document.getElementById('pipelineStrip');
   const toggle = document.getElementById('btnPipelineToggle');
   if (!strip) return;
 
-  const error = hasPipelineError();
-  if (!error) pipelineDismissedDuringError = false;
+  const problem = hasPipelineError() || hasPipelineWarning();
+  if (!problem) pipelineDismissedDuringError = false;
 
-  const visible = pipelineOpenedByUser || (error && !pipelineDismissedDuringError);
+  const visible = pipelineOpenedByUser || (problem && !pipelineDismissedDuringError);
   strip.style.display = visible ? 'flex' : 'none';
   if (toggle) toggle.style.display = visible ? 'none' : 'flex';
 }
@@ -241,6 +267,7 @@ export function initAllLedTooltips(): void {
 
   document.getElementById('btnPipelineToggle')?.addEventListener('click', openPipelineStrip);
   document.getElementById('btnPipelineClose')?.addEventListener('click', closePipelineStrip);
+  startStartupWatch();
   updatePipelineVisibility();
 }
 
