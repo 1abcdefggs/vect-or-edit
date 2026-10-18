@@ -1,5 +1,6 @@
 import { getEditorInstance } from '../core/editorCore.js';
-import { i18n } from '../../core/i18n.js';
+import { i18n, t } from '../../core/i18n.js';
+import { showToast } from '../../ui/notifications/toastManager.js';
 
 const statusElements = {
   docName: null,
@@ -29,6 +30,15 @@ export function setDocumentFormat({ encoding = 'UTF-8', fileName = /** @type {st
   const syntaxEl = document.getElementById('statusSyntaxLabel');
   if (syntaxEl && fileName) {
     syntaxEl.textContent = /\.txt$/i.test(fileName) ? 'Plain Text' : 'Markdown';
+  }
+}
+
+/**
+ * Tells the user once on open when a non-UTF-8 file will be saved as UTF-8.
+ */
+export function announceOpenedEncoding(encoding) {
+  if (encoding === 'Shift_JIS') {
+    showToast(t('encoding_saved_as_utf8'), 'info');
   }
 }
 

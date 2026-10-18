@@ -191,6 +191,7 @@
   "autosave_location_failed": "Could not create the default workspace. Choose a save location.",
   "menu_view_toggle_theme": "Toggle Theme",
   "menu_view_toggle_lang": "Toggle Language",
+  "encoding_saved_as_utf8": "This file is Shift_JIS. It will be saved as UTF-8.",
   "btn_new_tab": "New Tab (Ctrl+T)",
   "action_google_search": "Search with Google",
   "action_copy_to_new_tab": "Copy to New Tab",

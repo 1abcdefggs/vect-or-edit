@@ -1,6 +1,6 @@
 import { icons } from '../../core/icons.js';
 import { setEditorContent } from '../../editor/editorManager.js';
-import { setDocumentFormat } from '../../editor/ui/statusBarManager.js';
+import { setDocumentFormat, announceOpenedEncoding } from '../../editor/ui/statusBarManager.js';
 import appLogoUrl from '../../assets/icon.png';
 
 export function initTopBarRenderer() {
@@ -55,6 +55,7 @@ export function bindTopLevelUIEvents() {
       if (res && res.success && res.content !== undefined) {
         setEditorContent(res.content, res.fileName);
         setDocumentFormat({ encoding: res.encoding || 'UTF-8', fileName: res.fileName });
+        announceOpenedEncoding(res.encoding);
       }
     }
   };
