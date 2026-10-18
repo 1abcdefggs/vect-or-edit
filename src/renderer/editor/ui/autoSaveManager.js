@@ -42,7 +42,7 @@ export function updateAutoSaveUI() {
         ledDot.title = `AutoSave: ON (To: ${activeTab.filePath})`;
         if (labelEl) labelEl.textContent = 'AUTO'
       } else {
-        ledDot.className = 'setting-led-dot';
+        ledDot.className = 'status-led-dot';
         ledDot.style.background = '#f59e0b';
         ledDot.style.boxShadow = '0 0 6px rgba(245, 158, 11, 0.6)';
         ledDot.title = 'Unsaved: Press Ctrl+S to choose location for AutoSave';

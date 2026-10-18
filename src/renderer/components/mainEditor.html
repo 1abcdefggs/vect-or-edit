@@ -9,8 +9,8 @@
         <!-- Combined Save & AutoSave Button -->
         <button id="btnSave" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 4px 0 6px; display: flex; align-items: center; gap: 5px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" data-i18n-title="btn_save" title="Save File (Ctrl+S) - Click LED dot to toggle AutoSave">
           <span class="material-symbols-outlined" style="font-size: 1.1rem; flex-shrink: 0; color: var(--accent-color, #38bdf8);" title="Save Icon">&#xe161;</span>
+          <span id="autoSaveLedDot" class="status-led-dot status-ready" style="cursor: pointer;" title="AutoSave: ON (Click dot to toggle)"></span>
           <span class="icon-label-text" id="btnSaveLabel" style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px;">AUTO</span>
-          <span id="autoSaveLedDot" class="status-led-dot status-ready" style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.7); cursor: pointer;" title="AutoSave: ON (Click dot to toggle)"></span>
           <input type="checkbox" id="chkAutoSaveToggle" style="display: none;" title="Toggle AutoSave">
           <span class="material-symbols-outlined" style="font-size: 1.2rem; margin-left: -2px; color: var(--text-muted);" title="Save Options">arrow_drop_down</span>
         </button>

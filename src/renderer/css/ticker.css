@@ -121,9 +121,9 @@
 /* Micro LED Square Pixel Matrix Cell */
 .status-led-dot {
   position: relative;
-  width: 5px;
-  height: 5px;
-  border-radius: 1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: #1a2333;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -133,7 +133,6 @@
 .status-led-dot.status-ready {
   background: #1b8;
   box-shadow: 0 0 4px #1b8, 0 0 8px #1b8;
-  border-radius: 1px;
   animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -420,8 +419,8 @@
 }
 
 .status-led-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #64748b;
   display: inline-block;
