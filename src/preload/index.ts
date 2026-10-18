@@ -38,6 +38,7 @@ const engineAPI: EngineAPI = {
   geminiSemanticSuggest: (payload) => ipcRenderer.invoke('app:geminiSemanticSuggest', payload),
   saveGeminiApiKey: (apiKey: string) => ipcRenderer.invoke('app:saveGeminiApiKey', apiKey),
   hasGeminiApiKey: () => ipcRenderer.invoke('app:hasGeminiApiKey'),
+  clearGeminiApiKey: () => ipcRenderer.invoke('app:clearGeminiApiKey'),
   listGeminiModels: (apiKey?: string) => ipcRenderer.invoke('app:listGeminiModels', apiKey),
   openaiSemanticSuggest: (payload) => ipcRenderer.invoke('app:openaiSemanticSuggest', payload),
   llmEmbedding: (payload) => ipcRenderer.invoke('app:llmEmbedding', payload),
