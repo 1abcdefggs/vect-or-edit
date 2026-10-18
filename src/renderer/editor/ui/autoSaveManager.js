@@ -5,6 +5,7 @@ import { STORAGE_KEYS, TIMINGS } from '../../core/constants.js';
 import { i18n, t } from '../../core/i18n.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { getActiveTab } from '../tabs/tabState.js';
+import { markSavedAsUtf8 } from './statusBarManager.js';
 
 const adhap = {
   BASE_DELAY_MS: TIMINGS.AUTO_SAVE_BASE_MS || 1500,
@@ -99,7 +100,9 @@ function executeSave(tab) {
 
     if (tab.filePath && window.engineAPI?.saveFile) {
       // An absolute path makes the main process write directly without a dialog.
-      window.engineAPI.saveFile(content, tab.filePath, false).catch(err => {
+      window.engineAPI.saveFile(content, tab.filePath, false).then((res) => {
+        if (res?.success) markSavedAsUtf8();
+      }).catch(err => {
         console.warn('[AutoSave] Direct file write failed:', err);
       });
     }

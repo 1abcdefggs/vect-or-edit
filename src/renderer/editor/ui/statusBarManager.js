@@ -34,6 +34,13 @@ export function setDocumentFormat({ encoding = 'UTF-8', fileName = /** @type {st
 }
 
 /**
+ * Called after a successful save. Files are always written as UTF-8, so the display follows what was written.
+ */
+export function markSavedAsUtf8() {
+  setDocumentFormat({ encoding: 'UTF-8' });
+}
+
+/**
  * Tells the user once on open when a non-UTF-8 file will be saved as UTF-8.
  */
 export function announceOpenedEncoding(encoding) {

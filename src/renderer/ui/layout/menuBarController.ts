@@ -20,7 +20,7 @@ import {
 import { showWorkspaceModal } from './topBarRenderer.js';
 import { showAiSetupModal } from '../ai/aiSetupController.js';
 import { showToast } from '../notifications/toastManager.js';
-import { setDocumentFormat, announceOpenedEncoding } from '../../editor/ui/statusBarManager.js';
+import { setDocumentFormat, announceOpenedEncoding, markSavedAsUtf8 } from '../../editor/ui/statusBarManager.js';
 import { t } from '../../core/i18n.js';
 import { commandManager, type CommandDefinition } from '../../core/commandManager';
 
@@ -44,6 +44,7 @@ export function registerAppCommands(): void {
         const savedPath = res?.filePath || res?.path;
         if (res?.success && savedPath) {
           markActiveTabSaved(savedPath);
+          markSavedAsUtf8();
           showToast(t('alert_file_saved', { path: savedPath }) || `Saved: ${savedPath}`, 'success');
         }
       }
