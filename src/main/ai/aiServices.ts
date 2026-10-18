@@ -36,6 +36,15 @@ export async function saveGeminiApiKey(apiKey: string): Promise<{ success: boole
   }
 }
 
+export async function clearGeminiApiKey(): Promise<{ success: boolean; error?: string }> {
+  try {
+    await fs.rm(path.join(app.getPath('userData'), GEMINI_KEY_FILE), { force: true });
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Failed to remove Gemini API key.' };
+  }
+}
+
 export async function listGeminiModels(apiKey?: string) {
   const token = apiKey?.trim() || await loadStoredGeminiApiKey();
   if (!token) throw new Error('Gemini API key is not set.');

@@ -49,22 +49,16 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     ? `<span style="color: #38bdf8;">- ${t('editor_placeholder_ready')}</span>`
     : `<span style="color: #94a3b8;">${t('placeholder_no_slots')}</span>`;
 
-    // 4. Resolve Tone-aware Canvas Contrast (Charcoal, Obsidian, OLED, Ivory, Paper, etc.)
+    // 4. Resolve Tone-aware Canvas Contrast (OLED dark, Snow light)
     const currentTone = localStorage.getItem('editor_bg_tone') || 'default';
-    const isCharcoal = currentTone === 'charcoal' || currentTone === 'dark_charcoal';
-    const isLightTone = ['ivory', 'light_ivory', 'warmWhite', 'light_warm', 'snow', 'light_snow', 'paper', 'light_paper'].includes(currentTone);
+    const isLightTone = ['snow', 'light_snow'].includes(currentTone);
 
     let boxBg = 'rgba(255, 255, 255, 0.03)';
     let boxBorder = '1px dashed var(--border-color, rgba(255, 255, 255, 0.18))';
     let boxTextMain = 'var(--text-main, #f8fafc)';
     let boxTextMuted = 'var(--text-muted, #94a3b8)';
 
-    if (isCharcoal) {
-      boxBg = 'rgba(255, 255, 255, 0.05)';
-      boxBorder = '1px dashed rgba(255, 255, 255, 0.22)';
-      boxTextMain = '#ffffff';
-      boxTextMuted = '#a1a1aa';
-    } else if (isLightTone) {
+    if (isLightTone) {
       boxBg = 'rgba(0, 0, 0, 0.02)';
       boxBorder = '1px dashed rgba(0, 0, 0, 0.16)';
       boxTextMain = '#18181b';

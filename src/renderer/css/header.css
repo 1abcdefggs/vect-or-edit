@@ -99,17 +99,10 @@
 }
 
 
-/* Instant Tooltip (Zero Delay) */
-[data-instant-tooltip] {
-  position: relative;
-}
-
-[data-instant-tooltip]:hover::after {
-  content: attr(data-instant-tooltip);
-  position: absolute;
-  top: calc(100% + 14px);
-  left: 50%;
-  transform: translateX(-50%);
+/* Instant Tooltip (Zero Delay, follows the pointer; positioned by ui/tooltips/instantTooltip.ts) */
+.instant-tooltip {
+  position: fixed;
+  display: none;
   background: var(--bg-card, rgba(0, 0, 0, 0.95));
   color: var(--text-main, #f8fafc);
   padding: 8px 12px;
@@ -122,13 +115,8 @@
   border: 1px solid var(--accent-color, rgba(56, 189, 248, 0.4));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   min-width: 200px;
+  max-width: min(420px, calc(100vw - 16px));
   text-align: left;
-}
-
-/* For elements inside the system log panel (bottom bar), show tooltip above to avoid overlapping mouse */
-.system-status-panel [data-instant-tooltip]:hover::after {
-  top: auto;
-  bottom: calc(100% + 14px);
 }
 
 /* Master AI Toggle Pill (Compact Modern) */

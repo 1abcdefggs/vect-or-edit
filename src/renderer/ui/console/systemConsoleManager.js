@@ -1,3 +1,4 @@
+import { createDisclosure } from '../components/disclosureToggle.js';
 import { getCurrentContent } from '../../editor/editorManager.js';
 import { clearAllKnowledgeSlots } from '../../search/dictionary.js';
 
@@ -133,39 +134,26 @@ export function initSystemConsole() {
     window.engineAPI.onSystemLog((log) => appendLogEntry(log));
   }
 
-  function updateConsoleButtonState() {
-    if (!btnToggleConsole || !systemLogPanel) return;
-    const isClosed = systemLogPanel.style.display === 'none';
-    if (isClosed) {
-      btnToggleConsole.classList.add('btn-logs-closed');
-      btnToggleConsole.classList.remove('toolbar-btn-active');
-    } else {
-      btnToggleConsole.classList.remove('btn-logs-closed');
-      btnToggleConsole.classList.add('toolbar-btn-active');
-    }
-  }
-
-  if (btnToggleConsole) {
-    btnToggleConsole.addEventListener('click', () => {
-      if (systemLogPanel) {
-        const isHidden = systemLogPanel.style.display === 'none';
-        systemLogPanel.style.display = isHidden ? 'flex' : 'none';
-        updateConsoleButtonState();
-        if (isHidden && logEntriesContainer) {
-          logEntriesContainer.scrollTop = logEntriesContainer.scrollHeight;
+  // LOGS panel uses the shared disclosure toggle. It opens on every launch (not persisted).
+  const logsDisclosure = (btnToggleConsole && systemLogPanel)
+    ? createDisclosure({
+        button: btnToggleConsole,
+        panel: systemLogPanel,
+        onChange: (open) => {
+          btnToggleConsole.classList.toggle('btn-logs-closed', !open);
+          btnToggleConsole.classList.toggle('toolbar-btn-active', open);
+          if (open && logEntriesContainer) {
+            logEntriesContainer.scrollTop = logEntriesContainer.scrollHeight;
+          }
         }
-      }
-    });
+      })
+    : null;
+
+  if (btnCloseLogs && logsDisclosure) {
+    btnCloseLogs.addEventListener('click', () => logsDisclosure.set(false));
   }
 
-  if (btnCloseLogs && systemLogPanel) {
-    btnCloseLogs.addEventListener('click', () => {
-      systemLogPanel.style.display = 'none';
-      updateConsoleButtonState();
-    });
-  }
-
-  updateConsoleButtonState();
+  logsDisclosure?.set(true);
 
   if (btnClearLogs && logEntriesContainer) {
     btnClearLogs.addEventListener('click', () => {

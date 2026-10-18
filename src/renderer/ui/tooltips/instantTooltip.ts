@@ -1,0 +1,116 @@
+/**
+ * Instant tooltip that follows the pointer.
+ * It appears with no delay and sits outside the cursor image, flipping to the other side near the window edge.
+ * Sources: `data-instant-tooltip="text"`, or a plain `title` attribute. A `title` is moved into the instant
+ * tooltip while hovered, so the slow native tooltip never shows; it is restored on leave.
+ */
+
+const EDGE_MARGIN = 4;
+// Clearance beyond the cursor image. Windows' pointer size (CursorBaseSize, default 32) is read from main.
+const CURSOR_EXTRA_MARGIN = 8;
+const DEFAULT_CURSOR_SIZE = 32;
+const TOOLTIP_SOURCE = '[data-instant-tooltip], [title]';
+
+let cursorClearance = DEFAULT_CURSOR_SIZE + CURSOR_EXTRA_MARGIN;
+let tip: HTMLDivElement | null = null;
+let activeTarget: HTMLElement | null = null;
+let activeText = '';
+let restoreTitle: (() => void) | null = null;
+
+function ensureTip(): HTMLDivElement {
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.className = 'instant-tooltip';
+    tip.setAttribute('role', 'tooltip');
+    document.body.appendChild(tip);
+  }
+  return tip;
+}
+
+/** Puts a moved `title` back on the element it came from. */
+function releaseTitle(): void {
+  if (restoreTitle) {
+    restoreTitle();
+    restoreTitle = null;
+  }
+}
+
+/** Returns the text to show for an element, moving its `title` out of the way so the native tooltip stays hidden. */
+function adoptTitle(el: HTMLElement): string {
+  const title = el.getAttribute('title');
+  if (title) {
+    el.removeAttribute('title');
+    restoreTitle = () => el.setAttribute('title', title);
+  }
+  return el.dataset.instantTooltip || title || '';
+}
+
+function hide(): void {
+  releaseTitle();
+  activeTarget = null;
+  activeText = '';
+  if (tip) tip.style.display = 'none';
+}
+
+function place(x: number, y: number): void {
+  const el = ensureTip();
+  const { offsetWidth: w, offsetHeight: h } = el;
+
+  let left = x + cursorClearance;
+  let top = y + cursorClearance;
+  if (left + w > window.innerWidth - EDGE_MARGIN) left = x - cursorClearance - w;
+  if (top + h > window.innerHeight - EDGE_MARGIN) top = y - cursorClearance - h;
+
+  el.style.left = `${Math.max(EDGE_MARGIN, left)}px`;
+  el.style.top = `${Math.max(EDGE_MARGIN, top)}px`;
+}
+
+function findTarget(node: EventTarget | null): HTMLElement | null {
+  if (!(node instanceof Element)) return null;
+  return node.closest<HTMLElement>(TOOLTIP_SOURCE);
+}
+
+/** Reads the pointer size again, so a changed Windows setting applies on the next focus without restarting. */
+async function refreshCursorClearance(): Promise<void> {
+  try {
+    const size = await window.engineAPI?.getCursorBaseSize?.();
+    if (size && Number.isFinite(size)) cursorClearance = size + CURSOR_EXTRA_MARGIN;
+  } catch {
+    // Keep the current value when the main process cannot provide it.
+  }
+}
+
+export function initInstantTooltips(): void {
+  void refreshCursorClearance();
+  window.addEventListener('focus', () => { void refreshCursorClearance(); });
+
+  document.addEventListener('mousemove', (e) => {
+    const target = findTarget(e.target);
+    if (!target) {
+      hide();
+      return;
+    }
+
+    if (target !== activeTarget) {
+      releaseTitle();
+      activeTarget = target;
+      activeText = adoptTitle(target);
+    } else if (target.dataset.instantTooltip) {
+      // Read again on each move so text updated during hover is shown.
+      activeText = target.dataset.instantTooltip;
+    }
+
+    if (!activeText) {
+      hide();
+      return;
+    }
+
+    const el = ensureTip();
+    el.textContent = activeText;
+    el.style.display = 'block';
+    place(e.clientX, e.clientY);
+  }, { passive: true });
+
+  document.documentElement.addEventListener('mouseleave', hide);
+  window.addEventListener('blur', hide);
+}

@@ -22,9 +22,10 @@ import {
   clearKnowledgeSlots
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
-import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, hasStoredGeminiApiKey, listGeminiModels, saveGeminiApiKey } from './ai/aiServices';
+import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, hasStoredGeminiApiKey, listGeminiModels, saveGeminiApiKey, clearGeminiApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
+import { getCursorBaseSize } from './cursorSize';
 
 let currentKbPath: string = ""; // Default empty
 
@@ -92,6 +93,8 @@ if (!gotTheLock) {
     ipcMain.handle('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, undefined, payload.model));
     ipcMain.handle('app:saveGeminiApiKey', (_event, apiKey: string) => saveGeminiApiKey(apiKey));
     ipcMain.handle('app:hasGeminiApiKey', () => hasStoredGeminiApiKey());
+    ipcMain.handle('app:clearGeminiApiKey', () => clearGeminiApiKey());
+    ipcMain.handle('app:getCursorBaseSize', () => getCursorBaseSize());
     ipcMain.handle('app:listGeminiModels', (_event, apiKey?: string) => listGeminiModels(apiKey));
     ipcMain.handle('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, payload.apiKey, payload.model));
     // LLM-as-Embedding: converts text → pseudo-vector via LLM response

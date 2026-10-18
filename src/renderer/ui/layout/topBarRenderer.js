@@ -1,5 +1,6 @@
 import { icons } from '../../core/icons.js';
 import { setEditorContent } from '../../editor/editorManager.js';
+import { setDocumentFormat, announceOpenedEncoding } from '../../editor/ui/statusBarManager.js';
 import appLogoUrl from '../../assets/icon.png';
 
 export function initTopBarRenderer() {
@@ -10,9 +11,12 @@ export function initTopBarRenderer() {
 
   if (window.engineAPI?.getAppVersion) {
     window.engineAPI.getAppVersion().then((version) => {
-      const versionEl = document.getElementById('appVersionBadge');
-      if (versionEl && version) {
-        versionEl.textContent = `v${version}`;
+      if (!version) return;
+      const label = `v${version}`;
+      const badgeEls = ['appVersionBadge', 'aboutVersionBadge'];
+      for (const id of badgeEls) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = label;
       }
     }).catch(() => {});
   }
@@ -50,6 +54,8 @@ export function bindTopLevelUIEvents() {
       const res = await window.engineAPI.openFile();
       if (res && res.success && res.content !== undefined) {
         setEditorContent(res.content, res.fileName);
+        setDocumentFormat({ encoding: res.encoding || 'UTF-8', fileName: res.fileName });
+        announceOpenedEncoding(res.encoding);
       }
     }
   };

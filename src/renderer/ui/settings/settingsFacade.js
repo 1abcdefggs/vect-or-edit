@@ -606,8 +606,17 @@ export function initSettings(updateEditorCb) {
   // Clear API Keys from Editor Settings Tab
   const btnEditorClearApiKey = document.getElementById('btnEditorClearApiKey');
   if (btnEditorClearApiKey) {
-    btnEditorClearApiKey.addEventListener('click', () => {
+    btnEditorClearApiKey.addEventListener('click', async () => {
       if (!window.confirm('Clear all stored Cloud LLM API keys (Gemini, OpenAI, Claude)?')) return;
+
+      // Gemini's key lives in the main process (encrypted file), so remove it there too.
+      const geminiRes = await window.engineAPI?.clearGeminiApiKey?.();
+      if (geminiRes && !geminiRes.success) {
+        window.alert(`Failed to remove the stored Gemini key: ${geminiRes.error || 'unknown error'}`);
+        return;
+      }
+      window.__geminiApiKeyConfigured = false;
+
       localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
       localStorage.removeItem(STORAGE_KEYS.OPENAI_API_KEY);
       localStorage.removeItem(STORAGE_KEYS.CLAUDE_API_KEY);
@@ -617,6 +626,8 @@ export function initSettings(updateEditorCb) {
       const inpLlmQuickApiKey = document.getElementById('inpLlmQuickApiKey');
       if (inpLlmQuickApiKey) inpLlmQuickApiKey.value = '';
       updateAiModelBadge();
+      // Recomputes modelConfigured, which turns the LLM master off when no key remains.
+      window.dispatchEvent(new Event('app:settingsChanged'));
       window.alert('Cloud LLM API keys cleared successfully.');
     });
   }
@@ -881,24 +892,6 @@ export function initSettings(updateEditorCb) {
       if (content) content.classList.add('active');
     });
   });
-
-  // Log Display Position & Startup Visibility
-  const chkLogCollapsedOnStartup = document.getElementById('chkLogCollapsedOnStartup');
-  if (chkLogCollapsedOnStartup) {
-    const isCollapsedOnStart = localStorage.getItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP) === 'true';
-    chkLogCollapsedOnStartup.checked = isCollapsedOnStart;
-    chkLogCollapsedOnStartup.addEventListener('change', (e) => {
-      setAndSync(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP, String(e.target.checked));
-    });
-  }
-
-  function applyLogDisplayPosition() {
-    const systemLogPanel = document.getElementById('systemLogPanel');
-    const isCollapsedOnStart = localStorage.getItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP) === 'true';
-    if (systemLogPanel) {
-      systemLogPanel.style.display = isCollapsedOnStart ? 'none' : 'flex';
-    }
-  }
 
   // Workspace Session (.vectorspace) Export & Import Handlers
   const btnExportWorkspace = document.getElementById('btnExportWorkspace');

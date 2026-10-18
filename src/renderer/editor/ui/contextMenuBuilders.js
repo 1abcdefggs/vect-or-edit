@@ -53,7 +53,7 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   const btnLlmChat = createMenuButton({
     className: 'pill-action-btn secondary',
     title: "Start LLM Chat or rewrite with selected text",
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: 1rem; color: #c084fc;">chat</span> <span>LLM Chat & Rewrite</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: 1rem; color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
@@ -220,7 +220,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
     const btnLlm = createMenuButton({
       className: 'custom-context-menu-item',
-      innerHTML: `<span class="material-symbols-outlined" style="font-size: 1.05rem; color: #c084fc;">chat</span> <span>LLM Chat & Rewrite</span>`,
+      innerHTML: `<span class="material-symbols-outlined" style="font-size: 1.05rem; color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
       onClick: () => {
         onDismiss();
         window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));

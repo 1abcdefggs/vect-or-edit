@@ -160,6 +160,70 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
       loaderText.textContent = msg;
     }
   }
+
+  updatePipelineVisibility();
+}
+
+// The pipeline strip is shown while any subsystem has an error, or when the user opens it.
+// Closing it during an error hides it until that error clears, so it does not reappear on every update.
+let pipelineOpenedByUser = false;
+let pipelineDismissedDuringError = false;
+
+// Warning: a subsystem still loading after startup has taken too long (STARTUP_WARN_MS).
+const STARTUP_WARN_MS = 30000;
+let startupTimedOut = false;
+let startupWatchStarted = false;
+
+function isLoadingStatus(status: SubsystemStatus): boolean {
+  return status === 'loading' || status === 'pending';
+}
+
+function hasPipelineError(): boolean {
+  return (Object.keys(subsystemState) as SubsystemType[]).some(type => {
+    const s = subsystemState[type];
+    return s === 'error' || (s === false && type !== 'kb' && type !== 'ai');
+  });
+}
+
+function hasPipelineWarning(): boolean {
+  return startupTimedOut && Object.values(subsystemState).some(isLoadingStatus);
+}
+
+function startStartupWatch(): void {
+  if (startupWatchStarted) return;
+  startupWatchStarted = true;
+  setTimeout(() => {
+    const stuck = (Object.keys(subsystemState) as SubsystemType[]).filter(type => isLoadingStatus(subsystemState[type]));
+    if (stuck.length > 0) {
+      startupTimedOut = true;
+      (window as any).appendSystemLog?.(`[Pipeline] [WARN] Still loading after ${STARTUP_WARN_MS / 1000}s: ${stuck.join(', ')}`, 'warn');
+    }
+    updatePipelineVisibility();
+  }, STARTUP_WARN_MS);
+}
+
+export function updatePipelineVisibility(): void {
+  const strip = document.getElementById('pipelineStrip');
+  const toggle = document.getElementById('btnPipelineToggle');
+  if (!strip) return;
+
+  const problem = hasPipelineError() || hasPipelineWarning();
+  if (!problem) pipelineDismissedDuringError = false;
+
+  const visible = pipelineOpenedByUser || (problem && !pipelineDismissedDuringError);
+  strip.style.display = visible ? 'flex' : 'none';
+  if (toggle) toggle.style.display = visible ? 'none' : 'flex';
+}
+
+function openPipelineStrip(): void {
+  pipelineOpenedByUser = true;
+  updatePipelineVisibility();
+}
+
+function closePipelineStrip(): void {
+  pipelineOpenedByUser = false;
+  pipelineDismissedDuringError = hasPipelineError();
+  updatePipelineVisibility();
 }
 
 /**
@@ -200,6 +264,11 @@ export function initAllLedTooltips(): void {
   if (subsystemState.kb !== 'ready' && subsystemState.kb !== true) {
     setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
   }
+
+  document.getElementById('btnPipelineToggle')?.addEventListener('click', openPipelineStrip);
+  document.getElementById('btnPipelineClose')?.addEventListener('click', closePipelineStrip);
+  startStartupWatch();
+  updatePipelineVisibility();
 }
 
 // Ensure tooltip translations update when language changes

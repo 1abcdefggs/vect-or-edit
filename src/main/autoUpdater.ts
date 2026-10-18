@@ -2,6 +2,14 @@ import electronUpdater from 'electron-updater';
 const { autoUpdater } = electronUpdater;
 import { ipcMain, BrowserWindow } from 'electron';
 
+// Fake update events for UI testing. Enabled only when explicitly requested.
+const SIMULATE_UPDATER = process.env.VECTOR_UPDATER_SIMULATE === '1';
+
+// The portable build cannot replace itself. It only notifies, and the user downloads from the release page.
+// electron-builder's portable launcher sets PORTABLE_EXECUTABLE_FILE.
+const IS_PORTABLE = Boolean(process.env.PORTABLE_EXECUTABLE_FILE);
+export const RELEASES_URL = 'https://github.com/vect-organization/vect-or-edit/releases/latest';
+
 export function setupAutoUpdater(mainWindow: BrowserWindow) {
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
@@ -11,7 +19,7 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
   });
 
   autoUpdater.on('update-available', (info) => {
-    mainWindow.webContents.send('updater:status', { status: 'available', version: info.version });
+    mainWindow.webContents.send('updater:status', { status: 'available', version: info.version, portable: IS_PORTABLE, url: RELEASES_URL });
   });
 
   autoUpdater.on('update-not-available', () => {
@@ -40,8 +48,11 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
   });
 
   ipcMain.handle('updater:download', async () => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[Updater] Dev mode: Simulating download on user request...');
+    if (IS_PORTABLE && !SIMULATE_UPDATER) {
+      throw new Error('Portable build cannot self-update. Download the new version from the release page.');
+    }
+    if (SIMULATE_UPDATER) {
+      console.log('[Updater] Simulation mode: faking download on user request...');
       mainWindow.webContents.send('updater:status', { status: 'downloading', percent: 25 });
       setTimeout(() => mainWindow.webContents.send('updater:status', { status: 'downloading', percent: 70 }), 1500);
       setTimeout(() => mainWindow.webContents.send('updater:status', { status: 'downloaded', version: 'v9.9.9' }), 3000);
@@ -54,11 +65,10 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
     autoUpdater.quitAndInstall();
   });
 
-  // --- Development UI Test ---
-  // In development mode (npm run dev), autoUpdater doesn't actually check GitHub by default.
-  // We simulate checking and available events so you can test the manual update button.
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Updater] Development mode detected. Simulating update-available in 5 seconds...');
+  // --- UI Test ---
+  // With VECTOR_UPDATER_SIMULATE=1, emit checking and available events so the manual update button can be tested.
+  if (SIMULATE_UPDATER) {
+    console.log('[Updater] VECTOR_UPDATER_SIMULATE=1: simulating update-available in 5 seconds...');
     setTimeout(() => mainWindow.webContents.send('updater:status', { status: 'checking' }), 3000);
     setTimeout(() => mainWindow.webContents.send('updater:status', { status: 'available', version: 'v9.9.9' }), 5000);
     return;

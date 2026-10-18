@@ -62,6 +62,8 @@ export function safeSetMonacoTheme(themeName, fallbackBase = 'vs-dark') {
   }
 }
 
+let lastThemeLabel = '';
+
 export async function loadTheme(themeName) {
   if (!themeName) return null;
 
@@ -93,7 +95,12 @@ export async function loadTheme(themeName) {
   // 3. Update native OS window title bar overlay
   updateNativeTitleBarOverlay(theme);
 
-  setLedStatus('thm', true, `2. THEME: ${actualThemeName} Applied`);
+  // Log only when the applied theme changes; repeated loads of the same theme would duplicate the pipeline line.
+  const themeLabel = `2. THEME: ${actualThemeName} Applied`;
+  if (themeLabel !== lastThemeLabel) {
+    lastThemeLabel = themeLabel;
+    setLedStatus('thm', true, themeLabel);
+  }
 
   return theme;
 }

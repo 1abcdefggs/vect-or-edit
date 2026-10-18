@@ -20,8 +20,9 @@ import {
 import { showWorkspaceModal } from './topBarRenderer.js';
 import { showAiSetupModal } from '../ai/aiSetupController.js';
 import { showToast } from '../notifications/toastManager.js';
+import { setDocumentFormat, announceOpenedEncoding, markSavedAsUtf8 } from '../../editor/ui/statusBarManager.js';
 import { t } from '../../core/i18n.js';
-import { commandManager } from '../../core/commandManager';
+import { commandManager, type CommandDefinition } from '../../core/commandManager';
 
 let isMenuOpen = false;
 let activeMenuItem: HTMLElement | null = null;
@@ -43,6 +44,7 @@ export function registerAppCommands(): void {
         const savedPath = res?.filePath || res?.path;
         if (res?.success && savedPath) {
           markActiveTabSaved(savedPath);
+          markSavedAsUtf8();
           showToast(t('alert_file_saved', { path: savedPath }) || `Saved: ${savedPath}`, 'success');
         }
       }
@@ -75,7 +77,10 @@ export function registerAppCommands(): void {
     if (window.engineAPI?.openFile) {
       const res = await window.engineAPI.openFile();
       if (res && res.success && res.content !== undefined) {
-        (setEditorContent as any)(res.content, res.fileName || res.filePath || res.path || 'untitled.md');
+        const fileName = res.fileName || res.filePath || res.path || 'untitled.md';
+        (setEditorContent as any)(res.content, fileName);
+        setDocumentFormat({ encoding: res.encoding || 'UTF-8', fileName });
+        announceOpenedEncoding(res.encoding);
       }
     }
   };
@@ -102,7 +107,7 @@ export function registerAppCommands(): void {
   };
 
   // Register commands centrally
-  commandManager.registerCommands([
+  const commandDefs: CommandDefinition[] = [
     // File Commands
     {
       id: 'file.new',
@@ -122,28 +127,24 @@ export function registerAppCommands(): void {
       id: 'file.openWorkspace',
       title: 'Open Workspace',
       category: 'File',
-      shortcut: 'Ctrl+K Ctrl+O',
       handler: () => showWorkspaceModal('open')
     },
     {
       id: 'file.save',
       title: 'Save File',
       category: 'File',
-      shortcut: 'Ctrl+S',
       handler: () => executeSaveTab(false)
     },
     {
       id: 'file.saveAs',
       title: 'Save As',
       category: 'File',
-      shortcut: 'Ctrl+Shift+S',
       handler: () => executeSaveTab(true)
     },
     {
       id: 'file.saveAll',
       title: 'Save All',
       category: 'File',
-      shortcut: 'Ctrl+K S',
       handler: () => executeSaveAll()
     },
     {
@@ -160,7 +161,6 @@ export function registerAppCommands(): void {
       id: 'file.exit',
       title: 'Exit Application',
       category: 'File',
-      shortcut: 'Alt+F4',
       handler: () => {
         if (window.engineAPI?.closeWindow) {
           window.engineAPI.closeWindow();
@@ -173,7 +173,6 @@ export function registerAppCommands(): void {
       id: 'edit.undo',
       title: 'Undo',
       category: 'Edit',
-      shortcut: 'Ctrl+Z',
       handler: () => {
         const ed = getEditorInstance();
         if (ed) {
@@ -186,7 +185,6 @@ export function registerAppCommands(): void {
       id: 'edit.redo',
       title: 'Redo',
       category: 'Edit',
-      shortcut: 'Ctrl+Y',
       handler: () => {
         const ed = getEditorInstance();
         if (ed) {
@@ -199,7 +197,6 @@ export function registerAppCommands(): void {
       id: 'edit.cut',
       title: 'Cut',
       category: 'Edit',
-      shortcut: 'Ctrl+X',
       handler: async () => {
         const ed = getEditorInstance();
         if (!ed) return;
@@ -223,7 +220,6 @@ export function registerAppCommands(): void {
       id: 'edit.copy',
       title: 'Copy',
       category: 'Edit',
-      shortcut: 'Ctrl+C',
       handler: async () => {
         const ed = getEditorInstance();
         let textToCopy = '';
@@ -252,7 +248,6 @@ export function registerAppCommands(): void {
       id: 'edit.paste',
       title: 'Paste',
       category: 'Edit',
-      shortcut: 'Ctrl+V',
       handler: async () => {
         try {
           const text = await navigator.clipboard.readText();
@@ -269,7 +264,6 @@ export function registerAppCommands(): void {
       id: 'edit.selectAll',
       title: 'Select All',
       category: 'Edit',
-      shortcut: 'Ctrl+A',
       handler: () => {
         const ed = getEditorInstance();
         if (ed) {
@@ -309,7 +303,6 @@ export function registerAppCommands(): void {
       id: 'view.zoomIn',
       title: 'Zoom In',
       category: 'View',
-      shortcut: 'Ctrl+=',
       handler: () => {
         if (window.engineAPI?.getZoomFactor && window.engineAPI?.setZoomFactor) {
           const current = window.engineAPI.getZoomFactor();
@@ -324,7 +317,6 @@ export function registerAppCommands(): void {
       id: 'view.zoomOut',
       title: 'Zoom Out',
       category: 'View',
-      shortcut: 'Ctrl+-',
       handler: () => {
         if (window.engineAPI?.getZoomFactor && window.engineAPI?.setZoomFactor) {
           const current = window.engineAPI.getZoomFactor();
@@ -339,7 +331,6 @@ export function registerAppCommands(): void {
       id: 'view.resetZoom',
       title: 'Reset Zoom',
       category: 'View',
-      shortcut: 'Ctrl+0',
       handler: () => {
         if (window.engineAPI?.setZoomFactor) {
           window.engineAPI.setZoomFactor(1.0);
@@ -362,8 +353,11 @@ export function registerAppCommands(): void {
       title: 'Toggle Theme',
       category: 'View',
       handler: () => {
-        const btnTheme = document.getElementById('btnThemeToggle');
-        if (btnTheme) btnTheme.click();
+        // Step to the next theme in the header select; its change listener applies it.
+        const themeSelect = document.getElementById('themeSelect') as HTMLSelectElement | null;
+        if (!themeSelect || themeSelect.options.length === 0) return;
+        themeSelect.selectedIndex = (themeSelect.selectedIndex + 1) % themeSelect.options.length;
+        themeSelect.dispatchEvent(new Event('change'));
       }
     },
 
@@ -372,7 +366,6 @@ export function registerAppCommands(): void {
       id: 'window.minimize',
       title: 'Minimize Window',
       category: 'Window',
-      shortcut: 'Win+Down',
       handler: () => {
         if (window.engineAPI?.minimizeWindow) window.engineAPI.minimizeWindow();
       }
@@ -381,7 +374,6 @@ export function registerAppCommands(): void {
       id: 'window.maximize',
       title: 'Maximize Window',
       category: 'Window',
-      shortcut: 'Win+Up',
       handler: () => {
         if (window.engineAPI?.maximizeWindow) window.engineAPI.maximizeWindow();
       }
@@ -390,7 +382,6 @@ export function registerAppCommands(): void {
       id: 'window.close',
       title: 'Close Window',
       category: 'Window',
-      shortcut: 'Alt+F4',
       handler: () => {
         if (window.engineAPI?.closeWindow) window.engineAPI.closeWindow();
       }
@@ -407,7 +398,6 @@ export function registerAppCommands(): void {
       id: 'help.settings',
       title: 'Preferences & Settings',
       category: 'Help',
-      shortcut: 'Ctrl+,',
       handler: () => {
         const settingsModal = document.getElementById('settingsModal');
         if (settingsModal) {
@@ -434,7 +424,29 @@ export function registerAppCommands(): void {
       category: 'Help',
       handler: () => showAboutModal()
     }
-  ]);
+  ];
+  commandManager.registerCommands(commandDefs);
+  bindCommandShortcuts(commandDefs);
+}
+
+/**
+ * Runs a command when its `Ctrl+<letter>` shortcut is pressed.
+ * Only shortcuts declared on command definitions are bound, so the displayed labels match real behavior.
+ */
+function bindCommandShortcuts(defs: CommandDefinition[]): void {
+  const commandByKey = new Map<string, string>();
+  for (const def of defs) {
+    const match = def.shortcut ? /^Ctrl\+([A-Za-z])$/.exec(def.shortcut) : null;
+    if (match) commandByKey.set(match[1].toLowerCase(), def.id);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!e.ctrlKey || e.shiftKey || e.altKey || e.metaKey || e.defaultPrevented) return;
+    const commandId = commandByKey.get(e.key.toLowerCase());
+    if (!commandId) return;
+    e.preventDefault();
+    void commandManager.executeCommand(commandId);
+  });
 }
 
 /**

@@ -2,6 +2,24 @@
    Toast Notification Component Styles
    ========================================================================== */
 
+/* One-line toast shown at the top of the LOGS panel (right padding keeps clear of CLEAR / COPY) */
+.log-toast-strip {
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 190px 4px 12px;
+  font-size: 0.78rem;
+  color: var(--text-main);
+  border-bottom: var(--border-width) solid var(--border-color);
+  border-left: 3px solid #38bdf8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.log-toast-strip.log-toast-success { border-left-color: #10b981; }
+.log-toast-strip.log-toast-warning { border-left-color: #f59e0b; }
+.log-toast-strip.log-toast-error { border-left-color: #ef4444; }
+
 .app-toast {
   position: fixed;
   top: 52px;

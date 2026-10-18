@@ -155,15 +155,9 @@
             <option value="default" selected data-i18n="opt_bg_default">Theme Match (Default)</option>
             <optgroup label="Dark Variations">
               <option value="oled" data-i18n="opt_bg_oled">OLED Pitch Black (#000000)</option>
-              <option value="obsidian" data-i18n="opt_bg_obsidian">Obsidian Dark (#090d16)</option>
-              <option value="charcoal" data-i18n="opt_bg_charcoal">Midnight Charcoal (#111827)</option>
-              <option value="slate" data-i18n="opt_bg_slate">Deep Slate Navy (#0f172a)</option>
             </optgroup>
             <optgroup label="Light Variations">
               <option value="snow" data-i18n="opt_bg_snow">Pure Snow White (#FFFFFF)</option>
-              <option value="ivory" data-i18n="opt_bg_ivory">Ivory Cream (#FFFFF0)</option>
-              <option value="warmWhite" data-i18n="opt_bg_warm">Warm Off-White (#FAFAF9)</option>
-              <option value="paper" data-i18n="opt_bg_paper">Japanese Paper Light (#FDFBF7)</option>
             </optgroup>
             <option value="custom" data-i18n="opt_bg_custom">Arbitrary Custom Colors</option>
           </select>
@@ -268,7 +262,7 @@
           <div class="setting-item" style="padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between;">
             <div>
               <div class="setting-label" style="font-size: 0.78rem;">Clear Stored API Keys</div>
-              <div class="setting-desc" style="font-size: 0.68rem;">Remove locally cached Gemini and OpenAI API keys from this device.</div>
+              <div class="setting-desc" style="font-size: 0.68rem;">Remove locally cached Gemini, OpenAI and Claude API keys from this device.</div>
             </div>
             <button id="btnEditorClearApiKey" class="toolbar-btn semantic-btn-clear" type="button" style="padding: 4px 10px; font-size: 0.72rem; display: flex; align-items: center; gap: 4px; color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; background: rgba(239, 68, 68, 0.08); cursor: pointer;" title="Clear stored Cloud API keys">
               <span class="material-symbols-outlined" style="font-size: 0.9rem;">delete_forever</span>
@@ -921,26 +915,10 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
     <!-- Tab 4: System & Logs -->
     <div id="tabSystem" class="settings-tab-content">
 
-      <!-- Log & Console Display Preferences Card -->
-      <div class="settings-section-card" style="background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color, rgba(255,255,255,0.08)); border-radius: 8px; padding: 14px 16px;">
-        <h4 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">terminal</span>
-          <span data-i18n="system_logs_title">System Logs & Console</span>
-        </h4>
-        <div class="setting-item" style="border: none; padding: 4px 0;">
-          <div>
-            <div class="setting-label" data-i18n="setting_log_startup_collapse">Start with Logs Closed</div>
-            <div class="setting-desc" data-i18n="setting_log_startup_collapse_desc">Automatically collapse the bottom log console when the application starts.</div>
-          </div>
-          <input type="checkbox" id="chkLogCollapsedOnStartup"
-            style="accent-color: var(--accent-color, #38bdf8); width: 18px; height: 18px; cursor: pointer;">
-        </div>
-      </div>
-
       <!-- Application Maintenance Card -->
       <div class="settings-section-card settings-maintenance-card" style="background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color, rgba(255,255,255,0.08)); border-radius: 8px; padding: 14px 16px;">
         <h4 style="margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #fbbf24;">build</span>
+          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">build</span>
           <span>Application Maintenance</span>
         </h4>
         <div class="setting-item" style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">

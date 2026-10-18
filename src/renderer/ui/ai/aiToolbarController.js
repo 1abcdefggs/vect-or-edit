@@ -83,6 +83,7 @@ export function initAiControls() {
       btnEditorAiToggle.style.background = '';
       btnEditorAiToggle.style.borderColor = '';
       btnEditorAiToggle.style.color = '';
+      document.getElementById('btnLlmToggle')?.classList.toggle('active', !!state.editor);
       if (editorAiLabel) {
         editorAiLabel.textContent = state.editor ? (t('editor_ai_on') || 'Editor AI ON') : (t('editor_ai_off') || 'Editor AI OFF');
       }
@@ -224,8 +225,10 @@ export function initAiControls() {
     });
   }
 
-  if (btnEditorAiToggle) {
-    btnEditorAiToggle.addEventListener('click', async () => {
+  // The header pill is a read-only status; the toggle lives in the chat dock.
+  const btnLlmToggle = document.getElementById('btnLlmToggle');
+  if (btnLlmToggle) {
+    btnLlmToggle.addEventListener('click', async () => {
       const state = aiManager.getState();
       if (!state.modelConfigured) {
         const confirmed = await showConfirmModal({
@@ -485,7 +488,8 @@ function initLlmChatDock() {
   // Disable input when Master AI is OFF
   const updateChatInputState = () => {
     const state = aiManager.getState?.() ?? {};
-    const disabled = !state.master;
+    // Input needs both the master switch and a configured model (key present).
+    const disabled = !state.master || !state.modelConfigured;
     if (chatInput) chatInput.disabled = disabled;
     if (btnSend) btnSend.disabled = disabled;
     if (btnClear) btnClear.disabled = disabled;
@@ -500,6 +504,12 @@ function initLlmChatDock() {
   async function handleSend() {
     const prompt = chatInput.value.trim();
     if (!prompt) return;
+
+    // Without a configured key, keep the prompt in the input and point to setup instead of sending.
+    if (!aiManager.getState?.().modelConfigured) {
+      showToast(t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.', 'warning');
+      return;
+    }
 
     // Append User Message
     const userMsgEl = document.createElement('div');

@@ -1,4 +1,11 @@
+import { showLogToastStrip } from './logToastStrip.js';
+
 export function showToast(message, type = 'info', action = null) {
+  // Toasts without action buttons go to the LOGS strip when the panel is open.
+  const hasActions = Array.isArray(action) ? action.length > 0 : !!(action && action.label);
+  const stripDuration = (type === 'warning' || type === 'error') ? 16000 : 10000;
+  if (!hasActions && showLogToastStrip(message, type, stripDuration)) return;
+
   const existing = document.getElementById('appToast');
   if (existing) existing.remove();
 
