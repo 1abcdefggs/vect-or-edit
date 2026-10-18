@@ -160,6 +160,44 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
       loaderText.textContent = msg;
     }
   }
+
+  updatePipelineVisibility();
+}
+
+// The pipeline strip is shown while any subsystem has an error, or when the user opens it.
+// Closing it during an error hides it until that error clears, so it does not reappear on every update.
+let pipelineOpenedByUser = false;
+let pipelineDismissedDuringError = false;
+
+function hasPipelineError(): boolean {
+  return (Object.keys(subsystemState) as SubsystemType[]).some(type => {
+    const s = subsystemState[type];
+    return s === 'error' || (s === false && type !== 'kb' && type !== 'ai');
+  });
+}
+
+export function updatePipelineVisibility(): void {
+  const strip = document.getElementById('pipelineStrip');
+  const toggle = document.getElementById('btnPipelineToggle');
+  if (!strip) return;
+
+  const error = hasPipelineError();
+  if (!error) pipelineDismissedDuringError = false;
+
+  const visible = pipelineOpenedByUser || (error && !pipelineDismissedDuringError);
+  strip.style.display = visible ? 'flex' : 'none';
+  if (toggle) toggle.style.display = visible ? 'none' : 'flex';
+}
+
+function openPipelineStrip(): void {
+  pipelineOpenedByUser = true;
+  updatePipelineVisibility();
+}
+
+function closePipelineStrip(): void {
+  pipelineOpenedByUser = false;
+  pipelineDismissedDuringError = hasPipelineError();
+  updatePipelineVisibility();
 }
 
 /**
@@ -200,6 +238,10 @@ export function initAllLedTooltips(): void {
   if (subsystemState.kb !== 'ready' && subsystemState.kb !== true) {
     setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
   }
+
+  document.getElementById('btnPipelineToggle')?.addEventListener('click', openPipelineStrip);
+  document.getElementById('btnPipelineClose')?.addEventListener('click', closePipelineStrip);
+  updatePipelineVisibility();
 }
 
 // Ensure tooltip translations update when language changes
