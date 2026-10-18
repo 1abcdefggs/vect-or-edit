@@ -18,6 +18,20 @@ function getStatusElements() {
   return statusElements;
 }
 
+/**
+ * Shows the encoding detected on open and the syntax implied by the file name.
+ * Untitled documents keep the defaults (UTF-8, Markdown).
+ */
+export function setDocumentFormat({ encoding = 'UTF-8', fileName = /** @type {string | null} */ (null) } = {}) {
+  const encodingEl = document.getElementById('statusEncoding');
+  if (encodingEl) encodingEl.textContent = encoding;
+
+  const syntaxEl = document.getElementById('statusSyntaxLabel');
+  if (syntaxEl && fileName) {
+    syntaxEl.textContent = /\.txt$/i.test(fileName) ? 'Plain Text' : 'Markdown';
+  }
+}
+
 export function updateStatusBar(fileName = null) {
   const elements = getStatusElements();
 

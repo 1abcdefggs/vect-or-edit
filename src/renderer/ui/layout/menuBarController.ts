@@ -20,6 +20,7 @@ import {
 import { showWorkspaceModal } from './topBarRenderer.js';
 import { showAiSetupModal } from '../ai/aiSetupController.js';
 import { showToast } from '../notifications/toastManager.js';
+import { setDocumentFormat } from '../../editor/ui/statusBarManager.js';
 import { t } from '../../core/i18n.js';
 import { commandManager, type CommandDefinition } from '../../core/commandManager';
 
@@ -75,7 +76,9 @@ export function registerAppCommands(): void {
     if (window.engineAPI?.openFile) {
       const res = await window.engineAPI.openFile();
       if (res && res.success && res.content !== undefined) {
-        (setEditorContent as any)(res.content, res.fileName || res.filePath || res.path || 'untitled.md');
+        const fileName = res.fileName || res.filePath || res.path || 'untitled.md';
+        (setEditorContent as any)(res.content, fileName);
+        setDocumentFormat({ encoding: res.encoding || 'UTF-8', fileName });
       }
     }
   };

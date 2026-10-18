@@ -95,7 +95,7 @@ export interface SemanticState {
 export interface EngineAPI {
   searchVector: (vector: number[], limit?: number) => Promise<SearchVectorResponse>;
   saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => Promise<{ success: boolean, path?: string, filePath?: string, error?: string }>;
-  openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, error?: string }>;
+  openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, encoding?: string, error?: string }>;
   openWorkspace: () => Promise<{ success: boolean, path?: string, error?: string }>;
   getDefaultWorkspace: (createIfMissing?: boolean) => Promise<{ success: boolean, path?: string, exists?: boolean, error?: string }>;
   loadSettings: () => Promise<{ success: boolean, settings?: any, error?: string }>;

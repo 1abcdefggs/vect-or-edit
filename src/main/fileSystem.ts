@@ -36,6 +36,25 @@ export async function saveFile(content: string, defaultName?: string, forceDialo
   }
 }
 
+/**
+ * Decodes file bytes using BOM, then UTF-8, then Shift_JIS. Falls back to UTF-8 when none fits.
+ */
+function decodeText(buffer: Buffer): { encoding: string; text: string } {
+  if (buffer[0] === 0xef && buffer[1] === 0xbb && buffer[2] === 0xbf) {
+    return { encoding: 'UTF-8', text: buffer.subarray(3).toString('utf-8') };
+  }
+  if (buffer[0] === 0xff && buffer[1] === 0xfe) {
+    return { encoding: 'UTF-16LE', text: buffer.subarray(2).toString('utf16le') };
+  }
+  try {
+    return { encoding: 'UTF-8', text: new TextDecoder('utf-8', { fatal: true }).decode(buffer) };
+  } catch { /* not valid UTF-8 */ }
+  try {
+    return { encoding: 'Shift_JIS', text: new TextDecoder('shift_jis', { fatal: true }).decode(buffer) };
+  } catch { /* not valid Shift_JIS, or the decoder is unavailable */ }
+  return { encoding: 'UTF-8', text: buffer.toString('utf-8') };
+}
+
 export async function openFile() {
   const mainWindow = getMainWindow();
   if (!mainWindow) return { success: false, error: 'No main window' };
@@ -50,9 +69,10 @@ export async function openFile() {
     }
 
     const filePath = filePaths[0];
-    const content = await fsPromises.readFile(filePath, 'utf-8');
+    const buffer = await fsPromises.readFile(filePath);
+    const { encoding, text } = decodeText(buffer);
     const fileName = path.basename(filePath);
-    return { success: true, filePath, fileName, content };
+    return { success: true, filePath, fileName, content: text, encoding };
   } catch (err: any) {
     console.error('Failed to open file:', err);
     return { success: false, error: err.message };
