@@ -166,8 +166,6 @@
   "local_ai_status_ready": "Local AI: Ready (100% Offline)",
   "setting_log_position": "System Log Position",
   "setting_log_position_desc": "Choose where to display the real-time system log monitor.",
-  "setting_log_startup_collapse": "Start with Logs Closed",
-  "setting_log_startup_collapse_desc": "Automatically collapse the bottom log console when the application starts.",
   "opt_log_top": "Top (Header Bar)",
   "opt_log_bottom": "Bottom (Console Panel)",
   "btn_insert": "Insert",

@@ -27,7 +27,6 @@ export const STORAGE_KEYS = {
   SHOW_FULL_METADATA: 'vect_show_full_metadata',
   APP_LANG: 'app_lang',
   LOG_DISPLAY_POSITION: 'logDisplayPosition',
-  LOG_COLLAPSED_ON_STARTUP: 'log_collapsed_on_startup',
   EDITOR_BG_TONE: 'editor_bg_tone',
   CUSTOM_EDITOR_BG: 'editor_custom_bg',
   AUTO_SAVE: 'editor_auto_save',
@@ -67,7 +66,6 @@ export const DEFAULTS = {
   APP_LANG: 'ja',
   AUTO_SAVE: true,
   LOG_DISPLAY_POSITION: 'bottom',
-  LOG_COLLAPSED_ON_STARTUP: false,
   CONTEXT_MENU_PATTERN: 'patternA',
   SUGGEST_DISPLAY_TARGET: 'sidebar'
 } as const;

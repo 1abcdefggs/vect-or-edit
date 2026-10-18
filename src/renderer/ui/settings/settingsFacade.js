@@ -893,24 +893,6 @@ export function initSettings(updateEditorCb) {
     });
   });
 
-  // Log Display Position & Startup Visibility
-  const chkLogCollapsedOnStartup = document.getElementById('chkLogCollapsedOnStartup');
-  if (chkLogCollapsedOnStartup) {
-    const isCollapsedOnStart = localStorage.getItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP) === 'true';
-    chkLogCollapsedOnStartup.checked = isCollapsedOnStart;
-    chkLogCollapsedOnStartup.addEventListener('change', (e) => {
-      setAndSync(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP, String(e.target.checked));
-    });
-  }
-
-  function applyLogDisplayPosition() {
-    const systemLogPanel = document.getElementById('systemLogPanel');
-    const isCollapsedOnStart = localStorage.getItem(STORAGE_KEYS.LOG_COLLAPSED_ON_STARTUP) === 'true';
-    if (systemLogPanel) {
-      systemLogPanel.style.display = isCollapsedOnStart ? 'none' : 'flex';
-    }
-  }
-
   // Workspace Session (.vectorspace) Export & Import Handlers
   const btnExportWorkspace = document.getElementById('btnExportWorkspace');
   if (btnExportWorkspace) {
