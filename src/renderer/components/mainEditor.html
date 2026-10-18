@@ -38,6 +38,7 @@
           data-i18n-title="setting_editor_bg" title="Select Editor Background & Text Color Theme">
           <option value="default" selected data-i18n="tone_default">Default</option>
           <option value="oled" data-i18n="tone_dark_oled">OLED Black</option>
+          <option value="snow" data-i18n="tone_light_snow">Light: Pure Snow</option>
         </select>
 
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
@@ -105,6 +106,23 @@
     <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" title="Open document tabs (Double click to rename tab)"></div>
   </div>
   <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
+
+  <!-- Editor Status Bar: Clean minimal design without redundant doc name / autosave -->
+  <div class="editor-status-bar" id="editorStatusBar">
+    <div class="status-bar-left">
+      <span id="statusCharCount" class="status-bar-item" title="Total character count in active document">0 chars</span>
+      <span class="status-bar-separator">|</span>
+      <span id="statusLineCount" class="status-bar-item" title="Total line count in active document">1 lines</span>
+    </div>
+    <div class="status-bar-right" style="display: flex; align-items: center; gap: 6px;">
+      <span id="statusEncoding" class="status-bar-item" title="File encoding">UTF-8</span>
+      <span class="status-bar-separator">|</span>
+      <span class="status-bar-item" style="display: flex; align-items: center; gap: 4px;" title="Current document syntax: Markdown">
+        <span class="material-symbols-outlined" style="font-size: 1rem; color: #818cf8;">&#xf552;</span>
+        <span id="statusSyntaxLabel">Markdown</span>
+      </span>
+    </div>
+  </div>
 
   <!-- Monaco Editor Bottom LLM Chat Dock (Intelligent Assistant & Text Generator) -->
   <div id="editorLlmChatDock" class="editor-llm-chat-dock" style="display: flex;">
@@ -178,20 +196,4 @@
     </div>
   </div>
 
-  <!-- Editor Status Bar: Clean minimal design without redundant doc name / autosave -->
-  <div class="editor-status-bar" id="editorStatusBar">
-    <div class="status-bar-left">
-      <span id="statusCharCount" class="status-bar-item" title="Total character count in active document">0 chars</span>
-      <span class="status-bar-separator">|</span>
-      <span id="statusLineCount" class="status-bar-item" title="Total line count in active document">1 lines</span>
-    </div>
-    <div class="status-bar-right" style="display: flex; align-items: center; gap: 6px;">
-      <span id="statusEncoding" class="status-bar-item" title="File encoding">UTF-8</span>
-      <span class="status-bar-separator">|</span>
-      <span class="status-bar-item" style="display: flex; align-items: center; gap: 4px;" title="Current document syntax: Markdown">
-        <span class="material-symbols-outlined" style="font-size: 1rem; color: #818cf8;">&#xf552;</span>
-        <span id="statusSyntaxLabel">Markdown</span>
-      </span>
-    </div>
-  </div>
 </section>
