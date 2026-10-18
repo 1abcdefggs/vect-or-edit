@@ -188,6 +188,8 @@
   "status_saved": "Saved",
   "autosave_location_confirm": "AutoSave will save this document in the default workspace folder. Press OK to use it, or Cancel to choose another location.",
   "autosave_location_failed": "Could not create the default workspace. Choose a save location.",
+  "menu_view_toggle_theme": "Toggle Theme",
+  "menu_view_toggle_lang": "Toggle Language",
   "btn_new_tab": "New Document (Ctrl+T)",
   "action_google_search": "Search with Google",
   "action_copy_to_new_tab": "Copy Selection to New Tab",

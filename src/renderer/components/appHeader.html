@@ -26,23 +26,19 @@
           <button class="menu-dropdown-item" id="menuItemOpenWorkspace" role="menuitem" type="button"
             data-command="file.openWorkspace">
             <span class="menu-item-label" data-i18n="menu_file_open_workspace">Open Workspace...</span>
-            <span class="menu-accelerator">Ctrl+K Ctrl+O</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemSaveFile" role="menuitem" type="button"
             data-command="file.save">
             <span class="menu-item-label" data-i18n="menu_file_save">Save</span>
-            <span class="menu-accelerator">Ctrl+S</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemSaveAs" role="menuitem" type="button"
             data-command="file.saveAs">
             <span class="menu-item-label" data-i18n="menu_file_save_as">Save As...</span>
-            <span class="menu-accelerator">Ctrl+Shift+S</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemSaveAll" role="menuitem" type="button"
             data-command="file.saveAll">
             <span class="menu-item-label" data-i18n="menu_file_save_all">Save All</span>
-            <span class="menu-accelerator">Ctrl+K S</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemCloseTab" role="menuitem" type="button"
@@ -50,9 +46,13 @@
             <span class="menu-item-label" data-i18n="menu_file_close">Close Tab</span>
             <span class="menu-accelerator">Ctrl+W</span>
           </button>
+          <button class="menu-dropdown-item" id="menuItemFileSettings" role="menuitem" type="button"
+            data-command="help.settings">
+            <span class="menu-item-label" data-i18n="menu_help_settings">Preferences & Settings...</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemExit" role="menuitem" type="button" data-command="file.exit">
             <span class="menu-item-label" data-i18n="menu_file_exit">Exit</span>
-            <span class="menu-accelerator">Alt+F4</span>
           </button>
         </div>
       </div>
@@ -64,30 +64,24 @@
         <div class="menu-dropdown" id="menuDropdownEdit" role="menu">
           <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button" data-command="edit.undo">
             <span class="menu-item-label" data-i18n="menu_edit_undo">Undo</span>
-            <span class="menu-accelerator">Ctrl+Z</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemRedo" role="menuitem" type="button" data-command="edit.redo">
             <span class="menu-item-label" data-i18n="menu_edit_redo">Redo</span>
-            <span class="menu-accelerator">Ctrl+Y</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemCut" role="menuitem" type="button" data-command="edit.cut">
             <span class="menu-item-label" data-i18n="menu_edit_cut">Cut</span>
-            <span class="menu-accelerator">Ctrl+X</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemCopy" role="menuitem" type="button" data-command="edit.copy">
             <span class="menu-item-label" data-i18n="menu_edit_copy">Copy</span>
-            <span class="menu-accelerator">Ctrl+C</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemPaste" role="menuitem" type="button" data-command="edit.paste">
             <span class="menu-item-label" data-i18n="menu_edit_paste">Paste</span>
-            <span class="menu-accelerator">Ctrl+V</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemSelectAll" role="menuitem" type="button"
             data-command="edit.selectAll">
             <span class="menu-item-label" data-i18n="menu_edit_select_all">Select All</span>
-            <span class="menu-accelerator">Ctrl+A</span>
           </button>
         </div>
       </div>
@@ -111,17 +105,23 @@
           <button class="menu-dropdown-item" id="menuItemZoomIn" role="menuitem" type="button"
             data-command="view.zoomIn">
             <span class="menu-item-label" data-i18n="menu_view_zoom_in">Zoom In</span>
-            <span class="menu-accelerator">Ctrl+=</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemZoomOut" role="menuitem" type="button"
             data-command="view.zoomOut">
             <span class="menu-item-label" data-i18n="menu_view_zoom_out">Zoom Out</span>
-            <span class="menu-accelerator">Ctrl+-</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemResetZoom" role="menuitem" type="button"
             data-command="view.resetZoom">
             <span class="menu-item-label" data-i18n="menu_view_reset_zoom">Reset Zoom</span>
-            <span class="menu-accelerator">Ctrl+0</span>
+          </button>
+          <div class="menu-divider" role="separator"></div>
+          <button class="menu-dropdown-item" id="menuItemToggleTheme" role="menuitem" type="button"
+            data-command="view.toggleTheme">
+            <span class="menu-item-label" data-i18n="menu_view_toggle_theme">Toggle Theme</span>
+          </button>
+          <button class="menu-dropdown-item" id="menuItemToggleLang" role="menuitem" type="button"
+            data-command="view.toggleLang">
+            <span class="menu-item-label" data-i18n="menu_view_toggle_lang">Toggle Language</span>
           </button>
         </div>
       </div>
@@ -134,18 +134,15 @@
           <button class="menu-dropdown-item" id="menuItemMinimize" role="menuitem" type="button"
             data-command="window.minimize">
             <span class="menu-item-label" data-i18n="menu_window_minimize">Minimize</span>
-            <span class="menu-accelerator">Win+Down</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemMaximize" role="menuitem" type="button"
             data-command="window.maximize">
             <span class="menu-item-label" data-i18n="menu_window_maximize">Toggle Maximize</span>
-            <span class="menu-accelerator">Win+Up</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemCloseWindow" role="menuitem" type="button"
             data-command="window.close">
             <span class="menu-item-label" data-i18n="menu_window_close">Close Window</span>
-            <span class="menu-accelerator">Alt+F4</span>
           </button>
         </div>
       </div>
@@ -159,12 +156,6 @@
             data-command="help.aiSetup">
             <span class="menu-item-label" data-i18n="menu_help_ai_setup">AI Engine Setup...</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemOpenSettings" role="menuitem" type="button"
-            data-command="help.settings">
-            <span class="menu-item-label" data-i18n="menu_help_settings">Preferences & Settings...</span>
-            <span class="menu-accelerator">Ctrl+,</span>
-          </button>
-          <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemDocs" role="menuitem" type="button" data-command="help.docs">
             <span class="menu-item-label" data-i18n="menu_help_docs">Documentation</span>
           </button>
