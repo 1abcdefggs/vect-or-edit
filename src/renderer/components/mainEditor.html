@@ -44,7 +44,7 @@
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
 
         <!-- FONT Family -->
-        <span class="material-symbols-outlined" style="font-size: 1.15rem; color: #a78bfa; margin-right: 2px; flex-shrink: 0;" title="Editor Font Family">&#xe165;</span>
+        <span class="material-symbols-outlined" style="font-size: 1.15rem; color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" title="Editor Font Family">&#xe165;</span>
         <div data-ui="edt:font-family" style="display: inline-flex; align-items: center;" title="Choose Font Family">
           <select id="fontFamilySelect" class="editor-toolbar-select"
             title="Editor Font Family"
@@ -62,7 +62,7 @@
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
 
         <!-- Font Size -->
-        <span class="material-symbols-outlined" style="font-size: 1.15rem; color: #34d399; margin-right: 1px; flex-shrink: 0;" title="Editor Font Size">&#xe245;</span>
+        <span class="material-symbols-outlined" style="font-size: 1.15rem; color: var(--accent-color, #38bdf8); margin-right: 1px; flex-shrink: 0;" title="Editor Font Size">&#xe245;</span>
         <div data-ui="edt:font-size" style="display: inline-flex; align-items: center;" title="Choose Font Size">
           <select id="fontSizeSelect" class="editor-toolbar-select"
             title="Editor Font Size"
@@ -118,7 +118,7 @@
       <span id="statusEncoding" class="status-bar-item" title="File encoding">UTF-8</span>
       <span class="status-bar-separator">|</span>
       <span class="status-bar-item" style="display: flex; align-items: center; gap: 4px;" title="Current document syntax: Markdown">
-        <span class="material-symbols-outlined" style="font-size: 1rem; color: #818cf8;">&#xf552;</span>
+        <span class="material-symbols-outlined" style="font-size: 1rem; color: var(--accent-color, #38bdf8);">&#xf552;</span>
         <span id="statusSyntaxLabel">Markdown</span>
       </span>
     </div>
@@ -137,7 +137,7 @@
           <span class="material-symbols-outlined" style="font-size: 1rem;">power_settings_new</span>
         </button>
         <button id="btnLlmKeyConfig" class="toolbar-btn llm-dock-btn" title="Configure AI API Key (Gemini, OpenAI, Claude)" data-i18n-title="btn_llm_key_config_title" style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; padding: 2px 8px;">
-          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: #fbbf24;">key</span>
+          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">key</span>
           <span data-i18n="btnLlmKeyConfigLabel">API Key</span>
         </button>
         <button id="btnLlmClearChat" class="toolbar-btn llm-dock-btn" title="Clear Chat History">
@@ -156,7 +156,7 @@
     <div id="llmQuickApiKeyBanner" class="llm-quick-api-banner" style="display: none;">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;">
         <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #fbbf24;" title="API Key">vpn_key</span>
+          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);" title="API Key">vpn_key</span>
           <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-main);">API Key Input:</span>
           <select id="selLlmQuickProvider" class="toolbar-select" title="Choose AI Model Provider" style="font-size: 0.72rem; height: 26px; padding: 0 4px;">
             <option value="gemini">Google Gemini</option>
