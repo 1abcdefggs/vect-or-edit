@@ -17,6 +17,7 @@ import { injectLazyUIComponents } from './core/uiLoader';
 import { initMenuBar } from './ui/layout/menuBarController';
 import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
+import { initInstantTooltips } from './ui/tooltips/instantTooltip';
 
 export { setLedStatus };
 
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 0.5. Initialize LED tooltips consistently
   initAllLedTooltips();
+  initInstantTooltips();
 
   // 0.7. Initialize master settings store & UI visibility
   await settingsStore.syncWithBackend();
