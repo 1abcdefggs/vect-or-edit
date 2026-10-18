@@ -12,6 +12,9 @@ const adhap = {
 };
 
 const autoSaveTimers = new Map();
+const pendingTargets = new Set();
+const declinedTargets = new Set();
+const LOCATION_CONFIRMED_KEY = 'vectoreditor_autosave_location_confirmed';
 let domCache = {};
 
 function getDomElements() {
@@ -60,6 +63,10 @@ export function initAutoSaveControls() {
   if (chkToggle) {
     chkToggle.addEventListener('change', (e) => {
       localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(e.target.checked));
+      if (e.target.checked) {
+        declinedTargets.clear();
+        ensureAutoSaveTarget(getActiveTab());
+      }
       updateAutoSaveUI();
     });
   }
@@ -68,6 +75,10 @@ export function initAutoSaveControls() {
       e.stopPropagation();
       const current = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
       localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(!current));
+      if (!current) {
+        declinedTargets.clear();
+        ensureAutoSaveTarget(getActiveTab());
+      }
       updateAutoSaveUI();
     });
   }
@@ -86,8 +97,9 @@ function executeSave(tab) {
       timestamp: Date.now()
     }));
 
-    if (tab.filePath && window.engineAPI?.saveFileDirect) {
-      window.engineAPI.saveFileDirect(tab.filePath, content).catch(err => {
+    if (tab.filePath && window.engineAPI?.saveFile) {
+      // An absolute path makes the main process write directly without a dialog.
+      window.engineAPI.saveFile(content, tab.filePath, false).catch(err => {
         console.warn('[AutoSave] Direct file write failed:', err);
       });
     }
@@ -108,9 +120,66 @@ function executeSave(tab) {
   }
 }
 
+/**
+ * Gives an unsaved tab a file path so AUTO can write to disk.
+ * Order: first-run confirmation, then the default workspace, then a save dialog if that fails.
+ */
+async function ensureAutoSaveTarget(tab) {
+  if (!tab || tab.filePath || pendingTargets.has(tab.id) || declinedTargets.has(tab.id)) return;
+  const api = window.engineAPI;
+  if (!api) return;
+
+  pendingTargets.add(tab.id);
+  try {
+    const content = tab.model ? tab.model.getValue() : '';
+    let firstRunDone = false;
+    try { firstRunDone = localStorage.getItem(LOCATION_CONFIRMED_KEY) === 'true'; } catch { /* storage unavailable */ }
+
+    let useDefault = true;
+    if (!firstRunDone) {
+      useDefault = window.confirm(t('autosave_location_confirm'));
+      try { localStorage.setItem(LOCATION_CONFIRMED_KEY, 'true'); } catch { /* storage unavailable */ }
+    }
+
+    if (useDefault) {
+      const ws = await api.getDefaultWorkspace(true);
+      if (ws?.success && ws.path) {
+        const sep = ws.path.includes('\\') ? '\\' : '/';
+        const fileName = `${(tab.title || 'Untitled').replace(/\.md$/i, '')}-${Date.now()}.md`;
+        const res = await api.saveFile(content, `${ws.path}${sep}${fileName}`, false);
+        if (res?.success) {
+          tab.filePath = res.filePath;
+          editorEvents.emit('onTabRenderNeeded');
+          return;
+        }
+      }
+    }
+
+    // Default workspace unavailable, or the user chose another location.
+    if (useDefault) window.alert(t('autosave_location_failed'));
+    const res = await api.saveFile(content, undefined, true);
+    if (res?.success && res.filePath) {
+      tab.filePath = res.filePath;
+      editorEvents.emit('onTabRenderNeeded');
+    } else if (res?.canceled) {
+      // Do not reopen the dialog on every keystroke; the user can re-enable AUTO to retry.
+      declinedTargets.add(tab.id);
+    }
+  } catch (err) {
+    console.warn('[AutoSave] Could not resolve a save location:', err);
+  } finally {
+    pendingTargets.delete(tab.id);
+    updateAutoSaveUI();
+  }
+}
+
 export function triggerAdaptiveAutoSave(tab, immediate = false) {
   const isAutoSaveEnabled = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
   if (!isAutoSaveEnabled || !tab || !tab.model) return;
+
+  if (!tab.filePath) {
+    ensureAutoSaveTarget(tab);
+  }
 
   if (autoSaveTimers.has(tab.id)) {
     clearTimeout(autoSaveTimers.get(tab.id));
