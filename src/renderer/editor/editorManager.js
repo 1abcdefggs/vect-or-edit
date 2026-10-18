@@ -64,6 +64,8 @@ editorEvents.on('setEditorContentRequest', ({ text, fileName }) => {
   if (ed) ed.focus();
 });
 
+editorEvents.on('onStatusBarUpdateNeeded', (title) => updateStatusBar(title ?? null));
+
 // Re-export full API surface for backwards compatibility
 export {
   tabs,
