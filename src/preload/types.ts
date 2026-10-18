@@ -113,6 +113,7 @@ export interface EngineAPI {
   saveGeminiApiKey: (apiKey: string) => Promise<{ success: boolean; error?: string }>;
   hasGeminiApiKey: () => Promise<boolean>;
   clearGeminiApiKey: () => Promise<{ success: boolean; error?: string }>;
+  getCursorBaseSize: () => Promise<number>;
   listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }>>;
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   /** LLM-as-Embedding: converts text to a pseudo-vector using an LLM provider. */

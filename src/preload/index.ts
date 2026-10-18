@@ -39,6 +39,7 @@ const engineAPI: EngineAPI = {
   saveGeminiApiKey: (apiKey: string) => ipcRenderer.invoke('app:saveGeminiApiKey', apiKey),
   hasGeminiApiKey: () => ipcRenderer.invoke('app:hasGeminiApiKey'),
   clearGeminiApiKey: () => ipcRenderer.invoke('app:clearGeminiApiKey'),
+  getCursorBaseSize: () => ipcRenderer.invoke('app:getCursorBaseSize') as Promise<number>,
   listGeminiModels: (apiKey?: string) => ipcRenderer.invoke('app:listGeminiModels', apiKey),
   openaiSemanticSuggest: (payload) => ipcRenderer.invoke('app:openaiSemanticSuggest', payload),
   llmEmbedding: (payload) => ipcRenderer.invoke('app:llmEmbedding', payload),
