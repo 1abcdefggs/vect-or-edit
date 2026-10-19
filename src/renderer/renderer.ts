@@ -19,6 +19,7 @@ import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
 import { initSelectMenus } from './ui/components/selectMenu';
+import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
 
 export { setLedStatus };
 
@@ -120,6 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setTimeout(hideStartupLoader, STARTUP_LOADER_MAX_MS);
 
   // 4. Background Services & Controllers
+  initMarkdownPreview();
   initQuickDictionary();
   initVectorSearch();
   initAiControls();

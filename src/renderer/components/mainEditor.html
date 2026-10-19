@@ -110,6 +110,7 @@
     <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" title="Open document tabs (Double click to rename tab)"></div>
   </div>
   <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
+  <div id="markdownPreview" class="markdown-preview" hidden></div>
 
   <!-- Editor Status Bar: Clean minimal design without redundant doc name / autosave -->
   <div class="editor-status-bar" id="editorStatusBar">
@@ -125,6 +126,11 @@
         <span class="material-symbols-outlined" style="font-size: var(--fs-16); color: var(--accent-color, #38bdf8);">&#xf552;</span>
         <span id="statusSyntaxLabel">Markdown</span>
       </span>
+      <span class="status-bar-separator">|</span>
+      <button type="button" id="btnMarkdownPreview" class="markdown-preview-toggle" aria-pressed="false" title="Toggle rendered Markdown preview">
+        <span class="material-symbols-outlined" style="font-size: var(--fs-16);">preview</span>
+        <span class="markdown-preview-label">Preview</span>
+      </button>
     </div>
   </div>
 
