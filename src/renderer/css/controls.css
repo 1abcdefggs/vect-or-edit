@@ -1,0 +1,114 @@
+/*
+ * Shared control sizing and the gear (settings) button.
+ *
+ * Height tokens: one value per kind of row, so controls on the same row line up.
+ *   sm  22px  compact bars (status/bottom bar, chat dock)
+ *   md  26px  header and panel title rows
+ *   lg  30px  editor toolbar groups
+ */
+:root {
+  --control-h-sm: 22px;
+  --control-h-md: 26px;
+  --control-h-lg: 30px;
+}
+
+/* Gear button: square, sized by the row it sits in (.gear-btn--sm / --md / --lg) */
+.gear-btn {
+  --gear-size: var(--control-h-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--gear-size);
+  height: var(--gear-size);
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-muted, #94a3b8);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  -webkit-app-region: no-drag;
+}
+
+.gear-btn--sm { --gear-size: var(--control-h-sm); }
+.gear-btn--md { --gear-size: var(--control-h-md); }
+.gear-btn--lg { --gear-size: var(--control-h-lg); }
+
+.gear-btn .material-symbols-outlined {
+  font-size: var(--fs-18);
+  line-height: 1;
+  color: inherit;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.gear-btn:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-main, #ffffff);
+}
+
+.gear-btn:hover .material-symbols-outlined {
+  color: #fbbf24;
+  transform: rotate(30deg);
+}
+
+.gear-btn:focus-visible {
+  outline: 1px solid var(--accent-color, #38bdf8);
+}
+
+/* Themed drop-down list for <select> (ui/components/selectMenu.ts) */
+.ui-select-menu {
+  position: fixed;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+  overflow-y: auto;
+  background: var(--bg-card, #111827);
+  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ui-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: var(--control-h-md);
+  padding: 0 8px 0 10px;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-main, #e2e8f0);
+  font-size: var(--fs-12);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ui-select-option.is-active {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.08));
+}
+
+.ui-select-option.is-selected {
+  color: var(--accent-color, #38bdf8);
+  font-weight: 600;
+}
+
+.ui-select-option:disabled {
+  opacity: 0.45;
+}
+
+.ui-select-option__check {
+  font-size: var(--fs-16);
+  line-height: 1;
+  visibility: hidden;
+}
+
+.ui-select-option.is-selected .ui-select-option__check {
+  visibility: visible;
+}

@@ -1,0 +1,47 @@
+/*
+ * Cursor roles: one place that decides which pointer an element shows.
+ * Everything without a role keeps the plain arrow; interactive elements get a cursor that
+ * matches what they do. Rules use :where() (zero specificity) so component-level rules
+ * such as col-resize / ns-resize on splitters keep winning.
+ */
+
+/* Default: no meaning, plain arrow (the inherited value stops the I-beam over plain text) */
+:where(body) {
+  cursor: default;
+}
+
+/* Action: click to do something */
+:where(
+  button,
+  summary,
+  select,
+  a[href],
+  label[for],
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  input[type="color"],
+  input[type="file"],
+  input[type="button"],
+  input[type="submit"]
+) {
+  cursor: pointer;
+}
+
+/* Text entry: type or place a caret here (Monaco sets its own cursor classes) */
+:where(
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"]),
+  textarea,
+  [contenteditable="true"]
+) {
+  cursor: text;
+}
+
+/* Disabled: not available right now (wins over the roles above) */
+:where(:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+}
