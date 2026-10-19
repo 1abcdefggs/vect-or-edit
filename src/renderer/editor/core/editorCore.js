@@ -7,7 +7,6 @@ import { setLedStatus } from '../../core/statusManager.js';
 import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
-import { toggleDiffMode as toggleDiffController, getIsDiffMode, getDiffEditorInstance } from './editorDiffMode.js';
 import { t } from '../../core/i18n.js';
 
 let monacoEditorInstance = null;
@@ -24,8 +23,7 @@ if (typeof window !== 'undefined') {
 }
 
 export function getEditorInstance() {
-  const diffInstance = getDiffEditorInstance();
-  return monacoEditorInstance || (diffInstance ? diffInstance.getModifiedEditor() : null);
+  return monacoEditorInstance;
 }
 
 export function getMonaco() {
@@ -33,24 +31,15 @@ export function getMonaco() {
 }
 
 export function getCurrentContent() {
-  const diffInstance = getDiffEditorInstance();
-  return getIsDiffMode()
-    ? (diffInstance ? diffInstance.getModifiedEditor().getValue() : '')
-    : (monacoEditorInstance ? monacoEditorInstance.getValue() : '');
+  return monacoEditorInstance ? monacoEditorInstance.getValue() : '';
 }
 
 export function focusEditor() {
-  const diffInstance = getDiffEditorInstance();
-  if (monacoEditorInstance) {
-    monacoEditorInstance.focus();
-  } else if (diffInstance) {
-    const mod = diffInstance.getModifiedEditor();
-    if (mod) mod.focus();
-  }
+  if (monacoEditorInstance) monacoEditorInstance.focus();
 }
 
 export function updateOptions(options) {
-  updateEditorOptions(options, [monacoEditorInstance, getDiffEditorInstance()]);
+  updateEditorOptions(options, [monacoEditorInstance]);
   if (monaco && monaco.editor && typeof monaco.editor.remeasureFonts === 'function') {
     setTimeout(() => {
       monaco.editor.remeasureFonts();
@@ -65,7 +54,7 @@ export function applyCanvasTone(tone, customBg = null, customFg = null) {
 export { TONE_COLORS };
 
 export function triggerRefreshLinter() {
-  refreshLinter(monacoEditorInstance, getDiffEditorInstance(), monaco);
+  refreshLinter(monacoEditorInstance, monaco);
 }
 
 export async function initEditor() {
@@ -83,11 +72,7 @@ export async function initEditor() {
     try { monacoEditorInstance.dispose(); } catch (_) {}
     monacoEditorInstance = null;
   }
-  
-  const diffInstance = getDiffEditorInstance();
-  if (diffInstance) {
-    try { diffInstance.dispose(); } catch (_) {}
-  }
+
   monacoContainer.innerHTML = '';
 
   if (!monaco) monaco = await import('monaco-editor');
@@ -185,13 +170,6 @@ export async function initEditor() {
   if (typeof window !== 'undefined') window.monacoEditorInstance = monacoEditorInstance;
   editorEvents.emit('onEditorInitialized');
 
-  const btnNewTab = document.getElementById('btnNewTab');
-  if (btnNewTab) {
-    btnNewTab.addEventListener('click', () => {
-      editorEvents.emit('createNewTab');
-    });
-  }
-
   setupEditorContextMenu(monacoEditorInstance, monacoContainer);
 
   monacoEditorInstance.onDidChangeModelContent(() => {
@@ -207,10 +185,6 @@ export async function initEditor() {
   editorEvents.emit('createNewTab');
 
   return monacoEditorInstance;
-}
-
-export async function toggleDiffMode() {
-  await toggleDiffController(monacoEditorInstance, monaco, focusEditor);
 }
 
 export function insertTextIntoEditor(text) {

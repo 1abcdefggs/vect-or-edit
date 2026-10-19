@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
   <meta charset="UTF-8">
@@ -34,6 +34,13 @@
 </head>
 
 <body style="background-color: #080c16;">
+  <div id="appStartupLoader" class="app-startup-loader" role="status" aria-live="polite">
+    <div class="startup-logo" aria-hidden="true">
+      <span style="--i:0">V</span><span style="--i:1">e</span><span style="--i:2">c</span><span style="--i:3">t</span><span style="--i:4">O</span><span style="--i:5">r</span><span style="--i:6">E</span><span style="--i:7">d</span><span style="--i:8">i</span><span style="--i:9">t</span>
+    </div>
+    <div class="neural-glow-line startup-loader-line" aria-hidden="true"></div>
+    <div id="loaderStatusText" class="startup-loader-status" data-i18n="loader_initializing">Initializing Monaco &amp; Core Engine...</div>
+  </div>
   <div class="app-container">
     <!-- Header injected here by uiLoader -->
 

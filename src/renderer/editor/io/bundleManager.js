@@ -78,7 +78,7 @@ export async function importWorkspaceBundle(rawJson) {
         }
         triggerAdaptiveAutoSave(tabObj);
         if (activeTabId === tabObj.id) {
-          updateStatusBar(tabObj.title);
+          updateStatusBar();
         }
       });
 

@@ -54,7 +54,7 @@
 }
 
 .modal-title {
-  font-size: 1.05rem;
+  font-size: var(--fs-17);
   color: var(--text-main);
 }
 
@@ -108,7 +108,7 @@
   width: min(260px, 38vw);
   height: 42px;
   padding: 0 38px 0 14px;
-  font-size: 0.95rem;
+  font-size: var(--fs-15);
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.01em;
@@ -194,7 +194,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   padding: 8px 16px;
-  font-size: 0.84rem;
+  font-size: var(--fs-13);
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
@@ -236,14 +236,14 @@
 }
 
 .setting-label {
-  font-size: 0.86rem;
+  font-size: var(--fs-14);
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 3px;
 }
 
 .setting-desc {
-  font-size: 0.74rem;
+  font-size: var(--fs-12);
   color: var(--text-muted);
   line-height: 1.4;
 }
@@ -270,7 +270,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 0.82rem;
+  font-size: var(--fs-13);
   font-weight: 600;
   margin-bottom: 2px;
 }
@@ -284,7 +284,7 @@
   border-radius: 999px;
   color: var(--text-muted);
   background: var(--bg-card, rgba(255, 255, 255, 0.05));
-  font-size: 0.66rem;
+  font-size: var(--fs-11);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -297,7 +297,7 @@
 }
 
 .setting-group label {
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
   color: var(--text-muted);
 }
 
@@ -312,7 +312,7 @@
 
 .settings-section-card h4 {
   margin: 0 0 12px 0;
-  font-size: 0.82rem;
+  font-size: var(--fs-13);
   font-weight: 600;
   color: var(--accent-color, #38bdf8);
   border-bottom: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.06));
@@ -343,7 +343,7 @@
   border: var(--border-width) solid var(--border-color);
   border-radius: 999px;
   color: var(--accent-color);
-  font-size: 0.68rem;
+  font-size: var(--fs-11);
   font-weight: 700;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -370,7 +370,7 @@
 .ai-status-card strong {
   overflow: hidden;
   color: var(--text-main);
-  font-size: 0.82rem;
+  font-size: var(--fs-13);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -378,14 +378,14 @@
 .ai-status-card > span:last-child {
   overflow: hidden;
   color: var(--text-muted);
-  font-size: 0.68rem;
+  font-size: var(--fs-11);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .ai-status-kicker {
   color: var(--text-muted);
-  font-size: 0.62rem;
+  font-size: var(--fs-10);
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -420,7 +420,7 @@
   display: block;
   margin-bottom: 5px;
   color: var(--text-muted);
-  font-size: 0.6rem;
+  font-size: var(--fs-10);
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -432,7 +432,7 @@
   border-radius: 6px;
   background: color-mix(in srgb, var(--bg-secondary) 78%, transparent);
   color: var(--text-main);
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -440,7 +440,7 @@
 .ai-structure-connector {
   padding-bottom: 7px;
   color: var(--accent-color);
-  font-size: 1rem;
+  font-size: var(--fs-16);
   font-weight: 700;
 }
 
@@ -451,7 +451,7 @@
   gap: 12px;
   margin-top: 10px;
   color: var(--text-muted);
-  font-size: 0.68rem;
+  font-size: var(--fs-11);
   line-height: 1.4;
 }
 
@@ -484,7 +484,7 @@
 .ai-capability-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.7rem;
+  font-size: var(--fs-11);
   table-layout: fixed;
 }
 
@@ -498,7 +498,7 @@
 
 .ai-capability-table th {
   color: var(--text-muted);
-  font-size: 0.64rem;
+  font-size: var(--fs-10);
   font-weight: 700;
 }
 
@@ -516,7 +516,7 @@
   display: inline-flex;
   padding: 3px 6px;
   border-radius: 999px;
-  font-size: 0.61rem;
+  font-size: var(--fs-10);
   white-space: nowrap;
 }
 
@@ -622,7 +622,7 @@
 }
 
 .ai-setup-feature-list {
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   color: var(--text-muted, #94a3b8);
   margin: 0 0 10px 0;
   padding-left: 18px;
@@ -647,7 +647,7 @@
   color: var(--text-main, #f8fafc);
   border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.12));
   border-radius: var(--radius-sm, 6px);
-  font-size: 0.82rem;
+  font-size: var(--fs-13);
   outline: none;
   box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -684,7 +684,7 @@
   border: 1px solid transparent;
   border-radius: 6px;
   color: var(--text-muted, #94a3b8);
-  font-size: 0.88rem;
+  font-size: var(--fs-14);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -727,7 +727,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--text-muted, #94a3b8);
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;

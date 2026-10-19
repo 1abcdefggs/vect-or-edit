@@ -50,7 +50,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'edt:toolbar': true,
     'edt:font-family': true,
     'edt:font-size': true,
-    'edt:diff-mode': true,
     'edt:ai-toggle': true,
     'edt:quick-settings': true,
     'sbr:sidebar': true,
@@ -228,14 +227,6 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
       { label: '18px', value: '18px' },
       { label: '20px', value: '20px' }
     ]
-  },
-  {
-    id: 'ed_diff_mode',
-    label: 'Diff Comparison Button',
-    description: 'Toolbar button to switch into original/modified diff editor.',
-    category: 'editor',
-    visibilityKey: 'edt:diff-mode',
-    controlType: 'none'
   },
   {
     id: 'ed_ai_toggle',

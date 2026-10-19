@@ -1,5 +1,5 @@
 import { icons } from '../../core/icons.js';
-import { changeLanguage, currentLang, i18n } from '../../core/i18n.js';
+import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
 import { loadTheme, availableThemes, getResolvedThemeName } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
@@ -26,7 +26,6 @@ export function initSettings(updateEditorCb) {
   // Front UI Elements
   const fontFamilySelect = document.getElementById('fontFamilySelect');
   const fontSizeSelect = document.getElementById('fontSizeSelect');
-  const btnTheme = document.getElementById('btnTheme');
   const btnLangToggle = document.getElementById('btnLangToggle');
   const themeSelect = document.getElementById('themeSelect');
   const numMinScore = document.getElementById('numMinScore');
@@ -114,17 +113,6 @@ export function initSettings(updateEditorCb) {
   if (modalThemeSelect) {
     modalThemeSelect.addEventListener('change', async () => {
       await applyTheme(modalThemeSelect.value);
-    });
-  }
-
-  if (btnTheme) {
-    btnTheme.addEventListener('click', async () => {
-      const allChoices = ['auto', ...themeList];
-      if (allChoices.length === 0) return;
-      const currentIndex = allChoices.indexOf(themeSelect.value);
-      const nextIndex = (currentIndex + 1) % allChoices.length;
-      const nextTheme = allChoices[nextIndex];
-      await applyTheme(nextTheme);
     });
   }
 
@@ -435,7 +423,6 @@ export function initSettings(updateEditorCb) {
       const val = modalAiProviderSelect.value;
       setAndSync(STORAGE_KEYS.AI_PROVIDER, val);
       updateAiProviderVisibility(val);
-      updateAiModelBadge();
       updateActiveProviderCard(val);
     });
   }
@@ -494,7 +481,6 @@ export function initSettings(updateEditorCb) {
           geminiModelsFetchStatus.textContent = `Google API Keys loaded ${models.length} items.`;
           geminiModelsFetchStatus.style.color = 'var(--success-color, #10b981)';
         }
-        updateAiModelBadge();
       } else {
         throw new Error('Google API Keys Error...');
       }
@@ -555,7 +541,6 @@ export function initSettings(updateEditorCb) {
     modalGeminiModelSelect.value = storedGeminiModel;
     modalGeminiModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
-      updateAiModelBadge();
     });
   }
 
@@ -570,7 +555,6 @@ export function initSettings(updateEditorCb) {
     modalOpenAiModelSelect.value = storedOpenAiModel;
     modalOpenAiModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.OPENAI_MODEL, modalOpenAiModelSelect.value);
-      updateAiModelBadge();
     });
   }
 
@@ -623,9 +607,6 @@ export function initSettings(updateEditorCb) {
       if (modalGeminiKeyInput) modalGeminiKeyInput.value = '';
       if (modalOpenAiKeyInput) modalOpenAiKeyInput.value = '';
       if (modalClaudeKeyInput) modalClaudeKeyInput.value = '';
-      const inpLlmQuickApiKey = document.getElementById('inpLlmQuickApiKey');
-      if (inpLlmQuickApiKey) inpLlmQuickApiKey.value = '';
-      updateAiModelBadge();
       // Recomputes modelConfigured, which turns the LLM master off when no key remains.
       window.dispatchEvent(new Event('app:settingsChanged'));
       window.alert('Cloud LLM API keys cleared successfully.');
@@ -636,7 +617,7 @@ export function initSettings(updateEditorCb) {
   const btnJumpToAiTab = document.getElementById('btnJumpToAiTab');
   if (btnJumpToAiTab) {
     btnJumpToAiTab.addEventListener('click', () => {
-      switchTab('tabAiSearch');
+      window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAiSearch' } }));
     });
   }
 
@@ -658,7 +639,6 @@ export function initSettings(updateEditorCb) {
       const modelShortName = selectedModel.split('/').pop();
       showToast(`Switched model to ${modelShortName}. Initializing...`, 'info');
       window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: selectedModel } }));
-      updateAiModelBadge();
     });
   }
 
@@ -672,7 +652,6 @@ export function initSettings(updateEditorCb) {
         const modelShortName = targetModel.split('/').pop();
         showToast(`Selected ${modelShortName}. Initializing...`, 'info');
         window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: targetModel } }));
-        updateAiModelBadge();
       }
     });
   });
@@ -770,38 +749,7 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  // AI Model Badge updater & switcher
-  function updateAiModelBadge() {
-    const badgeEl = document.getElementById('activeAiModelBadge');
-    const dotEl = document.getElementById('activeAiModelStatusDot');
-    if (!badgeEl) return;
-    const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
 
-    const state = (window.aiManager && window.aiManager.getState) ? window.aiManager.getState() : { sidebar: true };
-    const isSidebarOn = state.sidebar !== false;
-
-    if (provider === 'none') {
-      if (dotEl) dotEl.style.color = '#ef4444';
-      badgeEl.textContent = 'Suggest AI OFF';
-      badgeEl.parentElement?.setAttribute('title', 'AI Suggestion is currently disabled. Click to enable in Settings.');
-      return;
-    }
-
-    if (provider === 'local') {
-      const currentModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
-      const shortName = currentModel.split('/').pop();
-      badgeEl.textContent = isSidebarOn ? `${shortName}` : `${shortName} (OFF)`;
-      if (dotEl) dotEl.style.color = isSidebarOn ? 'var(--success-color, #10b981)' : '#ef4444';
-      badgeEl.parentElement?.setAttribute('title', `Local AI Model: ${currentModel}. Click to configure.`);
-      return;
-    }
-
-    if (dotEl) dotEl.style.color = isSidebarOn ? 'var(--success-color, #10b981)' : '#ef4444';
-    badgeEl.textContent = isSidebarOn ? `${provider.toUpperCase()} AI ON` : `${provider.toUpperCase()} AI OFF`;
-    badgeEl.parentElement?.setAttribute('title', `AI Suggestion: ${isSidebarOn ? 'ON' : 'OFF'}. Click to configure.`);
-  }
-
-  updateAiModelBadge();
 
   function openSettingsTab(tabId, subtab) {
     if (!settingsModal) return;
@@ -828,20 +776,6 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  const btnChangeAiModel = document.getElementById('btnChangeAiModel');
-  if (btnChangeAiModel) {
-    btnChangeAiModel.addEventListener('click', () => {
-      openSettingsTab('tabAiSearch');
-    });
-  }
-
-  const btnOpenAiSettingsQuick = document.getElementById('btnOpenAiSettingsQuick');
-  if (btnOpenAiSettingsQuick) {
-    btnOpenAiSettingsQuick.addEventListener('click', () => {
-      openSettingsTab('tabAiSearch');
-    });
-  }
-
   window.addEventListener('app:openSettings', (e) => {
     const tabId = e.detail?.tab || 'tabAppearance';
     const subtab = e.detail?.subtab;
@@ -852,7 +786,6 @@ export function initSettings(updateEditorCb) {
 
   const closeSettingsView = () => {
     if (settingsModal) settingsModal.style.display = 'none';
-    updateAiModelBadge();
   };
 
   // Modal / Full-Page View Open/Close & Tabs
@@ -928,8 +861,11 @@ export function initSettings(updateEditorCb) {
   const btnResetSettings = document.getElementById('btnResetSettings');
   if (btnResetSettings) {
     btnResetSettings.addEventListener('click', () => {
-      if (!window.confirm('Restore default settings and reload the editor?')) return;
-      localStorage.clear();
+      if (!window.confirm(t('maint_reset_confirm'))) return;
+      // Autosaved drafts live in localStorage too; clear() would wipe them, so keep those entries.
+      Object.keys(localStorage)
+        .filter((key) => !key.startsWith('autosave_'))
+        .forEach((key) => localStorage.removeItem(key));
       window.location.reload();
     });
   }
@@ -937,14 +873,14 @@ export function initSettings(updateEditorCb) {
   const btnReloadEditor = document.getElementById('btnReloadEditor');
   if (btnReloadEditor) {
     btnReloadEditor.addEventListener('click', () => {
-      if (window.confirm('Reload the editor now?')) window.location.reload();
+      if (window.confirm(t('maint_reload_confirm'))) window.location.reload();
     });
   }
 
   const btnRestartApplication = document.getElementById('btnRestartApplication');
   if (btnRestartApplication) {
     btnRestartApplication.addEventListener('click', () => {
-      if (window.confirm('Restart VectOrEdit now?')) window.engineAPI.restartApp();
+      if (window.confirm(t('maint_restart_confirm'))) window.engineAPI.restartApp();
     });
   }
 

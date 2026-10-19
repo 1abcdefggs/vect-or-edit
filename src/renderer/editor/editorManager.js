@@ -26,7 +26,6 @@ import {
 
 import {
   initEditor,
-  toggleDiffMode,
   updateOptions as updateEditorOptions,
   applyCanvasTone as applyEditorCanvasTone,
   setEditorContent,
@@ -56,13 +55,15 @@ editorEvents.on('setEditorContentRequest', ({ text, fileName }) => {
     if (fileName) currentTab.title = fileName;
     currentTab.isDirty = false;
     renderTabs();
-    updateStatusBar(currentTab.title);
+    updateStatusBar();
   } else {
     createNewTab(fileName, text);
   }
   const ed = getEditorInstance();
   if (ed) ed.focus();
 });
+
+editorEvents.on('onStatusBarUpdateNeeded', () => updateStatusBar());
 
 // Re-export full API surface for backwards compatibility
 export {
@@ -88,7 +89,6 @@ export {
   applyAiOutputToEditor,
   setEditorContent,
   saveTextToFile,
-  toggleDiffMode,
   updateEditorOptions,
   TONE_COLORS,
   applyEditorCanvasTone,

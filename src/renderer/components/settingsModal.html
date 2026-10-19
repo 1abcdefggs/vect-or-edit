@@ -4,7 +4,7 @@
     <div class="modal-header">
       <div style="display: flex; align-items: center; gap: 12px;">
         <button id="btnBackToEditor" class="toolbar-btn"
-          style="padding: 4px 10px; font-size: 0.78rem; font-weight: 600; display: flex; align-items: center; gap: 5px; border-radius: 6px; background: rgba(56, 189, 248, 0.12); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); cursor: pointer;"
+          style="padding: 4px 10px; font-size: var(--fs-12); font-weight: 600; display: flex; align-items: center; gap: 5px; border-radius: 6px; background: rgba(56, 189, 248, 0.12); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); cursor: pointer;"
           title="Back to Editor (Esc)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
@@ -25,7 +25,7 @@
         </h3>
       </div>
       <button id="btnCloseSettingsModal" class="log-panel-btn"
-        style="padding: 4px 10px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px;"
+        style="padding: 4px 10px; font-size: var(--fs-14); display: flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px;"
         title="Close Settings">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
@@ -172,12 +172,12 @@
               Monaco canvas background and font text.</div>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: var(--fs-12);">
               <span data-i18n="label_bg">Background:</span>
               <input type="color" id="modalCustomBgPicker" value="#1e1e2e"
                 style="width: 28px; height: 28px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
             </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: var(--fs-12);">
               <span data-i18n="label_text">Text:</span>
               <input type="color" id="modalCustomFgPicker" value="#cdd6f4"
                 style="width: 28px; height: 28px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
@@ -250,33 +250,33 @@
         <div class="settings-section-card" style="margin-top: 16px; background: rgba(56, 189, 248, 0.04); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 14px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="material-symbols-outlined" style="font-size: 1.2rem; color: var(--accent-color, #38bdf8);">cloud</span>
-              <h4 style="margin: 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main);">Cloud LLM & Assistant Settings</h4>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-19); color: var(--accent-color, #38bdf8);">cloud</span>
+              <h4 style="margin: 0; font-size: var(--fs-14); font-weight: 600; color: var(--text-main);">Cloud LLM & Assistant Settings</h4>
             </div>
-            <span style="font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background: rgba(56, 189, 248, 0.12); color: var(--accent-color, #38bdf8); font-weight: 600;">Cloud API</span>
+            <span style="font-size: var(--fs-11); padding: 2px 6px; border-radius: 4px; background: rgba(56, 189, 248, 0.12); color: var(--accent-color, #38bdf8); font-weight: 600;">Cloud API</span>
           </div>
-          <div class="setting-desc" style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
+          <div class="setting-desc" style="font-size: var(--fs-12); color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
             Configure external Cloud LLM connections (Google Gemini, OpenAI, Claude). API keys are stored locally and encrypted using Electron safeStorage. You can clear keys or reset settings at any time.
           </div>
 
           <div class="setting-item" style="padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between;">
             <div>
-              <div class="setting-label" style="font-size: 0.78rem;">Clear Stored API Keys</div>
-              <div class="setting-desc" style="font-size: 0.68rem;">Remove locally cached Gemini, OpenAI and Claude API keys from this device.</div>
+              <div class="setting-label" style="font-size: var(--fs-12);">Clear Stored API Keys</div>
+              <div class="setting-desc" style="font-size: var(--fs-11);">Remove locally cached Gemini, OpenAI and Claude API keys from this device.</div>
             </div>
-            <button id="btnEditorClearApiKey" class="toolbar-btn semantic-btn-clear" type="button" style="padding: 4px 10px; font-size: 0.72rem; display: flex; align-items: center; gap: 4px; color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; background: rgba(239, 68, 68, 0.08); cursor: pointer;" title="Clear stored Cloud API keys">
-              <span class="material-symbols-outlined" style="font-size: 0.9rem;">delete_forever</span>
+            <button id="btnEditorClearApiKey" class="toolbar-btn semantic-btn-clear" type="button" style="padding: 4px 10px; font-size: var(--fs-12); display: flex; align-items: center; gap: 4px; color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; background: rgba(239, 68, 68, 0.08); cursor: pointer;" title="Clear stored Cloud API keys">
+              <span class="material-symbols-outlined" style="font-size: var(--fs-14);">delete_forever</span>
               <span>Clear API Key</span>
             </button>
           </div>
 
           <div class="setting-item" style="padding: 6px 0 0 0; border-bottom: none; display: flex; align-items: center; justify-content: space-between;">
             <div>
-              <div class="setting-label" style="font-size: 0.78rem;">Detailed AI Provider Configuration</div>
-              <div class="setting-desc" style="font-size: 0.68rem;">Jump to AI & Knowledge Sidebar tab for full model selection and fetch options.</div>
+              <div class="setting-label" style="font-size: var(--fs-12);">Detailed AI Provider Configuration</div>
+              <div class="setting-desc" style="font-size: var(--fs-11);">Jump to AI & Knowledge Sidebar tab for full model selection and fetch options.</div>
             </div>
-            <button id="btnJumpToAiTab" class="toolbar-btn" type="button" style="padding: 4px 10px; font-size: 0.72rem; display: flex; align-items: center; gap: 4px; color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 4px; background: rgba(56, 189, 248, 0.1); cursor: pointer;">
-              <span class="material-symbols-outlined" style="font-size: 0.9rem;">tune</span>
+            <button id="btnJumpToAiTab" class="toolbar-btn" type="button" style="padding: 4px 10px; font-size: var(--fs-12); display: flex; align-items: center; gap: 4px; color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 4px; background: rgba(56, 189, 248, 0.1); cursor: pointer;">
+              <span class="material-symbols-outlined" style="font-size: var(--fs-14);">tune</span>
               <span>Open AI Settings</span>
             </button>
           </div>
@@ -339,11 +339,11 @@
         <!-- Embedding Subtabs: Local vs Cloud -->
         <div class="ai-model-subtab-bar" role="tablist">
           <button type="button" class="ai-model-subtab-btn active" data-emb-subtab="local" id="btnSubTabLocal">
-            <span class="material-symbols-outlined" style="font-size: 0.95rem;">memory</span>
+            <span class="material-symbols-outlined" style="font-size: var(--fs-15);">memory</span>
             <span>Local</span>
           </button>
           <button type="button" class="ai-model-subtab-btn" data-emb-subtab="cloud" id="btnSubTabCloud">
-            <span class="material-symbols-outlined" style="font-size: 0.95rem;">cloud</span>
+            <span class="material-symbols-outlined" style="font-size: var(--fs-15);">cloud</span>
             <span>Cloud</span>
           </button>
         </div>
@@ -355,15 +355,15 @@
             <div
               style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px;">
               <h4
-                style="margin: 0; font-size: 0.82rem; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 8px;">
-                <span class="material-symbols-outlined" style="font-size: 1.1rem;">menu_book</span>
+                style="margin: 0; font-size: var(--fs-13); color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="font-size: var(--fs-18);">menu_book</span>
                 <span data-i18n="heading_embedding_catalog">EMBEDDING CATALOG</span>
               </h4>
               <span class="tool-version" style="color: var(--success-color, #10b981); font-weight: 600;">100%
                 OFFLINE</span>
             </div>
             <div class="setting-desc" data-i18n="embedding_card_desc"
-              style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 10px;">
+              style="font-size: var(--fs-12); color: var(--text-muted); margin-bottom: 10px;">
               Used for the editor's specialized terminology dictionary, HNSW vector search, and real-time intelligence. Models are not required for normal dictionary and text input functionality.
             </div>
 
@@ -372,10 +372,10 @@
               style="display: flex; flex-direction: column; gap: 10px; background: rgba(16, 185, 129, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.18);">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span id="localAiStatusBadge"
-                  style="font-size: 0.78rem; font-weight: 600; color: var(--success-color, #10b981);"
+                  style="font-size: var(--fs-12); font-weight: 600; color: var(--success-color, #10b981);"
                   data-i18n="local_ai_status_standby">Local Embedding: Standby (Offline Mode)</span>
                 <button id="btnInitLocalAi" class="toolbar-btn"
-                  style="padding: 5px 14px; font-size: 0.75rem; font-weight: 600; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.25);">
+                  style="padding: 5px 14px; font-size: var(--fs-12); font-weight: 600; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.25);">
                   <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
                 </button>
               </div>
@@ -383,11 +383,11 @@
               <!-- Active 384-dim Model Selector -->
               <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
                 <label for="selLocalEmbeddingModel"
-                  style="font-size: 0.74rem; color: var(--text-main); font-weight: 600;">
+                  style="font-size: var(--fs-12); color: var(--text-main); font-weight: 600;">
                   Active Local Embedding Model <span class="tool-version">384-dim</span>
                 </label>
                 <select id="selLocalEmbeddingModel" class="toolbar-select"
-                  style="padding: 6px 10px; font-size: 0.78rem; border-radius: 6px;">
+                  style="padding: 6px 10px; font-size: var(--fs-12); border-radius: 6px;">
                   <option value="Xenova/multilingual-e5-small" selected>Xenova/multilingual-e5-small (~45MB /
                     Multilingual - JA/EN Default)</option>
                   <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2 (~23MB / English - Ultra-Fast)
@@ -399,7 +399,7 @@
 
               <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
                 <div
-                  style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">
+                  style="display: flex; justify-content: space-between; font-size: var(--fs-11); color: var(--text-muted); margin-bottom: 4px;">
                   <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
                   <span id="modalAiDownloadPct">0%</span>
                 </div>
@@ -414,7 +414,7 @@
               <details
                 style="margin-top: 8px; background: rgba(0, 0, 0, 0.2); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 6px 10px; transition: all 0.2s ease;">
                 <summary
-                  style="font-size: 0.74rem; font-weight: 600; color: var(--accent-color, #38bdf8); cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; outline: none; padding: 4px 0;">
+                  style="font-size: var(--fs-12); font-weight: 600; color: var(--accent-color, #38bdf8); cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; outline: none; padding: 4px 0;">
                   <span style="display: flex; align-items: center; gap: 6px;">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                       stroke-linecap="round" stroke-linejoin="round">
@@ -424,13 +424,13 @@
                     </svg>
                     Supported Embedding Models Catalog (ONNX / Transformers.js)
                   </span>
-                  <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal;">Click to view catalog
+                  <span style="font-size: var(--fs-10); color: var(--text-muted); font-weight: normal;">Click to view catalog
                     & characteristics ▾</span>
                 </summary>
 
                 <div style="overflow-x: auto; margin-top: 8px; max-height: 220px; overflow-y: auto;">
                   <table
-                    style="width: 100%; border-collapse: collapse; font-size: 0.70rem; color: var(--text-main); line-height: 1.4;">
+                    style="width: 100%; border-collapse: collapse; font-size: var(--fs-11); color: var(--text-main); line-height: 1.4;">
                     <thead>
                       <tr
                         style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align: left; position: sticky; top: 0; background: var(--bg-secondary, #1e293b); z-index: 1;">
@@ -447,14 +447,14 @@
                         <td
                           style="padding: 5px 6px; font-family: var(--font-mono, monospace); font-weight: 600; color: #38bdf8;">
                           Xenova/multilingual-e5-small <span class="model-active-badge"
-                            style="background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; margin-left: 6px;">Active</span>
+                            style="background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: var(--fs-10); margin-left: 6px;">Active</span>
                         </td>
                         <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
                         <td style="padding: 5px 6px;">~45 MB</td>
                         <td style="padding: 5px 6px;">Multilingual (JA/EN/etc). Ultra-fast, low memory footprint.</td>
                         <td style="padding: 5px 6px; text-align: center;">
                           <button type="button" class="btn-switch-model" data-model="Xenova/multilingual-e5-small"
-                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                            style="font-size: var(--fs-10); padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
                         </td>
                       </tr>
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
@@ -467,7 +467,7 @@
                           embedding.</td>
                         <td style="padding: 5px 6px; text-align: center;">
                           <button type="button" class="btn-switch-model" data-model="Xenova/all-MiniLM-L6-v2"
-                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                            style="font-size: var(--fs-10); padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
                         </td>
                       </tr>
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
@@ -480,7 +480,7 @@
                         </td>
                         <td style="padding: 5px 6px; text-align: center;">
                           <button type="button" class="btn-switch-model" data-model="Xenova/bge-small-en-v1.5"
-                            style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
+                            style="font-size: var(--fs-10); padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
                         </td>
                       </tr>
                     </tbody>
@@ -498,28 +498,28 @@
             <div
               style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px;">
               <h4
-                style="margin: 0; font-size: 0.82rem; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 8px;">
-                <span class="material-symbols-outlined" style="font-size: 1.1rem;">cloud_sync</span>
+                style="margin: 0; font-size: var(--fs-13); color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="font-size: var(--fs-18);">cloud_sync</span>
                 <span>Cloud Vector Embedding (API Vectorizer)</span>
               </h4>
               <span class="tool-version" style="color: var(--accent-color, #38bdf8); font-weight: 600;">CLOUD API</span>
             </div>
-            <div class="setting-desc" style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 14px;">
+            <div class="setting-desc" style="font-size: var(--fs-12); color: var(--text-muted); margin-bottom: 14px;">
               Cloud vector embedding allows you to use external API services for semantic search and vectorization. This is useful for high-accuracy embeddings or when you want to offload processing to a cloud service. Please configure your API key in the LLM tab to enable this feature. 
               
             </div>
 
             <div
               style="display: flex; flex-direction: column; gap: 10px; background: rgba(56, 189, 248, 0.04); padding: 14px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.15);">
-              <div style="font-size: 0.76rem; color: var(--text-main); font-weight: 600;">
+              <div style="font-size: var(--fs-12); color: var(--text-main); font-weight: 600;">
                 Cloud Vectorizer Status
               </div>
-              <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.5;">
+              <div style="font-size: var(--fs-12); color: var(--text-muted); line-height: 1.5;">
 High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled by default. If you wish to use embeddings via a cloud API, please configure your API key in the LLM tab and enable the corresponding adapter.
               </div>
               <div style="margin-top: 4px;">
                 <button type="button" id="btnGoToLlmConfig" class="toolbar-btn"
-                  style="padding: 6px 12px; font-size: 0.74rem; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 6px; cursor: pointer;">
+                  style="padding: 6px 12px; font-size: var(--fs-12); background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 6px; cursor: pointer;">
                   <span>Configure API Key in LLM Tab</span> →
                 </button>
               </div>
@@ -535,14 +535,14 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
           style="margin-bottom: 16px; padding: 14px 18px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 8px;">
           <div
             style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px;">
-            <h4 style="margin: 0; font-size: 0.82rem; color: #c084fc; display: flex; align-items: center; gap: 8px;">
-              <span class="material-symbols-outlined" style="font-size: 1.1rem;">chat</span>
+            <h4 style="margin: 0; font-size: var(--fs-13); color: #c084fc; display: flex; align-items: center; gap: 8px;">
+              <span class="material-symbols-outlined" style="font-size: var(--fs-18);">chat</span>
               <span data-i18n="heading_llm_catalog">LLM Catalog (CHAT / Text Correction & Rewriting / Conversation Support)</span>
             </h4>
             <span class="tool-version" style="color: #c084fc; font-weight: 600;">API Integration (High Cost)</span>
           </div>
           <div class="setting-desc" data-i18n="llm_card_desc"
-            style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 12px;">
+            style="font-size: var(--fs-12); color: var(--text-muted); margin-bottom: 12px;">
             Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.
           </div>
 
@@ -553,18 +553,18 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
               <div class="provider-card" data-provider="gemini"
                 style="padding: 12px 8px; border: var(--border-width) solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
                 <div class="provider-name">Google Gemini <span class="tool-version">v1beta</span></div>
-                <div style="font-size: 0.65rem; color: var(--accent-color, #38bdf8);" data-i18n="card_cloud_desc">CLOUD
+                <div style="font-size: var(--fs-10); color: var(--accent-color, #38bdf8);" data-i18n="card_cloud_desc">CLOUD
                   API</div>
               </div>
               <div class="provider-card" data-provider="openai"
                 style="padding: 12px 8px; border: var(--border-width) solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
                 <div class="provider-name">OpenAI <span class="tool-version">v1</span></div>
-                <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
+                <div style="font-size: var(--fs-10); color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
               </div>
               <div class="provider-card" data-provider="claude"
                 style="padding: 12px 8px; border: var(--border-width) solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; user-select: none;">
                 <div class="provider-name">Claude <span class="tool-version">v3</span></div>
-                <div style="font-size: 0.65rem; color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
+                <div style="font-size: var(--fs-10); color: var(--text-muted);" data-i18n="card_cloud_desc">CLOUD API</div>
               </div>
             </div>
           </div>
@@ -577,26 +577,26 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
               <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                 <div>
                   <div class="setting-label"
-                    style="font-size: 0.8rem; font-weight: 600; color: var(--accent-color, #38bdf8);"
+                    style="font-size: var(--fs-13); font-weight: 600; color: var(--accent-color, #38bdf8);"
                     data-i18n="setting_gemini_key">Gemini API Key</div>
                   <div class="setting-desc" data-i18n="setting_gemini_key_desc">Will be saved securely to your local device.</div>
                 </div>
                 <a href="https://aistudio.google.com/app/apikey" target="_blank"
-                  style="font-size: 0.72rem; color: var(--accent-color, #38bdf8); text-decoration: none; display: flex; align-items: center; gap: 3px;">
+                  style="font-size: var(--fs-12); color: var(--accent-color, #38bdf8); text-decoration: none; display: flex; align-items: center; gap: 3px;">
                   <span>Get Key</span>
-                  <span class="material-symbols-outlined" style="font-size: 0.8rem;">open_in_new</span>
+                  <span class="material-symbols-outlined" style="font-size: var(--fs-13);">open_in_new</span>
                 </a>
               </div>
               <div class="api-key-input-container"
                 style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
                 <span class="material-symbols-outlined"
-                  style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
+                  style="font-size: var(--fs-18); color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
                 <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." autocomplete="off"
                   spellcheck="false"
-                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
+                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: var(--fs-13); letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
                 <button type="button" id="btnToggleGeminiKeyVisibility" class="toolbar-btn" title="Toggle API Key Visibility"
                   style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
-                  <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
+                  <span class="material-symbols-outlined" style="font-size: var(--fs-18);">visibility_off</span>
                 </button>
               </div>
             </div>
@@ -606,18 +606,18 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
                 <div>
                   <div class="setting-label" data-i18n="setting_gemini_model">Gemini Model</div>
                   <div id="geminiModelsFetchStatus" class="setting-desc"
-                    style="font-size: 0.7rem; color: var(--accent-color, #38bdf8);">
+                    style="font-size: var(--fs-11); color: var(--accent-color, #38bdf8);">
                     Setting APIkey and click "Fetch Models" to retrieve the latest list of available Gemini models.
                   </div>
                 </div>
                 <button type="button" id="btnFetchGeminiModels" class="toolbar-btn" title="Fetch Available Models from Google Gemini API"
-                  style="display: flex; align-items: center; gap: 4px; font-size: 0.72rem; padding: 3px 8px; background: rgba(56, 189, 248, 0.1); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 4px; cursor: pointer;">
-                  <span class="material-symbols-outlined" style="font-size: 0.95rem;">sync</span>
+                  style="display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); padding: 3px 8px; background: rgba(56, 189, 248, 0.1); color: var(--accent-color, #38bdf8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 4px; cursor: pointer;">
+                  <span class="material-symbols-outlined" style="font-size: var(--fs-15);">sync</span>
                   <span>Fetch Models</span>
                 </button>
               </div>
               <select id="modalGeminiModelSelect" class="toolbar-select"
-                style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.78rem;">
+                style="width: 100%; font-family: var(--font-mono, monospace); font-size: var(--fs-12);">
                 <option value="gemini-1.5-flash" selected>gemini-1.5-flash (Standard / Fast)</option>
                 <option value="gemini-2.5-flash">gemini-2.5-flash (Next Generation Recommended / Reasoning Model)</option>
                 <option value="gemini-1.5-pro">gemini-1.5-pro (Advanced Reasoning)</option>
@@ -632,26 +632,26 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
               style="border: none; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
               <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                  <div class="setting-label" style="font-size: 0.8rem; font-weight: 600; color: #10b981;"
+                  <div class="setting-label" style="font-size: var(--fs-13); font-weight: 600; color: #10b981;"
                     data-i18n="setting_openai_key">OpenAI API Key</div>
                   <div class="setting-desc" data-i18n="setting_openai_key_desc">Will be saved securely to your local device.</div>
                 </div>
                 <a href="https://platform.openai.com/api-keys" target="_blank"
-                  style="font-size: 0.72rem; color: #10b981; text-decoration: none; display: flex; align-items: center; gap: 3px;">
+                  style="font-size: var(--fs-12); color: #10b981; text-decoration: none; display: flex; align-items: center; gap: 3px;">
                   <span>Get Key</span>
-                  <span class="material-symbols-outlined" style="font-size: 0.8rem;">open_in_new</span>
+                  <span class="material-symbols-outlined" style="font-size: var(--fs-13);">open_in_new</span>
                 </a>
               </div>
               <div class="api-key-input-container"
                 style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
                 <span class="material-symbols-outlined"
-                  style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
+                  style="font-size: var(--fs-18); color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
                 <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." autocomplete="off"
                   spellcheck="false"
-                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
+                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: var(--fs-13); letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
                 <button type="button" id="btnToggleOpenAiKeyVisibility" class="toolbar-btn" title="Toggle API Key Visibility"
                   style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
-                  <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
+                  <span class="material-symbols-outlined" style="font-size: var(--fs-18);">visibility_off</span>
                 </button>
               </div>
             </div>
@@ -674,26 +674,26 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
               style="border: none; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
               <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                  <div class="setting-label" style="font-size: 0.8rem; font-weight: 600; color: #f97316;"
+                  <div class="setting-label" style="font-size: var(--fs-13); font-weight: 600; color: #f97316;"
                     data-i18n="setting_claude_key">Anthropic API Key</div>
                   <div class="setting-desc" data-i18n="setting_claude_key_desc">Will be saved securely to your local device.</div>
                 </div>
                 <a href="https://console.anthropic.com/settings/keys" target="_blank"
-                  style="font-size: 0.72rem; color: #f97316; text-decoration: none; display: flex; align-items: center; gap: 3px;">
+                  style="font-size: var(--fs-12); color: #f97316; text-decoration: none; display: flex; align-items: center; gap: 3px;">
                   <span>Get Key</span>
-                  <span class="material-symbols-outlined" style="font-size: 0.8rem;">open_in_new</span>
+                  <span class="material-symbols-outlined" style="font-size: var(--fs-13);">open_in_new</span>
                 </a>
               </div>
               <div class="api-key-input-container"
                 style="width: 100%; display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 2px 4px 2px 10px; transition: border-color 0.2s ease;">
                 <span class="material-symbols-outlined"
-                  style="font-size: 1.1rem; color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
+                  style="font-size: var(--fs-18); color: var(--text-muted); margin-right: 6px; flex-shrink: 0;">key</span>
                 <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"
                   spellcheck="false"
-                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: 0.82rem; letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
+                  style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, 'Source Code Pro', monospace); font-size: var(--fs-13); letter-spacing: 0.5px; height: 32px; padding: 0 4px;">
                 <button type="button" id="btnToggleClaudeKeyVisibility" class="toolbar-btn" title="Toggle API Key Visibility"
                   style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); border-radius: 4px; flex-shrink: 0;">
-                  <span class="material-symbols-outlined" style="font-size: 1.15rem;">visibility_off</span>
+                  <span class="material-symbols-outlined" style="font-size: var(--fs-18);">visibility_off</span>
                 </button>
               </div>
             </div>
@@ -777,7 +777,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
       <div class="settings-section-card"
         style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
         <h4
-          style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--success-color, #10b981); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          style="margin: 0 0 12px 0; font-size: var(--fs-13); color: var(--success-color, #10b981); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 20h9"></path>
@@ -805,7 +805,7 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
       <div class="settings-section-card"
         style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-lighter, rgba(0,0,0,0.15)); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
         <h4
-          style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          style="margin: 0 0 12px 0; font-size: var(--fs-13); color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; align-items: center; gap: 6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
@@ -825,32 +825,6 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
             </option>
             <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
             <option value="manual" data-i18n="opt_trigger_manual">Manual (Alt+S Shortcut Only)</option>
-          </select>
-        </div>
-
-        <div class="setting-item">
-          <div>
-            <div class="setting-label" data-i18n="setting_context_menu_layout">Context Menu Layout (Right-Click)</div>
-            <div class="setting-desc" data-i18n="setting_context_menu_layout_desc">Switch between Pattern A
-              (Hierarchical List) and Pattern B (Mini-Editor Grid).</div>
-          </div>
-          <select id="modalContextMenuPatternSelect" class="toolbar-select">
-            <option value="patternA" selected data-i18n="opt_cm_pattern_a">Pattern A: Hierarchical Vertical List
-            </option>
-            <option value="patternB" data-i18n="opt_cm_pattern_b">Pattern B: Mini-Editor Grid Layout</option>
-          </select>
-        </div>
-
-        <div class="setting-item">
-          <div>
-            <div class="setting-label" data-i18n="setting_suggest_display">SUGGEST Results Display Area</div>
-            <div class="setting-desc" data-i18n="setting_suggest_display_desc">Choose where full vector suggestion
-              rankings are displayed.</div>
-          </div>
-          <select id="modalSuggestDisplayTargetSelect" class="toolbar-select">
-            <option value="sidebar" selected data-i18n="opt_disp_sidebar">Right Sidebar (Standard SUGGEST Panel)
-            </option>
-            <option value="bottom" data-i18n="opt_disp_bottom">Bottom Area (Integrated with Lower Panel)</option>
           </select>
         </div>
 
@@ -917,8 +891,8 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
 
       <!-- Application Maintenance Card -->
       <div class="settings-section-card settings-maintenance-card" style="background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color, rgba(255,255,255,0.08)); border-radius: 8px; padding: 14px 16px;">
-        <h4 style="margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">build</span>
+        <h4 style="margin: 0 0 12px 0; font-size: var(--fs-14); font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+          <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">build</span>
           <span>Application Maintenance</span>
         </h4>
         <div class="setting-item" style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
@@ -926,28 +900,28 @@ High-precision offline search (384-dimensional HNSW / ONNX) is currently enabled
             <div class="setting-label">Clear Application Cache</div>
             <div class="setting-desc">Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys.</div>
           </div>
-          <button id="btnClearAppCache" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(255,255,255,0.06); border: var(--border-width) solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Clear Cache</button>
+          <button id="btnClearAppCache" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: var(--fs-12); border-radius: 4px; background: rgba(255,255,255,0.06); border: var(--border-width) solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Clear Cache</button>
         </div>
         <div class="setting-item" style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
           <div>
-            <div class="setting-label">Restore Default Settings</div>
-            <div class="setting-desc">Deletes renderer preferences such as theme, language, editor layout, AI provider selection, and search options, then reloads the editor. It does not delete documents, Knowledge Slots, cached model files, or the encrypted Gemini API key.</div>
+            <div class="setting-label" data-i18n="maint_reset_label">Restore Default Settings</div>
+            <div class="setting-desc" data-i18n="maint_reset_desc">Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor.</div>
           </div>
-          <button id="btnResetSettings" class="toolbar-btn semantic-btn-clear" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; cursor: pointer; white-space: nowrap; flex-shrink: 0;">Restore Defaults</button>
+          <button id="btnResetSettings" class="toolbar-btn semantic-btn-clear" type="button" style="padding: 5px 12px; font-size: var(--fs-12); border-radius: 4px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; cursor: pointer; white-space: nowrap; flex-shrink: 0;" data-i18n="maint_reset_btn">Restore Defaults</button>
         </div>
         <div class="setting-item" style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
           <div>
-            <div class="setting-label">Reload Editor</div>
-            <div class="setting-desc">Reloads the editor window and renderer process. It does not clear settings, cache, documents, models, or API keys.</div>
+            <div class="setting-label" data-i18n="maint_reload_label">Reload Editor Window</div>
+            <div class="setting-desc" data-i18n="maint_reload_desc">Redraws the editor window only; the app keeps running. Nothing is deleted.</div>
           </div>
-          <button id="btnReloadEditor" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-color, #38bdf8); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Reload</button>
+          <button id="btnReloadEditor" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: var(--fs-12); border-radius: 4px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-color, #38bdf8); cursor: pointer; white-space: nowrap; flex-shrink: 0;" data-i18n="maint_reload_btn">Reload</button>
         </div>
         <div class="setting-item" style="padding: 8px 0 0 0; border-bottom: none; margin-bottom: 0;">
           <div>
-            <div class="setting-label">Restart Application</div>
-            <div class="setting-desc">Closes and relaunches the Electron application. It keeps settings, documents, cached models, Knowledge Slots, and encrypted API keys.</div>
+            <div class="setting-label" data-i18n="maint_restart_label">Restart Application</div>
+            <div class="setting-desc" data-i18n="maint_restart_desc">Closes the whole app and starts it again, including the engine and background processes.</div>
           </div>
-          <button id="btnRestartApplication" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: 0.75rem; border-radius: 4px; background: rgba(255, 255, 255, 0.08); border: var(--border-width) solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;">Restart</button>
+          <button id="btnRestartApplication" class="toolbar-btn" type="button" style="padding: 5px 12px; font-size: var(--fs-12); border-radius: 4px; background: rgba(255, 255, 255, 0.08); border: var(--border-width) solid var(--border-color); color: var(--text-main); cursor: pointer; white-space: nowrap; flex-shrink: 0;" data-i18n="maint_restart_btn">Restart</button>
         </div>
       </div>
     </div>

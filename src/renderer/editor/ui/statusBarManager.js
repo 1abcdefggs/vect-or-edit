@@ -3,19 +3,13 @@ import { i18n, t } from '../../core/i18n.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
 
 const statusElements = {
-  docName: null,
   charCount: null,
-  lineCount: null,
-  cursorPos: null,
-  wordCount: null
+  lineCount: null
 };
 
 function getStatusElements() {
-  if (!statusElements.docName) statusElements.docName = document.getElementById('statusDocName');
   if (!statusElements.charCount) statusElements.charCount = document.getElementById('statusCharCount');
   if (!statusElements.lineCount) statusElements.lineCount = document.getElementById('statusLineCount');
-  if (!statusElements.cursorPos) statusElements.cursorPos = document.getElementById('statusCursorPos');
-  if (!statusElements.wordCount) statusElements.wordCount = document.getElementById('statusWordCount');
   return statusElements;
 }
 
@@ -49,12 +43,8 @@ export function announceOpenedEncoding(encoding) {
   }
 }
 
-export function updateStatusBar(fileName = null) {
+export function updateStatusBar() {
   const elements = getStatusElements();
-
-  if (fileName && elements.docName) {
-    elements.docName.textContent = fileName;
-  }
 
   const monacoEditorInstance = getEditorInstance();
   if (!monacoEditorInstance) return;
@@ -70,13 +60,4 @@ export function updateStatusBar(fileName = null) {
     elements.lineCount.textContent = `${lineCount.toLocaleString()} ${i18n.unit_lines || 'lines'}`;
   }
 
-  if (elements.cursorPos) {
-    const pos = monacoEditorInstance.getPosition() || { lineNumber: 1, column: 1 };
-    elements.cursorPos.textContent = `Ln ${pos.lineNumber}, Col ${pos.column}`;
-  }
-
-  if (elements.wordCount) {
-    const words = val.trim() ? val.trim().split(/\s+/).length : 0;
-    elements.wordCount.textContent = `${words.toLocaleString()} ${i18n.unit_words || 'words'}`;
-  }
 }

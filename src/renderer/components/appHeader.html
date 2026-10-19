@@ -170,10 +170,9 @@
   <div class="app-header__toolbar header-toolbar">
     <!-- Global Theme Selector -->
     <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select"
-      style="display: flex; align-items: center; gap: 4px; padding: 2px 6px;"
       title="Color Theme: Switch between Dark, Light, and High Contrast themes">
       <span class="material-symbols-outlined theme-select-icon"
-        style="font-size: 1.2rem; color: var(--accent-color, #38bdf8);" title="Theme Icon">&#xe40a;</span>
+        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xe40a;</span>
       <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"
         title="Select Color Theme"></select>
     </div>
@@ -183,15 +182,14 @@
       data-command="view.toggleLang" data-ui="hdr:locale-toggle" style="padding: 2px 8px; gap: 5px;"
       title="Switch UI Language (English / Japanese)">
       <span class="material-symbols-outlined lang-toggle-icon"
-        style="font-size: 1.15rem; color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
-      <span class="icon-label-text" id="langToggleLabel" style="font-size: 0.72rem; font-weight: 700;">EN</span>
+        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
+      <span class="icon-label-text" id="langToggleLabel" style="font-size: var(--fs-12); font-weight: 700;">EN</span>
     </button>
 
     <!-- Settings Button -->
-    <button id="btnSettings" class="app-header__action-btn" type="button" data-i18n-title="btn_settings"
-      data-command="help.settings" data-ui="hdr:settings-btn" title="Preferences & Settings (Ctrl+,)"
-      style="width: 30px; height: 26px; display: flex; align-items: center; justify-content: center;">
-      <span class="material-symbols-outlined settings-icon" style="font-size: 1.15rem; ">settings</span>
+    <button id="btnSettings" class="gear-btn gear-btn--md" type="button" data-i18n-title="btn_settings"
+      data-command="help.settings" data-ui="hdr:settings-btn" title="Preferences & Settings (Ctrl+,)">
+      <span class="material-symbols-outlined settings-icon">settings</span>
     </button>
 
     <!-- Visual Separator between Settings and Zoom Button -->
@@ -202,9 +200,9 @@
       title="Zoom & UI Scale: Mouse wheel to zoom in/out, click to reset (100%)"
       style="height: 26px; padding: 2px 8px; gap: 4px;">
       <span class="material-symbols-outlined header-zoom-icon"
-        style="font-size: 1.15rem; color: var(--accent-color, #38bdf8);">zoom_in</span>
+        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">zoom_in</span>
       <span id="headerZoomPercent" class="header-zoom-text"
-        style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text-main); min-width: 40px; text-align: center;">100%</span>
+        style="font-size: var(--fs-12); font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text-main); min-width: 40px; text-align: center;">100%</span>
     </div>
   </div>
 </header>

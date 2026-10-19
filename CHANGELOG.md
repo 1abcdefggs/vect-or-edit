@@ -5,6 +5,28 @@ All notable changes to the **VectOrEdit** (`vect-or-edit`) desktop application w
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.24] - 2026-10-19
+
+### Added
+- Rendered Markdown preview with a toggle in the status bar (`marked` + `DOMPurify`)
+- Type scale tokens `--fs-9` to `--fs-28`; control height tokens; cursor roles; themed drop-down for native selects
+- Save button split into a save part and a menu toggle; autosave indicator with reserved width
+- Startup loader with a light-band animation and a hard timeout
+
+### Changed
+- Literal font sizes in CSS, HTML and renderer code now come from the type scale
+- Guidelines and Knowledge sections each have one "Add files" button instead of two paired buttons
+- Tabs are written through `tabCommit` and marked clean only after the write is confirmed
+
+### Removed
+- Diff view (`editorDiffMode.js`)
+- Markdown copy and paste buttons, the LLM on/off button in the dock, and the embedder path input
+
+### Fixed
+- Main-process logger no longer keeps retrying sends after the renderer is gone
+- The context menu opened by the first right click no longer disappears after about 350 ms
+- Monaco text inherits the selected font family
+
 ## [0.3.23] - 2026-10-01
 
 ### Fixed

@@ -35,14 +35,25 @@ function releaseTitle(): void {
   }
 }
 
-/** Returns the text to show for an element, moving its `title` out of the way so the native tooltip stays hidden. */
+/**
+ * Returns the text to show for an element, moving its `title` out of the way so the native tooltip stays hidden.
+ * Titles on ancestors are moved too: the browser falls back to the nearest ancestor title once the element's own
+ * is removed, which would show a second (native) tooltip next to ours.
+ */
 function adoptTitle(el: HTMLElement): string {
-  const title = el.getAttribute('title');
-  if (title) {
-    el.removeAttribute('title');
-    restoreTitle = () => el.setAttribute('title', title);
+  const ownTitle = el.getAttribute('title');
+  const moved: Array<[HTMLElement, string]> = [];
+  for (let node: HTMLElement | null = el; node; node = node.parentElement) {
+    const value = node.getAttribute('title');
+    if (value !== null) {
+      node.removeAttribute('title');
+      moved.push([node, value]);
+    }
   }
-  return el.dataset.instantTooltip || title || '';
+  if (moved.length > 0) {
+    restoreTitle = () => moved.forEach(([node, value]) => node.setAttribute('title', value));
+  }
+  return el.dataset.instantTooltip || ownTitle || '';
 }
 
 function hide(): void {

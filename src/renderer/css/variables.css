@@ -156,26 +156,17 @@
   background: rgba(99, 102, 241, 0.4);
 }
 
-@keyframes letter-bouncy-jump {
-  0%, 100% {
-    transform: translateY(0) scale(1, 1);
+/* Startup loader: a band of light passes over the letters from left to right (delay per letter is set by --i) */
+@keyframes letter-scan {
+  0%, 60%, 100% {
+    opacity: 0.45;
     color: var(--text-main, #f8fafc);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    text-shadow: none;
   }
-  20% {
-    transform: translateY(-20px) scale(0.92, 1.12);
+  25% {
+    opacity: 1;
     color: var(--accent-color, #66f);
-    text-shadow: 0 0 24px rgba(56, 189, 248, 1);
-  }
-  40% {
-    transform: translateY(0) scale(1.15, 0.88);
-    color: var(--text-main, #f8fafc);
-  }
-  55% {
-    transform: translateY(-6px) scale(0.98, 1.04);
-  }
-  70% {
-    transform: translateY(0) scale(1, 1);
+    text-shadow: 0 0 14px rgba(56, 189, 248, 0.85);
   }
 }
 

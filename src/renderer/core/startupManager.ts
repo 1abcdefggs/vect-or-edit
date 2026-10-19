@@ -5,6 +5,7 @@ let isStartupComplete = false;
 
 export function initStartupFlow(): void {
   if (isStartupComplete) return;
+  isStartupComplete = true;
 
   const isAiSetup = localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
   
@@ -18,16 +19,16 @@ export function initStartupFlow(): void {
   }
 }
 
-export function dismissStartupLoader(): void {
+/** Fades the loader out and removes it. Does not mark the startup flow complete, so it is safe as a fallback. */
+export function hideStartupLoader(): void {
   const appLoader = document.getElementById('appStartupLoader');
-  if (appLoader) {
-    appLoader.style.opacity = '0';
-    appLoader.style.visibility = 'hidden';
-    setTimeout(() => {
-      if (appLoader && appLoader.parentNode) {
-        appLoader.remove();
-      }
-    }, 200);
-  }
+  if (!appLoader) return;
+  appLoader.style.opacity = '0';
+  appLoader.style.visibility = 'hidden';
+  setTimeout(() => appLoader.remove(), 400);
+}
+
+export function dismissStartupLoader(): void {
+  hideStartupLoader();
   isStartupComplete = true;
 }

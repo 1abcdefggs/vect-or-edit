@@ -39,7 +39,7 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
     lock.className = 'vis-lock-icon';
     lock.innerHTML = '&#xe897;'; // material-symbols lock
     lock.title = 'Essential item: cannot be hidden';
-    lock.style.cssText = 'font-family: "Material Symbols Outlined"; font-size: 1.05rem; color: var(--text-muted); opacity: 0.6; cursor: not-allowed;';
+    lock.style.cssText = 'font-family: "Material Symbols Outlined"; font-size: var(--fs-17); color: var(--text-muted); opacity: 0.6; cursor: not-allowed;';
     wrapper.appendChild(lock);
   } else {
     const btn = document.createElement('button');
@@ -70,8 +70,8 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
 
 function updateEyeButtonState(btn: HTMLButtonElement, isVisible: boolean): void {
   btn.innerHTML = isVisible
-    ? '<span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--accent-color, #38bdf8);">visibility</span>'
-    : '<span class="material-symbols-outlined" style="font-size: 1.1rem; color: var(--text-muted); opacity: 0.5;">visibility_off</span>';
+    ? '<span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">visibility</span>'
+    : '<span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--text-muted); opacity: 0.5;">visibility_off</span>';
   btn.style.cssText = `background: transparent; border: 1px solid ${isVisible ? 'rgba(56, 189, 248, 0.3)' : 'var(--border-color)'}; border-radius: 4px; padding: 2px 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;`;
 }
 

@@ -48,13 +48,13 @@
 
 .live-log-time {
   color: #64748b;
-  font-size: 0.64rem;
+  font-size: var(--fs-10);
   flex-shrink: 0;
 }
 
 .live-log-tag {
   
-  font-size: 0.65rem;
+  font-size: var(--fs-10);
   flex-shrink: 0;
 }
 
@@ -82,7 +82,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.55rem;
+  font-size: var(--fs-9);
   color: rgba(56, 189, 248, 0.45);
   user-select: none;
   line-height: 1;
@@ -105,7 +105,7 @@
   border: none !important;
   box-shadow: none !important;
   font-family: 'Cascadia Code', Consolas, 'Courier New', monospace;
-  font-size: 0.62rem;
+  font-size: var(--fs-10);
   
   letter-spacing: 0.5px;
   color: #64748b;
@@ -203,6 +203,7 @@
   gap: 4px;
   transition: all 0.25s ease;
   user-select: text;
+  cursor: text;
   box-shadow: inset 0 -1px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -266,7 +267,7 @@
 
 .log-panel-title {
   
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   letter-spacing: 0.5px;
   color: #ffffff;
   display: flex;
@@ -279,12 +280,13 @@
   overflow-y: auto;
   padding: 8px 12px;
   font-family: 'Cascadia Code', Consolas, Monaco, monospace;
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
   line-height: 1.45;
   display: flex;
   flex-direction: column;
   gap: 3px;
   user-select: text;
+  cursor: text;
 }
 
 .log-row {
@@ -302,7 +304,7 @@
 .log-badge {
   padding: 1px 4px;
   border-radius: 4px;
-  font-size: 0.65rem;
+  font-size: var(--fs-10);
   
   flex-shrink: 0;
 }
@@ -345,7 +347,7 @@
   background: var(--bg-secondary);
   border-top: var(--border-width) solid var(--border-color);
   padding: 0 12px;
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
   color: var(--text-muted);
   user-select: none;
   z-index: 10;
@@ -363,6 +365,16 @@
 
 .status-bar-item {
   font-family: var(--font-family, sans-serif);
+}
+
+/* Shown briefly after an autosave; the width is reserved so the bar does not shift when it appears */
+.status-save-indicator {
+  min-width: 4.5em;
+  text-align: right;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  user-select: none;
 }
 
 /* ==========================================================================
@@ -401,7 +413,7 @@
   border: none !important;
   box-shadow: none !important;
   padding: 1px 3px;
-  font-size: 0.68rem;
+  font-size: var(--fs-11);
   
   color: var(--text-muted);
   cursor: default;
@@ -440,11 +452,6 @@
   background: #fa1;
 }
 
-/* Icons keep the arrow pointer even inside clickable controls (the control itself keeps its pointer) */
-.material-symbols-outlined {
-  cursor: default;
-}
-
 /* Flow Arrow between pipeline stages */
 .flow-arrow {
   display: inline-flex;
@@ -460,7 +467,7 @@
 }
 
 .startup-status-text {
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   color: var(--accent-color, #66f);
   font-family: var(--font-mono, monospace);
   letter-spacing: 0.6px;

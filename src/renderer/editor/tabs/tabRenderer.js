@@ -56,7 +56,11 @@ export function renderTabs() {
       <span class="tab-title">${tab.title}</span>
     `;
 
-    tabEl.addEventListener('click', () => switchTab(tab.id));
+    // Re-selecting the active tab would rebuild every tab element and refocus Monaco, which
+    // detaches the element before a double-click (rename) lands on it.
+    tabEl.addEventListener('click', () => {
+      if (tab.id !== activeTabId) switchTab(tab.id);
+    });
 
     const titleSpan = tabEl.querySelector('.tab-title');
     if (titleSpan) {
@@ -75,7 +79,7 @@ export function renderTabs() {
           color: #ffffff;
           border: 1.5px solid var(--accent-color, #38bdf8);
           border-radius: 3px;
-          font-size: 0.76rem;
+          font-size: var(--fs-12);
           font-weight: 600;
           font-family: inherit;
           padding: 2px 6px;
@@ -152,7 +156,7 @@ export function renderTabs() {
   btnInlineDuplicateTab.style.cursor = 'pointer';
   btnInlineDuplicateTab.style.flexShrink = '0';
   btnInlineDuplicateTab.style.marginLeft = '4px';
-  btnInlineDuplicateTab.innerHTML = `<span class="material-symbols-outlined" style="font-size: 1.15rem;">&#xf744;</span>`;
+  btnInlineDuplicateTab.innerHTML = `<span class="material-symbols-outlined" style="font-size: var(--fs-18);">&#xf744;</span>`;
   btnInlineDuplicateTab.addEventListener('click', () => duplicateTab());
   tabsContainer.appendChild(btnInlineDuplicateTab);
 
@@ -173,7 +177,7 @@ export function renderTabs() {
   btnInlineNewTab.style.cursor = 'pointer';
   btnInlineNewTab.style.flexShrink = '0';
   btnInlineNewTab.style.marginLeft = '2px';
-  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined" style="font-size: 1.2rem;">&#xf741;</span>`;
+  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined" style="font-size: var(--fs-19);">&#xf741;</span>`;
   btnInlineNewTab.addEventListener('click', () => createNewTab());
   tabsContainer.appendChild(btnInlineNewTab);
 

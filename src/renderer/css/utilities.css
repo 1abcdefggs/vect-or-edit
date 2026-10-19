@@ -54,7 +54,7 @@
 }
 
 .inspector-section-title {
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   color: var(--text-main, #f8fafc);
   display: flex;
   align-items: center;
@@ -62,7 +62,7 @@
 }
 
 .inspector-section-badge {
-  font-size: 0.65rem;
+  font-size: var(--fs-10);
   padding: 1px 6px;
   border-radius: 10px;
   background: rgba(129, 140, 248, 0.15);
@@ -71,7 +71,7 @@
 }
 
 .inspector-arrow {
-  font-size: 0.65rem;
+  font-size: var(--fs-10);
   color: var(--text-muted, #94a3b8);
   transition: transform 0.2s ease;
 }
@@ -82,7 +82,7 @@
 
 .section-title {
   font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-main);
@@ -110,7 +110,7 @@
 }
 
 .semantic-module-title {
-  font-size: 1rem;
+  font-size: var(--fs-16);
   font-weight: 600;
   color: var(--text-main);
   display: flex;
@@ -121,7 +121,7 @@
 
 .semantic-btn-add {
   padding: 2px 8px;
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   border-radius: var(--radius-sm, 4px);
   display: flex;
   align-items: center;
@@ -142,7 +142,7 @@
 
 .semantic-btn-clear {
   padding: 2px 6px;
-  font-size: 0.7rem;
+  font-size: var(--fs-11);
   border-radius: var(--radius-sm, 4px);
   display: flex;
   align-items: center;
@@ -217,7 +217,7 @@
   top: -2px;
   right: 18px;
   pointer-events: none;
-  font-size: 0.68rem;
+  font-size: var(--fs-11);
   font-family: var(--font-mono, monospace);
   color: var(--success-color, #10b981);
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
@@ -245,7 +245,7 @@
 .save-capsule-btn-auto {
   height: 28px;
   padding: 0 9px;
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
   border-radius: 4px 0 0 4px;
   display: inline-flex;
   align-items: center;
@@ -299,8 +299,14 @@
   background: rgba(56, 189, 248, 0.5);
 }
 
-/* Modern Wave Bouncing Startup Loader */
+/* Startup loader (scan animation: light sweeps over the letters, then a thin line below)
+   Fonts are set here only: --startup-logo-font / -weight / -size for the VectOrEdit letters, --startup-status-font for the status line.
+   Web fonts (Inter, Noto Sans JP, Cascadia Code, ...) load from Google Fonts and may not be ready on the first frame, so keep a system fallback at the end. */
 .app-startup-loader {
+  --startup-logo-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --startup-logo-weight: 600;
+  --startup-logo-size: 3rem;
+  --startup-status-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   position: fixed;
   inset: 0;
   z-index: 99999;
@@ -312,12 +318,48 @@
   transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 
-.startup-bouncing-logo span {
+.startup-loader-status {
+  font-family: var(--startup-status-font);
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-12);
+  color: var(--text-muted, #94a3b8);
+  user-select: none;
+}
+
+.startup-logo,
+.startup-logo span {
+  font-family: var(--startup-logo-font);
+  font-weight: var(--startup-logo-weight);
+}
+
+.startup-logo span {
   display: inline-block;
   color: var(--text-main, #f8fafc);
-  animation: letter-bouncy-jump 1.3s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
-  animation-delay: calc(0.085s * var(--i));
-  will-change: transform;
+  animation: letter-scan 1.8s ease-in-out infinite;
+  animation-delay: calc(0.09s * var(--i));
+}
+
+.startup-loader-line {
+  width: min(220px, 60vw);
+  margin-bottom: 14px;
+}
+
+/* Honors the OS "reduce motion" setting: letters stay lit and the line stops */
+@media (prefers-reduced-motion: reduce) {
+  .startup-logo span {
+    animation: none;
+    opacity: 1;
+  }
+
+  .startup-loader-line::after {
+    animation: none;
+    left: 0;
+    width: 100%;
+    opacity: 0.5;
+  }
 }
 
 /* Integrated Typography Group */
@@ -367,32 +409,32 @@ button,
    ========================================================================== */
 @media (max-width: 700px) {
   .semantic-module-title {
-    font-size: 0.75rem !important;
+    font-size: var(--fs-12) !important;
   }
   .semantic-module-title .material-symbols-outlined {
-    font-size: 0.95rem !important;
+    font-size: var(--fs-15) !important;
   }
   .system-status-panel span[data-i18n="log_panel_title"] {
-    font-size: 0.65rem !important;
+    font-size: var(--fs-10) !important;
   }
   .llm-dock-title {
-    font-size: 0.75rem !important;
+    font-size: var(--fs-12) !important;
   }
 }
 
 @media (min-width: 701px) {
   .semantic-module-title {
-    font-size: 1.05rem !important;
+    font-size: var(--fs-17) !important;
     font-weight: 600;
   }
   .semantic-module-title .material-symbols-outlined {
-    font-size: 1.25rem !important;
+    font-size: var(--fs-20) !important;
   }
   .system-status-panel span[data-i18n="log_panel_title"] {
-    font-size: 0.82rem !important;
+    font-size: var(--fs-13) !important;
   }
   .llm-dock-title {
-    font-size: 1.0rem !important;
+    font-size: var(--fs-16) !important;
   }
 }
 

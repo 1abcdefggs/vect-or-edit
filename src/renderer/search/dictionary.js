@@ -107,17 +107,17 @@ export async function updateSemanticStateDisplay() {
       if (state?.slots?.length) {
         state.slots.forEach((slot, idx) => {
           const itemEl = document.createElement('div');
-          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); font-size: 0.75rem; gap: 6px;';
+          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); font-size: var(--fs-12); gap: 6px;';
           
           const leftContainer = document.createElement('div');
           leftContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;';
 
           const slotIndexBadge = document.createElement('span');
-          slotIndexBadge.style.cssText = 'font-size: 0.62rem;  font-family: var(--font-mono, monospace); color: var(--accent-color, #38bdf8); background: rgba(56, 189, 248, 0.12); padding: 1px 4px; border-radius: 3px; flex-shrink: 0;';
+          slotIndexBadge.style.cssText = 'font-size: var(--fs-10);  font-family: var(--font-mono, monospace); color: var(--accent-color, #38bdf8); background: rgba(56, 189, 248, 0.12); padding: 1px 4px; border-radius: 3px; flex-shrink: 0;';
           slotIndexBadge.textContent = `SLOT ${idx + 1}`;
 
           const infoSpan = document.createElement('span');
-          infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981);  font-size: 0.76rem;';
+          infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981);  font-size: var(--fs-12);';
           infoSpan.textContent = slot.name;
           infoSpan.title = `[SLOT ${idx + 1}] ${slot.filePath}\nItems: ${slot.itemCount.toLocaleString()}\nMulti-slot indexing active.`;
 
@@ -128,13 +128,13 @@ export async function updateSemanticStateDisplay() {
           rightContainer.style.cssText = 'display: flex; align-items: center; gap: 4px; flex-shrink: 0;';
 
           const countBadge = document.createElement('span');
-          countBadge.style.cssText = 'font-size: 0.65rem; color: var(--text-muted); ';
+          countBadge.style.cssText = 'font-size: var(--fs-10); color: var(--text-muted); ';
           const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
           countBadge.textContent = `${slot.itemCount.toLocaleString()} ${itemLabel}`;
 
           const btnDel = document.createElement('button');
           btnDel.className = 'toolbar-btn';
-          btnDel.style.cssText = 'background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 2px 4px; font-size: 0.75rem; line-height: 1; display: flex; align-items: center; justify-content: center; border-radius: 3px; transition: color 0.15s ease, background 0.15s ease;';
+          btnDel.style.cssText = 'background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 2px 4px; font-size: var(--fs-12); line-height: 1; display: flex; align-items: center; justify-content: center; border-radius: 3px; transition: color 0.15s ease, background 0.15s ease;';
           btnDel.innerHTML = icons.delete || '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
           btnDel.title = `Unload ${slot.name}`;
           btnDel.addEventListener('mouseenter', () => {
@@ -175,27 +175,27 @@ function promptForPassword(filePath) {
     
     const title = document.createElement('div');
     title.textContent = `Encrypted Knowledge Slot`;
-    title.style.cssText = 'font-weight:600;color:var(--text-color);font-size:15px;';
+    title.style.cssText = 'font-weight:600;color:var(--text-color);font-size:var(--fs-15);';
     
     const desc = document.createElement('div');
     desc.textContent = `Password required for: ${filename}`;
-    desc.style.cssText = 'color:var(--text-muted);font-size:12px;word-break:break-all;';
+    desc.style.cssText = 'color:var(--text-muted);font-size:var(--fs-12);word-break:break-all;';
     
     const input = document.createElement('input');
     input.type = 'password';
     input.placeholder = 'Enter password...';
-    input.style.cssText = 'padding:10px;border:var(--border-width) solid var(--border-color);border-radius:6px;background:var(--bg-input);color:var(--text-color);outline:none;font-size:14px;';
+    input.style.cssText = 'padding:10px;border:var(--border-width) solid var(--border-color);border-radius:6px;background:var(--bg-input);color:var(--text-color);outline:none;font-size:var(--fs-14);';
     
     const btnRow = document.createElement('div');
     btnRow.style.cssText = 'display:flex;justify-content:flex-end;gap:10px;margin-top:5px;';
     
     const btnCancel = document.createElement('button');
     btnCancel.textContent = 'Cancel';
-    btnCancel.style.cssText = 'padding:6px 12px;border:var(--border-width) solid var(--border-color);border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;';
+    btnCancel.style.cssText = 'padding:6px 12px;border:var(--border-width) solid var(--border-color);border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:var(--fs-13);';
     
     const btnSubmit = document.createElement('button');
     btnSubmit.textContent = 'Unlock';
-    btnSubmit.style.cssText = 'padding:6px 12px;border:none;border-radius:4px;background:var(--accent-color, #007acc);color:#fff;cursor:pointer;font-size:13px;';
+    btnSubmit.style.cssText = 'padding:6px 12px;border:none;border-radius:4px;background:var(--accent-color, #007acc);color:#fff;cursor:pointer;font-size:var(--fs-13);';
     
     btnRow.appendChild(btnCancel);
     btnRow.appendChild(btnSubmit);

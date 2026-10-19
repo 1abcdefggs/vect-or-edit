@@ -21,7 +21,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   color: var(--text-main);
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -78,7 +78,7 @@
   justify-content: center;
   gap: 6px;
   padding: 6px 12px;
-  font-size: 0.82rem;
+  font-size: var(--fs-13);
   font-family: inherit;
   color: var(--text-main);
   background: transparent;
@@ -115,7 +115,7 @@
 
 .external-action-icon {
   margin-left: auto;
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
   color: var(--text-muted);
 }
 
@@ -162,11 +162,11 @@
 }
 
 .chip-title {
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   color: var(--text-main);
 }
 
 .chip-desc {
-  font-size: 0.7rem;
+  font-size: var(--fs-11);
   color: var(--text-muted);
 }

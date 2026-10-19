@@ -1,5 +1,5 @@
 import { icons } from './core/icons';
-import { initStartupFlow } from './core/startupManager';
+import { initStartupFlow, hideStartupLoader } from './core/startupManager';
 import { loadLocales } from './core/i18n';
 import { initSettings, loadSettingsFromBackend } from './ui/settings.js';
 import { initQuickDictionary } from './search/dictionary.js';
@@ -18,10 +18,14 @@ import { initMenuBar } from './ui/layout/menuBarController';
 import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
+import { initSelectMenus } from './ui/components/selectMenu';
+import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
 
 export { setLedStatus };
 
 window.__icons__ = icons;
+
+const STARTUP_LOADER_MAX_MS = 15000;
 
 document.addEventListener('DOMContentLoaded', async () => {
   // 0. Inject lazy HTML components (Modals, System Logs)
@@ -33,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 0.5. Initialize LED tooltips consistently
   initAllLedTooltips();
   initInstantTooltips();
+  initSelectMenus();
 
   // 0.7. Initialize master settings store & UI visibility
   await settingsStore.syncWithBackend();
@@ -108,14 +113,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('[Startup] Init failed:', err);
     })
     .finally(() => {
-      // Fallback guarantee: dismiss loader after 500ms regardless
-      setTimeout(() => {
-        const loader = document.getElementById('appStartupLoader');
-        if (loader) loader.remove();
-      }, 500);
+      // Fallback guarantee: the loader never outlives startup, even when the AI setup modal or an init error blocks the normal dismissal
+      setTimeout(hideStartupLoader, 500);
     });
 
+  // Last resort if init never settles
+  setTimeout(hideStartupLoader, STARTUP_LOADER_MAX_MS);
+
   // 4. Background Services & Controllers
+  initMarkdownPreview();
   initQuickDictionary();
   initVectorSearch();
   initAiControls();

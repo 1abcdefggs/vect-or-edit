@@ -1,17 +1,6 @@
 import { GITHUB_REPO_URL, getCurrentAppVersion } from '../api/githubAPI.js';
 
 export function bindUpdateModalEvents() {
-  const btnGitHub = document.getElementById('btnGitHub');
-  if (btnGitHub) {
-    btnGitHub.addEventListener('click', () => {
-      if (window.engineAPI && window.engineAPI.openExternal) {
-        window.engineAPI.openExternal(GITHUB_REPO_URL);
-      } else {
-        window.open(GITHUB_REPO_URL, '_blank');
-      }
-    });
-  }
-
   const updateModal = document.getElementById('updateModal');
   const btnCloseUpdateModal = document.getElementById('btnCloseUpdateModal');
   const btnRemindLater = document.getElementById('btnRemindLater');

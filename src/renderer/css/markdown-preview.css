@@ -1,0 +1,79 @@
+/* Markdown preview: read-only rendered view shown in place of the Monaco editor. */
+
+.markdown-preview-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.markdown-preview-toggle[aria-pressed="true"] {
+  color: var(--accent-color, #38bdf8);
+}
+
+.markdown-preview {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  padding: 24px 32px;
+  box-sizing: border-box;
+  background: var(--bg-primary);
+  color: var(--text-main);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.markdown-preview[hidden] {
+  display: none;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3 {
+  line-height: 1.3;
+  margin: 1.2em 0 0.5em;
+}
+
+.markdown-preview pre {
+  padding: 12px 14px;
+  overflow-x: auto;
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-card);
+}
+
+.markdown-preview code {
+  font-family: Consolas, monospace;
+}
+
+.markdown-preview blockquote {
+  margin: 0.8em 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--accent-color);
+  opacity: 0.85;
+}
+
+.markdown-preview table {
+  border-collapse: collapse;
+}
+
+.markdown-preview th,
+.markdown-preview td {
+  padding: 4px 10px;
+  border: 1px solid var(--border-color);
+}
+
+.markdown-preview img {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .markdown-preview {
+    padding: 16px;
+  }
+}

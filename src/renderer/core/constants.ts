@@ -17,7 +17,6 @@ export const STORAGE_KEYS = {
   SUGGEST_TRIGGER_MODE: 'vect_suggest_trigger_mode',
   AI_PROVIDER: 'ai_provider',
   AI_INFERENCE_SCOPE: 'ai_inference_scope',
-  EMBEDDER_PATH: 'embedder_path',
   CLAUDE_API_KEY: 'claude_api_key',
   CLAUDE_MODEL: 'claude_model',
   GEMINI_API_KEY: 'gemini_api_key',
@@ -30,8 +29,6 @@ export const STORAGE_KEYS = {
   EDITOR_BG_TONE: 'editor_bg_tone',
   CUSTOM_EDITOR_BG: 'editor_custom_bg',
   AUTO_SAVE: 'editor_auto_save',
-  CONTEXT_MENU_PATTERN: 'vect_context_menu_pattern',
-  SUGGEST_DISPLAY_TARGET: 'vect_suggest_display_target',
   AI_SETUP_COMPLETED: 'vect_ai_setup_completed',
   LOCAL_EMBEDDING_MODEL: 'vect_local_embedding_model',
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
@@ -66,8 +63,6 @@ export const DEFAULTS = {
   APP_LANG: 'ja',
   AUTO_SAVE: true,
   LOG_DISPLAY_POSITION: 'bottom',
-  CONTEXT_MENU_PATTERN: 'patternA',
-  SUGGEST_DISPLAY_TARGET: 'sidebar'
 } as const;
 
 export const LOG_COLORS = {

@@ -1,4 +1,5 @@
 import { aiManager } from '../../core/aiStateManager.js';
+import { STORAGE_KEYS } from '../../core/constants.js';
 import { isAiModelConfigured } from '../settings/settingsState.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
@@ -6,22 +7,30 @@ import { showConfirmModal } from '../notifications/confirmModal.js';
 import { queryLlmChat } from '../../search/searchProviders.js';
 import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editorManager.js';
 
+// The dock's quick key input used to save under `vect_*` names that nothing else reads; move those values over.
+function migrateLegacyApiKeys() {
+  const legacyNames = [
+    ['vect_openai_api_key', STORAGE_KEYS.OPENAI_API_KEY],
+    ['vect_claude_api_key', STORAGE_KEYS.CLAUDE_API_KEY]
+  ];
+  for (const [legacy, current] of legacyNames) {
+    const value = localStorage.getItem(legacy);
+    if (value === null) continue;
+    if (value && !localStorage.getItem(current)) localStorage.setItem(current, value);
+    localStorage.removeItem(legacy);
+  }
+}
+
 export function initAiControls() {
+  migrateLegacyApiKeys();
   const isMasterAiOn = isAiModelConfigured();
   aiManager.init(isMasterAiOn);
 
-  const masterAiTogglePill = document.getElementById('masterAiTogglePill');
-  const masterAiStatusDot = document.getElementById('masterAiStatusDot');
   const btnEditorAiToggle = document.getElementById('btnEditorAiToggle');
   const editorAiStatusDot = document.getElementById('editorAiStatusDot');
   const editorAiLabel = document.getElementById('editorAiLabel');
-  const btnSidebarAiToggle = document.getElementById('btnSidebarAiToggle');
   const activeAiModelStatusDot = document.getElementById('activeAiModelStatusDot');
-  const activeAiModelBadge = document.getElementById('activeAiModelBadge');
   const consoleAiInputGroup = document.getElementById('consoleAiInputGroup');
-  const masterAiModelNameBadge = document.getElementById('masterAiModelNameBadge');
-  const masterAiModelNameText = document.getElementById('masterAiModelNameText');
-  const btnMasterAiReload = document.getElementById('btnMasterAiReload');
 
   function updateSettingsOverview(state = aiManager.getState()) {
     const embeddingStatus = document.getElementById('settingsEmbeddingStatus');
@@ -34,7 +43,6 @@ export function initAiControls() {
     const knowledgeCard = knowledgeStatus?.closest('.ai-status-card');
     const structureEmbedding = document.getElementById('settingsStructureEmbedding');
     const structureKnowledge = document.getElementById('settingsStructureKnowledge');
-    const structureAssist = document.getElementById('settingsStructureAssist');
     const provider = localStorage.getItem('ai_provider') || 'local';
     const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
 
@@ -53,24 +61,12 @@ export function initAiControls() {
         if (structureKnowledge) structureKnowledge.textContent = count > 0 ? `HNSW index (${count})` : 'Knowledge not loaded';
       }).catch(() => { });
     }
-    if (structureAssist) structureAssist.textContent = state.master ? 'Master AI ON' : 'Master AI OFF';
   }
 
   // Sync UI on State Change
   aiManager.addEventListener('app:aiStateChanged', (e) => {
-    const state = e.detail;
+    const state = e.detail.state;
     updateSettingsOverview(state);
-
-    const settingsMasterStatus = document.getElementById('settingsMasterAiStatus');
-    const settingsMasterDetail = document.getElementById('settingsMasterAiDetail');
-    const settingsMasterCard = settingsMasterStatus?.closest('.ai-status-card');
-    if (settingsMasterStatus) settingsMasterStatus.textContent = state.master ? 'ON' : 'OFF';
-    if (settingsMasterDetail) settingsMasterDetail.textContent = state.modelConfigured ? 'Ready to assist' : 'Enable after a model is ready';
-    if (settingsMasterCard) settingsMasterCard.dataset.statusTone = state.master ? 'ready' : 'off';
-
-
-
-    if (masterAiStatusDot) masterAiStatusDot.style.color = state.master ? 'var(--success-color, #10b981)' : '#ef4444';
 
     const monacoContainerEl = document.getElementById('monacoContainer');
     if (btnEditorAiToggle) {
@@ -83,7 +79,6 @@ export function initAiControls() {
       btnEditorAiToggle.style.background = '';
       btnEditorAiToggle.style.borderColor = '';
       btnEditorAiToggle.style.color = '';
-      document.getElementById('btnLlmToggle')?.classList.toggle('active', !!state.editor);
       if (editorAiLabel) {
         editorAiLabel.textContent = state.editor ? (t('editor_ai_on') || 'Editor AI ON') : (t('editor_ai_off') || 'Editor AI OFF');
       }
@@ -131,42 +126,7 @@ export function initAiControls() {
     }
   });
 
-  function updateMasterAiModelBadge() {
-    const provider = localStorage.getItem('ai_provider') || 'local';
-    let modelName = t('ai_model_unset') || 'No Model';
-    let isReady = false;
-
-    if (provider === 'local') {
-      if (window.__isLocalAiModelReady) {
-        modelName = 'e5-small (Local)';
-        isReady = true;
-      }
-    } else if (provider === 'claude') {
-      const apiKey = localStorage.getItem('claude_api_key');
-      if (apiKey) {
-        modelName = 'Claude 3.5';
-        isReady = true;
-      }
-    } else if (provider === 'gemini') {
-      const apiKey = localStorage.getItem('gemini_api_key');
-      if (apiKey) {
-        modelName = 'Gemini 1.5';
-        isReady = true;
-      }
-    } else if (provider === 'openai') {
-      const apiKey = localStorage.getItem('openai_api_key');
-      if (apiKey) {
-        modelName = 'GPT-4o';
-        isReady = true;
-      }
-    }
-
-    if (masterAiModelNameText) {
-      masterAiModelNameText.textContent = modelName;
-      masterAiModelNameText.style.color = isReady ? '#38bdf8' : '#f59e0b';
-    }
-
-
+  function updateSidebarEmbeddingLabel() {
     const sidebarEmbeddingNameEl = document.getElementById('sidebarEmbeddingModelName');
     const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
     if (sidebarEmbeddingNameEl) {
@@ -183,80 +143,48 @@ export function initAiControls() {
     window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAiSearch' } }));
   }
 
-  if (masterAiModelNameBadge) masterAiModelNameBadge.addEventListener('click', openAiSettingsTab);
-
-  updateMasterAiModelBadge();
+  updateSidebarEmbeddingLabel();
   updateSettingsOverview();
-  document.getElementById('btnOpenAiStructureSettings')?.addEventListener('click', () => {
-    document.getElementById('aiProviderModelSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
   window.addEventListener('app:settingsChanged', () => {
     const isConfigured = isAiModelConfigured();
     aiManager.setModelConfigured(isConfigured);
-    updateMasterAiModelBadge();
+    updateSidebarEmbeddingLabel();
     updateSettingsOverview();
   });
 
-  if (masterAiTogglePill) {
-    masterAiTogglePill.addEventListener('click', async () => {
-      const state = aiManager.getState();
-      if (!state.master) {
-        if (!state.modelConfigured) {
-          const confirmed = await showConfirmModal({
-            title: t('ai_setup_required_title') || 'AI Setup Required',
-            message: t('ai_setup_required_msg') || 'AI model is not configured yet.',
-            detail: t('ai_setup_required_detail') || 'Would you like to open the AI Settings tab now to configure API keys or local models?',
-            confirmText: t('btn_open_settings') || 'Open Settings',
-            cancelText: t('btn_cancel') || 'Cancel',
-            type: 'info',
-            icon: 'cloud'
-          });
-          if (confirmed) {
-            openAiSettingsTab();
-          }
-          return;
-        }
-        aiManager.setMasterAi(true);
-        showToast(t('toast_master_ai_activated'), 'success');
-      } else {
-        aiManager.setMasterAi(false);
-        showToast(t('toast_master_ai_standby'), 'info');
+  // Both the header chip and the chat dock button share one handler. The dock closes while
+  // Master AI is off, so the header chip must be able to turn it on and reopen the dock.
+  async function handleLlmToggleClick() {
+    const state = aiManager.getState();
+    if (!state.modelConfigured) {
+      const confirmed = await showConfirmModal({
+        title: t('ai_setup_required_title') || 'AI Setup Required',
+        message: t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.',
+        detail: t('ai_setup_required_detail') || 'Would you like to navigate to Settings to configure your Gemini or OpenAI API key?',
+        confirmText: t('btn_open_settings') || 'Open Settings',
+        cancelText: t('btn_cancel') || 'Stay in Editor',
+        type: 'info',
+        icon: 'cloud'
+      });
+      if (confirmed) {
+        openAiSettingsTab();
       }
-    });
+      return;
+    }
+    if (!state.master) {
+      // Auto-turn on Master AI when user wants to use Editor AI
+      aiManager.setMasterAi(true);
+      aiManager.setEditorAi(true);
+      showToast(t('toast_editor_ai_auto_enabled'), 'success');
+      window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: {} }));
+      return;
+    }
+    const nextEditor = !state.editor;
+    aiManager.setEditorAi(nextEditor);
+    showToast(nextEditor ? t('toast_editor_ai_on') : t('toast_editor_ai_off'), nextEditor ? 'success' : 'info');
   }
 
-  // The header pill is a read-only status; the toggle lives in the chat dock.
-  const btnLlmToggle = document.getElementById('btnLlmToggle');
-  if (btnLlmToggle) {
-    btnLlmToggle.addEventListener('click', async () => {
-      const state = aiManager.getState();
-      if (!state.modelConfigured) {
-        const confirmed = await showConfirmModal({
-          title: t('ai_setup_required_title') || 'AI Setup Required',
-          message: t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.',
-          detail: t('ai_setup_required_detail') || 'Would you like to navigate to Settings to configure your Gemini or OpenAI API key?',
-          confirmText: t('btn_open_settings') || 'Open Settings',
-          cancelText: t('btn_cancel') || 'Stay in Editor',
-          type: 'info',
-          icon: 'cloud'
-        });
-        if (confirmed) {
-          openAiSettingsTab();
-        }
-        return;
-      }
-      if (!state.master) {
-        // Auto-turn on Master AI when user wants to use Editor AI
-        aiManager.setMasterAi(true);
-        aiManager.setEditorAi(true);
-        showToast(t('toast_editor_ai_auto_enabled'), 'success');
-        return;
-      }
-      const nextEditor = !state.editor;
-      aiManager.setEditorAi(nextEditor);
-      showToast(nextEditor ? t('toast_editor_ai_on') : t('toast_editor_ai_off'), nextEditor ? 'success' : 'info');
-    });
-  }
+  btnEditorAiToggle?.addEventListener('click', handleLlmToggleClick);
 
   // Sidebar Embedding Model Pill Click: Toggle Sidebar AI (ON/OFF) matching Editor AI UX
   const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
@@ -332,10 +260,10 @@ function initLlmChatDock() {
     if (!selQuickProvider || !quickApiKeyInput) return;
     const provider = selQuickProvider.value;
     if (provider === 'openai') {
-      quickApiKeyInput.value = localStorage.getItem('vect_openai_api_key') || '';
+      quickApiKeyInput.value = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
       quickApiKeyInput.placeholder = 'sk-proj-...';
     } else if (provider === 'claude') {
-      quickApiKeyInput.value = localStorage.getItem('vect_claude_api_key') || '';
+      quickApiKeyInput.value = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
       quickApiKeyInput.placeholder = 'sk-ant-api03-...';
     } else {
       quickApiKeyInput.value = '';
@@ -415,9 +343,9 @@ function initLlmChatDock() {
             console.warn('[Gemini] Automatic model fetch warning:', modelErr);
           }
       } else if (provider === 'openai') {
-        localStorage.setItem('vect_openai_api_key', key);
+        localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, key);
       } else if (provider === 'claude') {
-        localStorage.setItem('vect_claude_api_key', key);
+        localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, key);
       }
 
       updateDockModelBadge();
@@ -466,7 +394,7 @@ function initLlmChatDock() {
   });
   // Close LLM Chat dock automatically when Master AI is turned off
   window.addEventListener('app:aiStateChanged', (e) => {
-    const state = e.detail;
+    const state = e.detail.state;
     if (!state.master) {
       closeDock();
     }
@@ -479,7 +407,7 @@ function initLlmChatDock() {
     btnClear.addEventListener('click', () => {
       chatMessages.innerHTML = `
         <div class="llm-msg llm-msg-system">
-          <span class="material-symbols-outlined" style="font-size: 0.95rem; color: var(--accent-color, #38bdf8);">&#xe88e;</span>
+          <span class="material-symbols-outlined" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8);">&#xe88e;</span>
           <span>Conversation cleared. Type a prompt, question, or select text in Monaco Editor and right-click "LLM Chat" to converse or rewrite here.</span>
         </div>
       `;
@@ -526,7 +454,7 @@ function initLlmChatDock() {
     aiMsgEl.innerHTML = `
       <div class="llm-msg-ai-header">
         <span style="display: flex; align-items: center; gap: 4px;">
-          <span class="material-symbols-outlined" style="font-size: 0.85rem;">smart_toy</span>
+          <span class="material-symbols-outlined" style="font-size: var(--fs-14);">smart_toy</span>
           <span>Thinking...</span>
         </span>
       </div>
@@ -545,22 +473,22 @@ function initLlmChatDock() {
         aiMsgEl.innerHTML = `
           <div class="llm-msg-ai-header">
             <span style="display: flex; align-items: center; gap: 4px;">
-              <span class="material-symbols-outlined" style="font-size: 0.85rem;">smart_toy</span>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-14);">smart_toy</span>
               <span>${modelName}</span>
             </span>
           </div>
           <div class="llm-ai-body" style="white-space: pre-wrap; word-break: break-word;">${escapeHtml(text)}</div>
           <div class="llm-msg-actions">
             <button class="llm-action-btn btn-action-insert" title="Insert output at editor cursor">
-              <span class="material-symbols-outlined" style="font-size: 0.75rem;">input</span>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-12);">input</span>
               <span>Insert</span>
             </button>
             <button class="llm-action-btn btn-action-rewrite" title="Replace selected text with this output (decorated)">
-              <span class="material-symbols-outlined" style="font-size: 0.75rem;">auto_fix_high</span>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-12);">auto_fix_high</span>
               <span>Replace (Rewrite)</span>
             </button>
             <button class="llm-action-btn btn-action-copy" title="Copy to clipboard">
-              <span class="material-symbols-outlined" style="font-size: 0.75rem;">content_copy</span>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-12);">content_copy</span>
               <span>Copy</span>
             </button>
           </div>
@@ -594,7 +522,7 @@ function initLlmChatDock() {
         const err = response?.error || 'No response from AI model. Please verify API key in Settings.';
         aiMsgEl.innerHTML = `
           <div class="llm-msg-ai-header" style="color: #ef4444;">
-            <span class="material-symbols-outlined" style="font-size: 0.85rem;">error</span>
+            <span class="material-symbols-outlined" style="font-size: var(--fs-14);">error</span>
             <span>Error</span>
           </div>
           <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(err)}</div>
@@ -603,7 +531,7 @@ function initLlmChatDock() {
     } catch (e) {
       aiMsgEl.innerHTML = `
         <div class="llm-msg-ai-header" style="color: #ef4444;">
-          <span class="material-symbols-outlined" style="font-size: 0.85rem;">error</span>
+          <span class="material-symbols-outlined" style="font-size: var(--fs-14);">error</span>
           <span>Error</span>
         </div>
         <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(e.message || 'Request failed')}</div>

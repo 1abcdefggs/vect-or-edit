@@ -22,7 +22,7 @@
   text-align: center;
   padding: 32px 16px;
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   background: var(--result-bg);
   border-radius: var(--radius-md);
 }
@@ -76,16 +76,16 @@
   background: var(--item-code-bg);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
 }
 
 .similarity-score {
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   color: var(--success-color);
 }
 
 .item-title {
-  font-size: 0.92rem;
+  font-size: var(--fs-15);
   color: var(--text-main);
   margin-bottom: 2px;
   line-height: 1.35;
@@ -94,7 +94,7 @@
 }
 
 .item-desc {
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   color: var(--text-muted);
   line-height: 1.4;
   word-break: break-word;
@@ -102,7 +102,7 @@
 }
 
 .item-subtitle {
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   color: var(--text-muted);
   line-height: 1.35;
   word-break: break-word;
@@ -121,9 +121,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: var(--fs-13);
   color: var(--accent-color, #818cf8);
   margin-bottom: 2px;
+}
+
+/* Sidebar embedding chip icon: dim at rest, lit while a vector search runs or shows results */
+.vector-activity-icon {
+  opacity: 0.55;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.vector-activity-icon.active {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px var(--accent-color, #38bdf8));
 }
 
 .neural-glow-line {
@@ -231,12 +242,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: var(--fs-13);
   color: var(--text-main);
 }
 
 .model-progress-pct {
-  font-size: 0.8rem;
+  font-size: var(--fs-13);
   color: var(--accent-color, #818cf8);
 }
 

@@ -21,6 +21,7 @@ import { showWorkspaceModal } from './topBarRenderer.js';
 import { showAiSetupModal } from '../ai/aiSetupController.js';
 import { showToast } from '../notifications/toastManager.js';
 import { setDocumentFormat, announceOpenedEncoding, markSavedAsUtf8 } from '../../editor/ui/statusBarManager.js';
+import { commitTabToFile } from '../../editor/io/tabCommit.js';
 import { t } from '../../core/i18n.js';
 import { commandManager, type CommandDefinition } from '../../core/commandManager';
 
@@ -88,21 +89,14 @@ export function registerAppCommands(): void {
   const executeSaveAll = async () => {
     const currentTabs = tabs || [];
     let savedCount = 0;
+    let failedCount = 0;
     for (const tab of currentTabs) {
-      if (tab.model) {
-        const tabContent = tab.model.getValue();
-        const targetPath = tab.filePath || tab.title || 'untitled.md';
-        if (window.engineAPI?.saveFile) {
-          const res = await window.engineAPI.saveFile(tabContent, targetPath, !tab.filePath);
-          const savedPath = res?.filePath || res?.path;
-          if (res?.success && savedPath) {
-            tab.isDirty = false;
-            tab.filePath = savedPath;
-            savedCount++;
-          }
-        }
-      }
+      if (!tab.model) continue;
+      const result = await commitTabToFile(tab);
+      if (result.ok) savedCount++;
+      else if (!result.canceled) failedCount++;
     }
+    if (failedCount) showToast(t('save_failed'), 'error');
     showToast(`Saved ${savedCount} document(s)`, 'success');
   };
 

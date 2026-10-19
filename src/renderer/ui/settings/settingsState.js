@@ -1,11 +1,11 @@
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 
 export function isAiModelConfigured() {
-  const provider = localStorage.getItem('ai_provider') || 'local';
+  const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
   if (provider === 'local') return Boolean(window.__isLocalAiModelReady);
-  if (provider === 'claude') return Boolean(localStorage.getItem('claude_api_key'));
-  if (provider === 'gemini') return Boolean(window.__geminiApiKeyConfigured || localStorage.getItem('gemini_api_key'));
-  if (provider === 'openai') return Boolean(localStorage.getItem('openai_api_key'));
+  if (provider === 'claude') return Boolean(localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY));
+  if (provider === 'gemini') return Boolean(window.__geminiApiKeyConfigured || localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY));
+  if (provider === 'openai') return Boolean(localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY));
   return false;
 }
 

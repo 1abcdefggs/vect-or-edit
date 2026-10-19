@@ -1,4 +1,4 @@
-import { showSelectionPopoverMenu, removeContextMenu } from '../ui/contextMenuManager.js';
+import { showSelectionPopoverMenu, removeContextMenu, removeSelectionPopover } from '../ui/contextMenuManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 
 export function setupEditorContextMenu(editor, container) {
@@ -41,10 +41,10 @@ export function setupEditorContextMenu(editor, container) {
             showSelectionPopoverMenu(posX, posY, text, null, 'selection');
           }
         } else {
-          removeContextMenu();
+          removeSelectionPopover();
         }
       } else {
-        removeContextMenu();
+        removeSelectionPopover();
       }
     }, source === 'mouse' ? 60 : 350);
   };

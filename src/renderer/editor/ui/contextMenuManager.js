@@ -1,13 +1,21 @@
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
-import { buildPillMenu, buildPatternAMenu, buildPatternBMenu } from './contextMenuBuilders.js';
+import { buildPillMenu, buildPatternAMenu } from './contextMenuBuilders.js';
 
 let activeContextMenu = null;
+// 'selection' (pill popover) or 'context' (right-click menu)
+let activeMenuType = null;
 
 export function removeContextMenu() {
   if (activeContextMenu) {
     activeContextMenu.remove();
     activeContextMenu = null;
+    activeMenuType = null;
   }
+}
+
+// Selection changes may close the selection popover, but never a right-click menu
+export function removeSelectionPopover() {
+  if (activeMenuType === 'selection') removeContextMenu();
 }
 
 function calculateMenuPosition(x, y, width, height) {
@@ -46,16 +54,9 @@ export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, t
     menu = pillMenu;
     estHeight = hasMatches ? 70 : 36;
   } else {
-    const pattern = localStorage.getItem(STORAGE_KEYS.CONTEXT_MENU_PATTERN) || DEFAULTS.CONTEXT_MENU_PATTERN || 'patternA';
-    if (pattern === 'patternB') {
-      menu = buildPatternBMenu({ selectedText, onDismiss: removeContextMenu });
-      estWidth = 240;
-      estHeight = 180;
-    } else {
-      menu = buildPatternAMenu({ selectedText, onDismiss: removeContextMenu });
-      estWidth = 200;
-      estHeight = 250;
-    }
+    menu = buildPatternAMenu({ selectedText, onDismiss: removeContextMenu });
+    estWidth = 200;
+    estHeight = 250;
   }
 
   const { left, top } = calculateMenuPosition(x, y, estWidth, estHeight);
@@ -64,6 +65,7 @@ export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, t
 
   document.body.appendChild(menu);
   activeContextMenu = menu;
+  activeMenuType = triggerType === 'selection' ? 'selection' : 'context';
 }
 
 if (typeof document !== 'undefined') {
