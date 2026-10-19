@@ -14,7 +14,7 @@ import {
   getCurrentResults
 } from './searchUi.js';
 
-import { initLocalAiWorker, isLocalAiReadyState } from './searchLocalAi.js';
+import { initLocalAiWorker, isLocalAiReadyState, getVectorFromWorker } from './searchLocalAi.js';
 import { fetchAiSuggestions } from './searchProviders.js';
 import { showMonacoWidget } from './searchWidget.js';
 import { aiManager } from '../core/aiStateManager.js';
@@ -249,7 +249,7 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
             const panel = document.getElementById('vectorResultsList');
             if (panel) {
               const alertHtml = alerts.map(a => `
-                <div class="semantic-alert semantic-alert--${(a.severity || 'warning').toLowerCase()}" style="border-left:3px solid ${a.severity === 'Error' ? '#ef4444' : '#f59e0b'};padding:6px 10px;margin:4px 0;border-radius:4px;background:rgba(0,0,0,0.25);font-size:0.78rem;">
+                <div class="semantic-alert semantic-alert--${(a.severity || 'warning').toLowerCase()}" style="border-left:3px solid ${a.severity === 'Error' ? '#ef4444' : '#f59e0b'};padding:6px 10px;margin:4px 0;border-radius:4px;background:rgba(0,0,0,0.25);font-size:var(--fs-12);">
                   <span>[${a.severity}]</span> ${a.message}
                 </div>`).join('');
               panel.insertAdjacentHTML('afterbegin', alertHtml);

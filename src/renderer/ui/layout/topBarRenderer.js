@@ -23,12 +23,6 @@ export function initTopBarRenderer() {
 
   const copyAllIconEl = document.getElementById('copyAllIcon');
   if (copyAllIconEl) copyAllIconEl.innerHTML = icons.copy;
-
-  const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
-  if (sidebarToggleIcon) sidebarToggleIcon.innerHTML = icons.chevronRight;
-
-  const iconNeuroEl = document.getElementById('iconNeuroContainer');
-  if (iconNeuroEl) iconNeuroEl.innerHTML = icons.vector;
 }
 
 let modalActionContext = { mode: 'open', saveCallback: null };
@@ -44,7 +38,6 @@ export function showWorkspaceModal(mode = 'open', saveCallback = null) {
 }
 
 export function bindTopLevelUIEvents() {
-  const btnOpen = document.getElementById('btnOpen');
   const workspaceSetupModal = document.getElementById('workspaceSetupModal');
   const btnCreateWorkspace = document.getElementById('btnCreateWorkspace');
   const btnCancelWorkspace = document.getElementById('btnCancelWorkspace');
@@ -59,19 +52,6 @@ export function bindTopLevelUIEvents() {
       }
     }
   };
-
-  if (btnOpen) {
-    btnOpen.addEventListener('click', async () => {
-      if (window.engineAPI && window.engineAPI.getDefaultWorkspace) {
-        const wsRes = await window.engineAPI.getDefaultWorkspace(false);
-        if (wsRes && wsRes.success && !wsRes.exists) {
-          showWorkspaceModal('open');
-          return;
-        }
-      }
-      await openFileDialog();
-    });
-  }
 
   if (btnCreateWorkspace) {
     btnCreateWorkspace.addEventListener('click', async () => {

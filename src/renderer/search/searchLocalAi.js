@@ -27,7 +27,7 @@ export function updateActiveModelBadgeInTable(activeModel) {
       tr.style.background = 'rgba(56, 189, 248, 0.08)';
       const badge = document.createElement('span');
       badge.className = 'model-active-badge';
-      badge.style.cssText = 'background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: 0.6rem; margin-left: 6px;';
+      badge.style.cssText = 'background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: var(--fs-10); margin-left: 6px;';
       badge.textContent = 'Active';
       textCell.appendChild(badge);
     } else {
@@ -75,7 +75,7 @@ export function initLocalAiWorker(getCurrentResults) {
       const modalDownloadProgress = document.getElementById('modalAiDownloadProgress');
       const modalDownloadFile = document.getElementById('modalAiDownloadFile');
       const modalDownloadPct = document.getElementById('modalAiDownloadPct');
-      const modalDownloadBar = document.getElementById('modalAiDownloadBar');
+      const modalDownloadBar = document.getElementById('modalAiDownloadProgressBar');
       const localAiStatusBadge = document.getElementById('localAiStatusBadge');
       const btnInitLocalAi = document.getElementById('btnInitLocalAi');
 
@@ -105,7 +105,7 @@ export function initLocalAiWorker(getCurrentResults) {
           if (!logProgressRow) {
             logProgressRow = document.createElement('div');
             logProgressRow.id = 'logDownloadProgressRow';
-            logProgressRow.style.cssText = 'background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.35); border-radius: 6px; padding: 8px 12px; margin: 6px 0; font-family: var(--font-mono, monospace); font-size: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2);';
+            logProgressRow.style.cssText = 'background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.35); border-radius: 6px; padding: 8px 12px; margin: 6px 0; font-family: var(--font-mono, monospace); font-size: var(--fs-12); box-shadow: 0 2px 8px rgba(0,0,0,0.2);';
             logContainer.appendChild(logProgressRow);
           }
           logProgressRow.innerHTML = `
@@ -119,7 +119,7 @@ export function initLocalAiWorker(getCurrentResults) {
             <div style="height: 6px; background: rgba(255,255,255,0.12); border-radius: 3px; overflow: hidden;">
               <div style="width: ${pct}%; height: 100%; background: linear-gradient(90deg, var(--accent-color, #38bdf8), #818cf8); transition: width 0.2s ease;"></div>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted, #94a3b8); margin-top: 4px;">
+            <div style="display: flex; justify-content: space-between; font-size: var(--fs-11); color: var(--text-muted, #94a3b8); margin-top: 4px;">
               <span>Transformers.js (Xenova/multilingual-e5-small)</span>
               <span>${pct === 100 ? 'Finalizing...' : 'Streaming weights & tokenizer...'}</span>
             </div>
@@ -143,7 +143,7 @@ export function initLocalAiWorker(getCurrentResults) {
           logProgressRow.innerHTML = `
             <div style="display: flex; align-items: center; justify-content: space-between; color: var(--success-color, #10b981); ">
               <span>[AI Model Download] Complete ✓ (${modelShortName} initialized offline)</span>
-              <span style="background: rgba(16,185,129,0.2); padding: 1px 8px; border-radius: 10px; font-size: 0.7rem;">100% READY</span>
+              <span style="background: rgba(16,185,129,0.2); padding: 1px 8px; border-radius: 10px; font-size: var(--fs-11);">100% READY</span>
             </div>
           `;
         }

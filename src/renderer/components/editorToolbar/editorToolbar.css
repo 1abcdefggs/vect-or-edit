@@ -21,7 +21,7 @@
   max-width: 110px;
   height: 22px;
   line-height: 20px;
-  font-size: 0.70rem;
+  font-size: var(--fs-11);
   padding: 0 20px 0 22px;
   border: none;
   background: transparent;
@@ -36,7 +36,7 @@
   align-items: center;
   justify-content: center;
   gap: 3px;
-  font-size: 0.68rem;
+  font-size: var(--fs-11);
   font-weight: 600;
   flex-shrink: 0;
   border: var(--border-width) solid var(--border-color);

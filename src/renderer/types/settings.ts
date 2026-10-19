@@ -57,7 +57,6 @@ export type EditorUiKey =
   | 'edt:toolbar'
   | 'edt:font-family'
   | 'edt:font-size'
-  | 'edt:diff-mode'
   | 'edt:ai-toggle'
   | 'edt:quick-settings';
 

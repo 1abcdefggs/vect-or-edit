@@ -21,7 +21,9 @@ export async function loadLocales(): Promise<void> {
     const systemLang = (navigator.language || DEFAULTS.APP_LANG).split('-')[0];
     const lang = (savedLang || systemLang) === 'ja' ? 'ja' : 'en';
     currentLang = lang;
-    
+    // Keeps the document language in step with the UI language; the browser uses it to pick CJK fallback fonts.
+    document.documentElement.lang = lang;
+
     i18n = LOCALES[lang] || LOCALES.en;
     console.log(`[i18n] Applying locale: ${lang} (keys: ${Object.keys(i18n).length})`);
     applyI18n();

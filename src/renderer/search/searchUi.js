@@ -173,7 +173,7 @@ function renderSingleCard(r, isPreliminary = false) {
   if (showFullMetadata && tooltipParts.length > 0) {
     metadataHtml = `<div class="metadata-grid" style="margin-top: 6px; padding-top: 6px; border-top: var(--border-width) solid var(--border-color); display: flex; flex-direction: column; gap: 3px;">`;
     for (const part of tooltipParts) {
-      metadataHtml += `<div class="item-subtitle" style="font-size: 0.75rem; line-height: 1.35; color: var(--text-muted);">${part}</div>`;
+      metadataHtml += `<div class="item-subtitle" style="font-size: var(--fs-12); line-height: 1.35; color: var(--text-muted);">${part}</div>`;
     }
     metadataHtml += `</div>`;
   }
@@ -191,12 +191,12 @@ function renderSingleCard(r, isPreliminary = false) {
       <!-- Line 1: Code + Score + Title (Left) and Action Buttons (Right) -->
       <div class="card-header" style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; min-width: 0; flex: 1;">
-          ${code ? `<span class="item-code" style="flex-shrink: 0; font-family: monospace; font-size: 0.7rem; padding: 1px 5px; border-radius: 3px; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); ">${code}</span>` : ''}
-          <span class="similarity-score" style="flex-shrink: 0; font-size: 0.72rem;  color: #10b981;">${isPreliminary ? (t('vector_computing') || "Computing...") : `${scorePct}%`}</span>
-          ${title ? `<span class="item-title" style="font-size: 0.86rem;  color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${title}">${title}</span>` : ''}
+          ${code ? `<span class="item-code" style="flex-shrink: 0; font-family: monospace; font-size: var(--fs-11); padding: 1px 5px; border-radius: 3px; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); ">${code}</span>` : ''}
+          <span class="similarity-score" style="flex-shrink: 0; font-size: var(--fs-12);  color: #10b981;">${isPreliminary ? (t('vector_computing') || "Computing...") : `${scorePct}%`}</span>
+          ${title ? `<span class="item-title" style="font-size: var(--fs-14);  color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${title}">${title}</span>` : ''}
         </div>
         <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
-          <button class="btn-item-insert" onclick="event.stopPropagation(); window.__insertVectorItem && window.__insertVectorItem('${insertPayload.replace(/'/g, "\\'")}');" style="background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.4); color: var(--accent-color); border-radius: 4px; padding: 1px 6px; font-size: 0.68rem;  cursor: pointer;" title="${btnInsertText}">
+          <button class="btn-item-insert" onclick="event.stopPropagation(); window.__insertVectorItem && window.__insertVectorItem('${insertPayload.replace(/'/g, "\\'")}');" style="background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.4); color: var(--accent-color); border-radius: 4px; padding: 1px 6px; font-size: var(--fs-11);  cursor: pointer;" title="${btnInsertText}">
             ${btnInsertText}
           </button>
           <button onclick="event.stopPropagation(); window.__copyVectorCardJson && window.__copyVectorCardJson(this, '${encodedJson}');" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; padding: 2px;" title="Copy JSON">
@@ -206,7 +206,7 @@ function renderSingleCard(r, isPreliminary = false) {
       </div>
       <!-- Line 2: Description & Extended Metadata -->
       <div style="position: relative; z-index: 1; margin-top: 3px;">
-        ${desc ? `<div class="item-desc" style="font-size: 0.75rem; line-height: 1.35; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${desc}">${desc}</div>` : ''}
+        ${desc ? `<div class="item-desc" style="font-size: var(--fs-12); line-height: 1.35; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${desc}">${desc}</div>` : ''}
         ${metadataHtml}
       </div>
     </div>`;
@@ -249,7 +249,7 @@ export function renderResults(results, isPreliminary = false) {
     <div class="inspector-collapsible-section open">
       <div class="inspector-section-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="inspector-section-title" style="display: flex; align-items: center;">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem;">${iconCode}</span>
+          <span class="material-symbols-outlined" style="font-size: var(--fs-18);">${iconCode}</span>
           <span>${groupName}</span>
           <span class="inspector-section-badge">${items.length}</span>
         </span>

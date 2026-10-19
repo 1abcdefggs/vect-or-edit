@@ -6,6 +6,8 @@ import { i18n, t } from '../../core/i18n.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { getActiveTab } from '../tabs/tabState.js';
 import { markSavedAsUtf8 } from './statusBarManager.js';
+import { commitTabToFile } from '../io/tabCommit.js';
+import { showToast } from '../../ui/notifications/toastManager.js';
 
 const adhap = {
   BASE_DELAY_MS: TIMINGS.AUTO_SAVE_BASE_MS || 1500,
@@ -15,15 +17,31 @@ const adhap = {
 const autoSaveTimers = new Map();
 const pendingTargets = new Set();
 const declinedTargets = new Set();
+/** Tabs whose latest write failed. The failure toast shows once per streak, not on every keystroke. */
+const failingTabs = new Set();
 const LOCATION_CONFIRMED_KEY = 'vectoreditor_autosave_location_confirmed';
 let domCache = {};
 
 function getDomElements() {
   if (!domCache.chkToggle) domCache.chkToggle = document.getElementById('chkAutoSaveToggle');
-  if (!domCache.labelEl) domCache.labelEl = document.getElementById('autoSaveLabel') || document.getElementById('btnSaveLabel');
+  if (!domCache.labelEl) domCache.labelEl = document.getElementById('btnSaveLabel');
   if (!domCache.saveInd) domCache.saveInd = document.getElementById('statusSaveIndicator');
   if (!domCache.ledDot) domCache.ledDot = document.getElementById('autoSaveLedDot');
   return domCache;
+}
+
+let savedIndicatorTimer = null;
+
+/** Flashes "Saved" in the status bar; repeated autosaves restart the fade instead of cutting it short. */
+function showSavedIndicator() {
+  const { saveInd } = getDomElements();
+  if (!saveInd) return;
+  saveInd.textContent = t('status_saved');
+  saveInd.style.opacity = '1';
+  clearTimeout(savedIndicatorTimer);
+  savedIndicatorTimer = setTimeout(() => {
+    saveInd.style.opacity = '0';
+  }, adhap.STATUS_NOTIFICATION_MS);
 }
 
 export function updateAutoSaveUI() {
@@ -87,40 +105,42 @@ export function initAutoSaveControls() {
   editorEvents.on('onTabRenderNeeded', () => updateAutoSaveUI());
 }
 
-function executeSave(tab) {
+async function executeSave(tab) {
   if (!tab || !tab.model) return;
   try {
-    const content = tab.model.getValue();
     localStorage.setItem(`autosave_${tab.id}`, JSON.stringify({
       title: tab.title,
-      content,
+      content: tab.model.getValue(),
       filePath: tab.filePath || null,
       timestamp: Date.now()
     }));
-
-    if (tab.filePath && window.engineAPI?.saveFile) {
-      // An absolute path makes the main process write directly without a dialog.
-      window.engineAPI.saveFile(content, tab.filePath, false).then((res) => {
-        if (res?.success) markSavedAsUtf8();
-      }).catch(err => {
-        console.warn('[AutoSave] Direct file write failed:', err);
-      });
-    }
-
-    tab.isDirty = false;
-    editorEvents.emit('onTabRenderNeeded');
-
-    const { saveInd } = getDomElements();
-    if (saveInd) {
-      saveInd.textContent = t('status_saved');
-      saveInd.style.opacity = '1';
-      setTimeout(() => {
-        if (saveInd) saveInd.style.opacity = '0.5';
-      }, adhap.STATUS_NOTIFICATION_MS);
-    }
   } catch (err) {
-    console.warn('[AutoSave] Save failed:', err);
+    console.warn('[AutoSave] Draft write failed:', err);
   }
+
+  // A draft is not a save. Without a file path the tab stays dirty until the user picks a location.
+  if (!tab.filePath) {
+    editorEvents.emit('onTabRenderNeeded');
+    return;
+  }
+
+  const result = await commitTabToFile(tab);
+  editorEvents.emit('onTabRenderNeeded');
+
+  if (result.ok) {
+    failingTabs.delete(tab.id);
+    markSavedAsUtf8();
+    showSavedIndicator();
+  } else if (!result.canceled) {
+    reportAutoSaveFailure(tab, result.error);
+  }
+}
+
+function reportAutoSaveFailure(tab, error) {
+  console.warn('[AutoSave] Save failed:', error);
+  if (failingTabs.has(tab.id)) return;
+  failingTabs.add(tab.id);
+  showToast(t('save_failed'), 'error');
 }
 
 /**
@@ -173,6 +193,9 @@ async function ensureAutoSaveTarget(tab) {
   } finally {
     pendingTargets.delete(tab.id);
     updateAutoSaveUI();
+    // Text typed while the location was unknown is still only a draft. Write it now that a path exists.
+    const autoSaveOn = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
+    if (autoSaveOn && tab.filePath && tab.isDirty) executeSave(tab);
   }
 }
 

@@ -30,7 +30,7 @@ function createAboutModalElement(): HTMLElement {
       <div class="modal-header" style="padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="./assets/icon.png" alt="VectOrEdit" style="width: 22px; height: 22px; border-radius: 4px;">
-          <span class="modal-title" style="font-weight: 600; font-size: 0.98rem;">About VectOrEdit</span>
+          <span class="modal-title" style="font-weight: 600; font-size: var(--fs-16);">About VectOrEdit</span>
         </div>
         <button id="btnCloseAboutModal" class="toolbar-btn" style="padding: 4px; border-radius: 4px; cursor: pointer;" title="Close">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -42,16 +42,16 @@ function createAboutModalElement(): HTMLElement {
       <div class="settings-modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 24px; text-align: center;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
           <img src="./assets/icon.png" alt="VectOrEdit" style="width: 48px; height: 48px; border-radius: 14px; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);">
-          <div style="font-size: 1.35rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;">VectOrEdit</div>
-          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 20px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-color, #38bdf8); font-size: 0.8rem; font-family: monospace; font-weight: 600;">
+          <div style="font-size: var(--fs-22); font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;">VectOrEdit</div>
+          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 20px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-color, #38bdf8); font-size: var(--fs-13); font-family: monospace; font-weight: 600;">
             <span id="aboutVersionBadge"></span>
           </div>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+        <p style="font-size: var(--fs-13); color: var(--text-muted); line-height: 1.6; margin: 0;">
           Next-Generation Vector-Native Semantic Knowledge Editor & Real-Time Linter.<br>
           10-Layer Semantic Knowledge Representation Standard (W3C / DIKWP Compliant).
         </p>
-        <div style="width: 100%; display: flex; flex-direction: column; gap: 6px; background: var(--bg-primary); border: var(--border-width) solid var(--border-color); border-radius: 8px; padding: 12px 16px; text-align: left; font-size: 0.78rem; box-sizing: border-box;">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 6px; background: var(--bg-primary); border: var(--border-width) solid var(--border-color); border-radius: 8px; padding: 12px 16px; text-align: left; font-size: var(--fs-12); box-sizing: border-box;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Organization</span>
             <span style="font-weight: 600; color: var(--text-main);">vect-organization</span>
@@ -69,9 +69,9 @@ function createAboutModalElement(): HTMLElement {
             <a id="btnAboutOpenRepo" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none; font-weight: 500;">vect-organization/vect-or-edit ↙</a>
           </div>
         </div>
-        <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: var(--border-width) solid var(--border-color); font-size: 0.72rem; color: var(--text-muted);">
+        <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: var(--border-width) solid var(--border-color); font-size: var(--fs-12); color: var(--text-muted);">
           <span>© 2026 vect-organization.</span>
-          <button id="btnAboutOk" class="toolbar-btn" style="padding: 6px 18px; background: var(--accent-color, #38bdf8); color: #020617; font-weight: 600; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">OK</button>
+          <button id="btnAboutOk" class="toolbar-btn" style="padding: 6px 18px; background: var(--accent-color, #38bdf8); color: #020617; font-weight: 600; border-radius: 6px; font-size: var(--fs-13); cursor: pointer;">OK</button>
         </div>
       </div>
     </div>

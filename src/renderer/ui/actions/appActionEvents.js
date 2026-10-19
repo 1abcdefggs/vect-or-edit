@@ -1,20 +1,18 @@
-import { setEditorContent, getCurrentContent, getActiveTab, markActiveTabSaved, focusEditor, tabs, getEditorInstance, insertTextIntoEditor } from '../../editor/editorManager.js';
+import { setEditorContent, getCurrentContent, getActiveTab, markActiveTabSaved, focusEditor, tabs } from '../../editor/editorManager.js';
 import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledgeSlot, clearAllKnowledgeSlots } from '../../search/dictionary.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
 import { t } from '../../core/i18n.js';
 import { showWorkspaceModal } from '../layout/topBarRenderer.js';
+import { commitTabToFile } from '../../editor/io/tabCommit.js';
 
 export function bindAppActionEvents() {
   const btnSave = document.getElementById('btnSave');
-  const btnChangeGoal = document.getElementById('btnChangeGoal');
   const btnResetGoal = document.getElementById('btnResetGoal');
-  const btnRestartApp = document.getElementById('btnRestartApp');
-  const btnGitHub = document.getElementById('btnGitHub');
   const btnInsertTemplate = document.getElementById('btnInsertTemplate');
   const btnAddSlot = document.getElementById('btnAddSlot');
   const btnClearAllSlots = document.getElementById('btnClearAllSlots');
-  const btnImportPreset = document.getElementById('btnImportDictionary') || document.getElementById('btnImportDict');
+  const btnImportPreset = document.getElementById('btnImportDictionary');
   const btnHeaderToggleSidebar = document.getElementById('btnHeaderToggleSidebar');
   const suggestionSidebar = document.getElementById('suggestionSidebar');
 
@@ -94,35 +92,10 @@ export function bindAppActionEvents() {
     }
   }
 
-  if (btnChangeGoal) {
-    btnChangeGoal.addEventListener('click', async () => {
-      const res = await changeGoalProfile();
-      if (res?.success) {
-        const goalName = res.goal?.domain_name || res.goal?.profile_id || 'Custom';
-        showToast(t('toast_goal_set', { name: goalName }), 'success');
-      }
-    });
-  }
-
   if (btnResetGoal) {
     btnResetGoal.addEventListener('click', async () => {
       await resetGoalProfile();
       showToast(t('toast_guideline_reset'), 'info');
-    });
-  }
-
-  if (btnRestartApp) {
-    btnRestartApp.addEventListener('click', () => {
-      if (window.engineAPI?.relaunchApp) window.engineAPI.relaunchApp();
-      else window.location.reload();
-    });
-  }
-
-  if (btnGitHub) {
-    btnGitHub.addEventListener('click', () => {
-      const url = 'https://github.com/1abcdefggs/vect-or-edit';
-      if (window.engineAPI?.openExternal) window.engineAPI.openExternal(url);
-      else window.open(url, '_blank');
     });
   }
 
@@ -144,10 +117,6 @@ export function bindAppActionEvents() {
       }
     };
     btnAddSlot.addEventListener('click', handleAddSlot);
-    const btnAddSlot2 = document.getElementById('btnAddSlot2');
-    if (btnAddSlot2) {
-      btnAddSlot2.addEventListener('click', handleAddSlot);
-    }
   }
 
   if (btnClearAllSlots) {
@@ -169,16 +138,37 @@ export function bindAppActionEvents() {
       setTimeout(() => focusEditor(), 50);
     };
     btnImportPreset.addEventListener('click', handleImportPreset);
-    const btnImportDictionary2 = document.getElementById('btnImportDictionary2');
-    if (btnImportDictionary2) {
-      btnImportDictionary2.addEventListener('click', handleImportPreset);
-    }
   }
 
   const btnSaveAs = document.getElementById('btnSaveAs');
   const btnSaveAll = document.getElementById('btnSaveAll');
-  const btnMarkdownCopy = document.getElementById('btnMarkdownCopy');
-  const btnMarkdownPaste = document.getElementById('btnMarkdownPaste');
+
+  // Save button split: the arrow toggles Save As / Save All; it closes on any outside click, Esc, or item pick.
+  const saveMenuToggle = document.getElementById('btnSaveMenuToggle');
+  const saveDropdown = document.querySelector('.save-dropdown-container');
+  const saveDropdownMenu = saveDropdown?.querySelector('.save-dropdown-menu');
+  const setSaveMenuOpen = (isOpen) => {
+    if (isOpen && saveDropdown && saveDropdownMenu) {
+      const rect = saveDropdown.getBoundingClientRect();
+      saveDropdownMenu.style.top = `${rect.bottom + 4}px`;
+      saveDropdownMenu.style.left = `${rect.left}px`;
+    }
+    saveDropdown?.classList.toggle('is-open', isOpen);
+    saveMenuToggle?.setAttribute('aria-expanded', String(isOpen));
+  };
+  saveMenuToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setSaveMenuOpen(!saveDropdown?.classList.contains('is-open'));
+  });
+  saveDropdown?.querySelectorAll('.save-dropdown-item').forEach((item) => {
+    item.addEventListener('click', () => setSaveMenuOpen(false));
+  });
+  document.addEventListener('click', (e) => {
+    if (saveDropdown && !saveDropdown.contains(e.target)) setSaveMenuOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setSaveMenuOpen(false);
+  });
 
   // Save current active tab
   if (btnSave) {
@@ -247,65 +237,15 @@ export function bindAppActionEvents() {
     btnSaveAll.addEventListener('click', async () => {
       const currentTabs = tabs || [];
       let savedCount = 0;
+      let failedCount = 0;
       for (const tab of currentTabs) {
-        if (tab.model) {
-          const tabContent = tab.model.getValue();
-          const targetPath = tab.filePath || tab.title || 'untitled.md';
-          if (window.engineAPI?.saveFile) {
-            const res = await window.engineAPI.saveFile(tabContent, targetPath, !tab.filePath);
-            if (res?.success && res.filePath) {
-              tab.isDirty = false;
-              tab.filePath = res.filePath;
-              savedCount++;
-            }
-          }
-        }
+        if (!tab.model) continue;
+        const result = await commitTabToFile(tab);
+        if (result.ok) savedCount++;
+        else if (!result.canceled) failedCount++;
       }
+      if (failedCount) showToast(t('save_failed'), 'error');
       showToast(`Saved ${savedCount} document(s)`, 'success');
-      setTimeout(() => focusEditor(), 50);
-    });
-  }
-
-  // Copy Markdown
-  if (btnMarkdownCopy) {
-    btnMarkdownCopy.addEventListener('click', async () => {
-      const editor = getEditorInstance();
-      let textToCopy = '';
-      if (editor) {
-        const selection = editor.getSelection();
-        if (selection && !selection.isEmpty()) {
-          textToCopy = editor.getModel().getValueInRange(selection);
-        } else {
-          textToCopy = getCurrentContent();
-        }
-      } else {
-        textToCopy = getCurrentContent();
-      }
-
-      if (textToCopy) {
-        try {
-          await navigator.clipboard.writeText(textToCopy);
-          showToast('Copied to clipboard', 'info');
-        } catch (err) {
-          console.warn('Clipboard write failed:', err);
-        }
-      }
-      setTimeout(() => focusEditor(), 50);
-    });
-  }
-
-  // Paste Markdown
-  if (btnMarkdownPaste) {
-    btnMarkdownPaste.addEventListener('click', async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text) {
-          insertTextIntoEditor(text);
-          showToast('Pasted from clipboard', 'info');
-        }
-      } catch (err) {
-        console.warn('Clipboard read failed:', err);
-      }
       setTimeout(() => focusEditor(), 50);
     });
   }

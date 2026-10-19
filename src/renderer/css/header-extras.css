@@ -8,53 +8,36 @@
   -webkit-app-region: no-drag !important;
 }
 
-/* Header action button common style (Settings, Theme Toggle, etc.) */
-.app-header__action-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin: 0;
-  padding: 0;
-  font-size: 16px;
-  border-radius: var(--radius-sm, 4px);
-  color: var(--header-fg, var(--text-main));
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-  -webkit-app-region: no-drag !important;
-  outline: none;
-}
-
-.app-header__action-btn:hover {
-  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
-  color: var(--text-main, #ffffff);
-}
-
-.app-header__action-btn:focus-visible {
-  outline: 1px solid var(--accent-color, #38bdf8);
-}
-
 /* Theme selector wrapper */
+/* The wrapper owns the frame so the icon and the select read as one control */
 .app-header__theme-select-wrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
-  -webkit-app-region: no-drag !important;
-}
-
-/* Theme selector */
-.app-header__theme-select {
-  appearance: none;
+  height: 26px;
   background: var(--bg-card, #111827);
   border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
   border-radius: var(--radius-sm, 4px);
-  height: 26px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  -webkit-app-region: no-drag !important;
+}
+
+.app-header__theme-select-wrapper:hover,
+.app-header__theme-select-wrapper:focus-within {
+  border-color: var(--accent-color, #38bdf8);
+  background: var(--hover-bg, rgba(255, 255, 255, 0.05));
+}
+
+/* Theme selector (frameless; the left padding leaves room for the icon drawn over it) */
+.app-header__theme-select {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-radius: inherit;
+  height: 24px;
   line-height: 24px;
-  padding: 0 8px;
-  font-size: 0.75rem;
+  padding: 0 8px 0 32px;
+  font-size: var(--fs-12);
   font-weight: 500;
   color: var(--header-fg, var(--text-main));
   cursor: pointer;
@@ -63,21 +46,14 @@
   outline: none;
 }
 
-.app-header__theme-select:hover {
-  border-color: var(--accent-color, #38bdf8);
-  background: var(--hover-bg, rgba(255, 255, 255, 0.05));
-}
-
-.app-header__theme-select:focus-visible {
-  border-color: var(--accent-color, #38bdf8);
-}
-
-/* Theme select icon: sits in the flow before the label (icon, then label), like the other header items */
+/* Theme select icon: drawn inside the frame over the select; clicks pass through to the select */
 .theme-select-icon {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   flex-shrink: 0;
   pointer-events: none;
-  font-size: 14px;
-  color: var(--text-muted, #94a3b8);
 }
 
 /* Language toggle button (Clean inline-flex with icon + text) */
@@ -89,7 +65,7 @@
   height: 26px;
   padding: 0 8px;
   min-width: 46px;
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
   font-weight: 600;
   font-family: var(--font-mono, monospace);
   letter-spacing: 0.5px;
@@ -116,7 +92,7 @@
 
 /* Language icon */
 .lang-toggle-icon {
-  font-size: 14px;
+  font-size: var(--fs-14);
   color: var(--accent-color, #38bdf8);
 }
 
@@ -143,7 +119,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  font-size: 14px;
+  font-size: var(--fs-14);
   border: none;
   background: transparent;
   color: var(--header-fg, var(--text-main));
@@ -159,39 +135,15 @@
 }
 
 .header-zoom-btn .material-symbols-outlined {
-  font-size: 14px;
-}
-
-/* Settings icon */
-.settings-icon {
-  font-size: 16px;
+  font-size: var(--fs-14);
 }
 
 /* Theme toggle icon */
 .theme-toggle-icon {
-  font-size: 16px;
+  font-size: var(--fs-16);
 }
 
-/* Unified Settings Gear Icon Theme */
-.settings-icon {
-  color: var(--text-muted, #94a3b8);
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-.app-header__action-btn:hover .settings-icon {
-  color: #fbbf24 !important;
-  transform: rotate(30deg);
-}
-#btnEditorQuickSettings {
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
-#btnEditorQuickSettings .material-symbols-outlined {
-  color: var(--text-muted, #94a3b8);
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-#btnEditorQuickSettings:hover .material-symbols-outlined {
-  color: #fbbf24 !important;
-  transform: rotate(30deg);
-}
+/* Gear look lives in controls.css (.gear-btn); this keeps the header gear lit while the settings modal is open */
 #settingsModal:not([style*='display: none']) ~ * .settings-icon,
 .modal-backdrop:not([style*='display: none']) ~ * .settings-icon {
   color: #fbbf24 !important;

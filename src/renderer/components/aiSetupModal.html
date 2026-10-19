@@ -3,11 +3,11 @@
     
     <!-- Modal Header -->
     <div style="padding: 28px 36px 20px; border-bottom: var(--border-width) solid var(--border-color); text-align: center; background: rgba(255, 255, 255, 0.02);">
-      <h2 style="margin: 0; font-size: 1.45rem; color: var(--text-main); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; line-height: 1.4;" data-i18n="ai_setup_title">
-        <span class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8); font-size: 1.75rem; flex-shrink: 0;">auto_awesome</span>
+      <h2 style="margin: 0; font-size: var(--fs-24); color: var(--text-main); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; line-height: 1.4;" data-i18n="ai_setup_title">
+        <span class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8); font-size: var(--fs-28); flex-shrink: 0;">auto_awesome</span>
         VectOrEdit uses Embedding and LLM models
       </h2>
-      <p style="margin: 10px 0 0; font-size: 0.96rem; color: var(--text-muted); line-height: 1.5;" data-i18n="ai_setup_subtitle">Both can be configured later. Please select your initial models to get started.</p>
+      <p style="margin: 10px 0 0; font-size: var(--fs-15); color: var(--text-muted); line-height: 1.5;" data-i18n="ai_setup_subtitle">Both can be configured later. Please select your initial models to get started.</p>
     </div>
 
     <!-- Modal Body: Dual Config Sections (Embedding & LLM) -->
@@ -16,21 +16,21 @@
       <!-- Section 1: Embedding Configuration -->
       <div style="background: rgba(255, 255, 255, 0.025); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md, 10px); padding: 22px 26px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
-          <span style="font-size: 1.05rem; font-weight: 700; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 10px;">
-            <span class="material-symbols-outlined" style="font-size: 1.4rem;">menu_book</span>
+          <span style="font-size: var(--fs-17); font-weight: 700; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 10px;">
+            <span class="material-symbols-outlined" style="font-size: var(--fs-22);">menu_book</span>
             <span data-i18n="ai_setup_section_embedding">1. Embedding Model Setup (Dictionary Search & Semantic Alignment)</span>
           </span>
-          <span class="tool-version" style="color: var(--success-color, #10b981); font-size: 0.78rem; font-weight: 700; padding: 3px 10px; background: rgba(16, 185, 129, 0.12); border-radius: 4px;">HNSW Vector</span>
+          <span class="tool-version" style="color: var(--success-color, #10b981); font-size: var(--fs-12); font-weight: 700; padding: 3px 10px; background: rgba(16, 185, 129, 0.12); border-radius: 4px;">HNSW Vector</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
           <!-- Emb Option 1: Local -->
-          <label style="display: flex; align-items: flex-start; gap: 14px; cursor: pointer; font-size: 0.95rem; color: var(--text-main);">
+          <label style="display: flex; align-items: flex-start; gap: 14px; cursor: pointer; font-size: var(--fs-15); color: var(--text-main);">
             <input type="radio" name="ai_setup_embedding" value="local" checked style="margin-top: 5px; width: 20px; height: 20px; accent-color: var(--accent-color, #38bdf8);">
             <div style="flex: 1;">
               <span style="font-weight: 600;" data-i18n="ai_setup_emb_local_title">Local Model (Recommended / 100% Offline / Zero Outbound)</span>
               <div style="margin-top: 8px;">
-                <select id="aiSetupLocalModel" class="ai-setup-select" style="height: 42px; min-height: 42px; font-size: 0.92rem; padding: 6px 14px;">
+                <select id="aiSetupLocalModel" class="ai-setup-select" style="height: 42px; min-height: 42px; font-size: var(--fs-15); padding: 6px 14px;">
                   <option value="Xenova/multilingual-e5-small" selected data-i18n="ai_setup_model_e5">multilingual-e5-small (45MB / Lightweight & Fast)</option>
                   <option value="Xenova/bge-small-en-v1.5" data-i18n="ai_setup_model_bge">bge-small-en (45MB / English only, high accuracy)</option>
                   <option value="nomic-ai/nomic-embed-text-v1.5" data-i18n="ai_setup_model_nomic">nomic-embed-text (137MB / High accuracy)</option>
@@ -40,13 +40,13 @@
           </label>
 
           <!-- Emb Option 2: Cloud -->
-          <label style="display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: 0.95rem; color: var(--text-muted);">
+          <label style="display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: var(--fs-15); color: var(--text-muted);">
             <input type="radio" name="ai_setup_embedding" value="cloud" style="width: 20px; height: 20px; accent-color: var(--accent-color, #38bdf8);">
             <span data-i18n="ai_setup_emb_cloud_title">Cloud Embeddings API (Gemini / OpenAI)</span>
           </label>
 
           <!-- Emb Option 3: None -->
-          <label style="display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: 0.95rem; color: var(--text-muted);">
+          <label style="display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: var(--fs-15); color: var(--text-muted);">
             <input type="radio" name="ai_setup_embedding" value="none" style="width: 20px; height: 20px; accent-color: var(--accent-color, #38bdf8);">
             <span data-i18n="ai_setup_emb_none_title">Do Not Use (Exact Match & Lexical Search Only)</span>
           </label>
@@ -56,19 +56,19 @@
       <!-- Section 2: LLM Configuration -->
       <div style="background: rgba(255, 255, 255, 0.025); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md, 10px); padding: 22px 26px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
-          <span style="font-size: 1.05rem; font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 10px;">
-            <span class="material-symbols-outlined" style="font-size: 1.4rem;">chat</span>
+          <span style="font-size: var(--fs-17); font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 10px;">
+            <span class="material-symbols-outlined" style="font-size: var(--fs-22);">chat</span>
             <span data-i18n="ai_setup_section_llm">2. LLM Model Setup (Writing Assistant & Chat)</span>
           </span>
-          <span class="tool-version" style="color: #c084fc; font-size: 0.78rem; font-weight: 700; padding: 3px 10px; background: rgba(192, 132, 252, 0.12); border-radius: 4px;">Cloud LLM</span>
+          <span class="tool-version" style="color: #c084fc; font-size: var(--fs-12); font-weight: 700; padding: 3px 10px; background: rgba(192, 132, 252, 0.12); border-radius: 4px;">Cloud LLM</span>
         </div>
 
-        <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;" data-i18n="ai_setup_llm_desc">
+        <div style="font-size: var(--fs-14); color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;" data-i18n="ai_setup_llm_desc">
           Configure provider and API key used for chat and inline rewriting (Optional / Configurable later)
         </div>
 
         <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-          <select id="aiSetupCloudProvider" class="ai-setup-select" style="flex: 1; height: 42px; min-height: 42px; font-size: 0.92rem; padding: 6px 14px;">
+          <select id="aiSetupCloudProvider" class="ai-setup-select" style="flex: 1; height: 42px; min-height: 42px; font-size: var(--fs-15); padding: 6px 14px;">
             <option value="gemini" selected>Google Gemini (v1beta / Flash)</option>
             <option value="openai">OpenAI (GPT-4o mini)</option>
             <option value="claude">Anthropic Claude (v3)</option>
@@ -76,12 +76,12 @@
         </div>
 
         <div class="api-key-input-container" style="display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 8px; padding: 0 8px 0 14px; height: 42px;">
-          <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--text-muted); margin-right: 8px;">key</span>
+          <span class="material-symbols-outlined" style="font-size: var(--fs-20); color: var(--text-muted); margin-right: 8px;">key</span>
           <input type="password" id="aiSetupCloudKey" placeholder="Enter API Key (Optional / Configurable later)..." autocomplete="off" spellcheck="false" data-i18n-placeholder="ai_setup_api_key_placeholder"
-            style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: 0.92rem; height: 100%;">
+            style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: var(--fs-15); height: 100%;">
           <button type="button" id="btnToggleAiSetupKeyVisibility" class="toolbar-btn" title="Toggle Visibility"
             style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); padding: 0; border-radius: 4px;">
-            <span class="material-symbols-outlined" style="font-size: 1.2rem;">visibility_off</span>
+            <span class="material-symbols-outlined" style="font-size: var(--fs-19);">visibility_off</span>
           </button>
         </div>
       </div>
@@ -90,7 +90,7 @@
 
     <!-- Progress Area -->
     <div id="aiSetupProgressArea" style="display: none; padding: 0 36px 14px;">
-      <div style="font-size: 0.82rem; font-weight: 600; color: var(--accent-color); margin-bottom: 6px; display: flex; justify-content: space-between;">
+      <div style="font-size: var(--fs-13); font-weight: 600; color: var(--accent-color); margin-bottom: 6px; display: flex; justify-content: space-between;">
         <span id="aiSetupProgressText" data-i18n="ai_setup_downloading">Downloading model...</span>
         <span id="aiSetupProgressPct">0%</span>
       </div>
@@ -101,13 +101,13 @@
 
     <!-- Modal Footer Actions: btn_ai_setup_later (cancel) | btn_download_start (primary) -->
     <div style="padding: 16px 36px 20px; border-top: var(--border-width) solid var(--border-color); background: rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: space-between; gap: 14px;">
-      <button id="btnAiSetupOpenSettings" class="btn" type="button" style="padding: 8px 16px; font-size: 0.84rem; display: flex; align-items: center; gap: 8px; background: transparent; border: var(--border-width) solid var(--border-color); color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer;" data-i18n-title="btn_open_detailed_settings">
-        <span class="material-symbols-outlined" style="font-size: 1.05rem;">settings</span>
+      <button id="btnAiSetupOpenSettings" class="btn" type="button" style="padding: 8px 16px; font-size: var(--fs-13); display: flex; align-items: center; gap: 8px; background: transparent; border: var(--border-width) solid var(--border-color); color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer;" data-i18n-title="btn_open_detailed_settings">
+        <span class="material-symbols-outlined" style="font-size: var(--fs-17);">settings</span>
         <span data-i18n="menu_help_settings">Preferences & Settings...</span>
       </button>
       <div style="display: flex; align-items: center; gap: 14px;">
-        <button id="btnAiSetupCancel" class="btn" style="padding: 8px 20px; font-size: 0.88rem; border: var(--border-width) solid var(--border-color); background: transparent; color: var(--text-main); border-radius: var(--radius-sm); cursor: pointer;" data-i18n="btn_ai_setup_later">Configure Later</button>
-        <button id="btnAiSetupSave" class="btn primary" style="padding: 9px 28px; font-size: 0.90rem; font-weight: 700; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: var(--radius-sm); border: none; box-shadow: 0 2px 10px rgba(56, 189, 248, 0.35); cursor: pointer;" data-i18n="btn_download_start">Download</button>
+        <button id="btnAiSetupCancel" class="btn" style="padding: 8px 20px; font-size: var(--fs-14); border: var(--border-width) solid var(--border-color); background: transparent; color: var(--text-main); border-radius: var(--radius-sm); cursor: pointer;" data-i18n="btn_ai_setup_later">Configure Later</button>
+        <button id="btnAiSetupSave" class="btn primary" style="padding: 9px 28px; font-size: var(--fs-14); font-weight: 700; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: var(--radius-sm); border: none; box-shadow: 0 2px 10px rgba(56, 189, 248, 0.35); cursor: pointer;" data-i18n="btn_download_start">Download</button>
       </div>
     </div>
   </div>

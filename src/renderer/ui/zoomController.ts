@@ -2,8 +2,6 @@ import { showToast } from './notifications/toastManager';
 
 export function initZoomControls(): void {
   const modalZoomSelect = document.getElementById('modalZoomSelect') as HTMLSelectElement | null;
-  const btnHeaderZoomIn = document.getElementById('btnHeaderZoomIn');
-  const btnHeaderZoomOut = document.getElementById('btnHeaderZoomOut');
 
   if (!window.engineAPI?.setZoomFactor) return;
 
@@ -52,20 +50,6 @@ export function initZoomControls(): void {
     if (notify) {
       showToast(`Zoom: ${Math.round(currentZoom * 100)}%`, 'info');
     }
-  }
-
-  // Relative Zoom In (+) if legacy button exists
-  if (btnHeaderZoomIn) {
-    btnHeaderZoomIn.addEventListener('click', () => {
-      applyZoom(currentZoom + STEP);
-    });
-  }
-
-  // Relative Zoom Out (-) if legacy button exists
-  if (btnHeaderZoomOut) {
-    btnHeaderZoomOut.addEventListener('click', () => {
-      applyZoom(currentZoom - STEP);
-    });
   }
 
   // Mouse wheel zoom support on header zoom group / badge

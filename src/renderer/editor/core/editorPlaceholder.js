@@ -72,7 +72,7 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
 
     placeholderEl.innerHTML = `
     <!-- 1. Top System Bar (Typography & Dismiss Hint) -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: ${boxTextMuted}; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--font-mono, monospace); font-size: var(--fs-12); color: ${boxTextMuted}; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
       <div style="display: inline-flex; align-items: center; gap: 8px;">
         <span style="color: var(--accent-color, #38bdf8); font-weight: 600;">[ ${activeFontName} | ${activeFontSize}px ]</span>
         <span style="opacity: 0.85;">${t('placeholder_hint')}</span>
@@ -83,7 +83,7 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     </div>
 
     <!-- 2. Clean Compact Guidance List (Aligned with line numbers) -->
-    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; line-height: 1.55; color: ${boxTextMuted}; margin-top: 6px; font-family: var(--font-family, sans-serif);">
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-13); line-height: 1.55; color: ${boxTextMuted}; margin-top: 6px; font-family: var(--font-family, sans-serif);">
       <div>${kbLine}</div>
       <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_intellisense')}</div>
       <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_selection')}</div>

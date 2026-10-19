@@ -11,7 +11,6 @@ export function initSystemConsole() {
   const logCountBadge = document.getElementById('logCountBadge');
   const btnClearLogs = document.getElementById('btnClearLogs');
   const btnCopyLogs = document.getElementById('btnCopyLogs');
-  const btnCloseLogs = document.getElementById('btnCloseLogs');
   const logBuffer = [];
 
   function updateLogBadge() {
@@ -53,7 +52,7 @@ export function initSystemConsole() {
   window.appendSystemLog = function appendSystemLog(msg, type = 'info') {
     if (!logEntriesContainer) return;
     const row = document.createElement('div');
-    row.style.cssText = 'padding: 3px 6px; font-family: var(--font-mono, monospace); font-size: 0.73rem; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.04);';
+    row.style.cssText = 'padding: 3px 6px; font-family: var(--font-mono, monospace); font-size: var(--fs-12); line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.04);';
     const time = new Date().toLocaleTimeString();
     if (type === 'cmd') {
       row.innerHTML = `<span style="color:var(--text-muted)">[${time}]</span> <span style="color:var(--accent-color, #38bdf8); ">❯ ${msg}</span>`;
@@ -148,10 +147,6 @@ export function initSystemConsole() {
         }
       })
     : null;
-
-  if (btnCloseLogs && logsDisclosure) {
-    btnCloseLogs.addEventListener('click', () => logsDisclosure.set(false));
-  }
 
   logsDisclosure?.set(true);
 

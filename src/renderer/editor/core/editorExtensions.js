@@ -41,14 +41,8 @@ export function initializeKnowledgeExtensions(editor, monacoRef) {
   });
 }
 
-export function refreshLinter(editor, diffEditor, monacoRef) {
+export function refreshLinter(editor, monacoRef) {
   if (editor && monacoRef) {
     runEngineLinter(editor, monacoRef);
-  }
-  if (diffEditor && monacoRef) {
-    const modifiedEditor = diffEditor.getModifiedEditor();
-    if (modifiedEditor) {
-      runEngineLinter(modifiedEditor, monacoRef);
-    }
   }
 }

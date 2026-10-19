@@ -53,7 +53,7 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   const btnLlmChat = createMenuButton({
     className: 'pill-action-btn secondary',
     title: "Start LLM Chat or rewrite with selected text",
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: 1rem; color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-16); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
@@ -109,98 +109,6 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   return { menu, hasMatches: quickMatches && quickMatches.length > 0 };
 }
 
-export function buildPatternBMenu({ selectedText, onDismiss }) {
-  const menu = document.createElement('div');
-  menu.className = 'custom-context-menu context-menu-full pattern-b-grid';
-
-  const topRow = document.createElement('div');
-  topRow.className = 'ctx-grid-row top-row';
-
-  const btnVector = createMenuButton({
-    className: 'ctx-grid-btn primary-vector-btn',
-    innerHTML: `${icons.vector} <span>AI Suggest</span>`,
-    onClick: () => {
-      onDismiss();
-      triggerSearchAndRender(selectedText);
-    }
-  });
-  topRow.appendChild(btnVector);
-
-  const btnGoogle = createMenuButton({
-    className: 'ctx-grid-btn secondary-btn',
-    innerHTML: `${icons.google} <span>Google</span>`,
-    onClick: () => {
-      onDismiss();
-      const url = `https://www.google.com/search?q=${encodeURIComponent(selectedText.trim())}`;
-      if (window.engineAPI?.openExternal) window.engineAPI.openExternal(url);
-      else window.open(url, '_blank');
-    }
-  });
-  topRow.appendChild(btnGoogle);
-  menu.appendChild(topRow);
-
-  const gridRow = document.createElement('div');
-  gridRow.className = 'ctx-grid-actions';
-
-  const actions = [
-    { id: 'copy', icon: icons.copy, label: 'Copy', action: () => navigator.clipboard.writeText(selectedText) },
-    { id: 'cut', icon: icons.cut, label: 'Cut', action: () => {
-      navigator.clipboard.writeText(selectedText);
-      insertTextIntoEditor('');
-    }},
-    { id: 'paste', icon: icons.paste, label: 'Paste', action: async () => {
-      const text = await navigator.clipboard.readText();
-      if (text) insertTextIntoEditor(text);
-    }},
-    { id: 'duplicateTab', icon: icons.duplicate, label: 'Dup Tab', action: () => duplicateCurrentTab() },
-    { id: 'saveTxt', icon: icons.fileText, label: '.txt', action: () => saveTextToFile(selectedText, 'txt') },
-    { id: 'saveMd', icon: icons.markdown, label: '.md', action: () => saveTextToFile(selectedText, 'md') },
-  ];
-
-  actions.forEach(act => {
-    const btn = createMenuButton({
-      className: 'ctx-grid-action-btn',
-      innerHTML: `${act.icon} <span>${act.label}</span>`,
-      onClick: () => {
-        onDismiss();
-        act.action();
-      }
-    });
-    gridRow.appendChild(btn);
-  });
-  menu.appendChild(gridRow);
-
-  const bottomRow = document.createElement('div');
-  bottomRow.className = 'ctx-grid-row bottom-row';
-  const btnCmd = createMenuButton({
-    className: 'ctx-grid-btn full-btn',
-    innerHTML: `${icons.terminal} <span>Palette</span>`,
-    onClick: () => {
-      onDismiss();
-      window.dispatchEvent(new CustomEvent('app:openCommandPalette'));
-    }
-  });
-  btnCmd.style.flex = '1';
-  bottomRow.appendChild(btnCmd);
-
-  const btnSettings = createMenuButton({
-    className: 'ctx-grid-btn secondary-btn',
-    title: 'SUGGEST & AI Settings...',
-    innerHTML: `${icons.settings}`,
-    onClick: () => {
-      onDismiss();
-      const btnSettingsEl = document.getElementById('btnSettings');
-      if (btnSettingsEl) btnSettingsEl.click();
-      const tabBtn = document.querySelector('.settings-tab-btn[data-tab="tabAiSearch"]');
-      if (tabBtn) tabBtn.click();
-    }
-  });
-  bottomRow.appendChild(btnSettings);
-  menu.appendChild(bottomRow);
-
-  return menu;
-}
-
 export function buildPatternAMenu({ selectedText, onDismiss }) {
   const menu = document.createElement('div');
   menu.className = 'custom-context-menu context-menu-full pattern-a-vertical';
@@ -220,7 +128,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
     const btnLlm = createMenuButton({
       className: 'custom-context-menu-item',
-      innerHTML: `<span class="material-symbols-outlined" style="font-size: 1.05rem; color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+      innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-17); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
       onClick: () => {
         onDismiss();
         window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
@@ -284,7 +192,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
   const btnResetLayout = createMenuButton({
     className: 'custom-context-menu-item',
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: 1.05rem;">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-17);">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:resetUIVisibility'));
