@@ -49,9 +49,11 @@
     "@1abcdefggs/vect-or-engine": "file:../vect-or-engine",
     "@google/genai": "^2.21.0",
     "@huggingface/transformers": "^3.0.0",
+    "dompurify": "3.4.17",
     "dotenv": "^16.4.5",
     "electron-updater": "^6.8.9",
     "hash-wasm": "^4.11.0",
+    "marked": "18.1.1",
     "monaco-editor": "^0.56.0"
   },
   "devDependencies": {
