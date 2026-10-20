@@ -105,18 +105,84 @@ export async function openWorkspace() {
   }
 }
 
+// The chosen save folder lives in userData, not in the folder itself: .settings.json is read from that folder.
+const WORKSPACE_LOCATION_FILE = 'workspace-location.json';
+
+function builtInWorkspacePath(): string {
+  return path.join(app.getPath('documents'), 'VectOrFoldEr');
+}
+
+async function readChosenWorkspacePath(): Promise<string | null> {
+  try {
+    const raw = await fsPromises.readFile(path.join(app.getPath('userData'), WORKSPACE_LOCATION_FILE), 'utf-8');
+    const chosen = JSON.parse(raw)?.path;
+    return typeof chosen === 'string' && path.isAbsolute(chosen) ? chosen : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Save folder for new documents and .settings.json: the folder the user chose, else Documents/VectOrFoldEr. */
 export async function getDefaultWorkspace(createIfMissing?: boolean) {
   try {
-    const docsPath = app.getPath('documents');
-    const defaultWorkspace = path.join(docsPath, 'VectOrFoldEr');
-    let exists = fs.existsSync(defaultWorkspace);
+    let chosen = await readChosenWorkspacePath();
+    let workspacePath = chosen || builtInWorkspacePath();
+    let exists = fs.existsSync(workspacePath);
 
     if (!exists && createIfMissing) {
-      await fsPromises.mkdir(defaultWorkspace, { recursive: true });
-      exists = true;
+      try {
+        await fsPromises.mkdir(workspacePath, { recursive: true });
+        exists = true;
+      } catch (err) {
+        // The chosen folder is gone or unwritable (unplugged drive): fall back so settings keep working
+        if (!chosen) throw err;
+        console.warn(`[Workspace] Chosen save folder is unavailable, using the built-in one: ${workspacePath}`, err);
+        chosen = null;
+        workspacePath = builtInWorkspacePath();
+        await fsPromises.mkdir(workspacePath, { recursive: true });
+        exists = true;
+      }
     }
 
-    return { success: true, path: defaultWorkspace, exists };
+    return { success: true, path: workspacePath, exists, isBuiltIn: !chosen };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
+/** Lets the user pick another save folder. The renderer then writes its settings there. */
+export async function chooseDefaultWorkspace() {
+  const mainWindow = getMainWindow();
+  if (!mainWindow) return { success: false, error: 'No main window' };
+  try {
+    const current = await getDefaultWorkspace(false);
+    const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+      title: 'Choose Save Folder',
+      defaultPath: current.path,
+      properties: ['openDirectory', 'createDirectory']
+    });
+    if (canceled || !filePaths?.length) return { success: false, canceled: true };
+
+    // Validate before persisting: a folder that cannot be created or written must not become the saved choice
+    await fsPromises.mkdir(filePaths[0], { recursive: true });
+    await fsPromises.access(filePaths[0], fs.constants.W_OK);
+
+    await fsPromises.writeFile(
+      path.join(app.getPath('userData'), WORKSPACE_LOCATION_FILE),
+      JSON.stringify({ path: filePaths[0] }, null, 2),
+      'utf-8'
+    );
+    return getDefaultWorkspace(true);
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
+/** Returns to Documents/VectOrFoldEr. */
+export async function resetDefaultWorkspace() {
+  try {
+    await fsPromises.rm(path.join(app.getPath('userData'), WORKSPACE_LOCATION_FILE), { force: true });
+    return getDefaultWorkspace(true);
   } catch (err: any) {
     return { success: false, error: err.message };
   }

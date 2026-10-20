@@ -272,6 +272,52 @@
   pointer-events: none;
 }
 
+/* Monaco vector suggestion widget (searchWidget.js); hover lives here because the CSP allows no inline handlers */
+.vector-widget-item:hover {
+  background: var(--hover-bg);
+}
+
+#btnWidgetLoadMore {
+  background: var(--hover-bg);
+}
+
+#btnWidgetLoadMore:hover {
+  background: var(--active-bg);
+}
+
+.save-dropdown-separator {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--border-color);
+}
+
+/* AutoSave menu item: the check mark shows only while AutoSave is on */
+.autosave-menu-item .autosave-check {
+  visibility: hidden;
+  color: var(--success-color);
+}
+
+.autosave-menu-item.is-checked .autosave-check {
+  visibility: visible;
+}
+
+/* AutoSave LED on the save button (state set by autoSaveManager.js) */
+.status-led-dot.autosave-led.is-on {
+  background: var(--success-color);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--success-color) 70%, transparent);
+}
+
+.status-led-dot.autosave-led.is-pending {
+  background: var(--warn-color, #f59e0b);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--warn-color, #f59e0b) 60%, transparent);
+}
+
+.status-led-dot.autosave-led.is-off {
+  background: var(--text-muted);
+  box-shadow: none;
+  opacity: 0.6;
+}
+
 /* ==========================================================================
    Editor Bottom LLM Chat Dock
    ========================================================================== */

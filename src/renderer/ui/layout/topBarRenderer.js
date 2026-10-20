@@ -13,7 +13,7 @@ export function initTopBarRenderer() {
     window.engineAPI.getAppVersion().then((version) => {
       if (!version) return;
       const label = `v${version}`;
-      const badgeEls = ['appVersionBadge', 'aboutVersionBadge'];
+      const badgeEls = ['appVersionBadge', 'aboutVersionBadge', 'setupVersionBadge'];
       for (const id of badgeEls) {
         const el = document.getElementById(id);
         if (el) el.textContent = label;

@@ -81,6 +81,25 @@
           </select>
         </div>
 
+        <!-- Save folder for new documents and .settings.json (ui/settings/saveLocation.js) -->
+        <div class="setting-item">
+          <div style="min-width: 0;">
+            <div class="setting-label" data-i18n="setting_save_location">Save location</div>
+            <div class="setting-desc" data-i18n="setting_save_location_desc">Folder for new documents and the settings file (.settings.json).</div>
+            <div id="settingsSaveLocationPath" class="setting-desc" style="font-family: var(--font-mono, monospace); color: var(--text-main); overflow-wrap: anywhere;"></div>
+          </div>
+          <div style="display: flex; gap: 8px; flex-shrink: 0;">
+            <button id="btnSettingsResetLocation" class="toolbar-btn" type="button" hidden
+              style="padding: 6px 12px; background: transparent; border: var(--border-width) solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
+              <span data-i18n="save_location_reset">Use default</span>
+            </button>
+            <button id="btnSettingsChangeLocation" class="toolbar-btn" type="button" hidden
+              style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: var(--border-width) solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
+              <span data-i18n="save_location_change">Change...</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Workspace Session (.vectorspace) Backup & Restore -->
         <div class="setting-item">
           <div>

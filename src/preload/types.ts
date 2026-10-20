@@ -92,12 +92,28 @@ export interface SemanticState {
   totalItems: number;
 }
 
+export type ApiKeyProvider = 'gemini' | 'openai' | 'claude';
+
+export interface DefaultWorkspaceResponse {
+  success: boolean;
+  path?: string;
+  exists?: boolean;
+  /** true when the save folder is the built-in Documents/VectOrFoldEr */
+  isBuiltIn?: boolean;
+  canceled?: boolean;
+  error?: string;
+}
+
 export interface EngineAPI {
   searchVector: (vector: number[], limit?: number) => Promise<SearchVectorResponse>;
   saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => Promise<{ success: boolean, path?: string, filePath?: string, error?: string }>;
   openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, encoding?: string, error?: string }>;
   openWorkspace: () => Promise<{ success: boolean, path?: string, error?: string }>;
-  getDefaultWorkspace: (createIfMissing?: boolean) => Promise<{ success: boolean, path?: string, exists?: boolean, error?: string }>;
+  getDefaultWorkspace: (createIfMissing?: boolean) => Promise<DefaultWorkspaceResponse>;
+  /** Opens a folder picker and makes the chosen folder the save folder (also where .settings.json is kept). */
+  chooseDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
+  /** Returns the save folder to Documents/VectOrFoldEr. */
+  resetDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
   loadSettings: () => Promise<{ success: boolean, settings?: any, error?: string }>;
   saveSettings: (settings: any) => Promise<{ success: boolean, error?: string }>;
   validateDocument: (text: string) => Promise<ValidationResponse>;
@@ -110,9 +126,10 @@ export interface EngineAPI {
   onSystemLog: (callback: (log: SystemLogEntry) => void) => () => void;
   claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
-  saveGeminiApiKey: (apiKey: string) => Promise<{ success: boolean; error?: string }>;
-  hasGeminiApiKey: () => Promise<boolean>;
-  clearGeminiApiKey: () => Promise<{ success: boolean; error?: string }>;
+  /** Encrypted API key store (OS key store) for every cloud LLM provider. */
+  saveApiKey: (provider: ApiKeyProvider, apiKey: string) => Promise<{ success: boolean; error?: string }>;
+  hasApiKey: (provider: ApiKeyProvider) => Promise<boolean>;
+  clearApiKey: (provider: ApiKeyProvider) => Promise<{ success: boolean; error?: string }>;
   getCursorBaseSize: () => Promise<number>;
   listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }>>;
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;

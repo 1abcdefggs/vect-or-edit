@@ -31,11 +31,11 @@ const originalConsoleLog = console.log;
 const originalConsoleWarn = console.warn;
 const originalConsoleError = console.error;
 
-export function captureLog(level: string, args: any[]) {
+export function captureLog(level: string, args: any[], source = 'Main:System') {
   const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
   const entry = {
     time: new Date().toLocaleTimeString(),
-    source: 'Main:System',
+    source,
     level,
     message
   };
@@ -51,22 +51,28 @@ export function captureLog(level: string, args: any[]) {
 export function initLogger() {
   console.log = (...args) => {
     originalConsoleLog(...args);
-    if (!args[0] || (typeof args[0] !== 'string' || !args[0].startsWith('[Renderer:'))) {
-      captureLog('INFO', args);
-    }
+    captureLog('INFO', args);
   };
   console.warn = (...args) => {
     originalConsoleWarn(...args);
-    if (!args[0] || (typeof args[0] !== 'string' || !args[0].startsWith('[Renderer:'))) {
-      captureLog('WARN', args);
-    }
+    captureLog('WARN', args);
   };
   console.error = (...args) => {
     originalConsoleError(...args);
-    if (!args[0] || (typeof args[0] !== 'string' || !args[0].startsWith('[Renderer:'))) {
-      captureLog('ERROR', args);
-    }
+    captureLog('ERROR', args);
   };
+}
+
+// Electron console-message levels: 0 verbose, 1 info, 2 warning, 3 error
+const RENDERER_LEVELS = ['INFO', 'INFO', 'WARN', 'ERROR'];
+
+// Renderer console output goes to the terminal and to the log panel under its own source and level.
+// Verbose (console.debug) output is skipped, so chatty debug loops do not fill the buffer or cost an IPC each.
+export function captureRendererConsole(level: number, message: string, sourceId: string, line: number) {
+  if (level === 0) return;
+  const logLevel = RENDERER_LEVELS[level] ?? 'INFO';
+  originalConsoleLog(`[Renderer Console - ${logLevel}] ${message} (${sourceId}:${line})`);
+  captureLog(logLevel, [message], 'Renderer');
 }
 
 export function bindLoggerToWindow(window: BrowserWindow) {

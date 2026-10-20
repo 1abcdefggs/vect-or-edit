@@ -1,5 +1,5 @@
 import { aiManager } from '../../core/aiStateManager.js';
-import { STORAGE_KEYS } from '../../core/constants.js';
+import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
 import { isAiModelConfigured } from '../settings/settingsState.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
@@ -7,22 +7,9 @@ import { showConfirmModal } from '../notifications/confirmModal.js';
 import { queryLlmChat } from '../../search/searchProviders.js';
 import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editorManager.js';
 
-// The dock's quick key input used to save under `vect_*` names that nothing else reads; move those values over.
-function migrateLegacyApiKeys() {
-  const legacyNames = [
-    ['vect_openai_api_key', STORAGE_KEYS.OPENAI_API_KEY],
-    ['vect_claude_api_key', STORAGE_KEYS.CLAUDE_API_KEY]
-  ];
-  for (const [legacy, current] of legacyNames) {
-    const value = localStorage.getItem(legacy);
-    if (value === null) continue;
-    if (value && !localStorage.getItem(current)) localStorage.setItem(current, value);
-    localStorage.removeItem(legacy);
-  }
-}
+const KEY_PLACEHOLDERS = { openai: 'sk-proj-...', claude: 'sk-ant-api03-...', gemini: 'AIzaSy... (Gemini)' };
 
 export function initAiControls() {
-  migrateLegacyApiKeys();
   const isMasterAiOn = isAiModelConfigured();
   aiManager.init(isMasterAiOn);
 
@@ -258,24 +245,12 @@ function initLlmChatDock() {
   // Quick API Key Banner Logic
   function syncQuickApiKeyInput() {
     if (!selQuickProvider || !quickApiKeyInput) return;
+    // Stored keys are encrypted in the main process and never shown again; the placeholder only says one is set.
     const provider = selQuickProvider.value;
-    if (provider === 'openai') {
-      quickApiKeyInput.value = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
-      quickApiKeyInput.placeholder = 'sk-proj-...';
-    } else if (provider === 'claude') {
-      quickApiKeyInput.value = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
-      quickApiKeyInput.placeholder = 'sk-ant-api03-...';
-    } else {
-      quickApiKeyInput.value = '';
-      quickApiKeyInput.placeholder = 'AIzaSy... (Gemini)';
-      if (window.engineAPI?.hasGeminiApiKey) {
-        window.engineAPI.hasGeminiApiKey().then((hasKey) => {
-          if (hasKey && !quickApiKeyInput.value) {
-            quickApiKeyInput.placeholder = '•••••••••••••••••••• (API Key Configured)';
-          }
-        }).catch(() => { });
-      }
-    }
+    quickApiKeyInput.value = '';
+    quickApiKeyInput.placeholder = isApiKeyConfigured(provider)
+      ? '•••••••••••••••••••• (API Key Configured)'
+      : (KEY_PLACEHOLDERS[provider] || KEY_PLACEHOLDERS.gemini);
   }
 
   if (btnKeyConfig && quickApiBanner) {
@@ -319,15 +294,13 @@ function initLlmChatDock() {
         return;
       }
 
+      const res = await saveApiKey(provider, key);
+      if (!res.success) {
+        showToast(res.error || `Failed to save the ${provider} key`, 'error');
+        return;
+      }
       localStorage.setItem('ai_provider', provider);
       if (provider === 'gemini') {
-        const res = await window.engineAPI.saveGeminiApiKey(key);
-          if (!res.success) {
-            showToast(res.error || 'Failed to save Gemini key', 'error');
-            return;
-          }
-          window.__geminiApiKeyConfigured = true;
-
           // Automatically fetch and cache official Gemini models
           try {
             const models = await window.engineAPI.listGeminiModels(key);
@@ -342,11 +315,8 @@ function initLlmChatDock() {
           } catch (modelErr) {
             console.warn('[Gemini] Automatic model fetch warning:', modelErr);
           }
-      } else if (provider === 'openai') {
-        localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, key);
-      } else if (provider === 'claude') {
-        localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, key);
       }
+      quickApiKeyInput.value = '';
 
       updateDockModelBadge();
       window.dispatchEvent(new Event('app:settingsChanged'));

@@ -17,6 +17,7 @@ export const STORAGE_KEYS = {
   SUGGEST_TRIGGER_MODE: 'vect_suggest_trigger_mode',
   AI_PROVIDER: 'ai_provider',
   AI_INFERENCE_SCOPE: 'ai_inference_scope',
+  // *_API_KEY: plain-text names from older versions, read only to migrate them (core/apiKeyStore.js)
   CLAUDE_API_KEY: 'claude_api_key',
   CLAUDE_MODEL: 'claude_model',
   GEMINI_API_KEY: 'gemini_api_key',
@@ -60,7 +61,7 @@ export const DEFAULTS = {
   AI_PROVIDER: 'local',
   /** Default Vectorizer source */
   EMBEDDING_SOURCE: 'local',
-  APP_LANG: 'ja',
+  APP_LANG: 'en',
   AUTO_SAVE: true,
   LOG_DISPLAY_POSITION: 'bottom',
 } as const;

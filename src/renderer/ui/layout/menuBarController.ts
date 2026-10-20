@@ -384,7 +384,7 @@ export function registerAppCommands(): void {
     // Help Commands
     {
       id: 'help.aiSetup',
-      title: 'AI Engine Setup',
+      title: 'First-run Setup',
       category: 'Help',
       handler: () => showAiSetupModal()
     },

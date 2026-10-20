@@ -1,147 +1,224 @@
+/**
+ * First-run setup (aiSetupModal.html): language and theme, saving, AI.
+ * Shown during startup while the editor loads. Every field starts at its default, so any step can be skipped;
+ * language and theme apply at once, the rest is applied when the user finishes.
+ */
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
-import { initLocalAiWorker } from '../../search/searchLocalAi.js';
 import { showToast } from '../notifications/toastManager.js';
-import { applyI18n, t } from '../../core/i18n';
+import { applyI18n, currentLang, t } from '../../core/i18n';
+import { applyLanguageSetting, applyThemeSetting, getStoredThemeSetting, populateThemeDropdown } from '../settings/settingsFacade.js';
+import { isAutoSaveEnabled, markAutoSaveLocationConfirmed, updateAutoSaveUI } from '../../editor/ui/autoSaveManager.js';
+import { syncSettingsToBackend } from '../settings/settingsState.js';
+import { saveApiKey } from '../../core/apiKeyStore.js';
+import { bindSaveLocationControls } from '../settings/saveLocation.js';
+
+const TOTAL_STEPS = 3;
 
 let setupCompleteCallback = null;
+let isBound = false;
+let currentStep = 1;
+let editorReady = false;
+// Set while finishSetup awaits the key save, so a second Finish / Skip click does nothing
+let isFinishing = false;
+const readyQueue = [];
+
+const $ = (id) => document.getElementById(id);
 
 export function initAiSetup(onComplete) {
   setupCompleteCallback = onComplete;
-
-  const overlay = document.getElementById('aiSetupModalOverlay');
-  if (!overlay) return;
-
-  // Apply internationalization translations to modal components
-  applyI18n();
-
-  const radiosEmb = document.querySelectorAll('input[name="ai_setup_embedding"]');
-  const localModelSelect = document.getElementById('aiSetupLocalModel');
-  const selCloudProvider = document.getElementById('aiSetupCloudProvider');
-  const inputCloudKey = document.getElementById('aiSetupCloudKey');
-  const btnToggleKey = document.getElementById('btnToggleAiSetupKeyVisibility');
-
-  const btnSave = document.getElementById('btnAiSetupSave');
-  const btnCancel = document.getElementById('btnAiSetupCancel');
-
-  // Key Visibility Toggle
-  if (btnToggleKey && inputCloudKey) {
-    btnToggleKey.addEventListener('click', () => {
-      const isPass = inputCloudKey.type === 'password';
-      inputCloudKey.type = isPass ? 'text' : 'password';
-      const icon = btnToggleKey.querySelector('.material-symbols-outlined');
-      if (icon) icon.textContent = isPass ? 'visibility' : 'visibility_off';
-    });
-  }
-
-  // Dynamic button text based on Embedding radio selection
-  const updateSaveButtonText = () => {
-    const selectedEmb = document.querySelector('input[name="ai_setup_embedding"]:checked')?.value || 'local';
-    if (btnSave) {
-      if (selectedEmb === 'local') {
-        btnSave.textContent = t('btn_download_start') || 'Download';
-      } else {
-        btnSave.textContent = t('btn_save_start') || 'Save & Start';
-      }
-    }
-  };
-
-  radiosEmb.forEach(radio => {
-    radio.addEventListener('change', updateSaveButtonText);
-  });
-  updateSaveButtonText();
-
-  // Save / Action Handlers
-  btnSave.addEventListener('click', async () => {
-    const selectedEmb = document.querySelector('input[name="ai_setup_embedding"]:checked')?.value || 'local';
-    const chosenProvider = selCloudProvider?.value || 'gemini';
-    const rawApiKey = inputCloudKey?.value?.trim() || '';
-
-    // 1. Save LLM configuration if provided
-    if (rawApiKey) {
-      localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, chosenProvider);
-      if (chosenProvider === 'gemini') {
-        if (window.engineAPI?.saveGeminiApiKey) {
-          await window.engineAPI.saveGeminiApiKey(rawApiKey);
-        }
-        localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
-      } else if (chosenProvider === 'openai') {
-        localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, rawApiKey);
-      } else if (chosenProvider === 'claude') {
-        localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, rawApiKey);
-      }
-    }
-
-    // 2. Handle Embedding Configuration
-    if (selectedEmb === 'local') {
-      const model = localModelSelect?.value || DEFAULTS.LOCAL_EMBEDDING_MODEL;
-      localStorage.setItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, model);
-      localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, 'local');
-
-      // Start Download / Init Process
-      const progressArea = document.getElementById('aiSetupProgressArea');
-      if (progressArea) progressArea.style.display = 'block';
-
-      const handleAiProgress = (e) => {
-        const { pct, status } = e.detail || {};
-        if (status === 'initiate' || status === 'download' || status === 'progress') {
-          const progress = pct !== undefined ? pct : 0;
-          const pctEl = document.getElementById('aiSetupProgressPct');
-          const barEl = document.getElementById('aiSetupProgressBar');
-          if (pctEl) pctEl.textContent = `${Math.round(progress)}%`;
-          if (barEl) barEl.style.width = `${progress}%`;
-        } else if (status === 'ready' || status === 'done') {
-          window.removeEventListener('app:aiModelProgress', handleAiProgress);
-          finalizeSetup();
-        } else if (status === 'error') {
-          window.removeEventListener('app:aiModelProgress', handleAiProgress);
-          showToast('Failed to download AI model.', 'error');
-          if (progressArea) progressArea.style.display = 'none';
-        }
-      };
-
-      window.addEventListener('app:aiModelProgress', handleAiProgress);
-      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model } }));
-    } else if (selectedEmb === 'cloud') {
-      localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, 'llm-embed-gemini');
-      finalizeSetup();
-    } else if (selectedEmb === 'none') {
-      localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, 'none');
-      finalizeSetup();
-    }
-  });
-
-  const btnOpenSettings = document.getElementById('btnAiSetupOpenSettings');
-  if (btnOpenSettings) {
-    btnOpenSettings.addEventListener('click', () => {
-      overlay.style.display = 'none';
-      if (setupCompleteCallback) setupCompleteCallback();
-      window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAiSearch' } }));
-    });
-  }
-
-  // 'あとで設定' handler: Dismiss modal, mark setup completed to avoid blocking user
-  if (btnCancel) {
-    btnCancel.addEventListener('click', () => {
-      finalizeSetup();
-    });
-  }
+  bindSetup();
 }
 
 export function showAiSetupModal() {
-  const overlay = document.getElementById('aiSetupModalOverlay');
-  if (overlay) {
-    applyI18n();
-    overlay.style.display = 'flex';
-  }
+  const overlay = $('aiSetupModalOverlay');
+  if (!overlay) return;
+  isFinishing = false;
+  bindSetup();
+  applyI18n();
+
+  const langRadio = document.querySelector(`input[name="setup_lang"][value="${currentLang}"]`);
+  if (langRadio) langRadio.checked = true;
+  const themeSelect = $('setupThemeSelect');
+  populateThemeDropdown(themeSelect);
+  if (themeSelect) themeSelect.value = getStoredThemeSetting();
+  const chkAutoSave = $('chkSetupAutoSave');
+  if (chkAutoSave) chkAutoSave.checked = isAutoSaveEnabled();
+  renderSaveLocation();
+
+  currentStep = 1;
+  renderStep();
+  renderLoadStatus();
+  overlay.style.display = 'flex';
+  $('btnSetupNext')?.focus();
 }
 
-function finalizeSetup() {
+/** Called by the startup flow once the editor and settings have loaded. */
+export function markSetupEditorReady() {
+  editorReady = true;
+  renderLoadStatus();
+  readyQueue.splice(0).forEach((fn) => fn());
+}
+
+function whenEditorReady(fn) {
+  if (editorReady) fn();
+  else readyQueue.push(fn);
+}
+
+function bindSetup() {
+  if (isBound || !$('aiSetupModalOverlay')) return;
+  isBound = true;
+
+  document.querySelectorAll('input[name="setup_lang"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      if (radio.checked) applyLanguageSetting(radio.value);
+    });
+  });
+  // Texts set from code follow the language; data-i18n texts are redrawn by applyI18n.
+  window.addEventListener('app:languageChanged', () => {
+    populateThemeDropdown($('setupThemeSelect'));
+    renderStep();
+    renderLoadStatus();
+  });
+
+  $('setupThemeSelect')?.addEventListener('change', (e) => applyThemeSetting(e.target.value));
+
+  refreshSaveLocation = bindSaveLocationControls({
+    pathEl: $('setupSaveLocation'),
+    changeBtn: $('btnSetupChangeLocation'),
+    resetBtn: $('btnSetupResetLocation'),
+    browserTextKey: 'setup_save_location_browser'
+  });
+
+  const chkInstall = $('chkSetupInstallLocal');
+  chkInstall?.addEventListener('change', () => {
+    const details = $('setupAiInstallDetails');
+    if (details) details.hidden = !chkInstall.checked;
+  });
+  const modelSelect = $('aiSetupLocalModel');
+  modelSelect?.addEventListener('change', renderModelId);
+  renderModelId();
+
+  const btnToggleKey = $('btnToggleAiSetupKeyVisibility');
+  const inputKey = $('aiSetupCloudKey');
+  btnToggleKey?.addEventListener('click', () => {
+    const isPass = inputKey.type === 'password';
+    inputKey.type = isPass ? 'text' : 'password';
+    const icon = btnToggleKey.querySelector('.material-symbols-outlined');
+    if (icon) icon.textContent = isPass ? 'visibility' : 'visibility_off';
+  });
+
+  $('btnSetupBack')?.addEventListener('click', () => {
+    if (currentStep > 1) { currentStep -= 1; renderStep(); }
+  });
+  $('btnSetupNext')?.addEventListener('click', () => {
+    if (currentStep < TOTAL_STEPS) { currentStep += 1; renderStep(); }
+    else finishSetup(true);
+  });
+  // Skip keeps the defaults for everything not applied yet.
+  $('btnAiSetupCancel')?.addEventListener('click', () => finishSetup(false));
+}
+
+function renderStep() {
+  document.querySelectorAll('[data-setup-step]').forEach((el) => {
+    el.hidden = Number(el.getAttribute('data-setup-step')) !== currentStep;
+  });
+  document.querySelectorAll('[data-setup-dot]').forEach((el) => {
+    const n = Number(el.getAttribute('data-setup-dot'));
+    el.classList.toggle('is-current', n === currentStep);
+    el.classList.toggle('is-done', n < currentStep);
+  });
+  const btnBack = $('btnSetupBack');
+  if (btnBack) btnBack.hidden = currentStep === 1;
+  const btnNext = $('btnSetupNext');
+  if (btnNext) btnNext.textContent = t(currentStep === TOTAL_STEPS ? 'setup_btn_finish' : 'setup_btn_next');
+  const dialog = document.querySelector('.first-run-dialog');
+  if (dialog) dialog.setAttribute('aria-description', t('setup_step_label', { current: currentStep, total: TOTAL_STEPS }));
+}
+
+function renderLoadStatus() {
+  const el = $('setupLoadStatus');
+  if (!el) return;
+  el.textContent = t(editorReady ? 'setup_ready' : 'setup_loading');
+  el.classList.toggle('is-ready', editorReady);
+}
+
+function renderModelId() {
+  const el = $('setupInstallModelId');
+  if (el) el.textContent = $('aiSetupLocalModel')?.value || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+}
+
+let refreshSaveLocation = () => {};
+
+function renderSaveLocation() {
+  refreshSaveLocation();
+  const hintEl = $('setupSaveLocationHint');
+  if (hintEl) hintEl.hidden = !window.engineAPI?.getDefaultWorkspace;
+}
+
+/** Stores the typed key encrypted in the main process. */
+async function saveCloudKey() {
+  const rawApiKey = $('aiSetupCloudKey')?.value?.trim() || '';
+  if (!rawApiKey) return;
+  const provider = $('aiSetupCloudProvider')?.value || 'gemini';
+  const res = await saveApiKey(provider, rawApiKey);
+  if (!res.success) {
+    showToast(res.error || t('setup_key_failed'), 'error');
+    return;
+  }
+  localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, provider);
+  $('aiSetupCloudKey').value = '';
+}
+
+/** Installs the chosen local model in the background; progress shows in the log panel and the AI LED. */
+function queueLocalModelInstall() {
+  const model = $('aiSetupLocalModel')?.value || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+  localStorage.setItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, model);
+  localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, 'local');
+
+  const onProgress = (e) => {
+    const status = e.detail?.status;
+    if (status === 'ready' || status === 'done') {
+      window.removeEventListener('app:aiModelProgress', onProgress);
+    } else if (status === 'error') {
+      window.removeEventListener('app:aiModelProgress', onProgress);
+      showToast(t('setup_ai_failed'), 'error');
+    }
+  };
+  window.addEventListener('app:aiModelProgress', onProgress);
+
+  whenEditorReady(() => {
+    showToast(t('setup_ai_queued', { model: model.split('/').pop() }), 'info');
+    window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model } }));
+  });
+}
+
+/** apply = true stores the saving and AI choices; false (Skip setup) keeps their defaults. */
+async function finishSetup(apply) {
+  if (isFinishing) return;
+  isFinishing = true;
+
+  // The default folder is part of the defaults, so the first keystroke never asks for a location.
+  markAutoSaveLocationConfirmed();
+
+  if (apply) {
+    localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String($('chkSetupAutoSave')?.checked !== false));
+    updateAutoSaveUI();
+    try {
+      await saveCloudKey();
+    } catch (err) {
+      console.warn('[Setup] Could not store the API key:', err);
+    }
+    if ($('chkSetupInstallLocal')?.checked) queueLocalModelInstall();
+  }
+
   localStorage.setItem(STORAGE_KEYS.AI_SETUP_COMPLETED, 'true');
-  const overlay = document.getElementById('aiSetupModalOverlay');
+  syncSettingsToBackend();
+
+  const overlay = $('aiSetupModalOverlay');
   if (overlay) overlay.style.display = 'none';
+  const callback = setupCompleteCallback;
+  setupCompleteCallback = null;
+  if (callback) callback();
 
-  if (setupCompleteCallback) setupCompleteCallback();
-
-  // Update toolbar if it exists
   window.dispatchEvent(new Event('app:settingsChanged'));
 }

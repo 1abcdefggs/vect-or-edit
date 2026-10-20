@@ -83,13 +83,12 @@ export class LLMEmbeddingAdapter {
     if (!window.engineAPI?.llmEmbedding) {
       throw new Error('IPC channel "llm-embedding" is not available.');
     }
+    // The main process uses the provider's stored (encrypted) key
     const model = this._getModel();
-    const apiKey = this._getApiKey();
     const result = await window.engineAPI.llmEmbedding({
       text,
       provider: this.provider,
       model,
-      apiKey,
       dimensions: this.dimensions,
     });
     if (!result?.success) {
@@ -103,15 +102,6 @@ export class LLMEmbeddingAdapter {
       gemini: () => localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL,
       claude: () => localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL,
       openai: () => localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL,
-    };
-    return (map[this.provider] ?? map.gemini)();
-  }
-
-  _getApiKey() {
-    const map = {
-      gemini: () => localStorage.getItem(STORAGE_KEYS.GEMINI_API_KEY) ?? '',
-      claude: () => localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) ?? '',
-      openai: () => localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) ?? '',
     };
     return (map[this.provider] ?? map.gemini)();
   }
@@ -156,12 +146,11 @@ export class ClaudeLLMAdapter {
    * @returns {Promise<string>}
    */
   async generate(prompt) {
-    const apiKey = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) ?? '';
     const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
     if (!window.engineAPI?.claudeSemanticSuggest) {
       throw new Error('IPC channel "claudeSemanticSuggest" is not available.');
     }
-    const res = await window.engineAPI.claudeSemanticSuggest({ prompt, apiKey, model });
+    const res = await window.engineAPI.claudeSemanticSuggest({ prompt, model });
     if (!res?.success) throw new Error(res?.error ?? 'Claude: unknown error');
     return res.text ?? '';
   }
@@ -181,12 +170,11 @@ export class OpenAILLMAdapter {
    * @returns {Promise<string>}
    */
   async generate(prompt) {
-    const apiKey = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) ?? '';
     const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
     if (!window.engineAPI?.openaiSemanticSuggest) {
       throw new Error('IPC channel "openaiSemanticSuggest" is not available.');
     }
-    const res = await window.engineAPI.openaiSemanticSuggest({ prompt, apiKey, model });
+    const res = await window.engineAPI.openaiSemanticSuggest({ prompt, model });
     if (!res?.success) throw new Error(res?.error ?? 'OpenAI: unknown error');
     return res.text ?? '';
   }
