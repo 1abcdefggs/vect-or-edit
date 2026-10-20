@@ -5,6 +5,27 @@ All notable changes to the **VectOrEdit** (`vect-or-edit`) desktop application w
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- First-run setup in three steps (language and theme, save location, AI) with the app version in its header
+- Save folder can be changed or reset; settings follow the folder
+- Gemini, OpenAI and Claude API keys are encrypted with the OS key store in the main process
+
+### Changed
+- Renderer runs sandboxed; IPC accepts calls only from the app's own page; permissions other than clipboard are denied
+- CSP no longer allows `unsafe-eval` or inline scripts
+- Renderer console output appears in the log panel with its own source and level
+- The "setup completed" flag is kept per installation and is no longer restored from `.settings.json`
+
+### Fixed
+- The AUTO button works again; AutoSave is switched from the save menu
+- Plain-text API keys from older versions are moved into the encrypted store and removed from `.settings.json`
+- Swapping the welcome text for another language no longer marks the tab dirty
+
+### Removed
+- Gemini-specific key IPC channels (replaced by the provider-generic `saveApiKey`, `hasApiKey` and `clearApiKey`)
+
 ## [0.3.24] - 2026-10-19
 
 ### Added
