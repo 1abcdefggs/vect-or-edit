@@ -38,12 +38,19 @@ export function initSystemConsole() {
       const row = document.createElement('div');
       row.className = 'log-row';
       const badgeClass = entry.level === 'ERROR' ? 'badge-error' : (entry.level === 'WARN' ? 'badge-warn' : 'badge-info');
-      row.innerHTML = `
-        <span class="log-time">[${entry.time}]</span>
-        <span class="log-badge ${badgeClass}">${entry.level}</span>
-        <span class="log-source">[${entry.source}]</span>
-        <span class="log-msg">${entry.message}</span>
-      `;
+      // Built with textContent: messages carry raw console text (renderer HTML, file paths) that must not be parsed as markup
+      const cells = [
+        ['log-time', `[${entry.time}]`],
+        [`log-badge ${badgeClass}`, entry.level],
+        ['log-source', `[${entry.source}]`],
+        ['log-msg', entry.message]
+      ];
+      for (const [className, text] of cells) {
+        const span = document.createElement('span');
+        span.className = className;
+        span.textContent = String(text ?? '');
+        row.append(span, ' ');
+      }
       logEntriesContainer.appendChild(row);
       logEntriesContainer.scrollTop = logEntriesContainer.scrollHeight;
     }

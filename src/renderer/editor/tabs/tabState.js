@@ -11,6 +11,8 @@ const WELCOME_HEADINGS = [enLocale, jaLocale].map(dict => dict.initial_document_
 export let tabs = [];
 export let activeTabId = null;
 let tabCounter = 1;
+/** True while the welcome document is swapped for another language (see the app:languageChanged listener). */
+let isSwappingWelcomeText = false;
 
 export function getActiveTab() {
   return tabs.find(t => t.id === activeTabId) || null;
@@ -44,6 +46,7 @@ export function createNewTab(title = null, initialContent = null, filePath = nul
   const model = monaco.editor.createModel(contentToSet, 'markdown');
 
   model.onDidChangeContent((e) => {
+    if (isSwappingWelcomeText) return;
     const tab = tabs.find(t => t.id === id);
     if (tab && !tab.isDirty) {
       tab.isDirty = true;
@@ -152,7 +155,14 @@ if (typeof window !== 'undefined') {
         const isWelcomeText = WELCOME_HEADINGS.some(heading => currentVal.includes(heading));
         if (tab.isWelcomeDoc || isWelcomeText) {
           const newContent = t('initial_document_content') || '';
-          tab.model.setValue(newContent);
+          if (newContent === currentVal) return;
+          // A language swap is not an edit: it must not mark the tab dirty or start AutoSave
+          isSwappingWelcomeText = true;
+          try {
+            tab.model.setValue(newContent);
+          } finally {
+            isSwappingWelcomeText = false;
+          }
           tab.isDirty = false;
           editorEvents.emit('onTabRenderNeeded');
         }

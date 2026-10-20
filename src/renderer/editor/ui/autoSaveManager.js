@@ -2,12 +2,13 @@
  * AutoSave Manager - Plan A (Clear SAVE vs AUTO)
  */
 import { STORAGE_KEYS, TIMINGS } from '../../core/constants.js';
-import { i18n, t } from '../../core/i18n.js';
+import { t } from '../../core/i18n.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { getActiveTab } from '../tabs/tabState.js';
 import { markSavedAsUtf8 } from './statusBarManager.js';
 import { commitTabToFile } from '../io/tabCommit.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
+import { syncSettingsToBackend } from '../../ui/settings/settingsState.js';
 
 const adhap = {
   BASE_DELAY_MS: TIMINGS.AUTO_SAVE_BASE_MS || 1500,
@@ -23,11 +24,32 @@ const LOCATION_CONFIRMED_KEY = 'vectoreditor_autosave_location_confirmed';
 let domCache = {};
 
 function getDomElements() {
-  if (!domCache.chkToggle) domCache.chkToggle = document.getElementById('chkAutoSaveToggle');
+  if (!domCache.menuToggle) domCache.menuToggle = document.getElementById('btnAutoSaveToggle');
   if (!domCache.labelEl) domCache.labelEl = document.getElementById('btnSaveLabel');
   if (!domCache.saveInd) domCache.saveInd = document.getElementById('statusSaveIndicator');
   if (!domCache.ledDot) domCache.ledDot = document.getElementById('autoSaveLedDot');
+  if (!domCache.btnSave) domCache.btnSave = document.getElementById('btnSave');
   return domCache;
+}
+
+export function isAutoSaveEnabled() {
+  return localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
+}
+
+/** Turns AutoSave on or off. Turning it on retries a location the user declined earlier. */
+export function setAutoSaveEnabled(enabled) {
+  localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(enabled));
+  syncSettingsToBackend();
+  if (enabled) {
+    declinedTargets.clear();
+    ensureAutoSaveTarget(getActiveTab());
+  }
+  updateAutoSaveUI();
+}
+
+/** Records that the user accepted the default folder (first-run setup), so typing never opens the location prompt. */
+export function markAutoSaveLocationConfirmed() {
+  try { localStorage.setItem(LOCATION_CONFIRMED_KEY, 'true'); } catch { /* storage unavailable */ }
 }
 
 let savedIndicatorTimer = null;
@@ -44,65 +66,42 @@ function showSavedIndicator() {
   }, adhap.STATUS_NOTIFICATION_MS);
 }
 
+/**
+ * Shows the AutoSave state on the save button: label AUTO or SAVE, the LED colour (CSS state class),
+ * the tooltip, and the check mark of the save menu item.
+ */
 export function updateAutoSaveUI() {
-  const isAutoSaveEnabled = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
-  const { chkToggle, ledDot, labelEl } = getDomElements();
+  const enabled = isAutoSaveEnabled();
+  const { menuToggle, ledDot, labelEl, btnSave } = getDomElements();
   const activeTab = typeof getActiveTab === 'function' ? getActiveTab() : null;
-  const hasFilePath = !!(activeTab && activeTab.filePath);
+  const filePath = activeTab?.filePath || '';
 
-  if (chkToggle) chkToggle.checked = isAutoSaveEnabled;
+  let state = 'off';
+  if (enabled) state = filePath ? 'on' : 'pending';
+  const tooltip = state === 'on'
+    ? t('autosave_state_on', { path: filePath })
+    : t(`autosave_state_${state}`);
 
+  if (labelEl) labelEl.textContent = state === 'on' ? t('btn_save_auto') : t('btn_save');
   if (ledDot) {
-    if (isAutoSaveEnabled) {
-      if (hasFilePath) {
-        ledDot.className = 'status-led-dot status-ready';
-        ledDot.style.background = '#10b981';
-        ledDot.style.boxShadow = '0 0 6px rgba(16, 185, 129, 0.7)';
-        ledDot.title = `AutoSave: ON (To: ${activeTab.filePath})`;
-        if (labelEl) labelEl.textContent = 'AUTO'
-      } else {
-        ledDot.className = 'status-led-dot';
-        ledDot.style.background = '#f59e0b';
-        ledDot.style.boxShadow = '0 0 6px rgba(245, 158, 11, 0.6)';
-        ledDot.title = 'Unsaved: Press Ctrl+S to choose location for AutoSave';
-        if (labelEl) labelEl.textContent = 'SAVE';
-      }
-    } else {
-      ledDot.className = 'status-led-dot';
-      ledDot.style.background = '#64748b';
-      ledDot.style.boxShadow = 'none';
-      ledDot.title = 'AutoSave: OFF (Click to enable)';
-      if (labelEl) labelEl.textContent = 'SAVE';
-    }
+    ledDot.className = `status-led-dot autosave-led is-${state}`;
+    ledDot.title = tooltip;
+  }
+  if (btnSave) btnSave.title = `${t('btn_save_title')}\n${tooltip}`;
+  if (menuToggle) {
+    menuToggle.setAttribute('aria-checked', String(enabled));
+    menuToggle.classList.toggle('is-checked', enabled);
   }
 }
 
 export function initAutoSaveControls() {
-  const { chkToggle, ledDot } = getDomElements();
-  if (chkToggle) {
-    chkToggle.addEventListener('change', (e) => {
-      localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(e.target.checked));
-      if (e.target.checked) {
-        declinedTargets.clear();
-        ensureAutoSaveTarget(getActiveTab());
-      }
-      updateAutoSaveUI();
-    });
-  }
-  if (ledDot) {
-    ledDot.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const current = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
-      localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(!current));
-      if (!current) {
-        declinedTargets.clear();
-        ensureAutoSaveTarget(getActiveTab());
-      }
-      updateAutoSaveUI();
-    });
+  const { menuToggle } = getDomElements();
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => setAutoSaveEnabled(!isAutoSaveEnabled()));
   }
   updateAutoSaveUI();
   editorEvents.on('onTabRenderNeeded', () => updateAutoSaveUI());
+  window.addEventListener('app:languageChanged', () => updateAutoSaveUI());
 }
 
 async function executeSave(tab) {
@@ -194,14 +193,12 @@ async function ensureAutoSaveTarget(tab) {
     pendingTargets.delete(tab.id);
     updateAutoSaveUI();
     // Text typed while the location was unknown is still only a draft. Write it now that a path exists.
-    const autoSaveOn = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
-    if (autoSaveOn && tab.filePath && tab.isDirty) executeSave(tab);
+    if (isAutoSaveEnabled() && tab.filePath && tab.isDirty) executeSave(tab);
   }
 }
 
 export function triggerAdaptiveAutoSave(tab, immediate = false) {
-  const isAutoSaveEnabled = localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
-  if (!isAutoSaveEnabled || !tab || !tab.model) return;
+  if (!isAutoSaveEnabled() || !tab || !tab.model) return;
 
   if (!tab.filePath) {
     ensureAutoSaveTarget(tab);

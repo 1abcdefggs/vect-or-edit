@@ -367,6 +367,36 @@
   font-family: var(--font-family, sans-serif);
 }
 
+/* Bottom bar compact steps. With the pipeline strip open the left group needs about 810px and the right 160px.
+   The right group never shrinks; text is dropped in steps and every item keeps its tooltip */
+#nativeBottomBar {
+  container: bottom-bar / inline-size;
+}
+
+#nativeBottomBar .bottom-bar-left {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#nativeBottomBar .bottom-bar-right {
+  flex-shrink: 0;
+}
+
+/* Step 1: pipeline stages show only their LEDs (saves about 370px) */
+@container bottom-bar (max-width: 1000px) {
+  #nativeBottomBar .status-pill-label,
+  #nativeBottomBar .pipeline-title {
+    display: none;
+  }
+}
+
+/* Step 2: LOGS, update and RAM show only their icons */
+@container bottom-bar (max-width: 640px) {
+  #nativeBottomBar .bottom-bar-text {
+    display: none;
+  }
+}
+
 /* Shown briefly after an autosave; the width is reserved so the bar does not shift when it appears */
 .status-save-indicator {
   min-width: 4.5em;
