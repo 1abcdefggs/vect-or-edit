@@ -58,9 +58,10 @@
 }
 
 .app-header__title {
-  font-size: var(--fs-13);
+  font-family: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
+  font-size: var(--fs-14);
   font-weight: 600;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.6px;
   color: var(--header-fg, var(--text-main));
   white-space: nowrap;
 }
