@@ -18,7 +18,6 @@ export function initAiControls() {
   const editorAiStatusDot = document.getElementById('editorAiStatusDot');
   const editorAiLabel = document.getElementById('editorAiLabel');
   const activeAiModelStatusDot = document.getElementById('activeAiModelStatusDot');
-  const consoleAiInputGroup = document.getElementById('consoleAiInputGroup');
 
   function updateSettingsOverview(state = aiManager.getState()) {
     const embeddingStatus = document.getElementById('settingsEmbeddingStatus');
@@ -100,11 +99,9 @@ export function initAiControls() {
     if (state.master) {
       document.body.classList.add('master-ai-active', 'glow-master-active');
       document.body.classList.remove('master-ai-standby');
-      if (consoleAiInputGroup) consoleAiInputGroup.style.display = 'flex';
     } else {
       document.body.classList.remove('master-ai-active', 'glow-master-active');
       document.body.classList.add('master-ai-standby');
-      if (consoleAiInputGroup) consoleAiInputGroup.style.display = 'none';
     }
 
     const editorContainer = document.querySelector('.editor-section');

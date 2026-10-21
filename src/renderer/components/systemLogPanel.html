@@ -17,24 +17,4 @@
       </div>
       <div id="logEntriesContainer" class="log-entries-container" style="flex: 1; max-height: 160px;"></div>
     </div>
-
-    <!-- Direct AI Command Console Input Bar (Level 2-C) -->
-    <div id="consoleAiInputGroup"
-      style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--bg-primary); border-top: var(--border-width) solid var(--border-color);">
-      <span
-        style="font-family: var(--font-mono, monospace); font-size: var(--fs-12);  color: var(--text-main); display: flex; align-items: center; gap: 4px;">
-        <span id="consoleAiStatusBadge"
-          style="font-size: var(--fs-10); padding: 1px 5px; border-radius: 4px; background: var(--bg-secondary); color: var(--text-main); display: inline-flex; align-items: center; gap: 4px;">
-          <span class="material-symbols-outlined" style="font-size: var(--fs-18); flex-shrink: 0;">&#xf0f5;</span>
-          <span data-i18n="label_ai_direct">AI Direct</span>
-        </span>
-      </span>
-      <input type="text" id="consoleAiInput"
-        data-i18n-placeholder="console_ai_placeholder" placeholder="Enter command or natural query... (e.g. /search keyword, /lint, /stats, /clear-slots)"
-        style="flex: 1; height: 26px; padding: 0 10px; font-size: var(--fs-12); font-family: var(--font-mono, monospace); background: var(--bg-secondary); color: var(--text-main); border: var(--border-width) solid var(--border-color); border-radius: 4px; outline: none;">
-      <button id="btnConsoleAiRun" class="toolbar-btn"
-        style="height: 26px; padding: 0 12px; font-size: var(--fs-12); display: flex; align-items: center; background: var(--bg-secondary); color: var(--text-main); border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer;" data-i18n="btn_console_execute">
-        <span class="material-symbols-outlined" style="font-size: var(--fs-18);">&#xe0b9;</span>Execute
-      </button>
-    </div>
   </div>
