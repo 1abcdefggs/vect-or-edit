@@ -9,11 +9,29 @@ import { markSavedAsUtf8 } from './statusBarManager.js';
 import { commitTabToFile } from '../io/tabCommit.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
 import { syncSettingsToBackend } from '../../ui/settings/settingsState.js';
+import { formatOfName, withFormatExtension } from '../../../shared/documentFormat';
 
 const adhap = {
   BASE_DELAY_MS: TIMINGS.AUTO_SAVE_BASE_MS || 1500,
-  STATUS_NOTIFICATION_MS: 1500
+  STATUS_NOTIFICATION_MS: 1500,
+  MIN_DELAY_MS: 500,
+  MAX_DELAY_MS: 10000
 };
+
+/** The pause after typing stops before the save, as the user set it (default 1.5 seconds). */
+export function getAutoSaveDelayMs() {
+  const stored = Number(localStorage.getItem(STORAGE_KEYS.AUTO_SAVE_DELAY));
+  const ms = Number.isFinite(stored) && stored > 0 ? stored : adhap.BASE_DELAY_MS;
+  return Math.min(adhap.MAX_DELAY_MS, Math.max(adhap.MIN_DELAY_MS, ms));
+}
+
+/** Stores the pause in milliseconds, kept within the allowed range. */
+export function setAutoSaveDelayMs(ms) {
+  const clamped = Math.min(adhap.MAX_DELAY_MS, Math.max(adhap.MIN_DELAY_MS, Math.round(ms)));
+  localStorage.setItem(STORAGE_KEYS.AUTO_SAVE_DELAY, String(clamped));
+}
+
+export const AUTO_SAVE_DELAY_RANGE_MS = { min: adhap.MIN_DELAY_MS, max: adhap.MAX_DELAY_MS };
 
 const autoSaveTimers = new Map();
 const pendingTargets = new Set();
@@ -32,13 +50,38 @@ function getDomElements() {
   return domCache;
 }
 
+/** A trigger is on unless it was stored as off; a missing key follows the older single AutoSave flag. */
+function isTriggerOn(key) {
+  const stored = localStorage.getItem(key);
+  if (stored === null) return localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
+  return stored !== 'false';
+}
+
+/** Saves a pause after typing stops (about 1.5 seconds). */
+export function isIdleAutoSaveEnabled() {
+  return isTriggerOn(STORAGE_KEYS.AUTO_SAVE_IDLE);
+}
+
+/** Saves at each new line. */
+export function isNewlineAutoSaveEnabled() {
+  return isTriggerOn(STORAGE_KEYS.AUTO_SAVE_NEWLINE);
+}
+
+/** AutoSave runs while at least one of its two triggers is on. */
 export function isAutoSaveEnabled() {
-  return localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
+  return isIdleAutoSaveEnabled() || isNewlineAutoSaveEnabled();
+}
+
+/** Stores both triggers at once (the menu switch and the first-run switches use this). */
+export function setTriggers({ idle, newline }) {
+  localStorage.setItem(STORAGE_KEYS.AUTO_SAVE_IDLE, String(idle));
+  localStorage.setItem(STORAGE_KEYS.AUTO_SAVE_NEWLINE, String(newline));
+  localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(idle || newline));
 }
 
 /** Turns AutoSave on or off. Turning it on retries a location the user declined earlier. */
 export function setAutoSaveEnabled(enabled) {
-  localStorage.setItem(STORAGE_KEYS.AUTO_SAVE, String(enabled));
+  setTriggers({ idle: enabled, newline: enabled });
   syncSettingsToBackend();
   if (enabled) {
     declinedTargets.clear();
@@ -167,7 +210,8 @@ async function ensureAutoSaveTarget(tab) {
       const ws = await api.getDefaultWorkspace(true);
       if (ws?.success && ws.path) {
         const sep = ws.path.includes('\\') ? '\\' : '/';
-        const fileName = `${(tab.title || 'Untitled').replace(/\.md$/i, '')}-${Date.now()}.md`;
+        // The file keeps the format of its tab: a Text document is written as .txt, a Markdown one as .md
+        const fileName = withFormatExtension(`${(tab.title || 'Untitled').replace(/\.(md|markdown|txt)$/i, '')}-${Date.now()}`, formatOfName(tab.title));
         const res = await api.saveFile(content, `${ws.path}${sep}${fileName}`, false);
         if (res?.success) {
           tab.filePath = res.filePath;
@@ -208,11 +252,14 @@ export function triggerAdaptiveAutoSave(tab, immediate = false) {
     clearTimeout(autoSaveTimers.get(tab.id));
   }
 
-  if (immediate) {
+  if (immediate && isNewlineAutoSaveEnabled()) {
     executeSave(tab);
     return;
   }
 
-  const timer = setTimeout(() => executeSave(tab), adhap.BASE_DELAY_MS);
+  // A new line with only the pause trigger on waits for the pause, like any other edit
+  if (!isIdleAutoSaveEnabled()) return;
+
+  const timer = setTimeout(() => executeSave(tab), getAutoSaveDelayMs());
   autoSaveTimers.set(tab.id, timer);
 }

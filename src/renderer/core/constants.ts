@@ -6,6 +6,8 @@
 export const STORAGE_KEYS = {
   THEME: 'vect_theme',
   LEGACY_THEME: 'themeName',
+  THEME_DARK: 'vect_theme_dark',
+  THEME_LIGHT: 'vect_theme_light',
   FONT_FAMILY: 'editor_fontFamily',
   FONT_SIZE: 'editor_fontSize',
   LINE_HEIGHT: 'editor_lineHeight',
@@ -30,8 +32,22 @@ export const STORAGE_KEYS = {
   EDITOR_BG_TONE: 'editor_bg_tone',
   CUSTOM_EDITOR_BG: 'editor_custom_bg',
   AUTO_SAVE: 'editor_auto_save',
+  // The two triggers of AutoSave: a pause in typing, and each new line (both on by default)
+  AUTO_SAVE_IDLE: 'editor_auto_save_idle',
+  AUTO_SAVE_NEWLINE: 'editor_auto_save_newline',
+  // Pause before the save, in milliseconds (the user sets it in first-run setup)
+  AUTO_SAVE_DELAY: 'editor_auto_save_delay_ms',
+  // 'markdown' | 'text': the format new documents start in (src/shared/documentFormat.ts)
+  DOCUMENT_FORMAT: 'vect_document_format',
   AI_SETUP_COMPLETED: 'vect_ai_setup_completed',
   LOCAL_EMBEDDING_MODEL: 'vect_local_embedding_model',
+  /** JSON array of embedding model ids whose files were fetched on this device */
+  EMBEDDING_MODELS_DOWNLOADED: 'vect_embedding_models_downloaded',
+  /** 'on' | 'off': real-time validation (engine linter) in the editor */
+  LINTER_ENABLED: 'vect_linter_enabled',
+  /** Minimum similarity score (percent) and number of results for knowledge suggestions */
+  MIN_SCORE_PCT: 'vect_min_score_pct',
+  SEARCH_LIMIT: 'vect_search_limit',
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
   EMBEDDING_SOURCE: 'vect_embedding_source',
   /** When EMBEDDING_SOURCE is 'llm-embed-*', which LLM provider to use as embedder */
@@ -47,8 +63,9 @@ export const TIMINGS = {
 } as const;
 
 export const DEFAULTS = {
-  MIN_SCORE_PCT: 50,
-  SEARCH_LIMIT: 6,
+  // The same values the score fields and limit menus start with (settingsModal.html, suggestionSidebar.html)
+  MIN_SCORE_PCT: 70,
+  SEARCH_LIMIT: 5,
   FONT_SIZE: 16,
   LINE_HEIGHT: 26,
   FONT_FAMILY: "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif",
@@ -63,6 +80,8 @@ export const DEFAULTS = {
   EMBEDDING_SOURCE: 'local',
   APP_LANG: 'en',
   AUTO_SAVE: true,
+  AUTO_SAVE_IDLE: true,
+  AUTO_SAVE_NEWLINE: true,
   LOG_DISPLAY_POSITION: 'bottom',
 } as const;
 

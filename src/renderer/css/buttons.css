@@ -168,9 +168,9 @@ body.resizing-sidebar * {
 }
 
 .log-panel-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #ffffff;
+  background: var(--log-btn-bg);
+  border: 1px solid var(--log-btn-border);
+  color: var(--log-title);
   padding: 3px 8px;
   font-size: var(--fs-12);
   
@@ -183,9 +183,9 @@ body.resizing-sidebar * {
 }
 
 .log-panel-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.35);
-  color: #ffffff;
+  background: var(--log-btn-hover);
+  border-color: var(--log-btn-border);
+  color: var(--log-title);
 }
 
 .log-panel-btn:active {

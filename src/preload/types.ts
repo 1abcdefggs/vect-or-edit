@@ -98,9 +98,11 @@ export interface DefaultWorkspaceResponse {
   success: boolean;
   path?: string;
   exists?: boolean;
-  /** true when the save folder is the built-in Documents/VectOrFoldEr */
+  /** true when the save folder is the built-in Documents/VectOrEdit */
   isBuiltIn?: boolean;
   canceled?: boolean;
+  /** Why a folder name was refused (see src/shared/folderName.ts) */
+  problem?: 'empty' | 'chars' | 'dots' | 'reserved' | 'long';
   error?: string;
 }
 
@@ -110,9 +112,11 @@ export interface EngineAPI {
   openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, encoding?: string, error?: string }>;
   openWorkspace: () => Promise<{ success: boolean, path?: string, error?: string }>;
   getDefaultWorkspace: (createIfMissing?: boolean) => Promise<DefaultWorkspaceResponse>;
-  /** Opens a folder picker and makes the chosen folder the save folder (also where .settings.json is kept). */
+  /** Opens a folder picker for the location of the save folder; the folder keeps its name (also where .settings.json is kept). */
   chooseDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
-  /** Returns the save folder to Documents/VectOrFoldEr. */
+  /** Renames the save folder in place: same location, new name. Files are not moved. */
+  renameDefaultWorkspace: (name: string) => Promise<DefaultWorkspaceResponse>;
+  /** Returns the save folder to the built-in Documents/VectOrEdit. */
   resetDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
   loadSettings: () => Promise<{ success: boolean, settings?: any, error?: string }>;
   saveSettings: (settings: any) => Promise<{ success: boolean, error?: string }>;
@@ -156,4 +160,6 @@ export interface EngineAPI {
   installUpdate: () => Promise<void>;
   querySemantics?: (query: string, context?: string) => Promise<any>;
   getAppVersion: () => Promise<string>;
+  /** Folder where the app keeps its own data (settings, encrypted keys, model cache) */
+  getUserDataPath: () => Promise<string>;
 }

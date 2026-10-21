@@ -144,7 +144,7 @@
     "editorLineNumber.foreground": "#75715e",
     "editorWhitespace.foreground": "#75715e40",
     "editorIndentGuide.background": "#75715e30",
-    "editorIndentGuide.activeActiveBackground": "#f9267280",
+    "editorIndentGuide.activeBackground": "#f9267280",
     "editor.selectionHighlightBorder": "#49483E",
     "sideBar.background": "#1e1f1c",
     "titleBar.activeBackground": "#171814",

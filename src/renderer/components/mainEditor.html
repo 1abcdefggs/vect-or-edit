@@ -126,11 +126,12 @@
     <div class="status-bar-right" style="display: flex; align-items: center; gap: 6px;">
       <span id="statusEncoding" class="status-bar-item" title="File encoding">UTF-8</span>
       <span class="status-bar-separator">|</span>
-      <span class="status-bar-item" style="display: flex; align-items: center; gap: 4px;" title="Current document syntax: Markdown">
+      <!-- The format of the current document; a click switches it between Markdown and Text (documentFormatControl.js) -->
+      <button type="button" id="btnDocumentFormat" class="status-bar-item status-bar-button" data-i18n-title="format_switch_title" title="Click to switch this document between Markdown and Text">
         <span class="material-symbols-outlined" style="font-size: var(--fs-16); color: var(--accent-color, #38bdf8);">&#xf552;</span>
         <span id="statusSyntaxLabel">Markdown</span>
-      </span>
-      <span class="status-bar-separator">|</span>
+      </button>
+      <span class="status-bar-separator" data-preview-separator>|</span>
       <button type="button" id="btnMarkdownPreview" class="markdown-preview-toggle" aria-pressed="false" title="Toggle rendered Markdown preview">
         <span class="material-symbols-outlined" style="font-size: var(--fs-16);">preview</span>
         <span class="markdown-preview-label">Preview</span>

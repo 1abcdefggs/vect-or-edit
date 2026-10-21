@@ -1,16 +1,18 @@
 import { icons } from '../../core/icons.js';
 import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
-import { loadTheme, availableThemes, getResolvedThemeName } from '../../editor/core/themeLoader.js';
+import { loadTheme, availableThemes, getResolvedThemeName, getStoredThemeSetting, getAutoThemePair, isLightTheme } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { importDictionary } from '../../search/dictionary.js';
-import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, updateAutoSaveUI } from '../../editor/editorManager.js';
+import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, refreshLinter, updateAutoSaveUI } from '../../editor/editorManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
 import { showToast } from '../notifications/toastManager.js';
-import { updateActiveModelBadgeInTable } from '../../search/searchLocalAi.js';
+import { notifyEmbeddingModelsChanged } from '../../search/searchLocalAi.js';
+import { bindEmbeddingModelEvents, renderEmbeddingModelList } from './embeddingModelList.js';
 import { initEmbeddingSourceController } from './embeddingSourceController.js';
 import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
 import { bindSaveLocationControls } from './saveLocation.js';
+import { getDefaultDocumentFormat } from '../../editor/tabs/tabState.js';
 
 function setAndSync(key, value) {
   localStorage.setItem(key, value);
@@ -20,17 +22,14 @@ function setAndSync(key, value) {
 let updateEditorOptionsCallback = null;
 
 const FALLBACK_THEMES = ['Dracula', 'GitHub Dark', 'GitHub Light', 'Monokai', 'Night Owl'];
-const THEME_SELECT_IDS = ['themeSelect', 'modalThemeSelect', 'setupThemeSelect'];
+const THEME_SELECT_IDS = ['themeSelect', 'modalThemeSelect'];
 
-function getThemeList() {
+/** Every theme the app can apply, in the order the pickers show them (the first-run theme cards use it too). */
+export function getThemeList() {
   return (availableThemes && availableThemes.length > 0) ? availableThemes : FALLBACK_THEMES;
 }
 
-/** Stored theme setting ('auto' or a known theme name). */
-export function getStoredThemeSetting() {
-  const stored = localStorage.getItem(STORAGE_KEYS.LEGACY_THEME) || localStorage.getItem(STORAGE_KEYS.THEME) || 'auto';
-  return (stored === 'auto' || getThemeList().includes(stored)) ? stored : 'auto';
-}
+export { getStoredThemeSetting };
 
 /** Fills a theme select with "System (Auto)" and every theme, keeping its current value. */
 export function populateThemeDropdown(selectEl) {
@@ -55,7 +54,41 @@ export function populateThemeDropdown(selectEl) {
   }
 }
 
-/** Applies and stores a theme, and keeps every theme select (header, settings, first-run setup) in step. */
+/** Fills the dark-mode and light-mode pickers of "Auto" and shows them only while the theme is Auto. */
+export function refreshAutoThemePickers() {
+  const darkSel = document.getElementById('modalThemeDarkSelect');
+  const lightSel = document.getElementById('modalThemeLightSelect');
+  const pair = getAutoThemePair();
+  const fill = (sel, wantLight, current) => {
+    if (!sel) return;
+    sel.innerHTML = '';
+    getThemeList().filter(name => isLightTheme(name) === wantLight).forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+    sel.value = current;
+  };
+  fill(darkSel, false, pair.dark);
+  fill(lightSel, true, pair.light);
+  const isAuto = getStoredThemeSetting() === 'auto';
+  ['autoThemePairRow', 'autoThemePairLightRow'].forEach(id => {
+    const row = document.getElementById(id);
+    if (row) row.hidden = !isAuto;
+  });
+}
+
+async function applyAutoThemePick(storageKey, themeName) {
+  setAndSync(storageKey, themeName);
+  if (getStoredThemeSetting() === 'auto') await loadTheme('auto');
+  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: 'auto' } }));
+}
+
+/**
+ * Applies and stores a theme, and keeps every theme select (header, settings) in step.
+ * Anything else that shows the theme (the first-run theme cards) listens to app:themeChanged.
+ */
 export async function applyThemeSetting(themeName) {
   if (!themeName) return;
   THEME_SELECT_IDS.forEach(id => {
@@ -65,6 +98,8 @@ export async function applyThemeSetting(themeName) {
   await loadTheme(themeName);
   setAndSync(STORAGE_KEYS.LEGACY_THEME, themeName);
   setAndSync(STORAGE_KEYS.THEME, themeName);
+  refreshAutoThemePickers();
+  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: themeName } }));
 }
 
 /** Switches the UI language. Labels and selects follow through the app:languageChanged listener in initSettings. */
@@ -83,8 +118,17 @@ export function initSettings(updateEditorCb) {
     pathEl: document.getElementById('settingsSaveLocationPath'),
     changeBtn: document.getElementById('btnSettingsChangeLocation'),
     resetBtn: document.getElementById('btnSettingsResetLocation'),
+    nameInput: document.getElementById('settingsFolderName'),
+    nameHintEl: document.getElementById('settingsFolderNameHint'),
     browserTextKey: 'setup_save_location_browser'
   });
+
+  // Format new documents start in (Markdown or Text); documents already open keep theirs
+  const documentFormatSelect = document.getElementById('modalDocumentFormatSelect');
+  if (documentFormatSelect) {
+    documentFormatSelect.value = getDefaultDocumentFormat();
+    documentFormatSelect.addEventListener('change', () => setAndSync(STORAGE_KEYS.DOCUMENT_FORMAT, documentFormatSelect.value));
+  }
 
   // Front UI Elements
   const fontFamilySelect = document.getElementById('fontFamilySelect');
@@ -140,6 +184,9 @@ export function initSettings(updateEditorCb) {
       await applyThemeSetting(modalThemeSelect.value);
     });
   }
+  refreshAutoThemePickers();
+  document.getElementById('modalThemeDarkSelect')?.addEventListener('change', (e) => applyAutoThemePick(STORAGE_KEYS.THEME_DARK, e.target.value));
+  document.getElementById('modalThemeLightSelect')?.addEventListener('change', (e) => applyAutoThemePick(STORAGE_KEYS.THEME_LIGHT, e.target.value));
 
   // Language toggle & 2-way sync. Any language change (header, settings, first-run setup) ends in app:languageChanged.
   const applyLanguage = (lang) => applyLanguageSetting(lang);
@@ -366,6 +413,23 @@ export function initSettings(updateEditorCb) {
         setAndSync('vect_show_full_metadata', String(chkShowFullMetadata.checked));
       }
     }
+    // Both sides hold the same values now; keep them for the next start
+    if (numMinScore) setAndSync(STORAGE_KEYS.MIN_SCORE_PCT, numMinScore.value);
+    if (selSearchLimit) setAndSync(STORAGE_KEYS.SEARCH_LIMIT, selSearchLimit.value);
+  }
+
+  // Restore the score and limit on both the sidebar and the modal
+  const savedMinScore = localStorage.getItem(STORAGE_KEYS.MIN_SCORE_PCT);
+  const savedLimit = localStorage.getItem(STORAGE_KEYS.SEARCH_LIMIT);
+  [numMinScore, modalMinScoreInput].forEach(el => { if (el && savedMinScore) el.value = savedMinScore; });
+  [selSearchLimit, modalLimitSelect].forEach(el => { if (el && savedLimit) el.value = savedLimit; });
+
+  if (modalLinterSelect) {
+    modalLinterSelect.value = localStorage.getItem(STORAGE_KEYS.LINTER_ENABLED) === 'off' ? 'off' : 'on';
+    modalLinterSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.LINTER_ENABLED, modalLinterSelect.value);
+      refreshLinter();
+    });
   }
 
   if (numMinScore) numMinScore.addEventListener('input', () => syncSearchSettings('front'));
@@ -595,6 +659,13 @@ export function initSettings(updateEditorCb) {
     modalClaudeKeyInput.addEventListener('change', () => storeKeyFromInput('claude', modalClaudeKeyInput));
   }
 
+  if (modalClaudeModelSelect) {
+    modalClaudeModelSelect.value = storedClaudeModel;
+    modalClaudeModelSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
+    });
+  }
+
   // Setup Password Visibility Toggles
   function setupPasswordToggle(inputId, toggleBtnId) {
     const input = document.getElementById(inputId);
@@ -654,33 +725,18 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  // 384-dim Local Embedding Model Switching
-  const selLocalEmbeddingModel = document.getElementById('selLocalEmbeddingModel');
-  const storedLocalModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
-  if (selLocalEmbeddingModel) {
-    selLocalEmbeddingModel.value = storedLocalModel;
-    selLocalEmbeddingModel.addEventListener('change', () => {
-      const selectedModel = selLocalEmbeddingModel.value;
-      setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, selectedModel);
-      const modelShortName = selectedModel.split('/').pop();
-      showToast(`Switched model to ${modelShortName}. Initializing...`, 'info');
-      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: selectedModel } }));
-    });
+  // Embedding model cards: Download (files only) / Use (switch active model) / Active
+  const embeddingModelList = document.getElementById('embeddingModelList');
+  const useEmbeddingModel = (modelId) => {
+    setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, modelId);
+    showToast(`Selected ${modelId.split('/').pop()}. Initializing...`, 'info');
+    window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: modelId } }));
+    notifyEmbeddingModelsChanged();
+  };
+  if (embeddingModelList) {
+    bindEmbeddingModelEvents(embeddingModelList, { onUse: useEmbeddingModel });
+    renderEmbeddingModelList(embeddingModelList, { onUse: useEmbeddingModel });
   }
-
-  // Handle table "Use" action buttons
-  document.querySelectorAll('.btn-switch-model').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetModel = btn.getAttribute('data-model');
-      if (targetModel) {
-        if (selLocalEmbeddingModel) selLocalEmbeddingModel.value = targetModel;
-        setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, targetModel);
-        const modelShortName = targetModel.split('/').pop();
-        showToast(`Selected ${modelShortName}. Initializing...`, 'info');
-        window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: targetModel } }));
-      }
-    });
-  });
 
   const btnModalImportDict = document.getElementById('btnModalImportDict');
   if (btnModalImportDict) {
@@ -697,11 +753,9 @@ export function initSettings(updateEditorCb) {
 
   function switchAiModelTab(targetTab) {
     aiModelTabBtns.forEach(btn => {
-      if (btn.dataset.aimodelTab === targetTab) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+      const selected = btn.dataset.aimodelTab === targetTab;
+      btn.classList.toggle('active', selected);
+      btn.setAttribute('aria-selected', String(selected));
     });
 
     if (panelEmbedding) {
@@ -791,7 +845,7 @@ export function initSettings(updateEditorCb) {
       if (c.id === tabId) {
         c.classList.add('active');
         if (tabId === 'tabAiSearch') {
-          updateActiveModelBadgeInTable();
+          notifyEmbeddingModelsChanged();
           if (subtab === 'llm' || subtab === 'embedding') {
             switchAiModelTab(subtab);
           }
@@ -917,7 +971,7 @@ export function initSettings(updateEditorCb) {
 
 export function getTheme() {
   const themeSelect = typeof document !== 'undefined' ? document.getElementById('themeSelect') : null;
-  const storedThemeName = typeof localStorage !== 'undefined' ? (localStorage.getItem(STORAGE_KEYS.LEGACY_THEME) || localStorage.getItem(STORAGE_KEYS.THEME)) : null;
+  const storedThemeName = typeof localStorage !== 'undefined' ? getStoredThemeSetting() : null;
   const currentChoice = (themeSelect && themeSelect.value) || storedThemeName || 'auto';
   const resolved = getResolvedThemeName(currentChoice);
   return resolved ? resolved.replace(/[^a-zA-Z0-9_-]/g, '-') : 'vs-dark';

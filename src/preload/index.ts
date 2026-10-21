@@ -13,6 +13,7 @@ const engineAPI: EngineAPI = {
   openWorkspace: () => ipcRenderer.invoke('app:openWorkspace'),
   getDefaultWorkspace: (createIfMissing?: boolean) => ipcRenderer.invoke('app:getDefaultWorkspace', createIfMissing),
   chooseDefaultWorkspace: () => ipcRenderer.invoke('app:chooseDefaultWorkspace'),
+  renameDefaultWorkspace: (name: string) => ipcRenderer.invoke('app:renameDefaultWorkspace', name),
   resetDefaultWorkspace: () => ipcRenderer.invoke('app:resetDefaultWorkspace'),
   loadSettings: () => ipcRenderer.invoke('app:loadSettings'),
   saveSettings: (settings: any) => ipcRenderer.invoke('app:saveSettings', settings),
@@ -78,7 +79,8 @@ const engineAPI: EngineAPI = {
     }
   },
   querySemantics: (query: string, context?: string) => ipcRenderer.invoke('semantics:query', query, context),
-  getAppVersion: () => ipcRenderer.invoke('app:getVersion')
+  getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
+  getUserDataPath: () => ipcRenderer.invoke('app:getUserDataPath')
 };
 
 const updaterAPI = {

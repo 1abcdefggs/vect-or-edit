@@ -1,115 +1,250 @@
-<!-- First-run setup. Shown during startup while the editor loads; every step has defaults and can be skipped. -->
+<!-- First-run setup. Shown during startup while the editor loads; every step has defaults, so "Next" all the way works. -->
 <div id="aiSetupModalOverlay" class="modal-overlay first-run-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+  <!-- The tool name sits in the window's top-left corner, on the title bar line, outside the dialog -->
+  <h2 id="setupTitle" class="first-run-brandbar">
+    <span class="first-run-brand">Vect<em>Or</em>Edit</span>
+    <!-- Filled from package.json via app.getVersion() (topBarRenderer.js) -->
+    <span id="setupVersionBadge" class="first-run-version"></span>
+  </h2>
+
   <div class="settings-modal-dialog first-run-dialog">
 
-    <div class="first-run-header">
-      <h2 id="setupTitle" class="first-run-title">
-        <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
-        <span data-i18n="setup_title">Welcome to VectOrEdit</span>
-        <!-- Filled from package.json via app.getVersion() (topBarRenderer.js) -->
-        <span id="setupVersionBadge" class="first-run-version"></span>
-      </h2>
-      <p class="first-run-subtitle" data-i18n="setup_subtitle">Defaults are already set. Skip anything you like; every choice can be changed later.</p>
-      <ol class="first-run-steps" aria-hidden="true">
-        <li data-setup-dot="1"><span data-i18n="setup_step_appearance">Language &amp; theme</span></li>
-        <li data-setup-dot="2"><span data-i18n="setup_step_saving">Saving</span></li>
-        <li data-setup-dot="3"><span data-i18n="setup_step_ai">AI features</span></li>
-      </ol>
-    </div>
+    <!-- Step tabs (ui/components/stepTabs.js fills this) -->
+    <nav id="setupStepTabs"></nav>
 
     <div class="first-run-body">
       <!-- Step 1: language and theme (applied immediately) -->
       <section class="first-run-step" data-setup-step="1">
-        <div class="first-run-field">
-          <span id="setupLangLabel" class="first-run-label" data-i18n="setup_lang_label">Language</span>
-          <div class="first-run-choice-row" role="radiogroup" aria-labelledby="setupLangLabel">
-            <label class="first-run-choice"><input type="radio" name="setup_lang" value="en" checked><span data-i18n="lang_name_en">English</span></label>
-            <label class="first-run-choice"><input type="radio" name="setup_lang" value="ja"><span data-i18n="lang_name_ja">Japanese</span></label>
+        <div class="first-run-section first-run-section--row" role="group" aria-labelledby="setupLangLabel">
+          <h2 class="first-run-heading"><span id="setupLangLabel" data-i18n="setup_lang_label">Language</span><span data-info-tip="setup_info_lang"></span></h2>
+          <!-- A two-position switch: the thumb slides to the chosen side (English left, Japanese right) -->
+          <div class="first-run-segment" role="radiogroup" aria-labelledby="setupLangLabel">
+            <label class="first-run-segment-option"><input type="radio" name="setup_lang" value="en" checked><span data-i18n="lang_name_en">English</span></label>
+            <label class="first-run-segment-option"><input type="radio" name="setup_lang" value="ja"><span data-i18n="lang_name_ja">Japanese</span></label>
+            <span class="first-run-segment-thumb" aria-hidden="true"></span>
           </div>
-          <p class="first-run-hint" data-i18n="setup_lang_hint">This setup switches to the language you choose.</p>
         </div>
-        <div class="first-run-field">
-          <label class="first-run-label" for="setupThemeSelect" data-i18n="setup_theme_label">Theme</label>
-          <select id="setupThemeSelect" class="ai-setup-select"></select>
-          <p class="first-run-hint" data-i18n="setup_theme_hint">Applied right away.</p>
+
+        <hr class="first-run-divider">
+
+        <div class="first-run-section" role="group" aria-labelledby="setupThemeLabel">
+          <h2 class="first-run-heading"><span id="setupThemeLabel" data-i18n="setup_theme_label">Theme</span><span data-info-tip="setup_info_theme"></span></h2>
+          <!-- One card per theme, drawn from the theme files (setupThemeCards in aiSetupController.js) -->
+          <div id="setupThemeCards" class="first-run-theme-grid"></div>
         </div>
       </section>
 
       <!-- Step 2: save location and AutoSave -->
       <section class="first-run-step" data-setup-step="2" hidden>
-        <div class="first-run-field">
-          <span class="first-run-label" data-i18n="setup_save_location_label">Save location</span>
-          <div class="first-run-path">
-            <span class="material-symbols-outlined" aria-hidden="true">folder</span>
-            <span id="setupSaveLocation" class="first-run-path-text"></span>
-            <button id="btnSetupResetLocation" class="btn first-run-btn-quiet first-run-path-btn" type="button" data-i18n="save_location_reset" hidden>Use default</button>
-            <button id="btnSetupChangeLocation" class="btn first-run-btn first-run-path-btn" type="button" data-i18n="save_location_change" hidden>Change...</button>
+        <div class="first-run-section">
+          <h2 class="first-run-heading"><span data-i18n="setup_save_location_label">Save location</span><span data-info-tip="setup_info_save"></span></h2>
+          <div class="first-run-save-box">
+            <div class="first-run-path" data-save-name-field>
+              <span class="material-symbols-outlined" aria-hidden="true">folder</span>
+              <span id="setupSaveLocation" class="first-run-path-text" data-parent-only></span>
+              <label class="first-run-visually-hidden" for="setupFolderName" data-i18n="setup_folder_name_label">Folder name</label>
+              <span class="first-run-name-box">
+                <span class="material-symbols-outlined first-run-field-icon" aria-hidden="true">edit</span>
+                <input id="setupFolderName" class="first-run-input" type="text" spellcheck="false" autocomplete="off" aria-describedby="setupFolderNameHint">
+              </span>
+              <button id="btnSetupChangeLocation" class="btn first-run-btn first-run-path-btn" type="button" hidden><span class="material-symbols-outlined" aria-hidden="true">folder_open</span><span data-i18n="save_location_change">Change save location...</span></button>
+            </div>
+            <div class="first-run-save-foot">
+              <p id="setupFolderNameHint" class="first-run-hint" data-i18n="setup_folder_name_commit_hint">Press Enter or click outside the field to save the name.</p>
+              <button id="btnSetupResetLocation" class="btn first-run-btn-quiet" type="button" data-i18n="save_location_reset" hidden>Reset to default</button>
+            </div>
           </div>
-          <p id="setupSaveLocationHint" class="first-run-hint" data-i18n="setup_save_location_hint">New documents and your settings (.settings.json) are saved in this folder.</p>
         </div>
-        <label class="first-run-check">
-          <input type="checkbox" id="chkSetupAutoSave" checked>
-          <span>
-            <span class="first-run-check-title" data-i18n="setup_autosave_label">Save automatically while I type</span>
-            <span class="first-run-hint" data-i18n="setup_autosave_hint">Saves 1.5 seconds after you stop typing, and at each new line.</span>
-          </span>
-        </label>
+
+        <hr class="first-run-divider">
+
+        <!-- The format new documents start in. The Markdown card shows its own title as "## heading" and can be switched to the
+             rendered view (same renderer as the editor preview); the Text card stays as plain text. -->
+        <div class="first-run-section" role="group" aria-labelledby="setupFormatLabel">
+          <h2 class="first-run-heading">
+            <span id="setupFormatLabel" data-i18n="setup_format_heading">File format</span>
+            <span data-info-tip="setup_info_format"></span>
+          </h2>
+          <div class="first-run-choice-row" role="radiogroup" aria-labelledby="setupFormatLabel">
+            <div class="first-run-choice first-run-choice--detail" id="setupFormatCardMarkdown">
+              <input type="radio" id="setupFormatMarkdown" name="setup_format" value="markdown" checked>
+              <div class="first-run-choice-text">
+                <label for="setupFormatMarkdown" class="first-run-choice-title">
+                  <span class="first-run-md-marker" aria-hidden="true">## </span><span data-i18n="setup_format_markdown">Markdown</span> <code class="first-run-code">.md</code>
+                </label>
+                <span class="first-run-hint" data-i18n="setup_format_markdown_hint">Write with symbols; see it formatted in a preview.</span>
+                <div class="first-run-sample">
+                  <pre id="setupSampleMarkdownSource" class="first-run-sample-source"></pre>
+                  <div id="setupSampleMarkdownView" class="markdown-preview first-run-sample-view" hidden></div>
+                </div>
+              </div>
+              <span class="first-run-choice-mark material-symbols-outlined" aria-hidden="true">check</span>
+              <button type="button" id="btnSetupSampleToggle" class="first-run-sample-toggle" aria-pressed="false">
+                <svg class="first-run-sample-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span id="setupSampleToggleLabel"></span>
+              </button>
+            </div>
+            <div class="first-run-choice first-run-choice--detail" id="setupFormatCardText">
+              <input type="radio" id="setupFormatText" name="setup_format" value="text">
+              <div class="first-run-choice-text">
+                <label for="setupFormatText" class="first-run-choice-title"><span data-i18n="setup_format_text">Text</span> <code class="first-run-code">.txt</code></label>
+                <span class="first-run-hint" data-i18n="setup_format_text_hint">Plain sentences, no symbols.</span>
+                <div class="first-run-sample">
+                  <pre id="setupSampleText" class="first-run-sample-source"></pre>
+                </div>
+              </div>
+              <span class="first-run-choice-mark material-symbols-outlined" aria-hidden="true">check</span>
+            </div>
+          </div>
+
+          <div class="first-run-setting-box">
+            <div class="first-run-setting-head">
+              <div class="first-run-setting-head-text">
+                <p id="setupAutoSaveAllLabel" class="first-run-setting-title" data-i18n="setup_autosave_label">While you write, save automatically</p>
+                <p class="first-run-hint" data-i18n="setup_autosave_hint">You are never asked where to save.</p>
+              </div>
+              <button type="button" id="btnSetupAutoSaveDetails" class="first-run-disclosure" aria-expanded="false" aria-controls="setupAutoSaveDetails">
+                <span data-i18n="setup_autosave_details">Adjust each</span>
+                <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
+              </button>
+              <span class="toggle-switch-group">
+                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+                <button type="button" id="toggleSetupAutoSaveAll" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveAllLabel"><span class="toggle-switch__knob"></span></button>
+                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+              </span>
+            </div>
+            <div id="setupAutoSaveDetails" hidden>
+            <div class="first-run-setting">
+              <span id="setupAutoSaveIdleLabel" class="first-run-setting-text">
+                <span class="first-run-delay-line">
+                  <span data-i18n="setup_autosave_idle_before">After you stop typing for</span>
+                  <input id="setupAutoSaveDelay" class="first-run-delay-input" type="number" min="0.5" max="10" step="0.5" inputmode="decimal" value="1.5" spellcheck="false" autocomplete="off">
+                  <span data-i18n="setup_autosave_idle_after">seconds</span>
+                </span>
+                <span class="first-run-hint" data-i18n="setup_autosave_delay_hint">If saving feels heavy, try a longer pause.</span>
+              </span>
+              <span class="toggle-switch-group">
+                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+                <button type="button" id="toggleSetupAutoSaveIdle" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveIdleLabel"><span class="toggle-switch__knob"></span></button>
+                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+              </span>
+            </div>
+            <div class="first-run-setting">
+              <span id="setupAutoSaveNewlineLabel" class="first-run-setting-text" data-i18n="setup_autosave_newline_label">At each new line</span>
+              <span class="toggle-switch-group">
+                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+                <button type="button" id="toggleSetupAutoSaveNewline" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveNewlineLabel"><span class="toggle-switch__knob"></span></button>
+                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+              </span>
+            </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- Step 3: AI (installs in the background after setup) -->
+      <!-- Step 3: AI (the embedding model installs in the background after setup) -->
       <section class="first-run-step" data-setup-step="3" hidden>
-        <label class="first-run-check">
-          <input type="checkbox" id="chkSetupInstallLocal">
-          <span>
-            <span class="first-run-check-title" data-i18n="setup_ai_local_label">Install the local embedding model</span>
-            <span class="first-run-hint" data-i18n="setup_ai_local_hint">Used for meaning-based dictionary search. It installs in the background after setup, so you can start writing right away.</span>
-          </span>
-        </label>
-        <div id="setupAiInstallDetails" class="first-run-install" hidden>
-          <select id="aiSetupLocalModel" class="ai-setup-select">
-            <option value="Xenova/multilingual-e5-small" selected data-i18n="ai_setup_model_e5">multilingual-e5-small (45MB / Lightweight &amp; Fast)</option>
-            <option value="Xenova/bge-small-en-v1.5" data-i18n="ai_setup_model_bge">bge-small-en (45MB / English only, high accuracy)</option>
-            <option value="nomic-ai/nomic-embed-text-v1.5" data-i18n="ai_setup_model_nomic">nomic-embed-text (137MB / High accuracy)</option>
-          </select>
-          <span class="first-run-label" data-i18n="setup_ai_install_what">What will be installed</span>
-          <ul class="ai-setup-feature-list">
-            <li><span data-i18n="setup_ai_install_model">Model</span>: <code id="setupInstallModelId"></code></li>
-            <li data-i18n="setup_ai_install_source">Downloaded once from Hugging Face (huggingface.co)</li>
-            <li data-i18n="setup_ai_install_place">Kept in the app cache and runs offline after the download</li>
-            <li data-i18n="setup_ai_install_progress">Progress shows in the log panel and the AI light in the bottom bar</li>
-          </ul>
+        <div class="first-run-section">
+          <h2 class="first-run-heading">
+            <span data-i18n="setup_ai_embedding_heading">Embedding AI</span>
+            <span class="first-run-badge" data-i18n="setup_ai_core_badge">Core feature</span>
+            <span class="first-run-heading-note" data-i18n="setup_ai_local_note">Runs on this PC</span>
+            <span data-info-tip="setup_info_embedding"></span>
+          </h2>
+          <div class="first-run-setting">
+            <span id="setupLocalAiLabel" class="first-run-setting-text">
+              <span class="first-run-check-title" data-i18n="setup_ai_local_label">Install the embedding model (recommended)</span>
+              <span class="first-run-hint" data-i18n="setup_ai_local_hint">Finds knowledge related to the selected text offline. The download runs in the background.</span>
+            </span>
+            <span class="toggle-switch-group">
+              <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+              <button type="button" id="toggleSetupInstallLocal" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupLocalAiLabel"><span class="toggle-switch__knob"></span></button>
+              <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+            </span>
+          </div>
+          <p id="setupLocalNotice" class="first-run-notice" role="status">
+            <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            <span id="setupLocalNoticeText"></span>
+          </p>
+          <dl class="first-run-facts">
+            <dt data-i18n="setup_ai_fact_model">Model</dt>
+            <dd>
+              <code id="setupInstallModelId" class="first-run-code"></code>
+              <span class="first-run-hint-inline" data-i18n="setup_ai_fact_model_note">Lightweight and multilingual (90+ languages)</span>
+            </dd>
+            <dt data-i18n="setup_ai_fact_use">Purpose</dt>
+            <dd data-i18n="setup_ai_fact_use_value">Semantic search (it does not generate text)</dd>
+            <dt data-i18n="setup_ai_fact_source">Source</dt>
+            <dd data-i18n="setup_ai_fact_source_value">Downloaded once from Hugging Face (huggingface.co)</dd>
+            <dt data-i18n="setup_ai_fact_place">Install location</dt>
+            <dd><code id="setupInstallPath" class="first-run-code"></code> <span class="first-run-hint-inline" data-i18n="setup_ai_fact_place_note">(inside the app cache; works offline after the download)</span></dd>
+          </dl>
         </div>
 
-        <div class="first-run-field">
-          <span class="first-run-label" data-i18n="setup_ai_llm_label">Cloud LLM for chat and rewriting (optional)</span>
-          <select id="aiSetupCloudProvider" class="ai-setup-select">
-            <option value="gemini" selected>Google Gemini</option>
-            <option value="openai">OpenAI</option>
-            <option value="claude">Anthropic Claude</option>
-          </select>
-          <div class="api-key-input-container first-run-key">
-            <span class="material-symbols-outlined" aria-hidden="true">key</span>
-            <input type="password" id="aiSetupCloudKey" placeholder="Enter API Key (Optional / Configurable later)..." autocomplete="off" spellcheck="false" data-i18n-placeholder="ai_setup_api_key_placeholder">
-            <button type="button" id="btnToggleAiSetupKeyVisibility" class="toolbar-btn" title="Toggle Visibility">
-              <span class="material-symbols-outlined">visibility_off</span>
-            </button>
+        <hr class="first-run-divider">
+
+        <div class="first-run-section">
+          <h2 class="first-run-heading">
+            <span data-i18n="setup_ai_cloud_heading">Cloud AI</span>
+            <span class="first-run-heading-note" data-i18n="setup_ai_cloud_note">Supporting, optional</span>
+            <span data-info-tip="setup_info_cloud"></span>
+          </h2>
+          <div class="first-run-key-grid">
+            <label class="first-run-field">
+              <span class="first-run-label" data-i18n="setup_ai_provider_label">Provider</span>
+              <select id="aiSetupCloudProvider" class="ai-setup-select">
+                <option value="" selected data-i18n="setup_ai_provider_none">Not used</option>
+                <option value="gemini">Gemini (Google)</option>
+                <option value="claude">Claude (Anthropic)</option>
+                <option value="openai">OpenAI (GPT)</option>
+              </select>
+            </label>
+            <div class="first-run-field">
+              <label class="first-run-label" for="aiSetupCloudKey" data-i18n="setup_ai_key_label">API key</label>
+              <div class="api-key-input-container first-run-key">
+                <span class="material-symbols-outlined" aria-hidden="true">key</span>
+                <input type="password" id="aiSetupCloudKey" placeholder="Enter API Key (Optional / Configurable later)..." autocomplete="off" spellcheck="false" data-i18n-placeholder="ai_setup_api_key_placeholder" disabled>
+                <button type="button" id="btnToggleAiSetupKeyVisibility" class="toolbar-btn" title="Toggle Visibility" aria-label="Toggle Visibility">
+                  <span class="material-symbols-outlined">visibility_off</span>
+                </button>
+              </div>
+            </div>
           </div>
-          <p class="first-run-hint" data-i18n="setup_ai_llm_hint">Leave the key empty to set it up later.</p>
+          <p class="first-run-hint first-run-hint--icon">
+            <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+            <span data-i18n="setup_ai_key_hint">The key is stored encrypted by the OS and is never kept on screen.</span>
+          </p>
         </div>
       </section>
-
-      <p class="first-run-later">
-        <span class="material-symbols-outlined" aria-hidden="true">info</span>
-        <span data-i18n="setup_change_later">You can change this later in Settings (Ctrl+,).</span>
-      </p>
     </div>
 
     <div class="first-run-footer">
-      <span id="setupLoadStatus" class="first-run-status" role="status" aria-live="polite"></span>
+      <div class="first-run-footer-info">
+        <!-- One sentence with the gear where the word "Settings" is -->
+        <p class="first-run-later">
+          <span data-i18n="setup_footer_before">You can change this later in</span>
+          <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+          <span data-i18n="setup_footer_after">Settings (Ctrl+,)</span>
+        </p>
+        <!-- Only while the editor is still loading; empty (and hidden) once it is ready -->
+        <span id="setupLoadStatus" class="first-run-status" role="status" aria-live="polite"></span>
+      </div>
       <div class="first-run-actions">
-        <button id="btnAiSetupCancel" class="btn first-run-btn-quiet" type="button" data-i18n="setup_btn_skip_all">Skip setup</button>
-        <button id="btnSetupBack" class="btn first-run-btn" type="button" data-i18n="setup_btn_back">Back</button>
-        <button id="btnSetupNext" class="btn primary first-run-btn-primary" type="button">Next</button>
+        <!-- Each button names where it leads: a small caption ("Next") over the step name -->
+        <button id="btnSetupBack" class="btn first-run-btn first-run-nav-btn" type="button" hidden>
+          <span class="material-symbols-outlined first-run-nav-icon" aria-hidden="true">chevron_left</span>
+          <span class="first-run-nav-text">
+            <span id="btnSetupBackCaption" class="first-run-nav-caption"></span>
+            <span id="btnSetupBackLabel" class="first-run-nav-label"></span>
+          </span>
+        </button>
+        <button id="btnSetupNext" class="btn primary first-run-btn-primary first-run-nav-btn" type="button">
+          <span class="first-run-nav-text">
+            <span id="btnSetupNextCaption" class="first-run-nav-caption"></span>
+            <span id="btnSetupNextLabel" class="first-run-nav-label"></span>
+          </span>
+          <span class="material-symbols-outlined first-run-nav-icon" aria-hidden="true">chevron_right</span>
+        </button>
       </div>
     </div>
   </div>

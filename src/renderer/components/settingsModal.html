@@ -55,6 +55,22 @@
           </select>
         </div>
 
+        <!-- Shown only while the theme is Auto (System): which themes the OS dark / light mode switches between -->
+        <div class="setting-item" id="autoThemePairRow" hidden>
+          <div>
+            <div class="setting-label" data-i18n="theme_auto_dark_label">Theme in dark mode</div>
+            <div class="setting-desc" data-i18n="theme_auto_pair_desc">Used when Auto follows the system setting.</div>
+          </div>
+          <select id="modalThemeDarkSelect" class="toolbar-select"></select>
+        </div>
+        <div class="setting-item" id="autoThemePairLightRow" hidden>
+          <div>
+            <div class="setting-label" data-i18n="theme_auto_light_label">Theme in light mode</div>
+            <div class="setting-desc" data-i18n="theme_auto_pair_desc">Used when Auto follows the system setting.</div>
+          </div>
+          <select id="modalThemeLightSelect" class="toolbar-select"></select>
+        </div>
+
         <div class="setting-item">
           <div>
             <div class="setting-label" data-i18n="language_label">UI Language</div>
@@ -86,18 +102,36 @@
           <div style="min-width: 0;">
             <div class="setting-label" data-i18n="setting_save_location">Save location</div>
             <div class="setting-desc" data-i18n="setting_save_location_desc">Folder for new documents and the settings file (.settings.json).</div>
-            <div id="settingsSaveLocationPath" class="setting-desc" style="font-family: var(--font-mono, monospace); color: var(--text-main); overflow-wrap: anywhere;"></div>
+            <div id="settingsSaveLocationPath" data-split-name class="setting-desc" style="font-family: var(--font-mono, monospace); color: var(--text-muted); overflow-wrap: anywhere;"></div>
+            <!-- The folder keeps its location; only its name changes (renameDefaultWorkspace) -->
+            <div data-save-name-field class="save-name-field" hidden>
+              <label class="setting-desc" for="settingsFolderName" data-i18n="setup_folder_name_label">Folder name</label>
+              <input id="settingsFolderName" class="first-run-input" type="text" spellcheck="false" autocomplete="off" aria-describedby="settingsFolderNameHint">
+              <div id="settingsFolderNameHint" class="setting-desc" data-i18n="setup_folder_name_hint">The location stays as it is; only the name changes.</div>
+            </div>
           </div>
           <div style="display: flex; gap: 8px; flex-shrink: 0;">
             <button id="btnSettingsResetLocation" class="toolbar-btn" type="button" hidden
               style="padding: 6px 12px; background: transparent; border: var(--border-width) solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
-              <span data-i18n="save_location_reset">Use default</span>
+              <span data-i18n="save_location_reset">Reset to default</span>
             </button>
             <button id="btnSettingsChangeLocation" class="toolbar-btn" type="button" hidden
               style="padding: 6px 12px; background: var(--bg-card, rgba(255,255,255,0.08)); border: var(--border-width) solid var(--border-color); color: var(--text-main); border-radius: 6px; cursor: pointer;">
-              <span data-i18n="save_location_change">Change...</span>
+              <span data-i18n="save_location_change">Change save location...</span>
             </button>
           </div>
+        </div>
+
+        <!-- Format new documents start in (src/shared/documentFormat.ts); each document can still be switched in the status bar -->
+        <div class="setting-item">
+          <div>
+            <div class="setting-label" data-i18n="setting_document_format">Format of new documents</div>
+            <div class="setting-desc" data-i18n="setting_document_format_desc">Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar.</div>
+          </div>
+          <select id="modalDocumentFormatSelect" class="toolbar-select">
+            <option value="markdown" data-i18n="format_option_markdown">Markdown (.md)</option>
+            <option value="text" data-i18n="format_option_text">Text (.txt)</option>
+          </select>
         </div>
 
         <!-- Workspace Session (.vectorspace) Backup & Restore -->
@@ -353,6 +387,19 @@
           </div>
         </section>
 
+      <!-- AI MODEL panels: Embedding / LLM / Capability scope (switched in settingsFacade.js, switchAiModelTab) -->
+      <div class="ai-model-tab-bar" role="tablist">
+        <button type="button" class="ai-model-tab-btn active" data-aimodel-tab="embedding" role="tab">
+          <span data-i18n="ai_tab_embedding">Embedding</span>
+        </button>
+        <button type="button" class="ai-model-tab-btn" data-aimodel-tab="llm" role="tab">
+          <span data-i18n="ai_tab_llm">LLM</span>
+        </button>
+        <button type="button" class="ai-model-tab-btn" data-aimodel-tab="capability" role="tab">
+          <span data-i18n="ai_tab_capability">Capability scope</span>
+        </button>
+      </div>
+
       <!-- Tab Panel 1: Embedding -->
       <div id="panelEmbedding" class="ai-model-panel active">
         <!-- Embedding Subtabs: Local vs Cloud -->
@@ -395,26 +442,12 @@
                   data-i18n="local_ai_status_standby">Local Embedding: Standby (Offline Mode)</span>
                 <button id="btnInitLocalAi" class="toolbar-btn"
                   style="padding: 5px 14px; font-size: var(--fs-12); font-weight: 600; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.25);">
-                  <span data-i18n="btn_init_local_ai">Download & Enable Model (~45MB)</span>
+                  <span data-i18n="btn_init_local_ai">Download & Activate Local AI Model</span>
                 </button>
               </div>
 
-              <!-- Active 384-dim Model Selector -->
-              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
-                <label for="selLocalEmbeddingModel"
-                  style="font-size: var(--fs-12); color: var(--text-main); font-weight: 600;">
-                  Active Local Embedding Model <span class="tool-version">384-dim</span>
-                </label>
-                <select id="selLocalEmbeddingModel" class="toolbar-select"
-                  style="padding: 6px 10px; font-size: var(--fs-12); border-radius: 6px;">
-                  <option value="Xenova/multilingual-e5-small" selected>Xenova/multilingual-e5-small (~45MB /
-                    Multilingual - JA/EN Default)</option>
-                  <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2 (~23MB / English - Ultra-Fast)
-                  </option>
-                  <option value="Xenova/bge-small-en-v1.5">Xenova/bge-small-en-v1.5 (~33MB / English - High Accuracy)
-                  </option>
-                </select>
-              </div>
+              <!-- Embedding model catalog: rendered from search/embeddingModels.js (Download / Use / Active) -->
+              <div id="embeddingModelList" class="embedding-model-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;"></div>
 
               <div id="modalAiDownloadProgress" style="display: none; margin-top: 8px;">
                 <div
@@ -429,83 +462,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Text Embedding Models Reference Table (English) -->
-              <details
-                style="margin-top: 8px; background: rgba(0, 0, 0, 0.2); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 6px 10px; transition: all 0.2s ease;">
-                <summary
-                  style="font-size: var(--fs-12); font-weight: 600; color: var(--accent-color, #38bdf8); cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; outline: none; padding: 4px 0;">
-                  <span style="display: flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="16" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    Supported Embedding Models Catalog (ONNX / Transformers.js)
-                  </span>
-                  <span style="font-size: var(--fs-10); color: var(--text-muted); font-weight: normal;">Click to view catalog
-                    & characteristics ▾</span>
-                </summary>
-
-                <div style="overflow-x: auto; margin-top: 8px; max-height: 220px; overflow-y: auto;">
-                  <table
-                    style="width: 100%; border-collapse: collapse; font-size: var(--fs-11); color: var(--text-main); line-height: 1.4;">
-                    <thead>
-                      <tr
-                        style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align: left; position: sticky; top: 0; background: var(--bg-secondary, #1e293b); z-index: 1;">
-                        <th style="padding: 4px 6px;">Model Name (HuggingFace ID)</th>
-                        <th style="padding: 4px 6px;">Dimensions</th>
-                        <th style="padding: 4px 6px;">Quantized Size</th>
-                        <th style="padding: 4px 6px;">Language & Characteristics</th>
-                        <th style="padding: 4px 6px; text-align: center;">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(56, 189, 248, 0.04);"
-                        data-model-id="Xenova/multilingual-e5-small">
-                        <td
-                          style="padding: 5px 6px; font-family: var(--font-mono, monospace); font-weight: 600; color: #38bdf8;">
-                          Xenova/multilingual-e5-small <span class="model-active-badge"
-                            style="background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: var(--fs-10); margin-left: 6px;">Active</span>
-                        </td>
-                        <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
-                        <td style="padding: 5px 6px;">~45 MB</td>
-                        <td style="padding: 5px 6px;">Multilingual (JA/EN/etc). Ultra-fast, low memory footprint.</td>
-                        <td style="padding: 5px 6px; text-align: center;">
-                          <button type="button" class="btn-switch-model" data-model="Xenova/multilingual-e5-small"
-                            style="font-size: var(--fs-10); padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
-                        </td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
-                        data-model-id="Xenova/all-MiniLM-L6-v2">
-                        <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/all-MiniLM-L6-v2
-                        </td>
-                        <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
-                        <td style="padding: 5px 6px;">~23 MB</td>
-                        <td style="padding: 5px 6px;">English standard. Industry gold-standard for ultra-compact
-                          embedding.</td>
-                        <td style="padding: 5px 6px; text-align: center;">
-                          <button type="button" class="btn-switch-model" data-model="Xenova/all-MiniLM-L6-v2"
-                            style="font-size: var(--fs-10); padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
-                        </td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"
-                        data-model-id="Xenova/bge-small-en-v1.5">
-                        <td style="padding: 5px 6px; font-family: var(--font-mono, monospace);">Xenova/bge-small-en-v1.5
-                        </td>
-                        <td style="padding: 5px 6px; color: #38bdf8; font-weight: 600;">384-dim</td>
-                        <td style="padding: 5px 6px;">~33 MB</td>
-                        <td style="padding: 5px 6px;">English specialized. Top-tier MTEB benchmark performance in class.
-                        </td>
-                        <td style="padding: 5px 6px; text-align: center;">
-                          <button type="button" class="btn-switch-model" data-model="Xenova/bge-small-en-v1.5"
-                            style="font-size: var(--fs-10); padding: 2px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); background: var(--bg-card); cursor: pointer; color: var(--text-main);">Use</button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </details>
             </div><!-- /localAiSettingsBlock -->
           </div><!-- /embeddingConfigCard -->
         </div><!-- /subpanelEmbLocal -->

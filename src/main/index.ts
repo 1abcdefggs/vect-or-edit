@@ -25,7 +25,7 @@ import {
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
-import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, resetDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
+import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 import { getCursorBaseSize } from './cursorSize';
 
 let currentKbPath: string = ""; // Default empty
@@ -57,6 +57,8 @@ if (!gotTheLock) {
     installPermissionPolicy();
 
     handleTrusted('app:getVersion', () => app.getVersion());
+    // Where the app keeps its own data (the embedding model is cached inside it); shown in first-run setup
+    handleTrusted('app:getUserDataPath', () => app.getPath('userData'));
 
     createWindow(
       path.join(__dirname, '../preload/index.cjs'),
@@ -87,6 +89,7 @@ if (!gotTheLock) {
     handleTrusted('app:openWorkspace', () => openWorkspace());
     handleTrusted('app:getDefaultWorkspace', (_event, createIfMissing) => getDefaultWorkspace(createIfMissing));
     handleTrusted('app:chooseDefaultWorkspace', () => chooseDefaultWorkspace());
+    handleTrusted('app:renameDefaultWorkspace', (_event, name: unknown) => renameDefaultWorkspace(name));
     handleTrusted('app:resetDefaultWorkspace', () => resetDefaultWorkspace());
 
     handleTrusted('app:loadSettings', () => loadSettings());

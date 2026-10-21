@@ -1,11 +1,26 @@
 import { allDictEntries } from '../../search/dictionary.js';
 import { i18n } from '../../core/i18n.js';
+import { STORAGE_KEYS } from '../../core/constants.js';
 
 let linterTimeout = null;
+
+/** Real-time validation is on unless Settings switched it off */
+function isLinterEnabled() {
+  try {
+    return localStorage.getItem(STORAGE_KEYS.LINTER_ENABLED) !== 'off';
+  } catch {
+    return true;
+  }
+}
 
 export function runEngineLinter(editor, monacoRef) {
   if (!editor || !monacoRef) return;
   if (linterTimeout) clearTimeout(linterTimeout);
+  if (!isLinterEnabled()) {
+    // Switched off: drop the markers left from the last run
+    monacoRef.editor.setModelMarkers(editor.getModel(), "engine-linter", []);
+    return;
+  }
 
   linterTimeout = setTimeout(async () => {
     const text = editor.getValue();

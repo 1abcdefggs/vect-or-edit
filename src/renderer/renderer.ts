@@ -22,6 +22,7 @@ import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsMo
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
 import { initSelectMenus } from './ui/components/selectMenu';
 import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
+import { initDocumentFormatControl } from './editor/ui/documentFormatControl.js';
 
 export { setLedStatus };
 
@@ -135,6 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 4. Background Services & Controllers
   initMarkdownPreview();
+  initDocumentFormatControl();
   initQuickDictionary();
   initVectorSearch();
   initAiControls();
