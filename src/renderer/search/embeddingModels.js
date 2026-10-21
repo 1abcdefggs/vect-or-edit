@@ -1,36 +1,26 @@
 /**
- * Local embedding model catalog (renderer side).
- * Mirrors the embedding facets in vect-or-generate/registry/facets.json
- * (modelId, dim, queryPrefix, passagePrefix). Keep the two in sync.
+ * Local embedding models the app can run now (renderer side).
+ * The model data lives in src/shared/embeddingRegistry.json (one source). A model is runnable only when its
+ * query/passage prefixes are verified: the worker prepends the query prefix, and a wrong or missing prefix silently
+ * degrades search for the prefix-trained families (e5, bge). Models without verified prefixes stay in the picker
+ * catalog (src/shared/embeddingCatalog.ts) and are not offered here yet.
+ * vect-or-generate/registry/facets.json still lists the generator-side embedding facets; keep modelId, dim and prefixes in sync.
  */
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
+import { REGISTRY } from '../../shared/embeddingCatalog';
 
-export const EMBEDDING_MODELS = [
-  {
-    id: 'Xenova/multilingual-e5-small',
-    dim: 384,
-    sizeMB: 45,
-    language: 'multilingual',
-    queryPrefix: 'query: ',
-    passagePrefix: 'passage: '
-  },
-  {
-    id: 'Xenova/all-MiniLM-L6-v2',
-    dim: 384,
-    sizeMB: 23,
-    language: 'en',
-    queryPrefix: '',
-    passagePrefix: ''
-  },
-  {
-    id: 'Xenova/bge-small-en-v1.5',
-    dim: 384,
-    sizeMB: 33,
-    language: 'en',
-    queryPrefix: 'Represent this sentence for searching relevant passages: ',
-    passagePrefix: ''
-  }
-];
+const MULTILINGUAL_FROM = 10;
+
+export const EMBEDDING_MODELS = REGISTRY.models
+  .filter(m => m.prefixes && m.dimensions)
+  .map(m => ({
+    id: m.id,
+    dim: m.dimensions,
+    sizeMB: m.sizeMB,
+    language: m.languages.length >= MULTILINGUAL_FROM ? 'multilingual' : m.languages.join(', '),
+    queryPrefix: m.prefixes.query,
+    passagePrefix: m.prefixes.passage
+  }));
 
 export function getEmbeddingModel(modelId) {
   return EMBEDDING_MODELS.find(m => m.id === modelId) || null;

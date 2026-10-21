@@ -48,6 +48,8 @@ export const STORAGE_KEYS = {
   /** Minimum similarity score (percent) and number of results for knowledge suggestions */
   MIN_SCORE_PCT: 'vect_min_score_pct',
   SEARCH_LIMIT: 'vect_search_limit',
+  /** JSON { languages, extra, sort }: the embedding model picker's content languages and sort order */
+  EMBEDDING_PICKER_PREFS: 'vect_embedding_picker_prefs',
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
   EMBEDDING_SOURCE: 'vect_embedding_source',
   /** When EMBEDDING_SOURCE is 'llm-embed-*', which LLM provider to use as embedder */
