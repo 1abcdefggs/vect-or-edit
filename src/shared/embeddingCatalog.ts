@@ -21,7 +21,7 @@ export interface EmbeddingModelEntry {
   /** An empty list with evidence "unverified" means not stated, not unsupported */
   tasks: { list: TaskKey[]; evidence: TaskEvidence };
   /** repo: the converted repo's own license field; original: the original model's license, shown separately */
-  license: { repo: string | null; original: string | null };
+  license: { repo: string | null; original: string | null; /** Date both were compared with the Hugging Face pages; absent: not compared, or no license is stated there */ verifiedAt?: string | null };
   downloadsMonthly: number | null;
   prefixes: { query: string; passage: string } | null;
   maxTokens: number | null;

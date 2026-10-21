@@ -72,6 +72,8 @@ export interface EngineStatus {
 }
 
 export interface SystemLogEntry {
+  /** Assigned by the main process; absent on entries created in the renderer */
+  id?: number;
   time: string;
   source: string;
   level: 'INFO' | 'WARN' | 'ERROR' | string;
@@ -128,6 +130,8 @@ export interface EngineAPI {
   getEngineStatus: () => Promise<EngineStatus>;
   onEngineStatus: (callback: (status: EngineStatus) => void) => () => void;
   onSystemLog: (callback: (log: SystemLogEntry) => void) => () => void;
+  /** Everything the main process has logged so far; call after onSystemLog is registered. */
+  requestLogBacklog: () => Promise<SystemLogEntry[]>;
   claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   /** Encrypted API key store (OS key store) for every cloud LLM provider. */
@@ -162,4 +166,6 @@ export interface EngineAPI {
   getAppVersion: () => Promise<string>;
   /** Folder where the app keeps its own data (settings, encrypted keys, model cache) */
   getUserDataPath: () => Promise<string>;
+  /** The app's LICENSE and the third-party notices as one text; null when they are not bundled */
+  getThirdPartyNotices: () => Promise<string | null>;
 }

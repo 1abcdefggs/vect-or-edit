@@ -37,6 +37,7 @@ const engineAPI: EngineAPI = {
       ipcRenderer.removeListener('app:systemLog', handler);
     };
   },
+  requestLogBacklog: () => ipcRenderer.invoke('app:requestLogBacklog') as Promise<SystemLogEntry[]>,
   claudeSemanticSuggest: (payload) => ipcRenderer.invoke('app:claudeSemanticSuggest', payload),
   geminiSemanticSuggest: (payload) => ipcRenderer.invoke('app:geminiSemanticSuggest', payload),
   saveApiKey: (provider: string, apiKey: string) => ipcRenderer.invoke('app:saveApiKey', provider, apiKey),
@@ -80,7 +81,8 @@ const engineAPI: EngineAPI = {
   },
   querySemantics: (query: string, context?: string) => ipcRenderer.invoke('semantics:query', query, context),
   getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
-  getUserDataPath: () => ipcRenderer.invoke('app:getUserDataPath')
+  getUserDataPath: () => ipcRenderer.invoke('app:getUserDataPath'),
+  getThirdPartyNotices: () => ipcRenderer.invoke('app:getThirdPartyNotices')
 };
 
 const updaterAPI = {

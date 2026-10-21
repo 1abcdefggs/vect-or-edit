@@ -18,7 +18,7 @@
     "local-first"
   ],
   "main": "out/main/index.js",
-  "author": "vect-organization",
+  "author": "1abcdefggs (https://github.com/1abcdefggs)",
   "homepage": "https://github.com/vect-organization/vect-or-edit#readme",
   "repository": {
     "type": "git",
@@ -36,7 +36,8 @@
     "dev": "node scripts/dev.js",
     "dev:reset": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){fs.rmSync(appData, {recursive:true, force:true}); console.log('VectOrEdit development app data reset.');}\"",
     "build": "electron-vite build",
-    "build:win": "electron-vite build && electron-builder --win",
+    "notices": "node scripts/generate-notices.mjs",
+    "build:win": "electron-vite build && node scripts/generate-notices.mjs && electron-builder --win",
     "dist": "electron-builder",
     "typecheck": "tsc --noEmit",
     "preview": "electron-vite preview",
@@ -68,6 +69,7 @@
   "build": {
     "appId": "com.vectoredit.app",
     "productName": "VectOrEdit",
+    "copyright": "Copyright (c) 2026 1abcdefggs",
     "directories": {
       "output": "dist"
     },
@@ -81,9 +83,16 @@
     "files": [
       "out/**/*",
       "package.json",
-      "node_modules/@1abcdefggs/vect-or-engine/**/*"
+      "node_modules/@1abcdefggs/vect-or-engine/**/*",
+      "!**/node_modules/sharp/**/*",
+      "!**/node_modules/@img/**/*"
     ],
     "extraResources": [
+      "LICENSE",
+      {
+        "from": "build-dist/THIRD_PARTY_NOTICES.txt",
+        "to": "THIRD_PARTY_NOTICES.txt"
+      },
       {
         "from": "../vect-or-engine",
         "to": "vect-or-engine",

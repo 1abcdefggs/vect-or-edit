@@ -10,19 +10,19 @@ const search = (query: string, ctx = {}) => filterModels(models, { ...EMPTY_FILT
 const filter = (patch: Partial<PickerFilters>) => filterModels(models, { ...EMPTY_FILTERS, ...patch });
 
 describe('registry', () => {
-  it('holds 50 models with unique ids', () => {
-    expect(models).toHaveLength(50);
-    expect(new Set(models.map(m => m.id)).size).toBe(50);
+  it('holds 48 models with unique ids', () => {
+    expect(models).toHaveLength(48);
+    expect(new Set(models.map(m => m.id)).size).toBe(48);
   });
 
   it('has a size for every model', () => {
     expect(models.filter(m => m.sizeMB == null)).toEqual([]);
   });
 
-  it('counts tasks as 42 verified + 7 inferred + 1 unverified, and the task filters together cover all 50', () => {
+  it('counts tasks as 42 verified + 5 inferred + 1 unverified, and the task filters together cover all 48', () => {
     const count = (e: string) => models.filter(m => m.tasks.evidence === e).length;
-    expect([count('verified'), count('inferred'), count('unverified')]).toEqual([42, 7, 1]);
-    expect(filter({ uses: ['retrieval', 'similarity', 'code', 'unknown'] })).toHaveLength(50);
+    expect([count('verified'), count('inferred'), count('unverified')]).toEqual([42, 5, 1]);
+    expect(filter({ uses: ['retrieval', 'similarity', 'code', 'unknown'] })).toHaveLength(48);
   });
 
   it('knows a language name for every language code it lists', () => {
@@ -36,9 +36,9 @@ describe('registry', () => {
 });
 
 describe('search tiers', () => {
-  it('"ja" matches only models with the ja code or "ja" in the id (15 of 50), never Javanese-only text', () => {
+  it('"ja" matches only models with the ja code or "ja" in the id (16 of 48), never Javanese-only text', () => {
     const hits = search('ja');
-    expect(hits).toHaveLength(15);
+    expect(hits).toHaveLength(16);
     expect(hits.every(m => m.languages.includes('ja') || m.id.toLowerCase().includes('ja'))).toBe(true);
     expect(hits.some(m => m.languages.includes('jv') && !m.languages.includes('ja'))).toBe(false);
   });
@@ -119,9 +119,9 @@ describe('filters', () => {
   it('partitions the models by every group', () => {
     const total = (key: 'dimensions' | 'scopes' | 'licenses', values: string[]) =>
       values.reduce((n, v) => n + filter({ [key]: [v] }).length, 0);
-    expect(total('dimensions', ['light', 'std', 'large', 'na'])).toBe(50);
-    expect(total('scopes', ['one', 'few', 'many', 'unknown'])).toBe(50);
-    expect(total('licenses', ['apache', 'mit', 'na'])).toBe(50);
+    expect(total('dimensions', ['light', 'std', 'large', 'na'])).toBe(48);
+    expect(total('scopes', ['one', 'few', 'many', 'unknown'])).toBe(48);
+    expect(total('licenses', ['apache', 'mit', 'na'])).toBe(48);
   });
 
   it('puts the 12 models with an unchecked dimension in the "na" group', () => {
@@ -130,7 +130,7 @@ describe('filters', () => {
   });
 
   it('ignores "full fit only" while no language is selected, and applies it afterwards', () => {
-    expect(filter({ fullOnly: true, languages: [] })).toHaveLength(50);
+    expect(filter({ fullOnly: true, languages: [] })).toHaveLength(48);
     const full = filter({ fullOnly: true, languages: ['ja'] });
     expect(full.length).toBeGreaterThan(0);
     expect(full.every(m => languageFit(m, ['ja']) === 'full')).toBe(true);

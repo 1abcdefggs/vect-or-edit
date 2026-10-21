@@ -229,14 +229,15 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 485055,
       "prefixes": {
         "query": "query: ",
         "passage": "passage: "
       },
-      "maxTokens": null,
+      "maxTokens": 512,
       "crossLingual": null,
       "sourceUrls": {
         "model": "https://huggingface.co/Xenova/multilingual-e5-small"
@@ -261,14 +262,15 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 4503147,
       "prefixes": {
         "query": "",
         "passage": ""
       },
-      "maxTokens": null,
+      "maxTokens": 256,
       "crossLingual": null,
       "sourceUrls": {
         "model": "https://huggingface.co/Xenova/all-MiniLM-L6-v2"
@@ -278,7 +280,7 @@
     {
       "id": "Xenova/bge-small-en-v1.5",
       "dimensions": 384,
-      "sizeMB": 33,
+      "sizeMB": 34,
       "languages": [
         "en"
       ],
@@ -293,14 +295,15 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 631778,
       "prefixes": {
         "query": "Represent this sentence for searching relevant passages: ",
         "passage": ""
       },
-      "maxTokens": null,
+      "maxTokens": 512,
       "crossLingual": null,
       "sourceUrls": {
         "model": "https://huggingface.co/Xenova/bge-small-en-v1.5"
@@ -309,7 +312,7 @@
     },
     {
       "id": "Xenova/multilingual-e5-base",
-      "dimensions": null,
+      "dimensions": 768,
       "sizeMB": 279,
       "languages": [
         "af",
@@ -417,7 +420,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 32221,
       "prefixes": null,
@@ -430,7 +434,7 @@
     },
     {
       "id": "onnx-community/gte-multilingual-base",
-      "dimensions": null,
+      "dimensions": 768,
       "sizeMB": 340,
       "languages": [
         "af",
@@ -520,7 +524,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 64897,
       "prefixes": null,
@@ -533,7 +538,7 @@
     },
     {
       "id": "sirasagi62/ruri-v3-30m-ONNX",
-      "dimensions": null,
+      "dimensions": 256,
       "sizeMB": 37,
       "languages": [
         "ja"
@@ -549,7 +554,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 20906,
       "prefixes": null,
@@ -627,7 +633,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 285618,
       "prefixes": null,
@@ -654,7 +661,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 50856,
       "prefixes": null,
@@ -775,7 +783,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 5613,
       "prefixes": null,
@@ -803,7 +812,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 24275,
       "prefixes": null,
@@ -881,7 +891,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 8551,
       "prefixes": null,
@@ -1017,7 +1028,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 4929,
       "prefixes": null,
@@ -1046,7 +1058,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 19687,
       "prefixes": null,
@@ -1075,7 +1088,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 2359278,
       "prefixes": null,
@@ -1104,7 +1118,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 55561,
       "prefixes": null,
@@ -1133,7 +1148,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 16956,
       "prefixes": null,
@@ -1162,7 +1178,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 83970,
       "prefixes": null,
@@ -1191,7 +1208,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 57159,
       "prefixes": null,
@@ -1219,7 +1237,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 2081255,
       "prefixes": null,
@@ -1247,7 +1266,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 832619,
       "prefixes": null,
@@ -1273,7 +1293,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 182337,
       "prefixes": null,
@@ -1302,7 +1323,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 13303,
       "prefixes": null,
@@ -1331,7 +1353,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 2666,
       "prefixes": null,
@@ -1360,7 +1383,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 29605,
       "prefixes": null,
@@ -1389,7 +1413,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 6793,
       "prefixes": null,
@@ -1397,34 +1422,6 @@
       "crossLingual": null,
       "sourceUrls": {
         "model": "https://huggingface.co/Xenova/all-MiniLM-L12-v2"
-      },
-      "checkedAt": "2026-10-21"
-    },
-    {
-      "id": "Xenova/multi-qa-MiniLM-L6-cos-v1",
-      "dimensions": 384,
-      "sizeMB": 23,
-      "languages": [
-        "en"
-      ],
-      "languageNote": null,
-      "blurb": "Tuned for matching questions to answers.",
-      "tasks": {
-        "list": [
-          "retrieval"
-        ],
-        "evidence": "inferred"
-      },
-      "license": {
-        "repo": null,
-        "original": null
-      },
-      "downloadsMonthly": 1006,
-      "prefixes": null,
-      "maxTokens": null,
-      "crossLingual": null,
-      "sourceUrls": {
-        "model": "https://huggingface.co/Xenova/multi-qa-MiniLM-L6-cos-v1"
       },
       "checkedAt": "2026-10-21"
     },
@@ -1445,7 +1442,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 1502,
       "prefixes": null,
@@ -1474,7 +1472,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 64347,
       "prefixes": null,
@@ -1503,7 +1502,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 4469,
       "prefixes": null,
@@ -1533,7 +1533,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 178638,
       "prefixes": null,
@@ -1562,7 +1563,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 14916,
       "prefixes": null,
@@ -1591,7 +1593,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 9031,
       "prefixes": null,
@@ -1620,7 +1623,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 316266,
       "prefixes": null,
@@ -1697,7 +1701,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 23144,
       "prefixes": null,
@@ -1710,7 +1715,7 @@
     },
     {
       "id": "ruddls030/haru-e5-small-ja-int8",
-      "dimensions": null,
+      "dimensions": 384,
       "sizeMB": 118,
       "languages": [
         "ja"
@@ -1725,7 +1730,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 14,
       "prefixes": null,
@@ -1753,7 +1759,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 212264,
       "prefixes": null,
@@ -1874,7 +1881,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 1722,
       "prefixes": null,
@@ -1887,7 +1895,7 @@
     },
     {
       "id": "onnx-community/harrier-oss-v1-0.6b-ONNX",
-      "dimensions": null,
+      "dimensions": 1024,
       "sizeMB": 707,
       "languages": [
         "af",
@@ -1995,7 +2003,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 1658,
       "prefixes": null,
@@ -2023,7 +2032,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 96070,
       "prefixes": null,
@@ -2036,7 +2046,7 @@
     },
     {
       "id": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX",
-      "dimensions": null,
+      "dimensions": 384,
       "sizeMB": 98,
       "languages": [
         "ar",
@@ -2104,7 +2114,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 3317,
       "prefixes": null,
@@ -2133,7 +2144,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 220,
       "prefixes": null,
@@ -2162,7 +2174,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 256,
       "prefixes": null,
@@ -2170,34 +2183,6 @@
       "crossLingual": null,
       "sourceUrls": {
         "model": "https://huggingface.co/Xenova/e5-large-v2"
-      },
-      "checkedAt": "2026-10-21"
-    },
-    {
-      "id": "Xenova/multi-qa-mpnet-base-dot-v1",
-      "dimensions": 768,
-      "sizeMB": 110,
-      "languages": [
-        "en"
-      ],
-      "languageNote": null,
-      "blurb": "Tuned for matching questions to answers.",
-      "tasks": {
-        "list": [
-          "retrieval"
-        ],
-        "evidence": "inferred"
-      },
-      "license": {
-        "repo": null,
-        "original": null
-      },
-      "downloadsMonthly": 2848,
-      "prefixes": null,
-      "maxTokens": null,
-      "crossLingual": null,
-      "sourceUrls": {
-        "model": "https://huggingface.co/Xenova/multi-qa-mpnet-base-dot-v1"
       },
       "checkedAt": "2026-10-21"
     },
@@ -2218,7 +2203,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 1360,
       "prefixes": null,
@@ -2246,7 +2232,8 @@
       },
       "license": {
         "repo": null,
-        "original": "Apache-2.0"
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 842,
       "prefixes": null,
@@ -2275,7 +2262,8 @@
       },
       "license": {
         "repo": null,
-        "original": "MIT"
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 11736,
       "prefixes": null,
@@ -2396,7 +2384,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 40,
       "prefixes": null,
@@ -2409,11 +2398,64 @@
     },
     {
       "id": "onnx-community/granite-embedding-311m-multilingual-r2-ONNX",
-      "dimensions": null,
+      "dimensions": 768,
       "sizeMB": 313,
-      "languages": [],
+      "languages": [
+        "ar",
+        "az",
+        "bg",
+        "bn",
+        "ca",
+        "cs",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "fa",
+        "fi",
+        "fr",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "ka",
+        "kk",
+        "km",
+        "ko",
+        "lt",
+        "lv",
+        "mr",
+        "ms",
+        "nl",
+        "no",
+        "pl",
+        "pt",
+        "ro",
+        "ru",
+        "sk",
+        "sl",
+        "sq",
+        "sr",
+        "sv",
+        "sw",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "zh"
+      ],
       "languageNote": null,
-      "blurb": "IBM model, mid-size. Check the model card for the language list.",
+      "blurb": "IBM model, mid-size, covering about 50 languages.",
       "tasks": {
         "list": [
           "retrieval",
@@ -2424,7 +2466,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 343,
       "prefixes": null,
@@ -2439,7 +2482,10 @@
       "id": "thomasht86/KaLM-embedding-multilingual-mini-instruct-v2.5-ONNX",
       "dimensions": null,
       "sizeMB": 562,
-      "languages": [],
+      "languages": [
+        "en",
+        "zh"
+      ],
       "languageNote": null,
       "blurb": "Instruction-style model, community conversion. Check the model card.",
       "tasks": {
@@ -2451,7 +2497,8 @@
       },
       "license": {
         "repo": "Apache-2.0",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 22,
       "prefixes": null,
@@ -2511,7 +2558,8 @@
       },
       "license": {
         "repo": "MIT",
-        "original": null
+        "original": null,
+        "verifiedAt": "2026-10-21"
       },
       "downloadsMonthly": 806,
       "prefixes": null,

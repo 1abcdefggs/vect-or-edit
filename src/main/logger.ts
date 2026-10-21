@@ -5,7 +5,9 @@ export const mainLogBuffer: any[] = [];
 // Oldest entries are dropped beyond this, so a long session or many reloads cannot grow memory without bound
 const MAX_MAIN_LOG_BUFFER = 1000;
 
+// Live entries are pushed only after the renderer has subscribed and asked for the backlog (exportLogBacklog)
 let isRendererReady = false;
+let nextLogId = 1;
 let boundWindow: BrowserWindow | null = null;
 // Electron reports a failed send through console.error, which would re-enter captureLog and loop forever
 let isSending = false;
@@ -34,6 +36,8 @@ const originalConsoleError = console.error;
 export function captureLog(level: string, args: any[], source = 'Main:System') {
   const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
   const entry = {
+    // The renderer ignores ids it has already shown, so the backlog and live pushes can overlap safely
+    id: nextLogId++,
     time: new Date().toLocaleTimeString(),
     source,
     level,
@@ -79,9 +83,8 @@ export function bindLoggerToWindow(window: BrowserWindow) {
   boundWindow = window;
 }
 
-export function flushLogsToRenderer() {
+/** Called by the renderer once its listener is registered: returns everything logged so far and starts live pushes. */
+export function exportLogBacklog() {
   isRendererReady = true;
-  if (!canSendToRenderer(boundWindow)) return;
-  const window = boundWindow;
-  mainLogBuffer.forEach(log => sendToRenderer(window, log));
+  return mainLogBuffer.slice();
 }

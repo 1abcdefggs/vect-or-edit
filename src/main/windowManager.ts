@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { app, BrowserWindow, shell } from 'electron';
-import { bindLoggerToWindow, captureRendererConsole, flushLogsToRenderer } from './logger';
+import { bindLoggerToWindow, captureRendererConsole } from './logger';
 import { handleTrusted, isTrustedUrl, setTrustedRenderer } from './ipcSecurity';
 
 let mainWindowInstance: BrowserWindow | null = null;
@@ -46,7 +46,6 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
   mainWindowInstance.once('ready-to-show', () => {
     if (mainWindowInstance && !mainWindowInstance.isVisible()) {
       mainWindowInstance.show();
-      flushLogsToRenderer();
     }
   });
 
@@ -54,7 +53,6 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
   setTimeout(() => {
     if (mainWindowInstance && !mainWindowInstance.isVisible()) {
       mainWindowInstance.show();
-      flushLogsToRenderer();
     }
   }, 1500);
 
@@ -105,7 +103,6 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     console.log('[Window] Renderer did-finish-load');
     mainWindowInstance?.show();
     mainWindowInstance?.focus();
-    flushLogsToRenderer();
     if (!app.isPackaged) {
       mainWindowInstance?.webContents.openDevTools({ mode: 'detach' });
     }

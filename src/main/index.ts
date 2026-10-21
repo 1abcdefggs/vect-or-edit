@@ -5,7 +5,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 
-import { initLogger } from './logger';
+import { initLogger, exportLogBacklog } from './logger';
 import { initRustEngine, getEngine, getVault, isRustBinaryLoaded } from './engine/rustEngine';
 import {
   knowledgeSlots,
@@ -57,8 +57,24 @@ if (!gotTheLock) {
     installPermissionPolicy();
 
     handleTrusted('app:getVersion', () => app.getVersion());
+    handleTrusted('app:requestLogBacklog', () => exportLogBacklog());
     // Where the app keeps its own data (the embedding model is cached inside it); shown in first-run setup
     handleTrusted('app:getUserDataPath', () => app.getPath('userData'));
+    // The app's own license plus the generated third-party notices (scripts/generate-notices.mjs); null when not bundled
+    handleTrusted('app:getThirdPartyNotices', () => {
+      const dirs = app.isPackaged
+        ? [process.resourcesPath]
+        : [app.getAppPath(), path.join(app.getAppPath(), 'build-dist')];
+      const read = (name: string): string | null => {
+        for (const dir of dirs) {
+          try { return fs.readFileSync(path.join(dir, name), 'utf8'); } catch { /* try the next folder */ }
+        }
+        return null;
+      };
+      const license = read('LICENSE');
+      const notices = read('THIRD_PARTY_NOTICES.txt');
+      return license === null && notices === null ? null : [license, notices].filter(Boolean).join('\n\n');
+    });
 
     createWindow(
       path.join(__dirname, '../preload/index.cjs'),
