@@ -200,7 +200,7 @@ export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string
     throw new Error('Gemini API key is not set. Please provide it in settings or GEMINI_API_KEY environment variable.');
   }
 
-  const modelName = model || 'gemini-2.5-flash';
+  const modelName = model || 'gemini-3.1-flash-lite';
   console.log(`[Main] Calling Gemini API (${modelName})`);
   try {
     const ai = new GoogleGenAI({ apiKey: token });

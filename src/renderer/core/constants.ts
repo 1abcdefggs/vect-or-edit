@@ -73,7 +73,7 @@ export const DEFAULTS = {
   FONT_FAMILY: "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif",
   LOCAL_EMBEDDING_MODEL: 'Xenova/multilingual-e5-small',
   CLAUDE_MODEL: 'claude-opus-5-5',
-  GEMINI_MODEL: 'gemini-1.5-flash',
+  GEMINI_MODEL: 'gemini-3.1-flash-lite',
   OPENAI_MODEL: 'gpt-4o-mini',
   AI_INFERENCE_SCOPE: 'suggestion_only',
   SUGGEST_TRIGGER_MODE: 'selection',

@@ -564,7 +564,7 @@ export function initSettings(updateEditorCb) {
       const models = await window.engineAPI.listGeminiModels(keyToUse || undefined);
       if (Array.isArray(models) && models.length > 0) {
         modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || 'gemini-1.5-flash';
+        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
         let foundSaved = false;
 
         models.forEach((m) => {
@@ -582,6 +582,7 @@ export function initSettings(updateEditorCb) {
         if (!foundSaved && modalGeminiModelSelect.options.length > 0) {
           modalGeminiModelSelect.selectedIndex = 0;
           setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
+          window.dispatchEvent(new Event('app:settingsChanged'));
         }
 
         // Cache for offline/quick load
@@ -610,7 +611,7 @@ export function initSettings(updateEditorCb) {
       const models = JSON.parse(cached);
       if (Array.isArray(models) && models.length > 0) {
         modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || 'gemini-1.5-flash';
+        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
         models.forEach((m) => {
           const opt = document.createElement('option');
           opt.value = m.name;
@@ -640,6 +641,7 @@ export function initSettings(updateEditorCb) {
     modalGeminiModelSelect.value = storedGeminiModel;
     modalGeminiModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
+      window.dispatchEvent(new Event('app:settingsChanged'));
     });
   }
 
@@ -652,6 +654,7 @@ export function initSettings(updateEditorCb) {
     modalOpenAiModelSelect.value = storedOpenAiModel;
     modalOpenAiModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.OPENAI_MODEL, modalOpenAiModelSelect.value);
+      window.dispatchEvent(new Event('app:settingsChanged'));
     });
   }
 
@@ -668,6 +671,7 @@ export function initSettings(updateEditorCb) {
     }
     modalClaudeModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
+      window.dispatchEvent(new Event('app:settingsChanged'));
     });
   }
 
