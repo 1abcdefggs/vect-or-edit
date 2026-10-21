@@ -1870,14 +1870,14 @@
 }
 
 .ai-model-tab-btn.active {
-  color: #fff;
+  color: var(--text-main, #f8fafc);
   background: rgba(56, 189, 248, 0.15);
   border-color: var(--accent-color, #38bdf8);
   box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);
 }
 
 .ai-model-tab-btn[data-aimodel-tab="llm"].active {
-  color: #fff;
+  color: var(--text-main, #f8fafc);
   background: rgba(168, 85, 247, 0.16);
   border-color: #c084fc;
   box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);

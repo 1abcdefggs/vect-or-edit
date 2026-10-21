@@ -272,9 +272,14 @@
   font-size: var(--fs-12);
 }
 
-.ep-badge-active {
+.ep-badge {
   padding: 2px 8px;
   border-radius: 4px;
+  color: var(--text-muted);
+  border: var(--border-width) dashed var(--border-color);
+}
+
+.ep-badge-active {
   color: var(--success-color);
   border: var(--border-width) solid var(--success-color);
 }

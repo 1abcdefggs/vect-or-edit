@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Gemini, OpenAI and Claude API keys are encrypted with the OS key store in the main process
 - AutoSave has two triggers, a pause in typing (0.5 to 10 seconds, 1.5 by default) and each new line, with one master switch; the two triggers are folded under "Adjust each" and set in first-run setup
 - A "Custom" theme card in first-run setup: it overrides the editor background and text color, and choosing a theme returns them to the theme's own
-- Embedding model picker in Settings: 50 models with language fit, license, dimension, language-count and task filters, five sort orders and search. The model data lives in one registry (`src/shared/embeddingRegistry.json`) and the rules in `src/shared/embeddingCatalog.ts`. Only models with verified query/passage prefixes can be downloaded or used; the others are listed for comparison
+- Embedding model picker in Settings: 50 models with language fit, license, dimension, language-count and task filters, five sort orders and search. The model data lives in one registry (`src/shared/embeddingRegistry.json`) and the rules in `src/shared/embeddingCatalog.ts`. Only models with verified query/passage prefixes can be downloaded or used; the others are listed for comparison. A chosen model whose files are not on the device is shown as "Selected, not installed" with a Download button
 
 ### Changed
 - The built-in save folder is now `Documents/VectOrEdit` (was `VectOrFoldEr`); the old folder is not looked at or moved
@@ -38,8 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Plain-text API keys from older versions are moved into the encrypted store and removed from `.settings.json`
 - Swapping the welcome text for another language no longer marks the tab dirty
 - The worker build resolves `.js` imports of `.ts` files, so `worker.js` can import `embeddingModels.js` and the app builds again
-- The welcome text is recognised by its title line, not its first line, so a language swap still works after the note above the title is deleted
-- The welcome text describes the save button, the AutoSave menu, the hidden menu bar and the pipeline lights as they work
+- A language change swaps the welcome text only while it is an unedited copy, so text the user typed (or saved and reopened) is never replaced
+- The welcome text describes the save button, the AutoSave menu, the menu bar and the pipeline lights as they work
 - The page background and the log panel follow the light theme
 - Settings, AI MODEL: the Embedding, LLM and Capability scope tabs are back, so the LLM keys and the capability table can be reached and left again
 - Settings: the Claude model choice, the real-time validation switch, the minimum score and the result limit are saved and applied

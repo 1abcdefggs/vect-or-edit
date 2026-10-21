@@ -134,8 +134,17 @@ function langText(model, selected) {
 function stateCell(model, ctx) {
   const cell = el('div', 'ep-state');
   const downloaded = ctx.downloadedIds.has(model.id);
-  if (model.id === ctx.activeId) {
+  const download = () => button(t('ep_btn_download'), () => {
+    downloading.set(model.id, 0);
+    requestEmbeddingModelDownload(model.id);
+    ctx.redraw();
+  }, 'ep-chip ep-action');
+  if (model.id === ctx.activeId && downloaded) {
     cell.append(el('span', 'ep-badge ep-badge-active', t('ep_active')));
+  } else if (model.id === ctx.activeId && !downloading.has(model.id)) {
+    // Chosen (the default or a past choice) but its files are not on this device yet
+    cell.append(el('span', 'ep-badge', t('ep_selected_not_installed')));
+    if (RUNNABLE.has(model.id)) cell.append(download());
   } else if (downloading.has(model.id)) {
     const pct = downloading.get(model.id);
     cell.append(el('span', 'ep-progress-text', `${pct}%`));
@@ -155,11 +164,7 @@ function stateCell(model, ctx) {
   } else if (downloaded) {
     cell.append(button(t('ep_btn_use'), () => ctx.onUse(model.id), 'ep-chip ep-action is-primary'));
   } else {
-    cell.append(button(t('ep_btn_download'), () => {
-      downloading.set(model.id, 0);
-      requestEmbeddingModelDownload(model.id);
-      ctx.redraw();
-    }, 'ep-chip ep-action'));
+    cell.append(download());
   }
   if (downloaded && model.id !== ctx.activeId && !downloading.has(model.id)) {
     cell.append(el('span', 'ep-downloaded', t('ep_downloaded')));
@@ -347,12 +352,11 @@ function mount(container, handlers) {
     clearBtn.hidden = !hasFilters;
 
     // List
-    const downloadedOnlyIds = new Set([...downloadedIds, activeId]);
     const visible = sortModels(filterModels(REGISTRY.models, {
       ...EMPTY_FILTERS,
       languages: state.languages,
       fullOnly: state.fullOnly,
-      onlyIds: state.downloadedOnly ? downloadedOnlyIds : null,
+      onlyIds: state.downloadedOnly ? downloadedIds : null,
       dimensions: state.dimensions,
       scopes: state.scopes,
       uses: state.uses,

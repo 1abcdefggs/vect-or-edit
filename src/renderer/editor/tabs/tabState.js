@@ -14,9 +14,9 @@ import {
 import jaLocale from '../../locales/ja.json';
 import enLocale from '../../locales/en.json';
 
-// First heading of the welcome document in every locale, read from the dictionaries (not hardcoded)
-// (the title line, not the first line: the note above it invites the user to delete it)
-const WELCOME_HEADINGS = [enLocale, jaLocale].map(dict => dict.initial_document_content.split('\n').find(line => line.startsWith('# ')));
+// The welcome document in every locale, read from the dictionaries (not hardcoded).
+// Only an exact, unedited copy is swapped on a language change: anything the user typed must never be replaced.
+const WELCOME_TEXTS = [enLocale, jaLocale].map(dict => dict.initial_document_content);
 
 export let tabs = [];
 export let activeTabId = null;
@@ -206,8 +206,7 @@ if (typeof window !== 'undefined') {
     tabs.forEach(tab => {
       if (tab.model) {
         const currentVal = tab.model.getValue();
-        const isWelcomeText = WELCOME_HEADINGS.some(heading => currentVal.includes(heading));
-        if (tab.isWelcomeDoc || isWelcomeText) {
+        if (WELCOME_TEXTS.includes(currentVal)) {
           const newContent = t('initial_document_content') || '';
           if (newContent === currentVal) return;
           // A language swap is not an edit: it must not mark the tab dirty or start AutoSave
