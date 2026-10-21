@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
       minimap: false,
       aiAssistEnabled: false,
       llmProvider: 'gemini',
-      llmModel: 'gemini-1.5-flash',
+      llmModel: 'gemini-3.1-flash-lite',
       inferenceScope: 'suggestion_only'
     },
     sidebar: {

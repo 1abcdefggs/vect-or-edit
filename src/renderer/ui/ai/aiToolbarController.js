@@ -1,4 +1,5 @@
 import { aiManager } from '../../core/aiStateManager.js';
+import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
 import { isAiModelConfigured } from '../settings/settingsState.js';
 import { t } from '../../core/i18n.js';
@@ -225,22 +226,24 @@ function initLlmChatDock() {
   function updateDockModelBadge() {
     if (!modelBadge) return;
     const provider = localStorage.getItem('ai_provider') || 'gemini';
+    // The model the next request will use (same lookup as searchProviders.js)
     if (provider === 'gemini') {
-      const model = localStorage.getItem('gemini_model') || '1.5-flash';
+      const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
       modelBadge.textContent = `Gemini (${model.replace('gemini-', '')})`;
     } else if (provider === 'openai') {
-      const model = localStorage.getItem('openai_model') || 'gpt-4o-mini';
+      const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
       modelBadge.textContent = `OpenAI (${model})`;
     } else if (provider === 'claude') {
-      const model = localStorage.getItem('claude_model') || '3.5-sonnet';
-      modelBadge.textContent = `Claude (${model.includes('haiku') ? 'Haiku' : 'Sonnet'})`;
+      const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+      modelBadge.textContent = `Claude (${model.replace('claude-', '')})`;
     } else {
       modelBadge.textContent = 'LLM (Cloud)';
     }
   }
 
-  // Auto-init model badge on startup
+  // Auto-init model badge on startup, and follow model changes made in Settings
   updateDockModelBadge();
+  window.addEventListener('app:settingsChanged', updateDockModelBadge);
 
   // Quick API Key Banner Logic
   function syncQuickApiKeyInput() {
