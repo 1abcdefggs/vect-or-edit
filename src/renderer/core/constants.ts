@@ -72,7 +72,7 @@ export const DEFAULTS = {
   LINE_HEIGHT: 26,
   FONT_FAMILY: "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif",
   LOCAL_EMBEDDING_MODEL: 'Xenova/multilingual-e5-small',
-  CLAUDE_MODEL: 'claude-3-5-sonnet-20241022',
+  CLAUDE_MODEL: 'claude-opus-5-5',
   GEMINI_MODEL: 'gemini-1.5-flash',
   OPENAI_MODEL: 'gpt-4o-mini',
   AI_INFERENCE_SCOPE: 'suggestion_only',

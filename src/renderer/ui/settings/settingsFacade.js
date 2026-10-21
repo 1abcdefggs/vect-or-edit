@@ -661,6 +661,11 @@ export function initSettings(updateEditorCb) {
 
   if (modalClaudeModelSelect) {
     modalClaudeModelSelect.value = storedClaudeModel;
+    // A stored id that is no longer offered (a retired model) falls back to the default and is saved again
+    if (modalClaudeModelSelect.value !== storedClaudeModel) {
+      modalClaudeModelSelect.value = DEFAULTS.CLAUDE_MODEL;
+      setAndSync(STORAGE_KEYS.CLAUDE_MODEL, DEFAULTS.CLAUDE_MODEL);
+    }
     modalClaudeModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
     });
