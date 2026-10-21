@@ -7,8 +7,8 @@
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { showToast } from '../notifications/toastManager.js';
 import { applyI18n, currentLang, t } from '../../core/i18n';
-import { applyLanguageSetting, applyThemeSetting, getStoredThemeSetting, getThemeList } from '../settings/settingsFacade.js';
-import { getThemePreview } from '../../editor/core/themeLoader.js';
+import { applyColorMode, applyLanguageSetting, applyThemeSetting, getStoredThemeSetting, getThemeList, refreshColorModeControls } from '../settings/settingsFacade.js';
+import { getThemePreview, hasBothFaces, isDarkModeActive } from '../../editor/core/themeLoader.js';
 import { applyEditorCanvasTone } from '../../editor/editorManager.js';
 import { AUTO_SAVE_DELAY_RANGE_MS, getAutoSaveDelayMs, isIdleAutoSaveEnabled, isNewlineAutoSaveEnabled, markAutoSaveLocationConfirmed, setAutoSaveDelayMs, setTriggers, updateAutoSaveUI } from '../../editor/ui/autoSaveManager.js';
 import { syncSettingsToBackend } from '../settings/settingsState.js';
@@ -80,6 +80,7 @@ export function showAiSetupModal() {
 
   const langRadio = document.querySelector(`input[name="setup_lang"][value="${currentLang}"]`);
   if (langRadio) langRadio.checked = true;
+  refreshColorModeControls();
   renderThemeCards();
   const formatRadio = document.querySelector(`input[name="setup_format"][value="${getDefaultDocumentFormat()}"]`);
   if (formatRadio) formatRadio.checked = true;
@@ -122,6 +123,12 @@ function bindSetup() {
     onGo: (n) => goToStep(n)
   });
 
+  // The appearance switch; the header button and the settings select stay in step through refreshColorModeControls
+  document.querySelectorAll('input[name="setup_mode"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      if (radio.checked) applyColorMode(radio.value);
+    });
+  });
   document.querySelectorAll('input[name="setup_lang"]').forEach((radio) => {
     radio.addEventListener('change', () => {
       if (radio.checked) applyLanguageSetting(radio.value);
@@ -136,8 +143,9 @@ function bindSetup() {
     renderTips();
     renderFormatSamples();
   });
-  // The cards also follow a theme chosen somewhere else (header, settings)
-  window.addEventListener('app:themeChanged', updateThemeCardState);
+  // The cards follow a theme chosen somewhere else (header, settings) and redraw their samples on every applied
+  // theme, since a mode change (or the OS, in system mode) swaps the face they show
+  window.addEventListener('app:themeApplied', renderThemeCards);
 
   saveLocation = bindSaveLocationControls({
     pathEl: $('setupSaveLocation'),
@@ -202,7 +210,13 @@ function bindSetup() {
   const providerSelect = $('aiSetupCloudProvider');
   const inputKey = $('aiSetupCloudKey');
   const syncKeyField = () => {
-    if (inputKey) inputKey.disabled = !providerSelect?.value;
+    if (!inputKey) return;
+    const locked = !providerSelect?.value;
+    inputKey.disabled = locked;
+    // The hint explains the lock; the attribute is swapped too so a language change redraws the right text
+    const key = locked ? 'ai_setup_api_key_placeholder_locked' : 'ai_setup_api_key_placeholder';
+    inputKey.setAttribute('data-i18n-placeholder', key);
+    inputKey.placeholder = t(key);
   };
   providerSelect?.addEventListener('change', syncKeyField);
   syncKeyField();
@@ -397,22 +411,20 @@ async function selectThemeCard(name) {
 }
 
 function themeCard(name) {
-  const isAuto = name === 'auto';
   const isCustom = name === CUSTOM_CARD;
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'first-run-theme-card';
   button.dataset.theme = name;
 
-  // "System (Auto)" follows the OS, so its sample is split between the light and the dark default
-  const light = getThemePreview('GitHub Light');
-  const dark = getThemePreview('GitHub Dark');
-  const p = isCustom ? customSamplePreview() : isAuto ? light : getThemePreview(name);
+  // The sample shows the face the current mode uses; a theme with both faces gets the other face as a corner
+  const p = isCustom ? customSamplePreview() : getThemePreview(name);
+  const other = !isCustom && hasBothFaces(name) ? getThemePreview(name, isDarkModeActive() ? 'light' : 'dark') : null;
   const sample = document.createElement('span');
   sample.className = 'first-run-theme-sample';
   sample.setAttribute('aria-hidden', 'true');
-  sample.style.background = isAuto
-    ? `linear-gradient(135deg, ${light.background} 50%, ${dark.background} 50%)`
+  sample.style.background = other
+    ? `linear-gradient(135deg, ${p.background} 78%, ${other.background} 78%)`
     : p.background;
   sample.append(
     sampleLine(['6px', '28%', '40%'], [p.lineNumber, p.keyword, p.foreground]),
@@ -422,7 +434,7 @@ function themeCard(name) {
 
   const label = document.createElement('span');
   label.className = 'first-run-theme-name';
-  label.textContent = isAuto ? t('theme_system_auto') : isCustom ? t('theme_custom') : name;
+  label.textContent = isCustom ? t('theme_custom') : name;
   button.append(sample, label);
   button.addEventListener('click', () => (isCustom ? selectCustomTone() : selectThemeCard(name)));
   return button;
@@ -431,7 +443,7 @@ function themeCard(name) {
 function renderThemeCards() {
   const grid = $('setupThemeCards');
   if (!grid) return;
-  grid.replaceChildren(...['auto', ...getThemeList(), CUSTOM_CARD].map(themeCard));
+  grid.replaceChildren(...[...getThemeList(), CUSTOM_CARD].map(themeCard));
   updateThemeCardState();
 }
 

@@ -114,6 +114,8 @@ function showSavedIndicator() {
  * the tooltip, and the check mark of the save menu item.
  */
 export function updateAutoSaveUI() {
+  // The settings page follows the toolbar switch
+  window.dispatchEvent(new CustomEvent('app:autosaveChanged'));
   const enabled = isAutoSaveEnabled();
   const { menuToggle, ledDot, labelEl, btnSave } = getDomElements();
   const activeTab = typeof getActiveTab === 'function' ? getActiveTab() : null;

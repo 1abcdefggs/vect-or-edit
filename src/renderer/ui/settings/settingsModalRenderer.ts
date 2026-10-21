@@ -1,6 +1,7 @@
 import { SETTINGS_REGISTRY } from '../../core/settingsRegistry';
 import { settingsStore } from '../../core/settingsStore';
 import { SettingItemDef, UiKey } from '../../types/settings';
+import { t } from '../../core/i18n';
 
 export function enhanceSettingsModalVisibilityControls(): void {
   const container = document.getElementById('settingsModal');
@@ -23,7 +24,8 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
   if (!visKey) return;
 
   // Find setting element by mapping conventions or existing IDs
-  let targetRow: HTMLElement | null = findTargetRowForItem(item);
+  // Items without a row of their own get one in the "Parts of the window" list (System tab)
+  let targetRow: HTMLElement | null = findTargetRowForItem(item) ?? createVisibilityListRow(item);
   if (!targetRow) return;
 
   // Check if toggle is already attached
@@ -38,7 +40,7 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
     const lock = document.createElement('span');
     lock.className = 'vis-lock-icon';
     lock.innerHTML = '&#xe897;'; // material-symbols lock
-    lock.title = 'Essential item: cannot be hidden';
+    lock.title = t('tip_vis_locked');
     lock.style.cssText = 'font-family: "Material Symbols Outlined"; font-size: var(--fs-17); color: var(--text-muted); opacity: 0.6; cursor: not-allowed;';
     wrapper.appendChild(lock);
   } else {
@@ -46,7 +48,7 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
     btn.type = 'button';
     btn.className = 'vis-toggle-btn';
     btn.setAttribute('data-ui-key', visKey);
-    btn.title = settingsStore.isVisible(visKey) ? 'Hide on main interface' : 'Show on main interface';
+    btn.title = t(settingsStore.isVisible(visKey) ? 'tip_vis_hide' : 'tip_vis_show');
     
     updateEyeButtonState(btn, settingsStore.isVisible(visKey));
 
@@ -56,6 +58,7 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
       settingsStore.toggleVisibility(visKey);
       const isVis = settingsStore.isVisible(visKey);
       updateEyeButtonState(btn, isVis);
+      btn.title = t(isVis ? 'tip_vis_hide' : 'tip_vis_show');
     });
 
     wrapper.appendChild(btn);
@@ -77,6 +80,9 @@ function updateEyeButtonState(btn: HTMLButtonElement, isVisible: boolean): void 
 
 function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {
   // Try finding by select/input IDs
+  if (item.id === 'h_color_mode') {
+    return document.getElementById('modalColorModeSelect')?.closest('.setting-item') as HTMLElement;
+  }
   if (item.id === 'h_theme') {
     return document.getElementById('modalThemeSelect')?.closest('.setting-item') as HTMLElement;
   }
@@ -92,17 +98,62 @@ function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {
   if (item.id === 'ed_font_size') {
     return document.getElementById('modalFontSizeSelect')?.closest('.setting-item') as HTMLElement;
   }
-  if (item.id === 'sb_min_score') {
-    return document.getElementById('numMinScore')?.closest('label') as HTMLElement;
+  if (item.id === 'sb_score_filter') {
+    return document.getElementById('modalMinScoreInput')?.closest('.setting-item') as HTMLElement;
   }
   if (item.id === 'sb_limit_select') {
-    return document.getElementById('selSearchLimit')?.closest('label') as HTMLElement;
+    return document.getElementById('modalLimitSelect')?.closest('.setting-item') as HTMLElement;
   }
   if (item.id === 'sb_metadata_toggle') {
-    return document.getElementById('chkShowFullMetadata')?.closest('label') as HTMLElement;
+    return document.getElementById('modalShowFullMetadataChk')?.closest('.setting-item') as HTMLElement;
   }
   return null;
 }
+
+/** A row in the "Parts of the window" list for a registered part that no settings row stands for. */
+function createVisibilityListRow(item: SettingItemDef): HTMLElement | null {
+  const list = document.getElementById('visibilityList');
+  if (!list) return null;
+
+  let group = list.querySelector<HTMLElement>(`[data-vis-group="${item.category}"]`);
+  if (!group) {
+    group = document.createElement('div');
+    group.setAttribute('data-vis-group', item.category);
+    const heading = document.createElement('div');
+    heading.className = 'setting-label';
+    heading.setAttribute('data-vis-group-heading', item.category);
+    heading.style.cssText = 'margin: 14px 0 4px 0; color: var(--text-muted);';
+    heading.textContent = t(`vis_group_${item.category}`);
+    group.appendChild(heading);
+    list.appendChild(group);
+  }
+
+  const row = document.createElement('div');
+  row.className = 'setting-item';
+  row.setAttribute('data-vis-item', item.id);
+  row.style.cssText = 'padding: 6px 0;';
+  const labelBox = document.createElement('div');
+  // The eye sits in front of the name on one line
+  labelBox.style.cssText = 'display: flex; align-items: center; gap: 4px;';
+  const label = document.createElement('div');
+  label.className = 'setting-label';
+  label.setAttribute('data-vis-label', item.id);
+  label.textContent = t(`vis_${item.id}`);
+  labelBox.appendChild(label);
+  row.appendChild(labelBox);
+  group.appendChild(row);
+  return row;
+}
+
+// Names in the list follow the language
+window.addEventListener('app:languageChanged', () => {
+  document.querySelectorAll<HTMLElement>('[data-vis-label]').forEach((el) => {
+    el.textContent = t(`vis_${el.getAttribute('data-vis-label')}`);
+  });
+  document.querySelectorAll<HTMLElement>('[data-vis-group-heading]').forEach((el) => {
+    el.textContent = t(`vis_group_${el.getAttribute('data-vis-group-heading')}`);
+  });
+});
 
 function wireQuickSettingsGears(): void {
   const gears = document.querySelectorAll('[data-tab-target]');

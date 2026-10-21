@@ -337,6 +337,10 @@
   color: var(--log-msg);
 }
 
+.log-row--success .log-msg {
+  color: var(--success-color, #10b981);
+}
+
 /* Editor Status Bar */
 .editor-status-bar {
   display: flex;

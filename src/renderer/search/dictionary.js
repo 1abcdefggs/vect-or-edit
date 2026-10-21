@@ -2,6 +2,7 @@ import { resetVectorSearchResults } from './vectorSearch.js';
 import { refreshLinter } from '../editor/editorManager.js';
 import { icons } from '../core/icons.js';
 import { i18n, t } from '../core/i18n.js';
+import { confirmClose } from '../ui/notifications/closeGuard.js';
 
 export const allKnowledgeItems = [];
 export const allDictEntries = [];
@@ -119,7 +120,7 @@ export async function updateSemanticStateDisplay() {
           const infoSpan = document.createElement('span');
           infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981);  font-size: var(--fs-12);';
           infoSpan.textContent = slot.name;
-          infoSpan.title = `[SLOT ${idx + 1}] ${slot.filePath}\nItems: ${slot.itemCount.toLocaleString()}\nMulti-slot indexing active.`;
+          infoSpan.title = t('tip_slot_info', { n: idx + 1, path: slot.filePath, items: slot.itemCount.toLocaleString() });
 
           leftContainer.appendChild(slotIndexBadge);
           leftContainer.appendChild(infoSpan);
@@ -136,7 +137,7 @@ export async function updateSemanticStateDisplay() {
           btnDel.className = 'toolbar-btn';
           btnDel.style.cssText = 'background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 2px 4px; font-size: var(--fs-12); line-height: 1; display: flex; align-items: center; justify-content: center; border-radius: 3px; transition: color 0.15s ease, background 0.15s ease;';
           btnDel.innerHTML = icons.delete || '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-          btnDel.title = `Unload ${slot.name}`;
+          btnDel.title = t('tip_slot_unload', { name: slot.name });
           btnDel.addEventListener('mouseenter', () => {
             btnDel.style.color = '#ef4444';
             btnDel.style.background = 'rgba(239, 68, 68, 0.12)';
@@ -147,7 +148,7 @@ export async function updateSemanticStateDisplay() {
           });
           btnDel.addEventListener('click', async (e) => {
             e.stopPropagation();
-            await removeKnowledgeSlot(slot.id);
+            if (await confirmClose('slot', { name: slot.name })) await removeKnowledgeSlot(slot.id);
           });
 
           rightContainer.appendChild(countBadge);

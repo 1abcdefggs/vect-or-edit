@@ -30,7 +30,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
       linterEnabled: true
     },
     system: {
-      collapseLogsOnStartup: true
+      collapseLogsOnStartup: false
     }
   },
   visibility: {
@@ -43,6 +43,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'hdr:menu-help': true,
     'hdr:master-ai': true,
     'hdr:theme-select': true,
+    'hdr:color-mode': true,
     'hdr:locale-toggle': true,
     'hdr:zoom-select': true,
     'hdr:settings-btn': true,
@@ -128,6 +129,19 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     controlType: 'none'
   },
   {
+    id: 'h_color_mode',
+    label: 'Appearance',
+    description: 'Light, dark, or follow the system; the theme shows its light or dark face.',
+    category: 'header',
+    visibilityKey: 'hdr:color-mode',
+    controlType: 'select',
+    options: [
+      { label: 'System', value: 'system' },
+      { label: 'Light', value: 'light' },
+      { label: 'Dark', value: 'dark' }
+    ]
+  },
+  {
     id: 'h_theme',
     label: 'Color Theme',
     description: 'Switch overall color palette and Monaco editor theme.',
@@ -137,10 +151,10 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     controlType: 'select',
     options: [
       { label: 'Dracula', value: 'Dracula' },
-      { label: 'GitHub Dark', value: 'GitHub Dark' },
-      { label: 'GitHub Light', value: 'GitHub Light' },
+      { label: 'GitHub', value: 'GitHub' },
       { label: 'Monokai', value: 'Monokai' },
-      { label: 'Night Owl', value: 'Night Owl' }
+      { label: 'Night Owl', value: 'Night Owl' },
+      { label: 'Tukune', value: 'Tukune' }
     ]
   },
   {

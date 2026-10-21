@@ -1,6 +1,6 @@
 import { icons } from '../../core/icons.js';
 import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
-import { loadTheme, availableThemes, getResolvedThemeName, getStoredThemeSetting, getAutoThemePair, isLightTheme } from '../../editor/core/themeLoader.js';
+import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { importDictionary } from '../../search/dictionary.js';
@@ -13,6 +13,8 @@ import { initEmbeddingSourceController } from './embeddingSourceController.js';
 import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
 import { bindSaveLocationControls } from './saveLocation.js';
 import { getDefaultDocumentFormat } from '../../editor/tabs/tabState.js';
+import { confirmClose } from '../notifications/closeGuard.js';
+import { initWindowFeatureSettings } from './windowFeatureSettings.js';
 
 function setAndSync(key, value) {
   localStorage.setItem(key, value);
@@ -21,7 +23,7 @@ function setAndSync(key, value) {
 
 let updateEditorOptionsCallback = null;
 
-const FALLBACK_THEMES = ['Dracula', 'GitHub Dark', 'GitHub Light', 'Monokai', 'Night Owl'];
+const FALLBACK_THEMES = ['Dracula', 'GitHub', 'Monokai', 'Night Owl', 'Tukune'];
 const THEME_SELECT_IDS = ['themeSelect', 'modalThemeSelect'];
 
 /** Every theme the app can apply, in the order the pickers show them (the first-run theme cards use it too). */
@@ -29,18 +31,13 @@ export function getThemeList() {
   return (availableThemes && availableThemes.length > 0) ? availableThemes : FALLBACK_THEMES;
 }
 
-export { getStoredThemeSetting };
+export { getStoredThemeSetting, getColorMode };
 
-/** Fills a theme select with "System (Auto)" and every theme, keeping its current value. */
+/** Fills a theme select with every theme, keeping its current value. A theme's light or dark face follows the mode. */
 export function populateThemeDropdown(selectEl) {
   if (!selectEl) return;
   const currentVal = selectEl.value;
   selectEl.innerHTML = '';
-
-  const autoOpt = document.createElement('option');
-  autoOpt.value = 'auto';
-  autoOpt.textContent = i18n.theme_system_auto || 'System (Auto)';
-  selectEl.appendChild(autoOpt);
 
   getThemeList().forEach(name => {
     const opt = document.createElement('option');
@@ -54,43 +51,57 @@ export function populateThemeDropdown(selectEl) {
   }
 }
 
-/** Fills the dark-mode and light-mode pickers of "Auto" and shows them only while the theme is Auto. */
-export function refreshAutoThemePickers() {
-  const darkSel = document.getElementById('modalThemeDarkSelect');
-  const lightSel = document.getElementById('modalThemeLightSelect');
-  const pair = getAutoThemePair();
-  const fill = (sel, wantLight, current) => {
-    if (!sel) return;
+const COLOR_MODE_ICONS = { system: 'brightness_auto', light: 'light_mode', dark: 'dark_mode' };
+
+/**
+ * Shows the stored appearance mode on every control that sets it: the settings select (System / Light / Dark),
+ * the header button's icon and the first-run switch.
+ */
+export function refreshColorModeControls() {
+  const mode = getColorMode();
+  const sel = document.getElementById('modalColorModeSelect');
+  if (sel) {
     sel.innerHTML = '';
-    getThemeList().filter(name => isLightTheme(name) === wantLight).forEach(name => {
+    COLOR_MODES.forEach((m) => {
       const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
+      opt.value = m;
+      opt.textContent = i18n[`color_mode_${m}`] || m;
       sel.appendChild(opt);
     });
-    sel.value = current;
-  };
-  fill(darkSel, false, pair.dark);
-  fill(lightSel, true, pair.light);
-  const isAuto = getStoredThemeSetting() === 'auto';
-  ['autoThemePairRow', 'autoThemePairLightRow'].forEach(id => {
-    const row = document.getElementById(id);
-    if (row) row.hidden = !isAuto;
-  });
+    sel.value = mode;
+  }
+  const icon = document.getElementById('colorModeIcon');
+  if (icon) icon.textContent = COLOR_MODE_ICONS[mode];
+  document.getElementById('btnColorMode')?.setAttribute('aria-label', `${i18n.color_mode_label || 'Appearance'}: ${i18n[`color_mode_${mode}`] || mode}`);
+  const radio = document.querySelector(`input[name="setup_mode"][value="${mode}"]`);
+  if (radio) radio.checked = true;
 }
 
-async function applyAutoThemePick(storageKey, themeName) {
-  setAndSync(storageKey, themeName);
-  if (getStoredThemeSetting() === 'auto') await loadTheme('auto');
-  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: 'auto' } }));
+/** The mode after the current one, in the order the header button steps through: System, Light, Dark. */
+export function nextColorMode() {
+  return COLOR_MODES[(COLOR_MODES.indexOf(getColorMode()) + 1) % COLOR_MODES.length];
 }
 
 /**
- * Applies and stores a theme, and keeps every theme select (header, settings) in step.
+ * Switches the appearance mode. The theme stays; its light or dark face shows.
+ * Anything else that shows the mode or the theme (the first-run cards) listens to app:themeChanged.
+ */
+export async function applyColorMode(mode) {
+  if (!COLOR_MODES.includes(mode)) return;
+  setAndSync(STORAGE_KEYS.COLOR_MODE, mode);
+  refreshColorModeControls();
+  await loadTheme(getStoredThemeSetting());
+  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: getStoredThemeSetting(), mode } }));
+}
+
+/**
+ * Applies and stores a theme, and keeps every theme select (header, settings) in step. The mode stays as it is.
  * Anything else that shows the theme (the first-run theme cards) listens to app:themeChanged.
  */
 export async function applyThemeSetting(themeName) {
   if (!themeName) return;
+  // A mode implied by a setting from before modes existed is stored first, so changing the theme cannot change it
+  if (!localStorage.getItem(STORAGE_KEYS.COLOR_MODE)) setAndSync(STORAGE_KEYS.COLOR_MODE, getColorMode());
   THEME_SELECT_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = themeName;
@@ -98,8 +109,7 @@ export async function applyThemeSetting(themeName) {
   await loadTheme(themeName);
   setAndSync(STORAGE_KEYS.LEGACY_THEME, themeName);
   setAndSync(STORAGE_KEYS.THEME, themeName);
-  refreshAutoThemePickers();
-  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: themeName } }));
+  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: themeName, mode: getColorMode() } }));
 }
 
 /** Switches the UI language. Labels and selects follow through the app:languageChanged listener in initSettings. */
@@ -110,6 +120,16 @@ export async function applyLanguageSetting(lang) {
 
 export function initSettings(updateEditorCb) {
   updateEditorOptionsCallback = updateEditorCb;
+
+  // The custom text color used to be stored under the key "undefined" (CUSTOM_EDITOR_FG was missing): move it
+  const legacyTextColor = localStorage.getItem('undefined');
+  if (legacyTextColor !== null) {
+    if (!localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG)) setAndSync(STORAGE_KEYS.CUSTOM_EDITOR_FG, legacyTextColor);
+    localStorage.removeItem('undefined');
+  }
+
+  // Autosave, AI assistants and the log panel: settings for features the window also has
+  initWindowFeatureSettings();
 
   // Init Embedding Source Selector (idempotent – safe to call on every modal open)
   initEmbeddingSourceController();
@@ -128,6 +148,13 @@ export function initSettings(updateEditorCb) {
   if (documentFormatSelect) {
     documentFormatSelect.value = getDefaultDocumentFormat();
     documentFormatSelect.addEventListener('change', () => setAndSync(STORAGE_KEYS.DOCUMENT_FORMAT, documentFormatSelect.value));
+  }
+
+  // Whether × asks before closing; unsaved tabs are asked about either way
+  const confirmCloseSelect = document.getElementById('modalConfirmCloseSelect');
+  if (confirmCloseSelect) {
+    confirmCloseSelect.value = localStorage.getItem(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE) === 'off' ? 'off' : DEFAULTS.CONFIRM_BEFORE_CLOSE;
+    confirmCloseSelect.addEventListener('change', () => setAndSync(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE, confirmCloseSelect.value));
   }
 
   // Front UI Elements
@@ -184,9 +211,9 @@ export function initSettings(updateEditorCb) {
       await applyThemeSetting(modalThemeSelect.value);
     });
   }
-  refreshAutoThemePickers();
-  document.getElementById('modalThemeDarkSelect')?.addEventListener('change', (e) => applyAutoThemePick(STORAGE_KEYS.THEME_DARK, e.target.value));
-  document.getElementById('modalThemeLightSelect')?.addEventListener('change', (e) => applyAutoThemePick(STORAGE_KEYS.THEME_LIGHT, e.target.value));
+  refreshColorModeControls();
+  document.getElementById('modalColorModeSelect')?.addEventListener('change', (e) => applyColorMode(e.target.value));
+  document.getElementById('btnColorMode')?.addEventListener('click', () => applyColorMode(nextColorMode()));
 
   // Language toggle & 2-way sync. Any language change (header, settings, first-run setup) ends in app:languageChanged.
   const applyLanguage = (lang) => applyLanguageSetting(lang);
@@ -199,8 +226,7 @@ export function initSettings(updateEditorCb) {
       btnLangToggle.textContent = lang.toUpperCase();
     }
     if (modalLangSelect) modalLangSelect.value = lang;
-    populateThemeDropdown(themeSelect);
-    populateThemeDropdown(modalThemeSelect);
+    refreshColorModeControls();
     updateAutoSaveUI();
   });
 
@@ -889,7 +915,9 @@ export function initSettings(updateEditorCb) {
   }
 
   if (btnCloseSettingsModal) {
-    btnCloseSettingsModal.addEventListener('click', closeSettingsView);
+    btnCloseSettingsModal.addEventListener('click', async () => {
+      if (await confirmClose('settings')) closeSettingsView();
+    });
   }
 
   if (btnBackToEditor) {
@@ -981,9 +1009,8 @@ export function initSettings(updateEditorCb) {
 export function getTheme() {
   const themeSelect = typeof document !== 'undefined' ? document.getElementById('themeSelect') : null;
   const storedThemeName = typeof localStorage !== 'undefined' ? getStoredThemeSetting() : null;
-  const currentChoice = (themeSelect && themeSelect.value) || storedThemeName || 'auto';
-  const resolved = getResolvedThemeName(currentChoice);
-  return resolved ? resolved.replace(/[^a-zA-Z0-9_-]/g, '-') : 'vs-dark';
+  const currentChoice = (themeSelect && themeSelect.value) || storedThemeName;
+  return currentChoice ? getMonacoThemeId(currentChoice) : 'vs-dark';
 }
 
 export function getFontFamily() {

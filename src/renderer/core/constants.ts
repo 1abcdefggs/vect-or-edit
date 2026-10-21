@@ -6,8 +6,7 @@
 export const STORAGE_KEYS = {
   THEME: 'vect_theme',
   LEGACY_THEME: 'themeName',
-  THEME_DARK: 'vect_theme_dark',
-  THEME_LIGHT: 'vect_theme_light',
+  COLOR_MODE: 'vect_color_mode',
   FONT_FAMILY: 'editor_fontFamily',
   FONT_SIZE: 'editor_fontSize',
   LINE_HEIGHT: 'editor_lineHeight',
@@ -31,6 +30,7 @@ export const STORAGE_KEYS = {
   LOG_DISPLAY_POSITION: 'logDisplayPosition',
   EDITOR_BG_TONE: 'editor_bg_tone',
   CUSTOM_EDITOR_BG: 'editor_custom_bg',
+  CUSTOM_EDITOR_FG: 'editor_custom_fg',
   AUTO_SAVE: 'editor_auto_save',
   // The two triggers of AutoSave: a pause in typing, and each new line (both on by default)
   AUTO_SAVE_IDLE: 'editor_auto_save_idle',
@@ -39,6 +39,8 @@ export const STORAGE_KEYS = {
   AUTO_SAVE_DELAY: 'editor_auto_save_delay_ms',
   // 'markdown' | 'text': the format new documents start in (src/shared/documentFormat.ts)
   DOCUMENT_FORMAT: 'vect_document_format',
+  /** 'on' | 'off': ask before closing with × (off closes at once; unsaved tabs are always asked about) */
+  CONFIRM_BEFORE_CLOSE: 'vect_confirm_before_close',
   AI_SETUP_COMPLETED: 'vect_ai_setup_completed',
   LOCAL_EMBEDDING_MODEL: 'vect_local_embedding_model',
   /** JSON array of embedding model ids whose files were fetched on this device */
@@ -85,6 +87,7 @@ export const DEFAULTS = {
   AUTO_SAVE_IDLE: true,
   AUTO_SAVE_NEWLINE: true,
   LOG_DISPLAY_POSITION: 'bottom',
+  CONFIRM_BEFORE_CLOSE: 'on',
 } as const;
 
 export const LOG_COLORS = {

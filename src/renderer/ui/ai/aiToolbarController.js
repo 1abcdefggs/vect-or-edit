@@ -5,6 +5,7 @@ import { isAiModelConfigured } from '../settings/settingsState.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
+import { confirmClose } from '../notifications/closeGuard.js';
 import { queryLlmChat } from '../../search/searchProviders.js';
 import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editorManager.js';
 
@@ -119,7 +120,7 @@ export function initAiControls() {
       const state = aiManager.getState();
       sidebarEmbeddingNameEl.textContent = state.sidebar ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
       if (btnSidebarEmbeddingModel) {
-        btnSidebarEmbeddingModel.title = `Vector Embedding (${window.__isLocalAiModelReady ? localModel : 'Ready'}): Click to toggle ON/OFF`;
+        btnSidebarEmbeddingModel.title = t('tip_embed_model_status', { model: window.__isLocalAiModelReady ? localModel : 'Ready' });
       }
     }
   }
@@ -370,7 +371,11 @@ function initLlmChatDock() {
     }
   });
 
-  if (btnClose) btnClose.addEventListener('click', closeDock);
+  if (btnClose) {
+    btnClose.addEventListener('click', async () => {
+      if (await confirmClose('chat')) closeDock();
+    });
+  }
   if (btnCollapse) btnCollapse.addEventListener('click', toggleCollapseDock);
 
   if (btnClear) {

@@ -7,49 +7,50 @@
       <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: var(--fs-10); height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
       <span data-disclosure-icon class="material-symbols-outlined" style="font-size: var(--fs-16); flex-shrink: 0;">&#xe5cf;</span>
     </button>
-    <button id="btnPipelineToggle" class="toolbar-btn" title="Show pipeline status" style="display: none; height: 20px; padding: 0 6px; align-items: center; gap: 4px;">
+    <button id="btnPipelineToggle" class="toolbar-btn" style="display: none; height: 20px; padding: 0 6px; align-items: center; gap: 4px;" data-i18n-title="tip_pipeline_show">
       <span class="material-symbols-outlined" style="font-size: var(--fs-16);">monitor_heart</span>
+      <span class="bottom-bar-text" data-i18n="btn_pipeline">PIPELINE</span>
     </button>
     <div id="pipelineStrip" style="display: none; align-items: center; gap: 4px;">
       <!-- Placed where btnPipelineToggle sits so open and close share one position -->
-      <button id="btnPipelineClose" class="toolbar-btn" title="Hide pipeline status" style="display: flex; align-items: center; height: 20px; padding: 0 6px;">
-        <span class="material-symbols-outlined" style="font-size: var(--fs-16);">close</span>
+      <button id="btnPipelineClose" class="toolbar-btn" style="display: flex; align-items: center; height: 20px; padding: 0 6px;" data-i18n-title="tip_pipeline_hide">
+        <span class="material-symbols-outlined" style="font-size: var(--fs-16);">chevron_left</span>
       </button>
 
     <!-- Integrated 7-Stage Pipeline Status LED Meter -->
     <div class="system-status-panel" data-ui="sys:pipeline-meter" style="margin: 0; display: flex; align-items: center; gap: 4px;">
       <span class="pipeline-title" style="font-size: var(--fs-10); font-weight: 700; letter-spacing: 0.5px; opacity: 0.8; margin-right: 2px;" data-i18n="log_panel_title">PIPELINE</span>
-      <div id="badgeLedConf" class="status-pill" title="1. User Settings: Loading...">
+      <div id="badgeLedConf" class="status-pill" title="1. User Settings: Loading..." data-tip-dynamic="statusManager sets the live status text">
         <span class="status-led-dot status-loading"></span>
         <span class="status-pill-label" style="font-size: var(--fs-10);">1.CONFIG</span>
       </div>
       <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-      <div id="badgeLedThm" class="status-pill" title="2. Theme Palette: Loading...">
+      <div id="badgeLedThm" class="status-pill" title="2. Theme Palette: Loading..." data-tip-dynamic="statusManager sets the live status text">
         <span class="status-led-dot status-loading"></span>
         <span class="status-pill-label" style="font-size: var(--fs-10);">2.THEME</span>
       </div>
       <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-      <div id="badgeLedI18n" class="status-pill" title="3. Locale i18n: Loading...">
+      <div id="badgeLedI18n" class="status-pill" title="3. Locale i18n: Loading..." data-tip-dynamic="statusManager sets the live status text">
         <span class="status-led-dot status-loading"></span>
         <span class="status-pill-label" style="font-size: var(--fs-10);">3.LOCALE</span>
       </div>
       <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-      <div id="badgeLedMonaco" class="status-pill" title="4. Monaco Editor: Initializing...">
+      <div id="badgeLedMonaco" class="status-pill" title="4. Monaco Editor: Initializing..." data-tip-dynamic="statusManager sets the live status text">
         <span class="status-led-dot status-loading"></span>
         <span class="status-pill-label" style="font-size: var(--fs-10);">4.EDITOR</span>
       </div>
       <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-      <div id="badgeLedBin" class="status-pill" title="5. Rust Binary (DLL): Initializing...">
+      <div id="badgeLedBin" class="status-pill" title="5. Rust Binary (DLL): Initializing..." data-tip-dynamic="statusManager sets the live status text">
         <span class="status-led-dot status-loading"></span>
         <span class="status-pill-label" style="font-size: var(--fs-10);">5.RUST</span>
       </div>
       <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-      <div id="badgeLedAi" class="status-pill" title="6. AI Embeddings Model: Initializing...">
+      <div id="badgeLedAi" class="status-pill" title="6. AI Embeddings Model: Initializing..." data-tip-dynamic="statusManager sets the live status text">
         <span class="status-led-dot status-loading"></span>
         <span class="status-pill-label" style="font-size: var(--fs-10);">6.AI-MODEL</span>
       </div>
       <span class="flow-arrow"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
-      <div id="badgeLedKb" class="status-pill" title="7. Knowledge Base & HNSW: Loading...">
+      <div id="badgeLedKb" class="status-pill" title="7. Knowledge Base & HNSW: Loading..." data-tip-dynamic="statusManager sets the live status text">
         <span class="status-led-dot status-loading"></span>
         <span class="status-pill-label" style="font-size: var(--fs-10);">7.HNSW</span>
       </div>
@@ -59,8 +60,7 @@
   </div>
 
   <div class="bottom-bar-right" style="display: flex; align-items: center; gap: 8px;">
-    <button id="btnSystemQuickSettings" class="gear-btn gear-btn--sm" data-ui="sys:quick-settings" data-tab-target="tabSystem"
-      title="System & Log Settings">
+    <button id="btnSystemQuickSettings" class="gear-btn gear-btn--sm" data-ui="sys:quick-settings" data-tab-target="tabSystem" data-i18n-title="tip_system_quick_settings">
       <span class="material-symbols-outlined">settings</span>
     </button>
     <div id="updateLedContainer" style="display: none; align-items: center; gap: 4px; color: var(--text-main); cursor: pointer; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2);">

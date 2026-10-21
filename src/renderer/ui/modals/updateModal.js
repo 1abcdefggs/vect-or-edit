@@ -1,4 +1,5 @@
 import { GITHUB_REPO_URL, getCurrentAppVersion } from '../api/githubAPI.js';
+import { confirmClose } from '../notifications/closeGuard.js';
 
 export function bindUpdateModalEvents() {
   const updateModal = document.getElementById('updateModal');
@@ -14,8 +15,8 @@ export function bindUpdateModalEvents() {
   }
 
   if (btnCloseUpdateModal && updateModal) {
-    btnCloseUpdateModal.addEventListener('click', () => {
-      updateModal.style.display = 'none';
+    btnCloseUpdateModal.addEventListener('click', async () => {
+      if (await confirmClose('update')) updateModal.style.display = 'none';
     });
   }
 

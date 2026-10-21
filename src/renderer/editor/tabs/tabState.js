@@ -4,6 +4,8 @@ import { triggerAdaptiveAutoSave } from '../ui/autoSaveManager.js';
 import { t } from '../../core/i18n.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
+import { showChoiceModal } from '../../ui/notifications/confirmModal.js';
+import { confirmClose } from '../../ui/notifications/closeGuard.js';
 import {
   DOCUMENT_FORMATS,
   formatOfName,
@@ -109,9 +111,26 @@ export async function closeTab(tabId, e) {
   if (index === -1) return;
 
   const closingTab = tabs[index];
-  
-  // Always prompt to save
-  const shouldSave = window.confirm(t('prompt_save_on_close') || "Closing the tab. Do you want to save the content?\n\n[OK] Save and close\n[Cancel] Close without saving");
+
+  // Unsaved changes are always asked about, whatever the "confirm before closing" setting says: Cancel keeps the tab.
+  // A saved tab only gets the plain "close?" check, which that setting can turn off.
+  let shouldSave = false;
+  if (closingTab.isDirty) {
+    const choice = await showChoiceModal({
+      title: t('close_tab_unsaved_title'),
+      message: t('close_tab_unsaved_message', { name: closingTab.title }),
+      cancelText: t('btn_keep_open'),
+      type: 'warning',
+      choices: [
+        { id: 'save', text: t('btn_save_and_close'), primary: true },
+        { id: 'discard', text: t('btn_close_without_saving'), danger: true }
+      ]
+    });
+    if (!choice) return;
+    shouldSave = choice === 'save';
+  } else if (!(await confirmClose('tab', { name: closingTab.title }))) {
+    return;
+  }
 
   if (shouldSave) {
     const text = closingTab.model.getValue();

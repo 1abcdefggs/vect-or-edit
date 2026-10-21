@@ -1,4 +1,6 @@
 import { createDisclosure } from '../components/disclosureToggle.js';
+import { saveTextToFile } from '../../editor/io/fileIO.js';
+import { settingsStore } from '../../core/settingsStore.js';
 
 export function initSystemConsole() {
   const logEntriesContainer = document.getElementById('logEntriesContainer');
@@ -7,6 +9,7 @@ export function initSystemConsole() {
   const logCountBadge = document.getElementById('logCountBadge');
   const btnClearLogs = document.getElementById('btnClearLogs');
   const btnCopyLogs = document.getElementById('btnCopyLogs');
+  const btnDownloadLogs = document.getElementById('btnDownloadLogs');
   const logBuffer = [];
 
   function updateLogBadge() {
@@ -26,55 +29,67 @@ export function initSystemConsole() {
     }
   }
 
+  function buildLogRow(entry) {
+    const row = document.createElement('div');
+    row.className = entry.tone ? `log-row log-row--${entry.tone}` : 'log-row';
+    const badgeClass = entry.level === 'ERROR' ? 'badge-error' : (entry.level === 'WARN' ? 'badge-warn' : 'badge-info');
+    // Built with textContent: messages carry raw console text (renderer HTML, file paths) that must not be parsed as markup
+    const cells = [
+      ['log-time', `[${entry.time}]`],
+      [`log-badge ${badgeClass}`, entry.level],
+      ['log-source', `[${entry.source}]`],
+      ['log-msg', entry.message]
+    ];
+    for (const [className, text] of cells) {
+      const span = document.createElement('span');
+      span.className = className;
+      span.textContent = String(text ?? '');
+      row.append(span, ' ');
+    }
+    return row;
+  }
+
+  // Extra read-only views of the same buffer (the Settings > System tab). They are marked [data-log-mirror] and
+  // can load after this init, so they are looked up on every append and filled from the buffer when first seen.
+  const filledMirrors = new WeakSet();
+  function liveMirrors() {
+    const views = document.querySelectorAll('[data-log-mirror]');
+    views.forEach((view) => {
+      if (filledMirrors.has(view)) return;
+      filledMirrors.add(view);
+      view.replaceChildren(...logBuffer.map(buildLogRow));
+      view.scrollTop = view.scrollHeight;
+    });
+    return views;
+  }
+
   function appendLogEntry(entry) {
     logBuffer.push(entry);
     updateLogBadge();
 
-    if (logEntriesContainer) {
-      const row = document.createElement('div');
-      row.className = 'log-row';
-      const badgeClass = entry.level === 'ERROR' ? 'badge-error' : (entry.level === 'WARN' ? 'badge-warn' : 'badge-info');
-      // Built with textContent: messages carry raw console text (renderer HTML, file paths) that must not be parsed as markup
-      const cells = [
-        ['log-time', `[${entry.time}]`],
-        [`log-badge ${badgeClass}`, entry.level],
-        ['log-source', `[${entry.source}]`],
-        ['log-msg', entry.message]
-      ];
-      for (const [className, text] of cells) {
-        const span = document.createElement('span');
-        span.className = className;
-        span.textContent = String(text ?? '');
-        row.append(span, ' ');
-      }
-      logEntriesContainer.appendChild(row);
-      logEntriesContainer.scrollTop = logEntriesContainer.scrollHeight;
+    const targets = [...(logEntriesContainer ? [logEntriesContainer] : [])];
+    liveMirrors().forEach((view) => {
+      // A view filled just now already holds this entry
+      if (view.childElementCount < logBuffer.length) targets.push(view);
+    });
+    for (const view of targets) {
+      view.appendChild(buildLogRow(entry));
+      view.scrollTop = view.scrollHeight;
     }
   }
 
+  // Renderer-side callers (pipeline status) share the one log buffer, so Copy, Save and the ERROR badge include them
+  const SYSTEM_LOG_LEVELS = { success: 'INFO', info: 'INFO', warn: 'WARN', error: 'ERROR' };
   window.appendSystemLog = function appendSystemLog(msg, type = 'info') {
-    if (!logEntriesContainer) return;
-    const row = document.createElement('div');
-    row.style.cssText = 'padding: 3px 6px; font-family: var(--font-mono, monospace); font-size: var(--fs-12); line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.04);';
-    const time = document.createElement('span');
-    time.style.color = 'var(--text-muted)';
-    time.textContent = `[${new Date().toLocaleTimeString()}]`;
-    const body = document.createElement('span');
-    if (type === 'success') {
-      body.style.color = 'var(--success-color, #10b981)';
-      body.textContent = `✓ ${msg}`;
-    } else if (type === 'warn') {
-      body.style.color = '#f59e0b';
-      body.textContent = `⚠ ${msg}`;
-    } else {
-      body.textContent = String(msg);
-    }
-    row.append(time, ' ', body);
-    logEntriesContainer.appendChild(row);
-    logEntriesContainer.scrollTop = logEntriesContainer.scrollHeight;
+    appendLogEntry({
+      time: new Date().toLocaleTimeString(),
+      source: 'Pipeline',
+      level: SYSTEM_LOG_LEVELS[type] ?? 'INFO',
+      message: String(msg),
+      tone: type === 'success' ? 'success' : undefined
+    });
   };
 
-  // Initial synthetic logs & listener
   appendLogEntry({
     time: new Date().toLocaleTimeString(),
     source: 'App:Init',
@@ -82,11 +97,34 @@ export function initSystemConsole() {
     message: 'VectOrEdit core system online. Ready.'
   });
 
+  // Main-process entries arrive as a backlog (everything logged before this point) plus live pushes.
+  // Live entries wait until the backlog is shown so the order stays chronological; ids make overlaps harmless.
+  const seenMainIds = new Set();
+  const showMainEntry = (log) => {
+    if (log.id != null) {
+      if (seenMainIds.has(log.id)) return;
+      seenMainIds.add(log.id);
+    }
+    appendLogEntry(log);
+  };
   if (window.engineAPI?.onSystemLog) {
-    window.engineAPI.onSystemLog((log) => appendLogEntry(log));
+    let pendingLive = [];
+    window.engineAPI.onSystemLog((log) => {
+      if (pendingLive) pendingLive.push(log);
+      else showMainEntry(log);
+    });
+    const backlogRequest = window.engineAPI.requestLogBacklog?.() ?? Promise.resolve([]);
+    backlogRequest
+      .catch(() => [])
+      .then((backlog) => {
+        backlog.forEach(showMainEntry);
+        const queued = pendingLive;
+        pendingLive = null;
+        queued.forEach(showMainEntry);
+      });
   }
 
-  // LOGS panel uses the shared disclosure toggle. It opens on every launch (not persisted).
+  // LOGS panel uses the shared disclosure toggle. Whether it starts open is a setting (System tab, default open).
   const logsDisclosure = (btnToggleConsole && systemLogPanel)
     ? createDisclosure({
         button: btnToggleConsole,
@@ -101,23 +139,42 @@ export function initSystemConsole() {
       })
     : null;
 
-  logsDisclosure?.set(true);
+  logsDisclosure?.set(!settingsStore.getPreference('system.collapseLogsOnStartup'));
 
-  if (btnClearLogs && logEntriesContainer) {
-    btnClearLogs.addEventListener('click', () => {
-      logBuffer.length = 0;
-      logEntriesContainer.innerHTML = '';
-      updateLogBadge();
-    });
-  }
+  const clearLogs = () => {
+    logBuffer.length = 0;
+    if (logEntriesContainer) logEntriesContainer.innerHTML = '';
+    liveMirrors().forEach((view) => view.replaceChildren());
+    updateLogBadge();
+  };
 
-  if (btnCopyLogs) {
-    btnCopyLogs.addEventListener('click', () => {
-      const text = logBuffer.map(l => `[${l.time}] [${l.level}] [${l.source}] ${l.message}`).join('\n');
-      navigator.clipboard.writeText(text);
-      const og = btnCopyLogs.textContent;
-      btnCopyLogs.textContent = 'Copied!';
-      setTimeout(() => { btnCopyLogs.textContent = og; }, 2000);
-    });
-  }
+  const formatLogs = () => logBuffer.map(l => `[${l.time}] [${l.level}] [${l.source}] ${l.message}`).join('\n');
+
+  const downloadLogs = () => {
+    const stamp = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 19);
+    saveTextToFile(formatLogs(), `vectoredit-logs-${stamp}.txt`, 'txt');
+  };
+
+  // Copy shows "Copied!" on the button that was pressed, then restores its content
+  const copyLogs = (button) => {
+    navigator.clipboard.writeText(formatLogs());
+    if (!button) return;
+    const original = [...button.childNodes];
+    button.textContent = 'Copied!';
+    setTimeout(() => button.replaceChildren(...original), 2000);
+  };
+
+  btnClearLogs?.addEventListener('click', clearLogs);
+  btnDownloadLogs?.addEventListener('click', downloadLogs);
+  btnCopyLogs?.addEventListener('click', () => copyLogs(btnCopyLogs));
+
+  // Buttons of the Settings > System log view (loaded later, so delegated)
+  document.addEventListener('click', (e) => {
+    const button = e.target.closest?.('[data-log-action]');
+    if (!button) return;
+    const action = button.dataset.logAction;
+    if (action === 'clear') clearLogs();
+    else if (action === 'download') downloadLogs();
+    else if (action === 'copy') copyLogs(button);
+  });
 }

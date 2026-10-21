@@ -1,9 +1,7 @@
 <header class="app-header">
   <div class="app-header__left">
-    <div class="app-header__window-controls" id="appHeaderLogoTrigger" data-ui="hdr:logo"
-      title="VectOrEdit - Click for About & Details" style="cursor: pointer; -webkit-app-region: no-drag;">
-      <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon"
-        title="Click to view About VectOrEdit" style="cursor: pointer;">
+    <div class="app-header__window-controls" id="appHeaderLogoTrigger" data-ui="hdr:logo" style="cursor: pointer; -webkit-app-region: no-drag;" data-i18n-title="tip_about_logo">
+      <img id="appLogoIcon" src="./assets/icon.png" alt="VectOrEdit" class="logo-icon" style="cursor: pointer;" data-i18n-title="tip_about_logo">
       <span class="app-header__title">VectOrEdit <span id="appVersionBadge" class="app-header__version-text"></span></span>
     </div>
 
@@ -12,46 +10,46 @@
       <!-- File Menu -->
       <div class="menu-bar-item" data-menu="file" data-ui="hdr:menu-file">
         <button class="menu-bar-btn" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false"
-          data-i18n="menu_file" title="File operations (New, Open, Save, Close, Exit)">File</button>
+          data-i18n="menu_file" data-i18n-title="tip_menu_file">File</button>
         <div class="menu-dropdown" id="menuDropdownFile" role="menu">
-          <button class="menu-dropdown-item" id="menuItemNewFile" role="menuitem" type="button" data-command="file.new">
+          <button class="menu-dropdown-item" id="menuItemNewFile" role="menuitem" type="button" data-command="file.new" data-i18n-title="tip_menu_new_file">
             <span class="menu-item-label" data-i18n="menu_file_new">New File</span>
             <span class="menu-accelerator">Ctrl+N</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemOpenFile" role="menuitem" type="button"
-            data-command="file.open">
+            data-command="file.open" data-i18n-title="tip_menu_open_file">
             <span class="menu-item-label" data-i18n="menu_file_open">Open File...</span>
             <span class="menu-accelerator">Ctrl+O</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemOpenWorkspace" role="menuitem" type="button"
-            data-command="file.openWorkspace">
+            data-command="file.openWorkspace" data-i18n-title="tip_menu_open_workspace">
             <span class="menu-item-label" data-i18n="menu_file_open_workspace">Open Workspace...</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemSaveFile" role="menuitem" type="button"
-            data-command="file.save">
+            data-command="file.save" data-i18n-title="tip_menu_save">
             <span class="menu-item-label" data-i18n="menu_file_save">Save</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemSaveAs" role="menuitem" type="button"
-            data-command="file.saveAs">
+            data-command="file.saveAs" data-i18n-title="tip_menu_save_as">
             <span class="menu-item-label" data-i18n="menu_file_save_as">Save As...</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemSaveAll" role="menuitem" type="button"
-            data-command="file.saveAll">
+            data-command="file.saveAll" data-i18n-title="tip_menu_save_all">
             <span class="menu-item-label" data-i18n="menu_file_save_all">Save All</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemCloseTab" role="menuitem" type="button"
-            data-command="file.closeTab">
+            data-command="file.closeTab" data-i18n-title="tip_menu_close_tab">
             <span class="menu-item-label" data-i18n="menu_file_close">Close Tab</span>
             <span class="menu-accelerator">Ctrl+W</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemFileSettings" role="menuitem" type="button"
-            data-command="help.settings">
+            data-command="help.settings" data-i18n-title="tip_menu_preferences">
             <span class="menu-item-label" data-i18n="menu_help_settings">Preferences & Settings...</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemExit" role="menuitem" type="button" data-command="file.exit">
+          <button class="menu-dropdown-item" id="menuItemExit" role="menuitem" type="button" data-command="file.exit" data-i18n-title="tip_menu_exit">
             <span class="menu-item-label" data-i18n="menu_file_exit">Exit</span>
           </button>
         </div>
@@ -60,27 +58,27 @@
       <!-- Edit Menu -->
       <div class="menu-bar-item" data-menu="edit" data-ui="hdr:menu-edit">
         <button class="menu-bar-btn" id="menuBtnEdit" type="button" aria-haspopup="true" aria-expanded="false"
-          data-i18n="menu_edit" title="Edit operations (Undo, Redo, Cut, Copy, Paste, Select All)">Edit</button>
+          data-i18n="menu_edit" data-i18n-title="tip_menu_edit">Edit</button>
         <div class="menu-dropdown" id="menuDropdownEdit" role="menu">
-          <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button" data-command="edit.undo">
+          <button class="menu-dropdown-item" id="menuItemUndo" role="menuitem" type="button" data-command="edit.undo" data-i18n-title="tip_menu_undo">
             <span class="menu-item-label" data-i18n="menu_edit_undo">Undo</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemRedo" role="menuitem" type="button" data-command="edit.redo">
+          <button class="menu-dropdown-item" id="menuItemRedo" role="menuitem" type="button" data-command="edit.redo" data-i18n-title="tip_menu_redo">
             <span class="menu-item-label" data-i18n="menu_edit_redo">Redo</span>
           </button>
           <div class="menu-divider" role="separator"></div>
-          <button class="menu-dropdown-item" id="menuItemCut" role="menuitem" type="button" data-command="edit.cut">
+          <button class="menu-dropdown-item" id="menuItemCut" role="menuitem" type="button" data-command="edit.cut" data-i18n-title="tip_menu_cut">
             <span class="menu-item-label" data-i18n="menu_edit_cut">Cut</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemCopy" role="menuitem" type="button" data-command="edit.copy">
+          <button class="menu-dropdown-item" id="menuItemCopy" role="menuitem" type="button" data-command="edit.copy" data-i18n-title="tip_menu_copy">
             <span class="menu-item-label" data-i18n="menu_edit_copy">Copy</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemPaste" role="menuitem" type="button" data-command="edit.paste">
+          <button class="menu-dropdown-item" id="menuItemPaste" role="menuitem" type="button" data-command="edit.paste" data-i18n-title="tip_menu_paste">
             <span class="menu-item-label" data-i18n="menu_edit_paste">Paste</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemSelectAll" role="menuitem" type="button"
-            data-command="edit.selectAll">
+            data-command="edit.selectAll" data-i18n-title="tip_menu_select_all">
             <span class="menu-item-label" data-i18n="menu_edit_select_all">Select All</span>
           </button>
         </div>
@@ -89,38 +87,38 @@
       <!-- View Menu -->
       <div class="menu-bar-item" data-menu="view" data-ui="hdr:menu-view">
         <button class="menu-bar-btn" id="menuBtnView" type="button" aria-haspopup="true" aria-expanded="false"
-          data-i18n="menu_view" title="View & Zoom controls">View</button>
+          data-i18n="menu_view" data-i18n-title="tip_menu_view">View</button>
         <div class="menu-dropdown" id="menuDropdownView" role="menu">
           <button class="menu-dropdown-item" id="menuItemToggleSidebar" role="menuitem" type="button"
-            data-command="view.toggleSidebar">
+            data-command="view.toggleSidebar" data-i18n-title="tip_menu_toggle_sidebar">
             <span class="menu-item-label" data-i18n="menu_view_toggle_sidebar">Toggle Suggest Sidebar</span>
             <span class="menu-accelerator">Ctrl+B</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemToggleLogs" role="menuitem" type="button"
-            data-command="view.toggleLogs">
+            data-command="view.toggleLogs" data-i18n-title="tip_menu_toggle_logs">
             <span class="menu-item-label" data-i18n="menu_view_toggle_logs">Toggle System Logs</span>
             <span class="menu-accelerator">Ctrl+J</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemZoomIn" role="menuitem" type="button"
-            data-command="view.zoomIn">
+            data-command="view.zoomIn" data-i18n-title="tip_menu_zoom_in">
             <span class="menu-item-label" data-i18n="menu_view_zoom_in">Zoom In</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemZoomOut" role="menuitem" type="button"
-            data-command="view.zoomOut">
+            data-command="view.zoomOut" data-i18n-title="tip_menu_zoom_out">
             <span class="menu-item-label" data-i18n="menu_view_zoom_out">Zoom Out</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemResetZoom" role="menuitem" type="button"
-            data-command="view.resetZoom">
+            data-command="view.resetZoom" data-i18n-title="tip_menu_reset_zoom">
             <span class="menu-item-label" data-i18n="menu_view_reset_zoom">Reset Zoom</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemToggleTheme" role="menuitem" type="button"
-            data-command="view.toggleTheme">
+            data-command="view.toggleTheme" data-i18n-title="tip_menu_toggle_theme">
             <span class="menu-item-label" data-i18n="menu_view_toggle_theme">Toggle Theme</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemToggleLang" role="menuitem" type="button"
-            data-command="view.toggleLang">
+            data-command="view.toggleLang" data-i18n-title="tip_menu_toggle_lang">
             <span class="menu-item-label" data-i18n="menu_view_toggle_lang">Toggle Language</span>
           </button>
         </div>
@@ -129,19 +127,19 @@
       <!-- Window Menu -->
       <div class="menu-bar-item" data-menu="window" data-ui="hdr:menu-window">
         <button class="menu-bar-btn" id="menuBtnWindow" type="button" aria-haspopup="true" aria-expanded="false"
-          data-i18n="menu_window" title="Window operations (Minimize, Maximize, Close)">Window</button>
+          data-i18n="menu_window" data-i18n-title="tip_menu_window">Window</button>
         <div class="menu-dropdown" id="menuDropdownWindow" role="menu">
           <button class="menu-dropdown-item" id="menuItemMinimize" role="menuitem" type="button"
-            data-command="window.minimize">
+            data-command="window.minimize" data-i18n-title="tip_menu_minimize">
             <span class="menu-item-label" data-i18n="menu_window_minimize">Minimize</span>
           </button>
           <button class="menu-dropdown-item" id="menuItemMaximize" role="menuitem" type="button"
-            data-command="window.maximize">
+            data-command="window.maximize" data-i18n-title="tip_menu_maximize">
             <span class="menu-item-label" data-i18n="menu_window_maximize">Toggle Maximize</span>
           </button>
           <div class="menu-divider" role="separator"></div>
           <button class="menu-dropdown-item" id="menuItemCloseWindow" role="menuitem" type="button"
-            data-command="window.close">
+            data-command="window.close" data-i18n-title="tip_menu_close_window">
             <span class="menu-item-label" data-i18n="menu_window_close">Close Window</span>
           </button>
         </div>
@@ -150,16 +148,16 @@
       <!-- Help Menu -->
       <div class="menu-bar-item" data-menu="help" data-ui="hdr:menu-help">
         <button class="menu-bar-btn" id="menuBtnHelp" type="button" aria-haspopup="true" aria-expanded="false"
-          data-i18n="menu_help" title="Help, First-run Setup, Docs & Settings">Help</button>
+          data-i18n="menu_help" data-i18n-title="tip_menu_help">Help</button>
         <div class="menu-dropdown" id="menuDropdownHelp" role="menu">
           <button class="menu-dropdown-item" id="menuItemAiSetup" role="menuitem" type="button"
-            data-command="help.aiSetup">
+            data-command="help.aiSetup" data-i18n-title="tip_menu_ai_setup">
             <span class="menu-item-label" data-i18n="menu_help_ai_setup">First-run Setup...</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemDocs" role="menuitem" type="button" data-command="help.docs">
+          <button class="menu-dropdown-item" id="menuItemDocs" role="menuitem" type="button" data-command="help.docs" data-i18n-title="tip_menu_docs">
             <span class="menu-item-label" data-i18n="menu_help_docs">Documentation</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemAbout" role="menuitem" type="button" data-command="help.about">
+          <button class="menu-dropdown-item" id="menuItemAbout" role="menuitem" type="button" data-command="help.about" data-i18n-title="tip_menu_about">
             <span class="menu-item-label" data-i18n="menu_help_about">About VectOrEdit</span>
           </button>
         </div>
@@ -169,18 +167,22 @@
 
   <div class="app-header__toolbar header-toolbar">
     <!-- Global Theme Selector -->
-    <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select"
-      title="Color Theme: Switch between Dark, Light, and High Contrast themes">
+    <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select" data-i18n-title="tip_header_theme">
       <span class="material-symbols-outlined theme-select-icon"
         style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xe40a;</span>
-      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"
-        title="Select Color Theme"></select>
+      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"></select>
     </div>
+
+    <!-- Appearance mode: each click goes System, Light, Dark; the icon shows the current one (settingsFacade.js) -->
+    <button id="btnColorMode" class="app-header__lang-toggle lang-toggle-btn" type="button"
+      data-ui="hdr:color-mode" style="padding: 2px 6px;" data-i18n-title="tip_header_color_mode">
+      <span id="colorModeIcon" class="material-symbols-outlined"
+        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">brightness_auto</span>
+    </button>
 
     <!-- Language Toggle -->
     <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button"
-      data-command="view.toggleLang" data-ui="hdr:locale-toggle" style="padding: 2px 8px; gap: 5px;"
-      title="Switch UI Language (English / Japanese)">
+      data-command="view.toggleLang" data-ui="hdr:locale-toggle" style="padding: 2px 8px; gap: 5px;" data-i18n-title="tip_lang_toggle">
       <span class="material-symbols-outlined lang-toggle-icon"
         style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xe8e2;</span>
       <span class="icon-label-text" id="langToggleLabel" style="font-size: var(--fs-12); font-weight: 700;">EN</span>
@@ -188,7 +190,7 @@
 
     <!-- Settings Button -->
     <button id="btnSettings" class="gear-btn gear-btn--md" type="button" data-i18n-title="btn_settings"
-      data-command="help.settings" data-ui="hdr:settings-btn" title="Preferences & Settings (Ctrl+,)">
+      data-command="help.settings" data-ui="hdr:settings-btn">
       <span class="material-symbols-outlined settings-icon">settings</span>
     </button>
 
@@ -197,8 +199,7 @@
 
     <!-- Zoom / UI Scaling Relative Adjustment (Mouse Wheel, Click Reset) -->
     <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select"
-      title="Zoom & UI Scale: Mouse wheel to zoom in/out, click to reset (100%)"
-      style="height: 26px; padding: 2px 8px; gap: 4px;">
+      style="height: 26px; padding: 2px 8px; gap: 4px;" data-i18n-title="tip_header_zoom">
       <span class="material-symbols-outlined header-zoom-icon"
         style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">zoom_in</span>
       <span id="headerZoomPercent" class="header-zoom-text"

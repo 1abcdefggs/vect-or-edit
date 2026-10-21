@@ -48,6 +48,7 @@ export type HeaderUiKey =
   | 'hdr:menu-help'
   | 'hdr:master-ai'
   | 'hdr:theme-select'
+  | 'hdr:color-mode'
   | 'hdr:locale-toggle'
   | 'hdr:zoom-select'
   | 'hdr:settings-btn'

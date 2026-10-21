@@ -1,0 +1,188 @@
+{
+  "base": "vs",
+  "inherit": true,
+  "rules": [
+    {
+      "background": "f8f8f2",
+      "token": ""
+    },
+    {
+      "foreground": "282a36",
+      "token": "source"
+    },
+    {
+      "foreground": "5f6690",
+      "fontStyle": "italic",
+      "token": "comment"
+    },
+    {
+      "foreground": "7a6500",
+      "token": "string"
+    },
+    {
+      "foreground": "b4236f",
+      "token": "string.regexp"
+    },
+    {
+      "foreground": "7c3aed",
+      "token": "number"
+    },
+    {
+      "foreground": "7c3aed",
+      "token": "constant.numeric"
+    },
+    {
+      "foreground": "7c3aed",
+      "token": "constant.language"
+    },
+    {
+      "foreground": "7c3aed",
+      "token": "constant.character"
+    },
+    {
+      "foreground": "7c3aed",
+      "token": "constant.other"
+    },
+    {
+      "foreground": "b4236f",
+      "token": "keyword"
+    },
+    {
+      "foreground": "b4236f",
+      "token": "storage"
+    },
+    {
+      "foreground": "0b6f82",
+      "fontStyle": "italic",
+      "token": "storage.type"
+    },
+    {
+      "foreground": "0b6f82",
+      "token": "type"
+    },
+    {
+      "foreground": "1a7a33",
+      "token": "entity.name.class"
+    },
+    {
+      "foreground": "1a7a33",
+      "token": "entity.name.type"
+    },
+    {
+      "foreground": "1a7a33",
+      "token": "entity.name.function"
+    },
+    {
+      "foreground": "1a7a33",
+      "token": "support.function"
+    },
+    {
+      "foreground": "a64d00",
+      "fontStyle": "italic",
+      "token": "variable.parameter"
+    },
+    {
+      "foreground": "282a36",
+      "token": "variable"
+    },
+    {
+      "foreground": "b4236f",
+      "token": "tag"
+    },
+    {
+      "foreground": "b4236f",
+      "token": "entity.name.tag"
+    },
+    {
+      "foreground": "1a7a33",
+      "token": "attribute.name"
+    },
+    {
+      "foreground": "1a7a33",
+      "token": "entity.other.attribute-name"
+    },
+    {
+      "foreground": "7a6500",
+      "token": "attribute.value"
+    },
+    {
+      "foreground": "0b6f82",
+      "token": "support.type"
+    },
+    {
+      "foreground": "0b6f82",
+      "token": "support.class"
+    },
+    {
+      "foreground": "0b6f82",
+      "token": "support.constant"
+    },
+    {
+      "foreground": "4a4d63",
+      "token": "delimiter"
+    },
+    {
+      "foreground": "4a4d63",
+      "token": "punctuation"
+    },
+    {
+      "foreground": "b4236f",
+      "fontStyle": "bold",
+      "token": "keyword.md"
+    },
+    {
+      "foreground": "1a7a33",
+      "fontStyle": "bold",
+      "token": "strong"
+    },
+    {
+      "foreground": "a64d00",
+      "fontStyle": "italic",
+      "token": "emphasis"
+    },
+    {
+      "foreground": "7a6500",
+      "token": "string.link"
+    },
+    {
+      "foreground": "b4236f",
+      "token": "markup.deleted"
+    },
+    {
+      "foreground": "1a7a33",
+      "token": "markup.inserted"
+    },
+    {
+      "foreground": "7a6500",
+      "token": "markup.changed"
+    },
+    {
+      "foreground": "ffffff",
+      "background": "b4236f",
+      "token": "invalid"
+    }
+  ],
+  "colors": {
+    "editor.foreground": "#282a36",
+    "editor.background": "#f8f8f2",
+    "editor.selectionBackground": "#d9d3f0",
+    "editor.inactiveSelectionBackground": "#e6e2f4",
+    "editor.selectionHighlightBackground": "#d9d3f080",
+    "editor.findMatchHighlightBackground": "#f5c48a80",
+    "editor.lineHighlightBackground": "#00000000",
+    "editor.lineHighlightBorder": "#00000000",
+    "editorCursor.foreground": "#282a36",
+    "editorLineNumber.foreground": "#6c739a",
+    "editorWhitespace.foreground": "#6c739a40",
+    "editorIndentGuide.background": "#6c739a30",
+    "editorIndentGuide.activeBackground": "#7c3aed80",
+    "sideBar.background": "#efefe7",
+    "titleBar.activeBackground": "#e4e4da",
+    "editorWidget.background": "#efefe7",
+    "editorGroup.border": "#d6d6cc",
+    "button.background": "#7c3aed",
+    "button.foreground": "#ffffff",
+    "dropdown.background": "#efefe7",
+    "dropdown.foreground": "#282a36"
+  }
+}

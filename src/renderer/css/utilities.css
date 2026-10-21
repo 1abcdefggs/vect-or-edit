@@ -318,6 +318,24 @@
   transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 
+/* The logo stays centered; the version sits beside it without shifting it */
+.startup-logo-row {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.startup-loader-version {
+  position: absolute;
+  left: 100%;
+  bottom: 0.5em;
+  margin-left: 10px;
+  font-family: var(--startup-status-font);
+  font-size: var(--fs-12);
+  color: var(--text-muted, #94a3b8);
+  white-space: nowrap;
+  user-select: none;
+}
+
 .startup-loader-status {
   font-family: var(--startup-status-font);
   max-width: 80vw;

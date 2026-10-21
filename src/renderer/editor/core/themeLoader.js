@@ -8,22 +8,6 @@ let monaco = null;
 // Use Vite's standard import.meta.glob with eager loading
 const themeModules = import.meta.glob('../../themes/*.json', { eager: true });
 
-export const availableThemes = Object.keys(themeModules)
-  .map(path => path.replace(/^.*\/themes\//, '').replace(/\.json$/i, ''))
-  .sort();
-
-export function isSystemDarkMode() {
-  return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-}
-
-const isAutoSetting = (value) => !value || value === 'auto' || value === 'System (Auto)';
-
-/** Stored theme setting ('auto' or a known theme name). The only place that reads the theme storage keys. */
-export function getStoredThemeSetting() {
-  const stored = localStorage.getItem(STORAGE_KEYS.LEGACY_THEME) || localStorage.getItem(STORAGE_KEYS.THEME);
-  return (!isAutoSetting(stored) && availableThemes.includes(stored)) ? stored : 'auto';
-}
-
 /**
  * Theme files are Monaco themes ({ base, inherit, rules, colors }). A VS Code theme ({ type, colors, tokenColors })
  * is converted to that shape on load, so one can be dropped into the themes folder as is:
@@ -53,67 +37,148 @@ export function normalizeTheme(raw) {
   return { ...raw, base, inherit: raw.inherit !== false, rules, colors: raw.colors || {} };
 }
 
-const normalizedThemes = new WeakMap();
+/**
+ * A theme is a family with a light face, a dark face or both, the way an OS theme works with its light and dark mode.
+ * The file name says which face a file is:
+ * - "Name.light.json" / "Name.dark.json": that face of "Name"
+ * - "Name.json": the face its own base says (a VS Code theme dropped in as is); it is the family's original face,
+ *   which a setting stored before appearance modes existed implied as its mode
+ * A family missing a face shows the face it has in either mode.
+ */
+const FACES = ['light', 'dark'];
 
-function themeObject(name) {
-  const key = Object.keys(themeModules).find(k => k.replace(/^.*\/themes\//, '').replace(/\.json$/i, '') === name);
-  if (!key) return null;
-  const mod = themeModules[key];
-  const raw = mod.default ?? mod;
-  if (!normalizedThemes.has(raw)) normalizedThemes.set(raw, normalizeTheme(raw));
-  return normalizedThemes.get(raw);
+function buildFamilies() {
+  const families = new Map();
+  for (const [path, mod] of Object.entries(themeModules)) {
+    const file = path.replace(/^.*\/themes\//, '').replace(/\.json$/i, '');
+    const match = file.match(/^(.+)\.(light|dark)$/i);
+    const theme = normalizeTheme(mod.default ?? mod);
+    const ownFace = theme.base === 'vs' ? 'light' : 'dark';
+    const name = match ? match[1] : file;
+    const face = match ? match[2].toLowerCase() : ownFace;
+    if (match && face !== ownFace) console.warn(`Theme file "${file}" is named ${face} but its base is ${theme.base}.`);
+    const family = families.get(name) || { name, faces: {}, original: null };
+    family.faces[face] = theme;
+    if (!match) family.original = face;
+    families.set(name, family);
+  }
+  return families;
 }
 
-const isLightBase = (name) => themeObject(name)?.base === 'vs';
+const families = buildFamilies();
+
+export const availableThemes = [...families.keys()].sort();
+
+export const DEFAULT_THEME = families.has('GitHub') ? 'GitHub' : (availableThemes[0] || 'GitHub');
+
+/** Whether a theme has both a light and a dark face (one with a single face looks the same in both modes). */
+export function hasBothFaces(name) {
+  const family = families.get(name);
+  return !!family && FACES.every(face => family.faces[face]);
+}
 
 /**
- * The themes "Auto" switches between: the stored dark and light picks, each kept only while it really is a dark or
- * light theme, otherwise the GitHub pair.
+ * Reads a stored or typed theme name. Accepts a family name in any case, and a face name from before families
+ * ("GitHub Dark", "github-light"), which also says which face it meant.
  */
-export function getAutoThemePair() {
-  const pick = (storageKey, wantLight, fallback) => {
-    const stored = localStorage.getItem(storageKey);
-    if (stored && availableThemes.includes(stored) && isLightBase(stored) === wantLight) return stored;
-    return availableThemes.includes(fallback) ? fallback : (availableThemes.find(t => isLightBase(t) === wantLight) || availableThemes[0] || fallback);
-  };
-  return {
-    dark: pick(STORAGE_KEYS.THEME_DARK, false, 'GitHub Dark'),
-    light: pick(STORAGE_KEYS.THEME_LIGHT, true, 'GitHub Light')
-  };
+function parseThemeName(value) {
+  if (!value || typeof value !== 'string') return null;
+  const find = (s) => availableThemes.find(t => t.toLowerCase() === s.toLowerCase().replace(/[-_]/g, ' ').trim()
+    || t.toLowerCase() === s.toLowerCase().trim());
+  const direct = find(value);
+  if (direct) return { name: direct, face: null };
+  const faceMatch = value.match(/^(.+?)[\s_-]+(light|dark)$/i);
+  const named = faceMatch && find(faceMatch[1]);
+  return named ? { name: named, face: faceMatch[2].toLowerCase() } : null;
 }
 
-export function isLightTheme(name) {
-  return isLightBase(name);
+const readStoredTheme = () => localStorage.getItem(STORAGE_KEYS.THEME) || localStorage.getItem(STORAGE_KEYS.LEGACY_THEME);
+
+/** Stored theme family. The only place that reads the theme storage keys; anything unknown (or the old "auto") is the default. */
+export function getStoredThemeSetting() {
+  return parseThemeName(readStoredTheme())?.name || DEFAULT_THEME;
 }
 
-export function getResolvedThemeName(themeSetting) {
-  if (isAutoSetting(themeSetting)) {
-    const pair = getAutoThemePair();
-    return isSystemDarkMode() ? pair.dark : pair.light;
-  }
-  // Allow matching "GitHub-Dark" or "github-dark" to "GitHub Dark"
-  const normalizedInput = themeSetting.toLowerCase().replace(/[-_]/g, ' ');
-  const match = availableThemes.find(t => t.toLowerCase() === normalizedInput || t.toLowerCase() === themeSetting.toLowerCase());
-  return match || themeSetting;
+export const COLOR_MODES = ['system', 'light', 'dark'];
+
+export function isSystemDarkMode() {
+  return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+/**
+ * Appearance mode: 'system' follows the OS, 'light' / 'dark' pin it. Independent of the theme, it decides which face
+ * of the theme shows. Before a mode was stored, a pinned theme implied its own mode and the old "auto" meant 'system'.
+ */
+export function getColorMode() {
+  const stored = localStorage.getItem(STORAGE_KEYS.COLOR_MODE);
+  if (COLOR_MODES.includes(stored)) return stored;
+  const legacy = parseThemeName(readStoredTheme());
+  if (!legacy) return 'system';
+  return legacy.face || families.get(legacy.name)?.original || 'system';
+}
+
+/** Whether the mode currently resolves to dark (the OS decides only in 'system'). */
+export function isDarkModeActive() {
+  const mode = getColorMode();
+  return mode === 'system' ? isSystemDarkMode() : mode === 'dark';
+}
+
+/**
+ * The face of a theme to show: the asked one (else the current mode's), or the other face when the theme lacks it.
+ * @param {string} themeSetting
+ * @param {'light' | 'dark' | null} [face]
+ */
+function resolveFace(themeSetting, face = null) {
+  const name = parseThemeName(themeSetting)?.name || DEFAULT_THEME;
+  const family = families.get(name);
+  if (!family) return null;
+  const wanted = face || (isDarkModeActive() ? 'dark' : 'light');
+  const shown = family.faces[wanted] ? wanted : FACES.find(f => family.faces[f]);
+  const label = hasBothFaces(name) ? `${name} ${shown === 'light' ? 'Light' : 'Dark'}` : name;
+  return { name, face: shown, label, theme: family.faces[shown] };
+}
+
+/**
+ * Display name of the face that shows, e.g. "Dracula Light"; a theme with one face keeps its own name.
+ * @param {string} themeSetting
+ * @param {'light' | 'dark' | null} [face]
+ */
+export function getResolvedThemeName(themeSetting, face = null) {
+  return resolveFace(themeSetting, face)?.label || themeSetting;
+}
+
+/**
+ * Monaco theme id of the face that shows.
+ * @param {string} themeSetting
+ * @param {'light' | 'dark' | null} [face]
+ */
+export function getMonacoThemeId(themeSetting, face = null) {
+  return getResolvedThemeName(themeSetting, face).replace(/[^a-zA-Z0-9_-]/g, '-');
+}
+
+/**
+ * @param {string} themeSetting
+ * @param {'light' | 'dark' | null} [face]
+ */
+export function getThemeData(themeSetting, face = null) {
+  return resolveFace(themeSetting, face)?.theme || null;
 }
 
 // Global OS Dark/Light Mode Listener
 if (typeof window !== 'undefined' && window.matchMedia) {
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (getStoredThemeSetting() === 'auto') loadTheme('auto');
+    if (getColorMode() === 'system') loadTheme(getStoredThemeSetting());
   });
-}
-
-export function getThemeData(themeName) {
-  return themeObject(getResolvedThemeName(themeName));
 }
 
 /**
  * The five colors a theme card needs to draw a small editor sample: background, line numbers,
  * keyword, string and plain text. Read from the theme file, so a theme added to the themes folder shows up as is.
+ * @param {string} themeSetting
+ * @param {'light' | 'dark' | null} [face]
  */
-export function getThemePreview(themeSetting) {
-  const data = getThemeData(themeSetting);
+export function getThemePreview(themeSetting, face = null) {
+  const data = getThemeData(themeSetting, face);
   const colors = data?.colors || {};
   const rules = data?.rules || [];
   const fromRule = (name) => {
@@ -147,15 +212,14 @@ export function safeSetMonacoTheme(themeName, fallbackBase = 'vs-dark') {
 let lastThemeLabel = '';
 let latestLoadId = 0;
 
+/** Applies the face of a theme that the current appearance mode shows. */
 export async function loadTheme(themeName) {
-  if (!themeName) return null;
-
-  const actualThemeName = getResolvedThemeName(themeName);
-  let theme = getThemeData(actualThemeName);
-  if (!theme) {
-    console.error(`Theme "${actualThemeName}" (setting: "${themeName}") could not be found in loaded themes.`);
+  const resolved = resolveFace(themeName);
+  if (!resolved) {
+    console.error(`Theme "${themeName}" could not be found in loaded themes.`);
     return null;
   }
+  const { theme, label } = resolved;
 
   // 1. Apply to DOM CSS variables
   applyThemeToDOM(theme);
@@ -175,9 +239,7 @@ export async function loadTheme(themeName) {
     if (monaco && monaco.editor) {
       await registerAllMonacoThemes();
       if (loadId !== latestLoadId) return theme;
-      const monacoThemeId = actualThemeName.replace(/[^a-zA-Z0-9_-]/g, '-');
-      const fallbackBase = theme.base === 'vs' ? 'vs' : 'vs-dark';
-      safeSetMonacoTheme(monacoThemeId, fallbackBase);
+      safeSetMonacoTheme(label.replace(/[^a-zA-Z0-9_-]/g, '-'), theme.base === 'vs' ? 'vs' : 'vs-dark');
     }
   } catch (err) {
     console.warn('Could not set Monaco theme:', err);
@@ -186,41 +248,40 @@ export async function loadTheme(themeName) {
   if (loadId !== latestLoadId) return theme;
 
   // Log only when the applied theme changes; repeated loads of the same theme would duplicate the pipeline line.
-  const themeLabel = `2. THEME: ${actualThemeName} Applied`;
+  const themeLabel = `2. THEME: ${label} Applied`;
   if (themeLabel !== lastThemeLabel) {
     lastThemeLabel = themeLabel;
     setLedStatus('thm', true, themeLabel);
   }
 
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('app:themeApplied', { detail: { theme: actualThemeName } }));
+    window.dispatchEvent(new CustomEvent('app:themeApplied', { detail: { theme: label } }));
   }
   return theme;
 }
 
+/** Registers every face of every theme with Monaco under its face id ("Dracula-Light", "Monokai-Dark", "Tukune"...). */
 export async function registerAllMonacoThemes() {
   try {
     if (!monaco) monaco = await import('monaco-editor');
     if (!monaco || !monaco.editor) return;
 
     for (const name of availableThemes) {
-      const data = getThemeData(name);
-      if (!data) continue;
-      const safeTheme = {
-        base: data.base === 'vs' ? 'vs' : 'vs-dark',
-        inherit: data.inherit !== false,
-        rules: Array.isArray(data.rules) ? data.rules : [],
-        colors: data.colors || {}
-      };
-      const slug = name.replace(/[^a-zA-Z0-9_-]/g, '-');
-      try {
-        monaco.editor.defineTheme(slug, safeTheme);
-        registeredMonacoThemes.add(slug);
-      } catch (_) {}
-      try {
-        monaco.editor.defineTheme(name, safeTheme);
-        registeredMonacoThemes.add(name);
-      } catch (_) {}
+      for (const face of FACES) {
+        if (!families.get(name).faces[face]) continue;
+        const data = getThemeData(name, face);
+        const id = getMonacoThemeId(name, face);
+        if (registeredMonacoThemes.has(id)) continue;
+        try {
+          monaco.editor.defineTheme(id, {
+            base: data.base === 'vs' ? 'vs' : 'vs-dark',
+            inherit: data.inherit !== false,
+            rules: Array.isArray(data.rules) ? data.rules : [],
+            colors: data.colors || {}
+          });
+          registeredMonacoThemes.add(id);
+        } catch (_) {}
+      }
     }
   } catch (e) {
     console.warn('Failed to pre-register Monaco themes:', e);

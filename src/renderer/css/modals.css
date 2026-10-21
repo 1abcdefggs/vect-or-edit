@@ -998,6 +998,33 @@
   transform: translateX(100%);
 }
 
+/* Appearance: the same switch with three positions (System, Light, Dark) */
+.first-run-segment--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Three labels need more room than the two-position row width; the longest ja label (the follow-system option) must stay on one line */
+.first-run-section--row .first-run-segment--three {
+  width: 400px;
+  max-width: 100%;
+}
+
+.first-run-segment--three .first-run-segment-option {
+  white-space: nowrap;
+}
+
+.first-run-segment--three .first-run-segment-thumb {
+  width: calc((100% - 8px) / 3);
+}
+
+.first-run-segment--three:has(input[value="light"]:checked) .first-run-segment-thumb {
+  transform: translateX(100%);
+}
+
+.first-run-segment--three:has(input[value="dark"]:checked) .first-run-segment-thumb {
+  transform: translateX(200%);
+}
+
 .first-run-segment:has(input:focus-visible) {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;

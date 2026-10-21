@@ -4,6 +4,10 @@
  * Deep Implementation: Manages modal DOM lifecycle, backdrop blur, theme grounding, and safe external link dispatch.
  */
 
+import { confirmClose } from '../notifications/closeGuard.js';
+import { t } from '../../core/i18n.js';
+import appLogoUrl from '../../assets/icon.png';
+
 let modalInstance: HTMLElement | null = null;
 
 export function showAboutModal(): void {
@@ -26,13 +30,13 @@ function createAboutModalElement(): HTMLElement {
   div.className = 'settings-modal-overlay';
   div.style.display = 'none';
   div.innerHTML = `
-    <div class="settings-modal-dialog" style="width: 480px; max-width: calc(100vw - 2rem); margin: 1rem; border-radius: 12px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65); border: var(--border-width) solid var(--border-color); overflow: hidden;">
+    <div class="settings-modal-dialog" style="width: 720px; max-width: calc(100vw - 2rem); height: auto; max-height: calc(100vh - 4rem); margin: 1rem; border-radius: 12px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65); border: var(--border-width) solid var(--border-color); overflow: hidden;">
       <div class="modal-header" style="padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <img src="./assets/icon.png" alt="VectOrEdit" style="width: 22px; height: 22px; border-radius: 4px;">
+          <img src="${appLogoUrl}" alt="VectOrEdit" style="width: 22px; height: 22px; border-radius: 4px;">
           <span class="modal-title" style="font-weight: 600; font-size: var(--fs-16);">About VectOrEdit</span>
         </div>
-        <button id="btnCloseAboutModal" class="toolbar-btn" style="padding: 4px; border-radius: 4px; cursor: pointer;" title="Close">
+        <button id="btnCloseAboutModal" class="toolbar-btn" style="padding: 4px; border-radius: 4px; cursor: pointer;" title="${t('tip_close')}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -41,7 +45,7 @@ function createAboutModalElement(): HTMLElement {
       </div>
       <div class="settings-modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 24px; text-align: center;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-          <img src="./assets/icon.png" alt="VectOrEdit" style="width: 48px; height: 48px; border-radius: 14px; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);">
+          <img src="${appLogoUrl}" alt="VectOrEdit" style="width: 48px; height: 48px; border-radius: 14px; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);">
           <div style="font-size: var(--fs-22); font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;">VectOrEdit</div>
           <div style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 20px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-color, #38bdf8); font-size: var(--fs-13); font-family: monospace; font-weight: 600;">
             <span id="aboutVersionBadge"></span>
@@ -65,22 +69,45 @@ function createAboutModalElement(): HTMLElement {
             <span style="color: var(--text-muted);">MIT License</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--text-muted);">Third-party licenses</span>
+            <a id="btnAboutToggleNotices" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none; font-weight: 500;">Show ↓</a>
+          </div>
+          <pre id="aboutNoticesText" style="display: none; margin: 4px 0 0; max-height: 220px; overflow: auto; padding: 8px 10px; background: var(--bg-secondary); border: var(--border-width) solid var(--border-color); border-radius: 6px; font-size: var(--fs-11); line-height: 1.5; white-space: pre-wrap; word-break: break-word; user-select: text;"></pre>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Repository</span>
             <a id="btnAboutOpenRepo" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none; font-weight: 500;">vect-organization/vect-or-edit ↙</a>
           </div>
         </div>
         <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: var(--border-width) solid var(--border-color); font-size: var(--fs-12); color: var(--text-muted);">
-          <span>© 2026 vect-organization.</span>
+          <span>© 2026 1abcdefggs. MIT License.</span>
           <button id="btnAboutOk" class="toolbar-btn" style="padding: 6px 18px; background: var(--accent-color, #38bdf8); color: #020617; font-weight: 600; border-radius: 6px; font-size: var(--fs-13); cursor: pointer;">OK</button>
         </div>
       </div>
     </div>
   `;
 
-  div.querySelector('#btnCloseAboutModal')?.addEventListener('click', hideAboutModal);
+  div.querySelector('#btnCloseAboutModal')?.addEventListener('click', async () => {
+    if (await confirmClose('about')) hideAboutModal();
+  });
   div.querySelector('#btnAboutOk')?.addEventListener('click', hideAboutModal);
   div.addEventListener('click', (e) => {
     if (e.target === div) hideAboutModal();
+  });
+  const noticesToggle = div.querySelector<HTMLAnchorElement>('#btnAboutToggleNotices');
+  const noticesText = div.querySelector<HTMLElement>('#aboutNoticesText');
+  let noticesLoaded = false;
+  noticesToggle?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (!noticesText) return;
+    const opening = noticesText.style.display === 'none';
+    noticesText.style.display = opening ? 'block' : 'none';
+    noticesToggle.textContent = opening ? 'Hide ↑' : 'Show ↓';
+    if (opening && !noticesLoaded) {
+      noticesLoaded = true;
+      const text = await window.engineAPI?.getThirdPartyNotices?.().catch(() => null);
+      // textContent: the file is plain text and must never be parsed as markup
+      noticesText.textContent = text ?? 'The license list is not bundled with this build. See the LICENSE file in the installation folder.';
+    }
   });
   div.querySelector('#btnAboutOpenRepo')?.addEventListener('click', (e) => {
     e.preventDefault();
