@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.24",
+  "version": "0.3.26",
   "description": "VectOrEdit ,Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter",
   "keywords": [
     "electron",
@@ -85,7 +85,10 @@
       "package.json",
       "node_modules/@1abcdefggs/vect-or-engine/**/*",
       "!**/node_modules/sharp/**/*",
-      "!**/node_modules/@img/**/*"
+      "!**/node_modules/@img/**/*",
+      "!**/node_modules/onnxruntime-node/bin/napi-v3/linux/**/*",
+      "!**/node_modules/onnxruntime-node/bin/napi-v3/darwin/**/*",
+      "!**/_ARCHIVES/**/*"
     ],
     "extraResources": [
       "LICENSE",
