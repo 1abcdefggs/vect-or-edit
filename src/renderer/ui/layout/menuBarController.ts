@@ -1,4 +1,5 @@
 import { showAboutModal } from '../modals/aboutModalController.js';
+import { REPOSITORY_URL } from '../../../shared/projectLinks';
 /**
  * Menu Bar Controller (VS Code Style Inline Menu Bar)
  * Handles dropdown open/close, hover switching, click-outside dismissal,
@@ -404,7 +405,7 @@ export function registerAppCommands(): void {
       title: 'Documentation',
       category: 'Help',
       handler: () => {
-        const url = 'https://github.com/vect-organization/vect-or-edit';
+        const url = REPOSITORY_URL;
         if (window.engineAPI?.openExternal) {
           window.engineAPI.openExternal(url);
         } else {

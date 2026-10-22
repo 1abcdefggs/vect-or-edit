@@ -15,6 +15,8 @@ import { bindSaveLocationControls } from './saveLocation.js';
 import { getDefaultDocumentFormat } from '../../editor/tabs/tabState.js';
 import { confirmClose } from '../notifications/closeGuard.js';
 import { initWindowFeatureSettings } from './windowFeatureSettings.js';
+import { initChoiceControls } from './choiceControls.js';
+import { initSettingsHelpPane } from './settingsHelpPane.js';
 
 function setAndSync(key, value) {
   localStorage.setItem(key, value);
@@ -127,6 +129,11 @@ export function initSettings(updateEditorCb) {
     if (!localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG)) setAndSync(STORAGE_KEYS.CUSTOM_EDITOR_FG, legacyTextColor);
     localStorage.removeItem('undefined');
   }
+
+  // Switches and segmented buttons wrap the selects first, so later `.value = ...` calls update them
+  initChoiceControls();
+  // The generated guide beside the settings follows the open tab
+  initSettingsHelpPane();
 
   // Autosave, AI assistants and the log panel: settings for features the window also has
   initWindowFeatureSettings();
@@ -536,13 +543,9 @@ export function initSettings(updateEditorCb) {
 
     function updateActiveProviderCard(val) {
       providerCards.forEach(card => {
-        if (card.dataset.provider === val) {
-          card.style.borderColor = 'var(--accent-color, #38bdf8)';
-          card.style.background = 'rgba(56, 189, 248, 0.1)';
-        } else {
-          card.style.borderColor = 'var(--border-color, rgba(148, 163, 184, 0.2))';
-          card.style.background = 'transparent';
-        }
+        const selected = card.dataset.provider === val;
+        card.classList.toggle('active', selected);
+        card.setAttribute('aria-pressed', String(selected));
       });
     }
 
@@ -745,14 +748,6 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  // Jump to AI & Knowledge tab from Editor settings tab
-  const btnJumpToAiTab = document.getElementById('btnJumpToAiTab');
-  if (btnJumpToAiTab) {
-    btnJumpToAiTab.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAiSearch' } }));
-    });
-  }
-
   if (btnInitLocalAi) {
     btnInitLocalAi.addEventListener('click', () => {
       const targetModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
@@ -779,39 +774,6 @@ export function initSettings(updateEditorCb) {
       await importDictionary();
     });
   }
-
-  // AI MODEL Tab Switching (Embedding vs LLM)
-  const aiModelTabBtns = document.querySelectorAll('.ai-model-tab-btn');
-  const panelEmbedding = document.getElementById('panelEmbedding');
-  const panelLlm = document.getElementById('panelLlm');
-  const panelCapability = document.getElementById('panelCapability');
-
-  function switchAiModelTab(targetTab) {
-    aiModelTabBtns.forEach(btn => {
-      const selected = btn.dataset.aimodelTab === targetTab;
-      btn.classList.toggle('active', selected);
-      btn.setAttribute('aria-selected', String(selected));
-    });
-
-    if (panelEmbedding) {
-      if (targetTab === 'embedding') panelEmbedding.classList.add('active');
-      else panelEmbedding.classList.remove('active');
-    }
-    if (panelLlm) {
-      if (targetTab === 'llm') panelLlm.classList.add('active');
-      else panelLlm.classList.remove('active');
-    }
-    if (panelCapability) {
-      if (targetTab === 'capability') panelCapability.classList.add('active');
-      else panelCapability.classList.remove('active');
-    }
-  }
-
-  aiModelTabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      switchAiModelTab(btn.dataset.aimodelTab);
-    });
-  });
 
   // Embedding Subtab Switching (Local vs Cloud)
   const aiEmbSubtabBtns = document.querySelectorAll('.ai-model-subtab-btn');
@@ -843,11 +805,12 @@ export function initSettings(updateEditorCb) {
     });
   });
 
-  // Shortcut from Cloud Embedding subpanel to LLM tab
+  // Shortcut from the Cloud Embedding subpanel to the LLM keys (Editor tab)
   const btnGoToLlmConfig = document.getElementById('btnGoToLlmConfig');
   if (btnGoToLlmConfig) {
     btnGoToLlmConfig.addEventListener('click', () => {
-      switchAiModelTab('llm');
+      openSettingsTab('tabEditor');
+      document.getElementById('llmConfigCard')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     });
   }
 
@@ -866,7 +829,7 @@ export function initSettings(updateEditorCb) {
 
 
 
-  function openSettingsTab(tabId, subtab) {
+  function openSettingsTab(tabId) {
     if (!settingsModal) return;
     settingsModal.style.display = 'flex';
     modalTabs.forEach(b => {
@@ -881,9 +844,6 @@ export function initSettings(updateEditorCb) {
         c.classList.add('active');
         if (tabId === 'tabAiSearch') {
           notifyEmbeddingModelsChanged();
-          if (subtab === 'llm' || subtab === 'embedding') {
-            switchAiModelTab(subtab);
-          }
         }
       } else {
         c.classList.remove('active');
@@ -893,8 +853,7 @@ export function initSettings(updateEditorCb) {
 
   window.addEventListener('app:openSettings', (e) => {
     const tabId = e.detail?.tab || 'tabAppearance';
-    const subtab = e.detail?.subtab;
-    openSettingsTab(tabId, subtab);
+    openSettingsTab(tabId);
   });
 
   const btnBackToEditor = document.getElementById('btnBackToEditor');

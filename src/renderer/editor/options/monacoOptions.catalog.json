@@ -1,0 +1,3800 @@
+{
+  "generatedBy": "scripts/extract-monaco-options.mjs",
+  "monacoVersion": "0.56.0",
+  "sourceInterfaces": [
+    "IEditorOptions",
+    "IGlobalEditorOptions"
+  ],
+  "count": 180,
+  "options": [
+    {
+      "name": "inDiffEditor",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "This editor is used inside a diff editor.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "allowVariableLineHeights",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "This editor is allowed to use variable line heights.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "allowVariableFonts",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "This editor is allowed to use variable font-sizes and font-families",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "allowVariableFontsInAccessibilityMode",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "This editor is allowed to use variable font-sizes and font-families in accessibility mode",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "ariaLabel",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "The aria label for the editor's textarea (when it is focused).",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "ariaRequired",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Whether the aria-required attribute should be set on the editors textarea.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "screenReaderAnnounceInlineSuggestion",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Control whether a screen reader announces inline suggestion content immediately.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "tabIndex",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The `tabindex` property of the editor's textarea",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "rulers",
+      "type": "(number | IRulerOption)[]",
+      "kinds": [
+        "array"
+      ],
+      "enumValues": [],
+      "doc": "Render vertical lines at the specified columns. Defaults to empty array.",
+      "defaultText": "empty array",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordSegmenterLocales",
+      "type": "string | string[]",
+      "kinds": [
+        "string",
+        "array"
+      ],
+      "enumValues": [],
+      "doc": "Locales used for segmenting lines into words when doing word related navigations or operations. Specify the BCP 47 language tag of the word you wish to recognize (e.g., ja, zh-CN, zh-Hant-TW, etc.). Defaults to empty array",
+      "defaultText": "empty array",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordSeparators",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "A string containing the word separators used when doing word navigation. Defaults to `~!@#$%^&*()-=+[{]}\\\\|;:\\'\",.<>/?",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "selectionClipboard",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable Linux primary clipboard. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "lineNumbers",
+      "type": "LineNumbersType",
+      "kinds": [
+        "function"
+      ],
+      "enumValues": [
+        "on",
+        "off",
+        "relative",
+        "interval"
+      ],
+      "doc": "Control the rendering of line numbers. If it is a function, it will be invoked when rendering a line number and the return value will be rendered. Otherwise, if it is a truthy, line numbers will be rendered normally (equivalent of using an identity function). Otherwise, line numbers will not be rendered. Defaults to `on`.",
+      "defaultText": "`on`",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "cursorSurroundingLines",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Controls the minimal number of visible leading and trailing lines surrounding the cursor. Defaults to 0.",
+      "defaultText": "0",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "cursorSurroundingLinesStyle",
+      "type": "'default' | 'all'",
+      "kinds": [],
+      "enumValues": [
+        "default",
+        "all"
+      ],
+      "doc": "Controls when `cursorSurroundingLines` should be enforced Defaults to `default`, `cursorSurroundingLines` is not enforced when cursor position is changed by mouse.",
+      "defaultText": "`default`, `cursorSurroundingLines` is not enforced when cursor position is changed by mouse",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renderFinalNewline",
+      "type": "'on' | 'off' | 'dimmed'",
+      "kinds": [],
+      "enumValues": [
+        "on",
+        "off",
+        "dimmed"
+      ],
+      "doc": "Render last line number when the file ends with a newline. Defaults to 'on' for Windows and macOS and 'dimmed' for Linux.",
+      "defaultText": "'on' for Windows and macOS and 'dimmed' for Linux",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "unusualLineTerminators",
+      "type": "'auto' | 'off' | 'prompt'",
+      "kinds": [],
+      "enumValues": [
+        "auto",
+        "off",
+        "prompt"
+      ],
+      "doc": "Remove unusual line terminators like LINE SEPARATOR (LS), PARAGRAPH SEPARATOR (PS). Defaults to 'prompt'.",
+      "defaultText": "'prompt'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "selectOnLineNumbers",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Should the corresponding line be selected when clicking on the line number? Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "lineNumbersMinChars",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Control the width of line numbers, by reserving horizontal space for rendering at least an amount of digits. Defaults to 5.",
+      "defaultText": "5",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "glyphMargin",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable the rendering of the glyph margin. Defaults to true in vscode and to false in monaco-editor.",
+      "defaultText": "true in vscode and to false in monaco-editor",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "lineDecorationsWidth",
+      "type": "number | string",
+      "kinds": [
+        "number",
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "The width reserved for line decorations (in px). Line decorations are placed between line numbers and the editor content. You can pass in a string in the format floating point followed by \"ch\". e.g. 1.3ch. Defaults to 10.",
+      "defaultText": "10",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "revealHorizontalRightPadding",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "When revealing the cursor, a virtual padding (px) is added to the cursor, turning it into a rectangle. This virtual padding ensures that the cursor gets revealed before hitting the edge of the viewport. Defaults to 30 (px).",
+      "defaultText": "30 (px)",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "roundedSelection",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Render the editor selection with rounded borders. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "extraEditorClassName",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "Class name to be added to the editor.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "readOnly",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Should the editor be read only. See also `domReadOnly`. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "readOnlyMessage",
+      "type": "IMarkdownString",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "The message to display when the editor is readonly.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IMarkdownString",
+          "members": [
+            {
+              "name": "value",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "isTrusted",
+              "type": "boolean | MarkdownStringTrustedOptions",
+              "kinds": [
+                "boolean",
+                "object"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "supportThemeIcons",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "supportHtml",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "baseUri",
+              "type": "UriComponents",
+              "kinds": [
+                "object"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "uris",
+              "type": "{ [href: string]: UriComponents; }",
+              "kinds": [
+                "object"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "domReadOnly",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Should the textarea used for input use the DOM `readonly` attribute. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "linkedEditing",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable linked editing. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renameOnType",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "deprecated, use linkedEditing instead",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renderValidationDecorations",
+      "type": "'editable' | 'on' | 'off'",
+      "kinds": [],
+      "enumValues": [
+        "editable",
+        "on",
+        "off"
+      ],
+      "doc": "Should the editor render validation decorations. Defaults to editable.",
+      "defaultText": "editable",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "scrollbar",
+      "type": "IEditorScrollbarOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Control the behavior and rendering of the scrollbars.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorScrollbarOptions",
+          "members": [
+            {
+              "name": "arrowSize",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "The size of arrows (if displayed). Defaults to 11. **NOTE**: This option cannot be updated using `updateOptions()`",
+              "defaultText": "11"
+            },
+            {
+              "name": "vertical",
+              "type": "'auto' | 'visible' | 'hidden'",
+              "kinds": [],
+              "enumValues": [
+                "auto",
+                "visible",
+                "hidden"
+              ],
+              "doc": "Render vertical scrollbar. Defaults to 'auto'.",
+              "defaultText": "'auto'"
+            },
+            {
+              "name": "horizontal",
+              "type": "'auto' | 'visible' | 'hidden'",
+              "kinds": [],
+              "enumValues": [
+                "auto",
+                "visible",
+                "hidden"
+              ],
+              "doc": "Render horizontal scrollbar. Defaults to 'auto'.",
+              "defaultText": "'auto'"
+            },
+            {
+              "name": "useShadows",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Cast horizontal and vertical shadows when the content is scrolled. Defaults to true. **NOTE**: This option cannot be updated using `updateOptions()`",
+              "defaultText": "true"
+            },
+            {
+              "name": "verticalHasArrows",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Render arrows at the top and bottom of the vertical scrollbar. Defaults to false. **NOTE**: This option cannot be updated using `updateOptions()`",
+              "defaultText": "false"
+            },
+            {
+              "name": "horizontalHasArrows",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Render arrows at the left and right of the horizontal scrollbar. Defaults to false. **NOTE**: This option cannot be updated using `updateOptions()`",
+              "defaultText": "false"
+            },
+            {
+              "name": "handleMouseWheel",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Listen to mouse wheel events and react to them by scrolling. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "alwaysConsumeMouseWheel",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Always consume mouse wheel events (always call preventDefault() and stopPropagation() on the browser events). Defaults to true. **NOTE**: This option cannot be updated using `updateOptions()`",
+              "defaultText": "true"
+            },
+            {
+              "name": "horizontalScrollbarSize",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Height in pixels for the horizontal scrollbar. Defaults to 12 (px).",
+              "defaultText": "12 (px)"
+            },
+            {
+              "name": "verticalScrollbarSize",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Width in pixels for the vertical scrollbar. Defaults to 14 (px).",
+              "defaultText": "14 (px)"
+            },
+            {
+              "name": "verticalSliderSize",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Width in pixels for the vertical slider. Defaults to `verticalScrollbarSize`. **NOTE**: This option cannot be updated using `updateOptions()`",
+              "defaultText": "`verticalScrollbarSize`"
+            },
+            {
+              "name": "horizontalSliderSize",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Height in pixels for the horizontal slider. Defaults to `horizontalScrollbarSize`. **NOTE**: This option cannot be updated using `updateOptions()`",
+              "defaultText": "`horizontalScrollbarSize`"
+            },
+            {
+              "name": "scrollByPage",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Scroll gutter clicks move by page vs jump to position. Defaults to false.",
+              "defaultText": "false"
+            },
+            {
+              "name": "ignoreHorizontalScrollbarInContentHeight",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "When set, the horizontal scrollbar will not increase content height. Defaults to false.",
+              "defaultText": "false"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "stickyScroll",
+      "type": "IEditorStickyScrollOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Control the behavior of sticky scroll options",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorStickyScrollOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable the sticky scroll",
+              "defaultText": null
+            },
+            {
+              "name": "maxLineCount",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Maximum number of sticky lines to show",
+              "defaultText": null
+            },
+            {
+              "name": "defaultModel",
+              "type": "'outlineModel' | 'foldingProviderModel' | 'indentationModel'",
+              "kinds": [],
+              "enumValues": [
+                "outlineModel",
+                "foldingProviderModel",
+                "indentationModel"
+              ],
+              "doc": "Model to choose for sticky scroll by default",
+              "defaultText": null
+            },
+            {
+              "name": "scrollWithEditor",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Define whether to scroll sticky scroll with editor horizontal scrollbae",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "minimap",
+      "type": "IEditorMinimapOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Control the behavior and rendering of the minimap.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorMinimapOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable the rendering of the minimap. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "autohide",
+              "type": "'none' | 'mouseover' | 'scroll'",
+              "kinds": [],
+              "enumValues": [
+                "none",
+                "mouseover",
+                "scroll"
+              ],
+              "doc": "Control the rendering of minimap.",
+              "defaultText": null
+            },
+            {
+              "name": "side",
+              "type": "'right' | 'left'",
+              "kinds": [],
+              "enumValues": [
+                "right",
+                "left"
+              ],
+              "doc": "Control the side of the minimap in editor. Defaults to 'right'.",
+              "defaultText": "'right'"
+            },
+            {
+              "name": "size",
+              "type": "'proportional' | 'fill' | 'fit'",
+              "kinds": [],
+              "enumValues": [
+                "proportional",
+                "fill",
+                "fit"
+              ],
+              "doc": "Control the minimap rendering mode. Defaults to 'actual'.",
+              "defaultText": "'actual'"
+            },
+            {
+              "name": "showSlider",
+              "type": "'always' | 'mouseover'",
+              "kinds": [],
+              "enumValues": [
+                "always",
+                "mouseover"
+              ],
+              "doc": "Control the rendering of the minimap slider. Defaults to 'mouseover'.",
+              "defaultText": "'mouseover'"
+            },
+            {
+              "name": "renderCharacters",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Render the actual text on a line (as opposed to color blocks). Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "maxColumn",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Limit the width of the minimap to render at most a certain number of columns. Defaults to 120.",
+              "defaultText": "120"
+            },
+            {
+              "name": "scale",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Relative size of the font in the minimap. Defaults to 1.",
+              "defaultText": "1"
+            },
+            {
+              "name": "showRegionSectionHeaders",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Whether to show named regions as section headers. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "showMarkSectionHeaders",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Whether to show MARK: comments as section headers. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "markSectionHeaderRegex",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "When specified, is used to create a custom section header parser regexp. Must contain a match group named 'label' (written as (?<label>.+)) that encapsulates the section header. Optionally can include another match group named 'separator'. To match multi-line headers like: // ========== // My Section // ========== Use a pattern like: ^={3,}\\n^\\/\\/ *(?<label>[^\\n]*?)\\n^={3,}$",
+              "defaultText": null
+            },
+            {
+              "name": "sectionHeaderFontSize",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Font size of section headers. Defaults to 9.",
+              "defaultText": "9"
+            },
+            {
+              "name": "sectionHeaderLetterSpacing",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Spacing between the section header characters (in CSS px). Defaults to 1.",
+              "defaultText": "1"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "find",
+      "type": "IEditorFindOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Control the behavior of the find widget.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorFindOptions",
+          "members": [
+            {
+              "name": "cursorMoveOnType",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Controls whether the cursor should move to find matches while typing.",
+              "defaultText": null
+            },
+            {
+              "name": "findOnType",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Controls whether the find widget should search as you type.",
+              "defaultText": null
+            },
+            {
+              "name": "seedSearchStringFromSelection",
+              "type": "'never' | 'always' | 'selection'",
+              "kinds": [],
+              "enumValues": [
+                "never",
+                "always",
+                "selection"
+              ],
+              "doc": "Controls if we seed search string in the Find Widget with editor selection.",
+              "defaultText": null
+            },
+            {
+              "name": "autoFindInSelection",
+              "type": "'never' | 'always' | 'multiline'",
+              "kinds": [],
+              "enumValues": [
+                "never",
+                "always",
+                "multiline"
+              ],
+              "doc": "Controls if Find in Selection flag is turned on in the editor.",
+              "defaultText": null
+            },
+            {
+              "name": "addExtraSpaceOnTop",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "loop",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Controls whether the search result and diff result automatically restarts from the beginning (or the end) when no further matches can be found",
+              "defaultText": null
+            },
+            {
+              "name": "closeOnResult",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Controls whether to close the Find Widget after an explicit find navigation command lands on a match.",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "fixedOverflowWidgets",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Display overflow widgets as `fixed`. Defaults to `false`.",
+      "defaultText": "`false`",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "allowOverflow",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Allow content widgets and overflow widgets to overflow the editor viewport. Defaults to `true`.",
+      "defaultText": "`true`",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "overviewRulerLanes",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The number of vertical lanes the overview ruler should render. Defaults to 3.",
+      "defaultText": "3",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "overviewRulerBorder",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls if a border should be drawn around the overview ruler. Defaults to `true`.",
+      "defaultText": "`true`",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "cursorBlinking",
+      "type": "'blink' | 'smooth' | 'phase' | 'expand' | 'solid'",
+      "kinds": [],
+      "enumValues": [
+        "blink",
+        "smooth",
+        "phase",
+        "expand",
+        "solid"
+      ],
+      "doc": "Control the cursor animation style, possible values are 'blink', 'smooth', 'phase', 'expand' and 'solid'. Defaults to 'blink'.",
+      "defaultText": "'blink'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "mouseWheelZoom",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Zoom the font in the editor when using the mouse wheel in combination with holding Ctrl. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "mouseStyle",
+      "type": "'text' | 'default' | 'copy'",
+      "kinds": [],
+      "enumValues": [
+        "text",
+        "default",
+        "copy"
+      ],
+      "doc": "Control the mouse pointer style, either 'text' or 'default' or 'copy' Defaults to 'text'",
+      "defaultText": "'text'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "cursorSmoothCaretAnimation",
+      "type": "'off' | 'explicit' | 'on'",
+      "kinds": [],
+      "enumValues": [
+        "off",
+        "explicit",
+        "on"
+      ],
+      "doc": "Enable smooth caret animation. Defaults to 'off'.",
+      "defaultText": "'off'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "cursorStyle",
+      "type": "'line' | 'block' | 'underline' | 'line-thin' | 'block-outline' | 'underline-thin'",
+      "kinds": [],
+      "enumValues": [
+        "line",
+        "block",
+        "underline",
+        "line-thin",
+        "block-outline",
+        "underline-thin"
+      ],
+      "doc": "Control the cursor style in insert mode. Defaults to 'line'.",
+      "defaultText": "'line'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "overtypeCursorStyle",
+      "type": "'line' | 'block' | 'underline' | 'line-thin' | 'block-outline' | 'underline-thin'",
+      "kinds": [],
+      "enumValues": [
+        "line",
+        "block",
+        "underline",
+        "line-thin",
+        "block-outline",
+        "underline-thin"
+      ],
+      "doc": "Control the cursor style in overtype mode. Defaults to 'block'.",
+      "defaultText": "'block'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "overtypeOnPaste",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether paste in overtype mode should overwrite or insert.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "cursorWidth",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Control the width of the cursor when cursorStyle is set to 'line'",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "cursorHeight",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Control the height of the cursor when cursorStyle is set to 'line'",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "fontLigatures",
+      "type": "boolean | string",
+      "kinds": [
+        "boolean",
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "Enable font ligatures. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "fontVariations",
+      "type": "boolean | string",
+      "kinds": [
+        "boolean",
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "Enable font variations. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "defaultColorDecorators",
+      "type": "'auto' | 'always' | 'never'",
+      "kinds": [],
+      "enumValues": [
+        "auto",
+        "always",
+        "never"
+      ],
+      "doc": "Controls whether to use default color decorations or not using the default document color provider",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "disableLayerHinting",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Disable the use of `transform: translate3d(0px, 0px, 0px)` for the editor margin and lines layers. The usage of `transform: translate3d(0px, 0px, 0px)` acts as a hint for browsers to create an extra layer. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "disableMonospaceOptimizations",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Disable the optimizations for monospace fonts. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "hideCursorInOverviewRuler",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Should the cursor be hidden in the overview ruler. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "scrollBeyondLastLine",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable that scrolling can go one screen size after the last line. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "scrollOnMiddleClick",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Scroll editor on middle click",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "scrollBeyondLastColumn",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Enable that scrolling can go beyond the last column by a number of columns. Defaults to 5.",
+      "defaultText": "5",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "smoothScrolling",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable that the editor animates scrolling to a position. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "automaticLayout",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable that the editor will install a ResizeObserver to check if its container dom node size has changed. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordWrap",
+      "type": "'off' | 'on' | 'wordWrapColumn' | 'bounded'",
+      "kinds": [],
+      "enumValues": [
+        "off",
+        "on",
+        "wordWrapColumn",
+        "bounded"
+      ],
+      "doc": "Control the wrapping of the editor. When `wordWrap` = \"off\", the lines will never wrap. When `wordWrap` = \"on\", the lines will wrap at the viewport width. When `wordWrap` = \"wordWrapColumn\", the lines will wrap at `wordWrapColumn`. When `wordWrap` = \"bounded\", the lines will wrap at min(viewport width, wordWrapColumn). Defaults to \"off\".",
+      "defaultText": "\"off\"",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordWrapOverride1",
+      "type": "'off' | 'on' | 'inherit'",
+      "kinds": [],
+      "enumValues": [
+        "off",
+        "on",
+        "inherit"
+      ],
+      "doc": "Override the `wordWrap` setting.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordWrapOverride2",
+      "type": "'off' | 'on' | 'inherit'",
+      "kinds": [],
+      "enumValues": [
+        "off",
+        "on",
+        "inherit"
+      ],
+      "doc": "Override the `wordWrapOverride1` setting.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordWrapColumn",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Control the wrapping of the editor. When `wordWrap` = \"off\", the lines will never wrap. When `wordWrap` = \"on\", the lines will wrap at the viewport width. When `wordWrap` = \"wordWrapColumn\", the lines will wrap at `wordWrapColumn`. When `wordWrap` = \"bounded\", the lines will wrap at min(viewport width, wordWrapColumn). Defaults to 80.",
+      "defaultText": "80",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wrappingIndent",
+      "type": "'none' | 'same' | 'indent' | 'deepIndent'",
+      "kinds": [],
+      "enumValues": [
+        "none",
+        "same",
+        "indent",
+        "deepIndent"
+      ],
+      "doc": "Control indentation of wrapped lines. Can be: 'none', 'same', 'indent' or 'deepIndent'. Defaults to 'same' in vscode and to 'none' in monaco-editor.",
+      "defaultText": "'same' in vscode and to 'none' in monaco-editor",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wrappingStrategy",
+      "type": "'simple' | 'advanced'",
+      "kinds": [],
+      "enumValues": [
+        "simple",
+        "advanced"
+      ],
+      "doc": "Controls the wrapping strategy to use. Defaults to 'simple'.",
+      "defaultText": "'simple'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wrapOnEscapedLineFeeds",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Create a softwrap on every quoted \"\\n\" literal. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordWrapBreakBeforeCharacters",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "Configure word wrapping characters. A break will be introduced before these characters.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordWrapBreakAfterCharacters",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "Configure word wrapping characters. A break will be introduced after these characters.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "wordBreak",
+      "type": "'normal' | 'keepAll'",
+      "kinds": [],
+      "enumValues": [
+        "normal",
+        "keepAll"
+      ],
+      "doc": "Sets whether line breaks appear wherever the text would otherwise overflow its content box. When wordBreak = 'normal', Use the default line break rule. When wordBreak = 'keepAll', Word breaks should not be used for Chinese/Japanese/Korean (CJK) text. Non-CJK text behavior is the same as for normal.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "stopRenderingLineAfter",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Performance guard: Stop rendering a line after x characters. Defaults to 10000. Use -1 to never stop rendering",
+      "defaultText": "10000",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "hover",
+      "type": "IEditorHoverOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Configure the editor's hover.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorHoverOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "'on' | 'off' | 'onKeyboardModifier'",
+              "kinds": [],
+              "enumValues": [
+                "on",
+                "off",
+                "onKeyboardModifier"
+              ],
+              "doc": "Enable the hover. Defaults to 'on'.",
+              "defaultText": "'on'"
+            },
+            {
+              "name": "delay",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Delay for showing the hover. Defaults to 300.",
+              "defaultText": "300"
+            },
+            {
+              "name": "sticky",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Is the hover sticky such that it can be clicked and its contents selected? Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "hidingDelay",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Controls how long the hover is visible after you hovered out of it. Require sticky setting to be true.",
+              "defaultText": null
+            },
+            {
+              "name": "above",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Should the hover be shown above the line if possible? Defaults to false.",
+              "defaultText": "false"
+            },
+            {
+              "name": "showLongLineWarning",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Should long line warning hovers be shown (tokenization skipped, rendering paused)? Defaults to true.",
+              "defaultText": "true"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "links",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable detecting links and making them clickable. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "colorDecorators",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable inline color decorators and color picker rendering.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "colorDecoratorsActivatedOn",
+      "type": "'clickAndHover' | 'click' | 'hover'",
+      "kinds": [],
+      "enumValues": [
+        "clickAndHover",
+        "click",
+        "hover"
+      ],
+      "doc": "Controls what is the condition to spawn a color picker from a color dectorator",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "colorDecoratorsLimit",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Controls the max number of color decorators that can be rendered in an editor at once.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "comments",
+      "type": "IEditorCommentsOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Control the behaviour of comments in the editor.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorCommentsOptions",
+          "members": [
+            {
+              "name": "insertSpace",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Insert a space after the line comment token and inside the block comments tokens. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "ignoreEmptyLines",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Ignore empty lines when inserting line comments. Defaults to true.",
+              "defaultText": "true"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "contextmenu",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable custom contextmenu. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "mouseWheelScrollSensitivity",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "A multiplier to be used on the `deltaX` and `deltaY` of mouse wheel scroll events. Defaults to 1.",
+      "defaultText": "1",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "fastScrollSensitivity",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "FastScrolling mulitplier speed when pressing `Alt` Defaults to 5.",
+      "defaultText": "5",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "scrollPredominantAxis",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable that the editor scrolls only the predominant axis. Prevents horizontal drift when scrolling vertically on a trackpad. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "inertialScroll",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Make scrolling inertial - mostly useful with touchpad on linux.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "columnSelection",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable that the selection with the mouse and keys is doing column selection. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "multiCursorModifier",
+      "type": "'ctrlCmd' | 'alt'",
+      "kinds": [],
+      "enumValues": [
+        "ctrlCmd",
+        "alt"
+      ],
+      "doc": "The modifier to be used to add multiple cursors with the mouse. Defaults to 'alt'",
+      "defaultText": "'alt'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "multiCursorMergeOverlapping",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Merge overlapping selections. Defaults to true",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "multiCursorPaste",
+      "type": "'spread' | 'full'",
+      "kinds": [],
+      "enumValues": [
+        "spread",
+        "full"
+      ],
+      "doc": "Configure the behaviour when pasting a text with the line count equal to the cursor count. Defaults to 'spread'.",
+      "defaultText": "'spread'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "multiCursorLimit",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Controls the max number of text cursors that can be in an active editor at once.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "mouseMiddleClickAction",
+      "type": "MouseMiddleClickAction",
+      "kinds": [],
+      "enumValues": [
+        "default",
+        "openLink",
+        "ctrlLeftClick"
+      ],
+      "doc": "Enables middle mouse button to open links and Go To Definition",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "accessibilitySupport",
+      "type": "'auto' | 'off' | 'on'",
+      "kinds": [],
+      "enumValues": [
+        "auto",
+        "off",
+        "on"
+      ],
+      "doc": "Configure the editor's accessibility support. Defaults to 'auto'. It is best to leave this to 'auto'.",
+      "defaultText": "'auto'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "accessibilityPageSize",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Controls the number of lines in the editor that can be read out by a screen reader",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "suggest",
+      "type": "ISuggestOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Suggest options.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "ISuggestOptions",
+          "members": [
+            {
+              "name": "insertMode",
+              "type": "'insert' | 'replace'",
+              "kinds": [],
+              "enumValues": [
+                "insert",
+                "replace"
+              ],
+              "doc": "Overwrite word ends on accept. Default to false.",
+              "defaultText": "false"
+            },
+            {
+              "name": "filterGraceful",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable graceful matching. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "snippetsPreventQuickSuggestions",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Prevent quick suggestions when a snippet is active. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "localityBonus",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Favors words that appear close to the cursor.",
+              "defaultText": null
+            },
+            {
+              "name": "shareSuggestSelections",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable using global storage for remembering suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "selectionMode",
+              "type": "'always' | 'never' | 'whenTriggerCharacter' | 'whenQuickSuggestion'",
+              "kinds": [],
+              "enumValues": [
+                "always",
+                "never",
+                "whenTriggerCharacter",
+                "whenQuickSuggestion"
+              ],
+              "doc": "Select suggestions when triggered via quick suggest or trigger characters",
+              "defaultText": null
+            },
+            {
+              "name": "showIcons",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable or disable icons in suggestions. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "showStatusBar",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable or disable the suggest status bar.",
+              "defaultText": null
+            },
+            {
+              "name": "preview",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable or disable the rendering of the suggestion preview.",
+              "defaultText": null
+            },
+            {
+              "name": "previewMode",
+              "type": "'prefix' | 'subword' | 'subwordSmart'",
+              "kinds": [],
+              "enumValues": [
+                "prefix",
+                "subword",
+                "subwordSmart"
+              ],
+              "doc": "Configures the mode of the preview.",
+              "defaultText": null
+            },
+            {
+              "name": "showInlineDetails",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show details inline with the label. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "showMethods",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show method-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showFunctions",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show function-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showConstructors",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show constructor-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showDeprecated",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show deprecated-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "matchOnWordStartOnly",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Controls whether suggestions allow matches in the middle of the word instead of only at the beginning",
+              "defaultText": null
+            },
+            {
+              "name": "showFields",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show field-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showVariables",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show variable-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showClasses",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show class-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showStructs",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show struct-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showInterfaces",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show interface-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showModules",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show module-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showProperties",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show property-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showEvents",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show event-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showOperators",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show operator-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showUnits",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show unit-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showValues",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show value-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showConstants",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show constant-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showEnums",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show enum-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showEnumMembers",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show enumMember-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showKeywords",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show keyword-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showWords",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show text-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showColors",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show color-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showFiles",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show file-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showReferences",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show reference-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showFolders",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show folder-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showTypeParameters",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show typeParameter-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showIssues",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show issue-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showUsers",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show user-suggestions.",
+              "defaultText": null
+            },
+            {
+              "name": "showSnippets",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Show snippet-suggestions.",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "inlineSuggest",
+      "type": "IInlineSuggestOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IInlineSuggestOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable or disable the rendering of automatic inline completions.",
+              "defaultText": null
+            },
+            {
+              "name": "mode",
+              "type": "'prefix' | 'subword' | 'subwordSmart'",
+              "kinds": [],
+              "enumValues": [
+                "prefix",
+                "subword",
+                "subwordSmart"
+              ],
+              "doc": "Configures the mode. Use `prefix` to only show ghost text if the text to replace is a prefix of the suggestion text. Use `subword` to only show ghost text if the replace text is a subword of the suggestion text. Use `subwordSmart` to only show ghost text if the replace text is a subword of the suggestion text, but the subword must start after the cursor position. Defaults to `prefix`.",
+              "defaultText": "`prefix`"
+            },
+            {
+              "name": "showToolbar",
+              "type": "'always' | 'onHover' | 'never'",
+              "kinds": [],
+              "enumValues": [
+                "always",
+                "onHover",
+                "never"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "syntaxHighlightingEnabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "suppressSuggestions",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "minShowDelay",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "suppressInSnippetMode",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "keepOnBlur",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Does not clear active inline suggestions when the editor loses focus.",
+              "defaultText": null
+            },
+            {
+              "name": "fontFamily",
+              "type": "string | 'default'",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [
+                "default"
+              ],
+              "doc": "Font family for inline suggestions.",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "smartSelect",
+      "type": "ISmartSelectOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Smart select options.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "ISmartSelectOptions",
+          "members": [
+            {
+              "name": "selectLeadingAndTrailingWhitespace",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "selectSubwords",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "gotoLocation",
+      "type": "IGotoLocationOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IGotoLocationOptions",
+          "members": [
+            {
+              "name": "multiple",
+              "type": "GoToLocationValues",
+              "kinds": [],
+              "enumValues": [
+                "peek",
+                "gotoAndPeek",
+                "goto"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "multipleDefinitions",
+              "type": "GoToLocationValues",
+              "kinds": [],
+              "enumValues": [
+                "peek",
+                "gotoAndPeek",
+                "goto"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "multipleTypeDefinitions",
+              "type": "GoToLocationValues",
+              "kinds": [],
+              "enumValues": [
+                "peek",
+                "gotoAndPeek",
+                "goto"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "multipleDeclarations",
+              "type": "GoToLocationValues",
+              "kinds": [],
+              "enumValues": [
+                "peek",
+                "gotoAndPeek",
+                "goto"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "multipleImplementations",
+              "type": "GoToLocationValues",
+              "kinds": [],
+              "enumValues": [
+                "peek",
+                "gotoAndPeek",
+                "goto"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "multipleReferences",
+              "type": "GoToLocationValues",
+              "kinds": [],
+              "enumValues": [
+                "peek",
+                "gotoAndPeek",
+                "goto"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "multipleTests",
+              "type": "GoToLocationValues",
+              "kinds": [],
+              "enumValues": [
+                "peek",
+                "gotoAndPeek",
+                "goto"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "alternativeDefinitionCommand",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "alternativeTypeDefinitionCommand",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "alternativeDeclarationCommand",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "alternativeImplementationCommand",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "alternativeReferenceCommand",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "alternativeTestsCommand",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "quickSuggestions",
+      "type": "boolean | QuickSuggestionsValue | IQuickSuggestionsOptions",
+      "kinds": [
+        "boolean",
+        "object"
+      ],
+      "enumValues": [
+        "on",
+        "inline",
+        "off",
+        "offWhenInlineCompletions"
+      ],
+      "doc": "Enable quick suggestions (shadow suggestions) Defaults to true.",
+      "defaultText": "true",
+      "nested": [
+        {
+          "name": "IQuickSuggestionsOptions",
+          "members": [
+            {
+              "name": "other",
+              "type": "boolean | QuickSuggestionsValue",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "on",
+                "inline",
+                "off",
+                "offWhenInlineCompletions"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "comments",
+              "type": "boolean | QuickSuggestionsValue",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "on",
+                "inline",
+                "off",
+                "offWhenInlineCompletions"
+              ],
+              "doc": "",
+              "defaultText": null
+            },
+            {
+              "name": "strings",
+              "type": "boolean | QuickSuggestionsValue",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "on",
+                "inline",
+                "off",
+                "offWhenInlineCompletions"
+              ],
+              "doc": "",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "quickSuggestionsDelay",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Quick suggestions show delay (in ms) Defaults to 10 (ms)",
+      "defaultText": "10 (ms)",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "padding",
+      "type": "IEditorPaddingOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Controls the spacing around the editor.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorPaddingOptions",
+          "members": [
+            {
+              "name": "top",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Spacing between top edge of editor and first line.",
+              "defaultText": null
+            },
+            {
+              "name": "bottom",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Spacing between bottom edge of editor and last line.",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "parameterHints",
+      "type": "IEditorParameterHintOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Parameter hint options.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorParameterHintOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable parameter hints. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "cycle",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable cycling of parameter hints. Defaults to false.",
+              "defaultText": "false"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoClosingBrackets",
+      "type": "EditorAutoClosingStrategy",
+      "kinds": [],
+      "enumValues": [
+        "always",
+        "languageDefined",
+        "beforeWhitespace",
+        "never"
+      ],
+      "doc": "Options for auto closing brackets. Defaults to language defined behavior.",
+      "defaultText": "language defined behavior",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoClosingComments",
+      "type": "EditorAutoClosingStrategy",
+      "kinds": [],
+      "enumValues": [
+        "always",
+        "languageDefined",
+        "beforeWhitespace",
+        "never"
+      ],
+      "doc": "Options for auto closing comments. Defaults to language defined behavior.",
+      "defaultText": "language defined behavior",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoClosingQuotes",
+      "type": "EditorAutoClosingStrategy",
+      "kinds": [],
+      "enumValues": [
+        "always",
+        "languageDefined",
+        "beforeWhitespace",
+        "never"
+      ],
+      "doc": "Options for auto closing quotes. Defaults to language defined behavior.",
+      "defaultText": "language defined behavior",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoClosingDelete",
+      "type": "EditorAutoClosingEditStrategy",
+      "kinds": [],
+      "enumValues": [
+        "always",
+        "auto",
+        "never"
+      ],
+      "doc": "Options for pressing backspace near quotes or bracket pairs.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoClosingOvertype",
+      "type": "EditorAutoClosingEditStrategy",
+      "kinds": [],
+      "enumValues": [
+        "always",
+        "auto",
+        "never"
+      ],
+      "doc": "Options for typing over closing quotes or brackets.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoSurround",
+      "type": "EditorAutoSurroundStrategy",
+      "kinds": [],
+      "enumValues": [
+        "languageDefined",
+        "quotes",
+        "brackets",
+        "never"
+      ],
+      "doc": "Options for auto surrounding. Defaults to always allowing auto surrounding.",
+      "defaultText": "always allowing auto surrounding",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoIndent",
+      "type": "'none' | 'keep' | 'brackets' | 'advanced' | 'full'",
+      "kinds": [],
+      "enumValues": [
+        "none",
+        "keep",
+        "brackets",
+        "advanced",
+        "full"
+      ],
+      "doc": "Controls whether the editor should automatically adjust the indentation when users type, paste, move or indent lines. Defaults to advanced.",
+      "defaultText": "advanced",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoIndentOnPaste",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Boolean which controls whether to autoindent on paste",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "autoIndentOnPasteWithinString",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Boolean which controls whether to autoindent on paste within a string when autoIndentOnPaste is enabled.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "stickyTabStops",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Emulate selection behaviour of tab characters when using spaces for indentation. This means selection will stick to tab stops.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "formatOnType",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable format on type. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "formatOnPaste",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable format on paste. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "doubleClickSelectsBlock",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether double-clicking next to a bracket or quote selects the content inside. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "dragAndDrop",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls if the editor should allow to move selections via drag and drop. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "suggestOnTriggerCharacters",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable the suggestion box to pop-up on trigger characters. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "acceptSuggestionOnEnter",
+      "type": "'on' | 'smart' | 'off'",
+      "kinds": [],
+      "enumValues": [
+        "on",
+        "smart",
+        "off"
+      ],
+      "doc": "Accept suggestions on ENTER. Defaults to 'on'.",
+      "defaultText": "'on'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "acceptSuggestionOnCommitCharacter",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Accept suggestions on provider defined characters. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "snippetSuggestions",
+      "type": "'top' | 'bottom' | 'inline' | 'none'",
+      "kinds": [],
+      "enumValues": [
+        "top",
+        "bottom",
+        "inline",
+        "none"
+      ],
+      "doc": "Enable snippet suggestions. Default to 'true'.",
+      "defaultText": "'true'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "emptySelectionClipboard",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Copying without a selection copies the current line.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "copyWithSyntaxHighlighting",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Syntax highlighting is copied.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "suggestSelection",
+      "type": "'first' | 'recentlyUsed' | 'recentlyUsedByPrefix'",
+      "kinds": [],
+      "enumValues": [
+        "first",
+        "recentlyUsed",
+        "recentlyUsedByPrefix"
+      ],
+      "doc": "The history mode for suggestions.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "suggestFontSize",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The font size for the suggest widget. Defaults to the editor font size.",
+      "defaultText": "the editor font size",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "suggestLineHeight",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The line height for the suggest widget. Defaults to the editor line height.",
+      "defaultText": "the editor line height",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "tabCompletion",
+      "type": "'on' | 'off' | 'onlySnippets'",
+      "kinds": [],
+      "enumValues": [
+        "on",
+        "off",
+        "onlySnippets"
+      ],
+      "doc": "Enable tab completion.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "selectionHighlight",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable selection highlight. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "selectionHighlightMultiline",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable selection highlight for multiline selections. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "selectionHighlightMaxLength",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Maximum length (in characters) for selection highlights. Set to 0 to have an unlimited length.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "occurrencesHighlight",
+      "type": "'off' | 'singleFile' | 'multiFile'",
+      "kinds": [],
+      "enumValues": [
+        "off",
+        "singleFile",
+        "multiFile"
+      ],
+      "doc": "Enable semantic occurrences highlight. Defaults to 'singleFile'. 'off' disables occurrence highlighting 'singleFile' triggers occurrence highlighting in the current document 'multiFile'  triggers occurrence highlighting across valid open documents",
+      "defaultText": "'singleFile'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "occurrencesHighlightDelay",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Controls delay for occurrences highlighting Defaults to 250. Minimum value is 0 Maximum value is 2000",
+      "defaultText": "250",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "codeLens",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Show code lens Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "codeLensFontFamily",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "Code lens font family. Defaults to editor font family.",
+      "defaultText": "editor font family",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "codeLensFontSize",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Code lens font size. Default to 90% of the editor font size",
+      "defaultText": "90% of the editor font size",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "lightbulb",
+      "type": "IEditorLightbulbOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Control the behavior and rendering of the code action lightbulb.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorLightbulbOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "ShowLightbulbIconMode",
+              "kinds": [
+                "other"
+              ],
+              "enumValues": [],
+              "doc": "Enable the lightbulb code action. The three possible values are `off`, `on` and `onCode` and the default is `onCode`. `off` disables the code action menu. `on` shows the code action menu on code and on empty lines. `onCode` shows the code action menu on code only.",
+              "defaultText": "`onCode`"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "codeActionsOnSaveTimeout",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Timeout for running code actions on save.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "folding",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable code folding. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "foldingStrategy",
+      "type": "'auto' | 'indentation'",
+      "kinds": [],
+      "enumValues": [
+        "auto",
+        "indentation"
+      ],
+      "doc": "Selects the folding strategy. 'auto' uses the strategies contributed for the current document, 'indentation' uses the indentation based folding strategy. Defaults to 'auto'.",
+      "defaultText": "'auto'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "foldingHighlight",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable highlight for folded regions. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "foldingImportsByDefault",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Auto fold imports folding regions. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "foldingMaximumRegions",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Maximum number of foldable regions. Defaults to 5000.",
+      "defaultText": "5000",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "showFoldingControls",
+      "type": "'always' | 'never' | 'mouseover'",
+      "kinds": [],
+      "enumValues": [
+        "always",
+        "never",
+        "mouseover"
+      ],
+      "doc": "Controls whether the fold actions in the gutter stay always visible or hide unless the mouse is over the gutter. Defaults to 'mouseover'.",
+      "defaultText": "'mouseover'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "unfoldOnClickAfterEndOfLine",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether clicking on the empty content after a folded line will unfold the line. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "matchBrackets",
+      "type": "'never' | 'near' | 'always'",
+      "kinds": [],
+      "enumValues": [
+        "never",
+        "near",
+        "always"
+      ],
+      "doc": "Enable highlighting of matching brackets. Defaults to 'always'.",
+      "defaultText": "'always'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "experimentalGpuAcceleration",
+      "type": "'on' | 'off'",
+      "kinds": [],
+      "enumValues": [
+        "on",
+        "off"
+      ],
+      "doc": "Enable experimental rendering using WebGPU. Defaults to 'off'.",
+      "defaultText": "'off'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "experimentalWhitespaceRendering",
+      "type": "'svg' | 'font' | 'off'",
+      "kinds": [],
+      "enumValues": [
+        "svg",
+        "font",
+        "off"
+      ],
+      "doc": "Enable experimental whitespace rendering. Defaults to 'svg'.",
+      "defaultText": "'svg'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renderWhitespace",
+      "type": "'none' | 'boundary' | 'selection' | 'trailing' | 'all'",
+      "kinds": [],
+      "enumValues": [
+        "none",
+        "boundary",
+        "selection",
+        "trailing",
+        "all"
+      ],
+      "doc": "Enable rendering of whitespace. Defaults to 'selection'.",
+      "defaultText": "'selection'",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renderControlCharacters",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Enable rendering of control characters. Defaults to true.",
+      "defaultText": "true",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renderLineHighlight",
+      "type": "'none' | 'gutter' | 'line' | 'all'",
+      "kinds": [],
+      "enumValues": [
+        "none",
+        "gutter",
+        "line",
+        "all"
+      ],
+      "doc": "Enable rendering of current line highlight. Defaults to all.",
+      "defaultText": "all",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renderLineHighlightOnlyWhenFocus",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Control if the current line highlight should be rendered only the editor is focused. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "useTabStops",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Inserting and deleting whitespace follows tab stops.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "trimWhitespaceOnDelete",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether the editor should automatically remove indentation whitespace when joining lines with Delete. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "fontFamily",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "The font family",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "fontWeight",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "The font weight",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "fontSize",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The font size",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "lineHeight",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The line height",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "letterSpacing",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The letter spacing",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "showUnused",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls fading out of unused variables.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "peekWidgetDefaultFocus",
+      "type": "'tree' | 'editor'",
+      "kinds": [],
+      "enumValues": [
+        "tree",
+        "editor"
+      ],
+      "doc": "Controls whether to focus the inline editor in the peek widget by default. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "placeholder",
+      "type": "string | undefined",
+      "kinds": [
+        "string",
+        "other"
+      ],
+      "enumValues": [],
+      "doc": "Sets a placeholder for the editor. If set, the placeholder is shown if the editor is empty.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "definitionLinkOpensInPeek",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether the definition link opens element in the peek widget. Defaults to false.",
+      "defaultText": "false",
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "showDeprecated",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls strikethrough deprecated variables.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "matchOnWordStartOnly",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether suggestions allow matches in the middle of the word instead of only at the beginning",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "inlayHints",
+      "type": "IEditorInlayHintsOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Control the behavior and rendering of the inline hints.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IEditorInlayHintsOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "'on' | 'off' | 'offUnlessPressed' | 'onUnlessPressed'",
+              "kinds": [],
+              "enumValues": [
+                "on",
+                "off",
+                "offUnlessPressed",
+                "onUnlessPressed"
+              ],
+              "doc": "Enable the inline hints. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "fontSize",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Font size of inline hints. Default to 90% of the editor font size.",
+              "defaultText": "90% of the editor font size"
+            },
+            {
+              "name": "fontFamily",
+              "type": "string",
+              "kinds": [
+                "string"
+              ],
+              "enumValues": [],
+              "doc": "Font family of inline hints. Defaults to editor font family.",
+              "defaultText": "editor font family"
+            },
+            {
+              "name": "padding",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enables the padding around the inlay hint. Defaults to false.",
+              "defaultText": "false"
+            },
+            {
+              "name": "maximumLength",
+              "type": "number",
+              "kinds": [
+                "number"
+              ],
+              "enumValues": [],
+              "doc": "Maximum length for inlay hints per line Set to 0 to have an unlimited length.",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "useShadowDOM",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Control if the editor should use shadow DOM.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "guides",
+      "type": "IGuidesOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Controls the behavior of editor guides.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IGuidesOptions",
+          "members": [
+            {
+              "name": "bracketPairs",
+              "type": "boolean | 'active'",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "active"
+              ],
+              "doc": "Enable rendering of bracket pair guides. Defaults to false.",
+              "defaultText": "false"
+            },
+            {
+              "name": "bracketPairsHorizontal",
+              "type": "boolean | 'active'",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "active"
+              ],
+              "doc": "Enable rendering of vertical bracket pair guides. Defaults to 'active'.",
+              "defaultText": "'active'"
+            },
+            {
+              "name": "highlightActiveBracketPair",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable highlighting of the active bracket pair. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "indentation",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable rendering of indent guides. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "highlightActiveIndentation",
+              "type": "boolean | 'always'",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "always"
+              ],
+              "doc": "Enable highlighting of the active indent guide. Defaults to true.",
+              "defaultText": "true"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "unicodeHighlight",
+      "type": "IUnicodeHighlightOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Controls the behavior of the unicode highlight feature (by default, ambiguous and invisible characters are highlighted).",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IUnicodeHighlightOptions",
+          "members": [
+            {
+              "name": "nonBasicASCII",
+              "type": "boolean | InUntrustedWorkspace",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "inUntrustedWorkspace"
+              ],
+              "doc": "Controls whether all non-basic ASCII characters are highlighted. Only characters between U+0020 and U+007E, tab, line-feed and carriage-return are considered basic ASCII.",
+              "defaultText": null
+            },
+            {
+              "name": "invisibleCharacters",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Controls whether characters that just reserve space or have no width at all are highlighted.",
+              "defaultText": null
+            },
+            {
+              "name": "ambiguousCharacters",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Controls whether characters are highlighted that can be confused with basic ASCII characters, except those that are common in the current user locale.",
+              "defaultText": null
+            },
+            {
+              "name": "includeComments",
+              "type": "boolean | InUntrustedWorkspace",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "inUntrustedWorkspace"
+              ],
+              "doc": "Controls whether characters in comments should also be subject to unicode highlighting.",
+              "defaultText": null
+            },
+            {
+              "name": "includeStrings",
+              "type": "boolean | InUntrustedWorkspace",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [
+                "inUntrustedWorkspace"
+              ],
+              "doc": "Controls whether characters in strings should also be subject to unicode highlighting.",
+              "defaultText": null
+            },
+            {
+              "name": "allowedCharacters",
+              "type": "Record<string, true>",
+              "kinds": [
+                "other"
+              ],
+              "enumValues": [],
+              "doc": "Defines allowed characters that are not being highlighted.",
+              "defaultText": null
+            },
+            {
+              "name": "allowedLocales",
+              "type": "Record<string | '_os' | '_vscode', true>",
+              "kinds": [
+                "other"
+              ],
+              "enumValues": [],
+              "doc": "Unicode characters that are common in allowed locales are not being highlighted.",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "bracketPairColorization",
+      "type": "IBracketPairColorizationOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Configures bracket pair colorization (disabled by default).",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IBracketPairColorizationOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable or disable bracket pair colorization.",
+              "defaultText": null
+            },
+            {
+              "name": "independentColorPoolPerBracketType",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Use independent color pool per bracket type.",
+              "defaultText": null
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "dropIntoEditor",
+      "type": "IDropIntoEditorOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Controls dropping into the editor from an external source. When enabled, this shows a preview of the drop location and triggers an `onDropIntoEditor` event.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IDropIntoEditorOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable dropping into editor. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "showDropSelector",
+              "type": "'afterDrop' | 'never'",
+              "kinds": [],
+              "enumValues": [
+                "afterDrop",
+                "never"
+              ],
+              "doc": "Controls if a widget is shown after a drop. Defaults to 'afterDrop'.",
+              "defaultText": "'afterDrop'"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "editContext",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Sets whether the new experimental edit context should be used instead of the text area.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "renderRichScreenReaderContent",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether to render rich HTML screen reader content when the EditContext is enabled",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "pasteAs",
+      "type": "IPasteAsOptions",
+      "kinds": [
+        "object"
+      ],
+      "enumValues": [],
+      "doc": "Controls support for changing how content is pasted into the editor.",
+      "defaultText": null,
+      "nested": [
+        {
+          "name": "IPasteAsOptions",
+          "members": [
+            {
+              "name": "enabled",
+              "type": "boolean",
+              "kinds": [
+                "boolean"
+              ],
+              "enumValues": [],
+              "doc": "Enable paste as functionality in editors. Defaults to true.",
+              "defaultText": "true"
+            },
+            {
+              "name": "showPasteSelector",
+              "type": "'afterPaste' | 'never'",
+              "kinds": [],
+              "enumValues": [
+                "afterPaste",
+                "never"
+              ],
+              "doc": "Controls if a widget is shown after a drop. Defaults to 'afterPaste'.",
+              "defaultText": "'afterPaste'"
+            }
+          ]
+        }
+      ],
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "tabFocusMode",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether the editor / terminal receives tabs or defers them to the workbench for navigation.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "inlineCompletionsAccessibilityVerbose",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether the accessibility hint should be provided to screen reader users when an inline completion is shown.",
+      "defaultText": null,
+      "source": "IEditorOptions"
+    },
+    {
+      "name": "tabSize",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "The number of spaces a tab is equal to. This setting is overridden based on the file contents when `detectIndentation` is on. Defaults to 4.",
+      "defaultText": "4",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "insertSpaces",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Insert spaces when pressing `Tab`. This setting is overridden based on the file contents when `detectIndentation` is on. Defaults to true.",
+      "defaultText": "true",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "detectIndentation",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether `tabSize` and `insertSpaces` will be automatically detected when a file is opened based on the file contents. Defaults to true.",
+      "defaultText": "true",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "trimAutoWhitespace",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Remove trailing auto inserted whitespace. Defaults to true.",
+      "defaultText": "true",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "largeFileOptimizations",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Special handling for large files to disable certain memory intensive features. Defaults to true.",
+      "defaultText": "true",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "wordBasedSuggestions",
+      "type": "'off' | 'currentDocument' | 'matchingDocuments' | 'allDocuments'",
+      "kinds": [],
+      "enumValues": [
+        "off",
+        "currentDocument",
+        "matchingDocuments",
+        "allDocuments"
+      ],
+      "doc": "Controls whether completions should be computed based on words in the document. Defaults to true.",
+      "defaultText": "true",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "wordBasedSuggestionsOnlySameLanguage",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Controls whether word based completions should be included from opened documents of the same language or any language.",
+      "defaultText": null,
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "semanticHighlighting.enabled",
+      "type": "true | false | 'configuredByTheme'",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [
+        "configuredByTheme"
+      ],
+      "doc": "Controls whether the semanticHighlighting is shown for the languages that support it. true: semanticHighlighting is enabled for all themes false: semanticHighlighting is disabled for all themes 'configuredByTheme': semanticHighlighting is controlled by the current color theme's semanticHighlighting setting. Defaults to 'byTheme'.",
+      "defaultText": "'byTheme'",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "stablePeek",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "Keep peek editors open even when double-clicking their content or when hitting `Escape`. Defaults to false.",
+      "defaultText": "false",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "maxTokenizationLineLength",
+      "type": "number",
+      "kinds": [
+        "number"
+      ],
+      "enumValues": [],
+      "doc": "Lines above this length will not be tokenized for performance reasons. Defaults to 20000.",
+      "defaultText": "20000",
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "theme",
+      "type": "string",
+      "kinds": [
+        "string"
+      ],
+      "enumValues": [],
+      "doc": "Theme to be used for rendering. The current out-of-the-box available themes are: 'vs' (default), 'vs-dark', 'hc-black', 'hc-light'. You can create custom themes via `monaco.editor.defineTheme`. To switch a theme, use `monaco.editor.setTheme`. **NOTE**: The theme might be overwritten if the OS is in high contrast mode, unless `autoDetectHighContrast` is set to false.",
+      "defaultText": null,
+      "source": "IGlobalEditorOptions"
+    },
+    {
+      "name": "autoDetectHighContrast",
+      "type": "boolean",
+      "kinds": [
+        "boolean"
+      ],
+      "enumValues": [],
+      "doc": "If enabled, will automatically change to high contrast theme if the OS is using a high contrast theme. Defaults to true.",
+      "defaultText": "true",
+      "source": "IGlobalEditorOptions"
+    }
+  ]
+}

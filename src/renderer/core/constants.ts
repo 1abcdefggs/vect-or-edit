@@ -15,6 +15,8 @@ export const STORAGE_KEYS = {
   LINE_HIGHLIGHT: 'editor_lineHighlight',
   STICKY_SCROLL: 'editor_stickyScroll',
   RENDER_WHITESPACE: 'editor_renderWhitespace',
+  // JSON object of Monaco option overrides keyed by option path (editor/options/monacoOptionsModel.js)
+  MONACO_OPTIONS: 'editor_monacoOptions',
   SUGGEST_TRIGGER_MODE: 'vect_suggest_trigger_mode',
   AI_PROVIDER: 'ai_provider',
   AI_INFERENCE_SCOPE: 'ai_inference_scope',
@@ -88,10 +90,4 @@ export const DEFAULTS = {
   AUTO_SAVE_NEWLINE: true,
   LOG_DISPLAY_POSITION: 'bottom',
   CONFIRM_BEFORE_CLOSE: 'on',
-} as const;
-
-export const LOG_COLORS = {
-  ERROR: 'var(--error-color, #ef4444)',
-  WARN: 'var(--warn-color, #f59e0b)',
-  INFO: 'var(--info-color, #38bdf8)'
 } as const;

@@ -1,7 +1,7 @@
 <!-- First-run setup. Shown during startup while the editor loads; every step has defaults, so "Next" all the way works. -->
 <div id="aiSetupModalOverlay" class="modal-overlay first-run-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
-  <!-- The tool name sits in the window's top-left corner, on the title bar line, outside the dialog -->
-  <h2 id="setupTitle" class="first-run-brandbar">
+  <!-- The tool name is shown once, in the app header above; this heading stays for screen readers -->
+  <h2 id="setupTitle" class="first-run-brandbar first-run-visually-hidden">
     <span class="first-run-brand">Vect<em>Or</em>Edit</span>
     <!-- Filled from package.json via app.getVersion() (topBarRenderer.js) -->
     <span id="setupVersionBadge" class="first-run-version"></span>
@@ -162,68 +162,105 @@
             <span class="first-run-heading-note" data-i18n="setup_ai_local_note">Runs on this PC</span>
             <span data-info-tip="setup_info_embedding"></span>
           </h2>
-          <div class="first-run-setting">
-            <span id="setupLocalAiLabel" class="first-run-setting-text">
-              <span class="first-run-check-title" data-i18n="setup_ai_local_label">Install the embedding model (recommended)</span>
-              <span class="first-run-hint" data-i18n="setup_ai_local_hint">Finds knowledge related to the selected text offline. The download runs in the background.</span>
-            </span>
-            <span class="toggle-switch-group">
-              <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
-              <button type="button" id="toggleSetupInstallLocal" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupLocalAiLabel" data-i18n-title="tip_setup_install_local"><span class="toggle-switch__knob"></span></button>
-              <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
-            </span>
+
+          <!-- A picture of the editor, not a form. The left pane is what the user writes, with optional writing assist from a
+               cloud AI under it; the right pane is the dictionary that the embedding model reads inside the editor. -->
+          <div class="setup-ai-window">
+            <div class="setup-ai-window-bar" aria-hidden="true">
+              <span class="setup-ai-dots"><i></i><i></i><i></i></span>
+              <span data-i18n="setup_ai_window_title">untitled.md</span>
+            </div>
+            <div class="setup-ai-panes">
+              <section class="setup-ai-pane setup-ai-pane--editor" aria-labelledby="setupPaneEditorTitle">
+                <header class="setup-ai-pane-head">
+                  <span id="setupPaneEditorTitle" class="setup-ai-pane-title" data-i18n="setup_ai_pane_editor">Editor (Monaco)</span>
+                  <span class="setup-ai-pane-role" data-i18n="setup_ai_pane_editor_role">You write here</span>
+                </header>
+                <div class="setup-ai-page" aria-hidden="true">
+                  <span class="setup-ai-line is-long"></span>
+                  <span class="setup-ai-line is-mid"></span>
+                  <span class="setup-ai-line is-short"></span>
+                  <span class="setup-ai-line is-mid"></span>
+                  <span class="setup-ai-caret"></span>
+                </div>
+                <div class="setup-ai-assist">
+                  <div class="setup-ai-assist-head">
+                    <span class="setup-ai-assist-title" data-i18n="setup_ai_assist_label">Writing assist (Gemini, etc.)</span>
+                    <span class="first-run-heading-note" data-i18n="setup_ai_cloud_note">Supporting, optional</span>
+                    <span data-info-tip="setup_info_cloud"></span>
+                  </div>
+                  <div class="first-run-key-grid">
+                    <label class="first-run-field">
+                      <span class="first-run-label" data-i18n="setup_ai_provider_label">Provider</span>
+                      <select id="aiSetupCloudProvider" class="ai-setup-select" data-i18n-title="tip_setup_cloud_provider">
+                        <option value="" selected data-i18n="setup_ai_provider_none">Not used</option>
+                        <option value="gemini">Gemini (Google)</option>
+                        <option value="claude">Claude (Anthropic)</option>
+                        <option value="openai">OpenAI (GPT)</option>
+                      </select>
+                    </label>
+                    <div class="first-run-field">
+                      <label class="first-run-label" for="aiSetupCloudKey" data-i18n="setup_ai_key_label">API key</label>
+                      <div class="api-key-input-container first-run-key">
+                        <span class="material-symbols-outlined" aria-hidden="true">key</span>
+                        <input type="password" id="aiSetupCloudKey" placeholder="Enter API Key (Optional / Configurable later)..." autocomplete="off" spellcheck="false" data-i18n-placeholder="ai_setup_api_key_placeholder" disabled data-i18n-title="tip_api_key_input">
+                        <button type="button" id="btnToggleAiSetupKeyVisibility" class="toolbar-btn" aria-label="Toggle Visibility" data-i18n-title="tip_toggle_key_visibility">
+                          <span class="material-symbols-outlined">visibility_off</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="first-run-hint first-run-hint--icon">
+                    <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+                    <span data-i18n="setup_ai_key_hint">The key is stored encrypted by the OS and is never kept on screen.</span>
+                  </p>
+                </div>
+              </section>
+
+              <div class="setup-ai-link" aria-hidden="true">
+                <span class="material-symbols-outlined">arrow_back</span>
+              </div>
+
+              <section class="setup-ai-pane setup-ai-pane--dict" aria-labelledby="setupPaneDictTitle">
+                <header class="setup-ai-pane-head">
+                  <span id="setupPaneDictTitle" class="setup-ai-pane-title" data-i18n="setup_ai_pane_dict">Dictionary</span>
+                  <span class="setup-ai-pane-role" data-i18n="setup_ai_pane_dict_role">The embedding model reads it here</span>
+                </header>
+                <div class="first-run-setting">
+                  <span id="setupLocalAiLabel" class="first-run-setting-text">
+                    <span class="first-run-check-title" data-i18n="setup_ai_local_label">Install the embedding model (recommended)</span>
+                    <span class="first-run-hint" data-i18n="setup_ai_local_hint">Finds knowledge related to the selected text offline. The download runs in the background.</span>
+                  </span>
+                  <span class="toggle-switch-group">
+                    <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+                    <button type="button" id="toggleSetupInstallLocal" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupLocalAiLabel" data-i18n-title="tip_setup_install_local"><span class="toggle-switch__knob"></span></button>
+                    <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+                  </span>
+                </div>
+                <dl class="first-run-facts">
+                  <dt data-i18n="setup_ai_fact_model">Model</dt>
+                  <dd>
+                    <code id="setupInstallModelId" class="first-run-code"></code>
+                    <span class="first-run-hint-inline" data-i18n="setup_ai_fact_model_note">Lightweight and multilingual (90+ languages)</span>
+                  </dd>
+                  <dt data-i18n="setup_ai_fact_source">Source</dt>
+                  <dd data-i18n="setup_ai_fact_source_value">Downloaded once from Hugging Face (huggingface.co)</dd>
+                  <dt data-i18n="setup_ai_fact_place">Install location</dt>
+                  <dd><code id="setupInstallPath" class="first-run-code"></code></dd>
+                </dl>
+                <ul class="setup-ai-entries" aria-hidden="true">
+                  <li><i></i><span class="setup-ai-line is-long"></span></li>
+                  <li><i></i><span class="setup-ai-line is-mid"></span></li>
+                  <li><i></i><span class="setup-ai-line is-short"></span></li>
+                </ul>
+              </section>
+            </div>
           </div>
+
+          <p class="setup-ai-flow" data-i18n="setup_ai_flow">The embedding model reads the dictionary inside the editor and brings back related knowledge for the text you write.</p>
           <p id="setupLocalNotice" class="first-run-notice" role="status">
             <span class="material-symbols-outlined" aria-hidden="true">info</span>
             <span id="setupLocalNoticeText"></span>
-          </p>
-          <dl class="first-run-facts">
-            <dt data-i18n="setup_ai_fact_model">Model</dt>
-            <dd>
-              <code id="setupInstallModelId" class="first-run-code"></code>
-              <span class="first-run-hint-inline" data-i18n="setup_ai_fact_model_note">Lightweight and multilingual (90+ languages)</span>
-            </dd>
-            <dt data-i18n="setup_ai_fact_use">Purpose</dt>
-            <dd data-i18n="setup_ai_fact_use_value">Semantic search (it does not generate text)</dd>
-            <dt data-i18n="setup_ai_fact_source">Source</dt>
-            <dd data-i18n="setup_ai_fact_source_value">Downloaded once from Hugging Face (huggingface.co)</dd>
-            <dt data-i18n="setup_ai_fact_place">Install location</dt>
-            <dd><code id="setupInstallPath" class="first-run-code"></code> <span class="first-run-hint-inline" data-i18n="setup_ai_fact_place_note">(inside the app cache; works offline after the download)</span></dd>
-          </dl>
-        </div>
-
-        <hr class="first-run-divider">
-
-        <div class="first-run-section">
-          <h2 class="first-run-heading">
-            <span data-i18n="setup_ai_cloud_heading">Cloud AI</span>
-            <span class="first-run-heading-note" data-i18n="setup_ai_cloud_note">Supporting, optional</span>
-            <span data-info-tip="setup_info_cloud"></span>
-          </h2>
-          <div class="first-run-key-grid">
-            <label class="first-run-field">
-              <span class="first-run-label" data-i18n="setup_ai_provider_label">Provider</span>
-              <select id="aiSetupCloudProvider" class="ai-setup-select" data-i18n-title="tip_setup_cloud_provider">
-                <option value="" selected data-i18n="setup_ai_provider_none">Not used</option>
-                <option value="gemini">Gemini (Google)</option>
-                <option value="claude">Claude (Anthropic)</option>
-                <option value="openai">OpenAI (GPT)</option>
-              </select>
-            </label>
-            <div class="first-run-field">
-              <label class="first-run-label" for="aiSetupCloudKey" data-i18n="setup_ai_key_label">API key</label>
-              <div class="api-key-input-container first-run-key">
-                <span class="material-symbols-outlined" aria-hidden="true">key</span>
-                <input type="password" id="aiSetupCloudKey" placeholder="Enter API Key (Optional / Configurable later)..." autocomplete="off" spellcheck="false" data-i18n-placeholder="ai_setup_api_key_placeholder" disabled data-i18n-title="tip_api_key_input">
-                <button type="button" id="btnToggleAiSetupKeyVisibility" class="toolbar-btn" aria-label="Toggle Visibility" data-i18n-title="tip_toggle_key_visibility">
-                  <span class="material-symbols-outlined">visibility_off</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <p class="first-run-hint first-run-hint--icon">
-            <span class="material-symbols-outlined" aria-hidden="true">lock</span>
-            <span data-i18n="setup_ai_key_hint">The key is stored encrypted by the OS and is never kept on screen.</span>
           </p>
         </div>
       </section>

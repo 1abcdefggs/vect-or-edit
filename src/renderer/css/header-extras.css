@@ -5,6 +5,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  /* Never squeezed: when the window narrows, the menu bar gives way and the controls keep their place */
+  flex: 0 0 auto;
   -webkit-app-region: no-drag !important;
 }
 
@@ -100,43 +102,7 @@
   line-height: 1;
 }
 
-/* Zoom group styling */
-.header-zoom-group {
-  display: inline-flex;
-  align-items: center;
-  height: 26px;
-  background: transparent;
-  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
-  border-radius: var(--radius-sm, 4px);
-  overflow: hidden;
-  -webkit-app-region: no-drag !important;
-}
 
-/* Zoom buttons */
-.header-zoom-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-size: var(--fs-14);
-  border: none;
-  background: transparent;
-  color: var(--header-fg, var(--text-main));
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-  padding: 0;
-  outline: none;
-}
-
-.header-zoom-btn:hover {
-  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
-  color: var(--text-main, #ffffff);
-}
-
-.header-zoom-btn .material-symbols-outlined {
-  font-size: var(--fs-14);
-}
 
 /* Theme toggle icon */
 .theme-toggle-icon {
@@ -147,4 +113,47 @@
 #settingsModal:not([style*='display: none']) ~ * .settings-icon,
 .modal-backdrop:not([style*='display: none']) ~ * .settings-icon {
   color: #fbbf24 !important;
+}
+
+/* Zoom badge: the mouse wheel changes the zoom, a click resets it to 100%.
+   Its width is fixed, so the controls beside it do not move when the value changes (100% to 150%). */
+.header-zoom-group {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 104px;
+  height: 26px;
+  padding: 0 8px;
+  gap: 4px;
+  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
+  border-radius: var(--radius-sm, 4px);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: ns-resize; /* up and down arrows: the wheel adjusts the value */
+  user-select: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  -webkit-app-region: no-drag !important;
+}
+
+.header-zoom-group:hover {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent-color, #38bdf8) 40%, transparent);
+}
+
+.header-zoom-icon,
+.header-zoom-wheel { flex: 0 0 auto; font-size: var(--fs-18); }
+.header-zoom-icon { color: var(--accent-color, #38bdf8); }
+.header-zoom-wheel { color: var(--text-muted); transition: color 0.15s ease; }
+.header-zoom-group:hover .header-zoom-wheel { color: var(--accent-color, #38bdf8); }
+
+.header-zoom-text {
+  flex: 0 0 auto;
+  min-width: 36px;
+  text-align: center;
+  font-size: var(--fs-12);
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
 }

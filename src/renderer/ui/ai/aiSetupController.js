@@ -14,6 +14,7 @@ import { AUTO_SAVE_DELAY_RANGE_MS, getAutoSaveDelayMs, isIdleAutoSaveEnabled, is
 import { syncSettingsToBackend } from '../settings/settingsState.js';
 import { saveApiKey } from '../../core/apiKeyStore.js';
 import { bindSaveLocationControls } from '../settings/saveLocation.js';
+import { getDownloadedModelIds } from '../../search/embeddingModels.js';
 import { createStepTabs } from '../components/stepTabs.js';
 import { bindToggleSwitch } from '../components/toggleSwitch.js';
 import { renderInfoTips } from '../components/infoTip.js';
@@ -41,12 +42,12 @@ let autoSaveNewlineSwitch = null;
 // One switch for both triggers: on while either is on; the two stay folded away until the user opens them
 let autoSaveAllSwitch = null;
 
-/** The typed pause in seconds, kept to the allowed range and to half seconds; null when the field is not a number. */
 /** The master switch shows ON while at least one trigger is on. */
 function syncAutoSaveAllSwitch() {
   autoSaveAllSwitch?.sync(Boolean(autoSaveIdleSwitch?.isChecked() || autoSaveNewlineSwitch?.isChecked()));
 }
 
+/** The typed pause in seconds, kept to the allowed range and to half seconds; null when the field is not a number. */
 function readDelaySeconds() {
   const raw = $('setupAutoSaveDelay')?.value.trim();
   const seconds = Number(raw);
@@ -72,6 +73,8 @@ export function showAiSetupModal() {
   const overlay = $('aiSetupModalOverlay');
   if (!overlay) return;
   isFinishing = false;
+  // The header shows only its brand while setup runs (see header.css)
+  document.documentElement.classList.add('setup-active');
   bindSetup();
   applyI18n();
   renderTips();
@@ -490,8 +493,10 @@ function queueLocalModelInstall() {
   };
   window.addEventListener('app:aiModelProgress', onProgress);
 
+  // A model cached by an earlier run is only loaded, not downloaded again; the message says so
+  const isCached = getDownloadedModelIds().has(model);
   whenEditorReady(() => {
-    showToast(t('setup_ai_queued', { model: model.split('/').pop() }), 'info');
+    showToast(t(isCached ? 'setup_ai_cached' : 'setup_ai_queued', { model: model.split('/').pop() }), 'info');
     window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model } }));
   });
 }
@@ -528,6 +533,7 @@ async function finishSetup() {
 
   const overlay = $('aiSetupModalOverlay');
   if (overlay) overlay.style.display = 'none';
+  document.documentElement.classList.remove('setup-active');
   const callback = setupCompleteCallback;
   setupCompleteCallback = null;
   if (callback) callback();

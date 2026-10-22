@@ -157,28 +157,29 @@
           <button class="menu-dropdown-item" id="menuItemDocs" role="menuitem" type="button" data-command="help.docs" data-i18n-title="tip_menu_docs">
             <span class="menu-item-label" data-i18n="menu_help_docs">Documentation</span>
           </button>
-          <button class="menu-dropdown-item" id="menuItemAbout" role="menuitem" type="button" data-command="help.about" data-i18n-title="tip_menu_about">
-            <span class="menu-item-label" data-i18n="menu_help_about">About VectOrEdit</span>
-          </button>
         </div>
       </div>
+
+      <!-- About: a plain button beside Help (no dropdown), it opens the About dialog -->
+      <button class="menu-bar-btn" id="menuBtnAbout" type="button" data-command="help.about"
+        data-i18n="menu_about" data-i18n-title="tip_menu_about">About</button>
     </nav>
   </div>
 
   <div class="app-header__toolbar header-toolbar">
-    <!-- Global Theme Selector -->
-    <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select" data-i18n-title="tip_header_theme">
-      <span class="material-symbols-outlined theme-select-icon"
-        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xe40a;</span>
-      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"></select>
-    </div>
-
     <!-- Appearance mode: each click goes System, Light, Dark; the icon shows the current one (settingsFacade.js) -->
     <button id="btnColorMode" class="app-header__lang-toggle lang-toggle-btn" type="button"
       data-ui="hdr:color-mode" style="padding: 2px 6px;" data-i18n-title="tip_header_color_mode">
       <span id="colorModeIcon" class="material-symbols-outlined"
         style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">brightness_auto</span>
     </button>
+
+    <!-- Global Theme Selector -->
+    <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select" data-i18n-title="tip_header_theme">
+      <span class="material-symbols-outlined theme-select-icon"
+        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xe40a;</span>
+      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"></select>
+    </div>
 
     <!-- Language Toggle -->
     <button id="btnLangToggle" class="app-header__lang-toggle lang-toggle-btn" type="button"
@@ -198,12 +199,11 @@
     <span class="header-control-divider" aria-hidden="true"></span>
 
     <!-- Zoom / UI Scaling Relative Adjustment (Mouse Wheel, Click Reset) -->
-    <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select"
-      style="height: 26px; padding: 2px 8px; gap: 4px;" data-i18n-title="tip_header_zoom">
-      <span class="material-symbols-outlined header-zoom-icon"
-        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">zoom_in</span>
-      <span id="headerZoomPercent" class="header-zoom-text"
-        style="font-size: var(--fs-12); font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text-main); min-width: 40px; text-align: center;">100%</span>
+    <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select" data-i18n-title="tip_header_zoom">
+      <span class="material-symbols-outlined header-zoom-icon">zoom_in</span>
+      <span id="headerZoomPercent" class="header-zoom-text">100%</span>
+      <!-- Shows that the mouse wheel changes the zoom (zoomController.ts) -->
+      <span class="material-symbols-outlined header-zoom-wheel" aria-hidden="true">mouse</span>
     </div>
   </div>
 </header>

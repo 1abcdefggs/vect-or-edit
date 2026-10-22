@@ -58,16 +58,20 @@ const parts = [
   ''
 ];
 
+// Editor themes come from one list (src/shared/themeAttribution.json), so a theme added there is always listed here
+const themeAttribution = readJson(path.join(root, 'src/shared/themeAttribution.json'));
+const themeAssets = Object.entries(themeAttribution).map(([name, a]) => ({
+  name: `Editor color theme ${name} (src/renderer/themes)`,
+  license: a.license,
+  source: a.source || 'Original to this project',
+  note: [a.copyright, a.note].filter(Boolean).join('. ')
+}));
+
 // Assets that are not npm packages. Only what is verified in this repository is listed.
 const BUNDLED_ASSETS = [
+  ...themeAssets,
   {
-    name: 'Editor color themes Dracula, Monokai, Night Owl (src/renderer/themes)',
-    license: 'MIT',
-    source: 'https://github.com/brijeshb42/monaco-themes',
-    note: 'Bundled themes match the monaco-themes collection; the light faces and Tukune are original to this project.'
-  },
-  {
-    name: 'Material Symbols Outlined and the UI/editor fonts (Inter, Noto Sans JP, Noto Serif JP, Source Code Pro, Source Sans 3, Source Serif 4, Cascadia Code)',
+    name: 'Material Symbols Outlined and the UI/editor fonts (Noto Sans JP, Noto Serif JP, Source Code Pro, Source Sans 3, Source Serif 4, Cascadia Code)',
     license: 'Apache-2.0 (Material Symbols); SIL OFL 1.1 (fonts)',
     source: 'https://fonts.google.com',
     note: 'Not bundled. Loaded at runtime from Google Fonts (see the CSP in src/renderer/index.html).'

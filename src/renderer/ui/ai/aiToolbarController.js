@@ -125,8 +125,8 @@ export function initAiControls() {
     }
   }
 
-  function openAiSettingsTab() {
-    window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAiSearch' } }));
+  function openAiSettingsTab(tab = 'tabAiSearch') {
+    window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab } }));
   }
 
   updateSidebarEmbeddingLabel();
@@ -153,7 +153,8 @@ export function initAiControls() {
         icon: 'cloud'
       });
       if (confirmed) {
-        openAiSettingsTab();
+        // The LLM keys live in the Editor tab
+        openAiSettingsTab('tabEditor');
       }
       return;
     }

@@ -7,6 +7,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.30] - 2026-10-22
+
+### Added
+- Editor Options card in the right sidebar: every Monaco editor option (306 values; object options such as the minimap are expanded into their members) as a switch, choice list, number or text field. A change shows in the main editor at once and is kept for the next start. The card has a search box, groups, a reset button per option and one for all of them
+- Options the settings page already owns (font, size, line height, word wrap, line numbers, line highlight, whitespace, sticky scroll), and options the app depends on, are shown read-only. Six scrollbar options that Monaco reads only when the editor is created are stored and apply at the next start
+- Japanese and English texts for every option, a generated option catalog (`scripts/extract-monaco-options.mjs`, from the installed Monaco typings) and a test that fails when the catalog is older than the installed Monaco
+- The card can be shown or hidden like every other part of the window (Settings > System)
+
+## [0.3.29] - 2026-10-22
+
+### Added
+- The settings page is split in two: the settings on the left, and a guide for the open tab on the right (1000 px and wider, Japanese UI). The guide follows the setting that has focus, and a click on a guide row brings that setting into view
+- Every part of the window can be shown or hidden from Settings > System: the editor toolbar parts, the chat dock and its buttons, the document tabs, the status bars, the sidebar cards and rail, the log buttons and more. Hiding a part other features lean on says what stops being available and how to get it back
+- Settings that choose between a few options show the current choice as segmented buttons, and on/off settings as switches
+- The header zoom badge shows a mouse-wheel icon
+
+### Changed
+- The settings tabs follow the four areas of the window: Header, Editor, Sidebar, System. The LLM provider and keys moved to the Editor tab; the embedding settings stay in the Sidebar tab
+- Settings rows show the eye button and the heading on one line, with the description below as bullets
+- Tooltips show the opposite of the mode: dark in light mode, light in dark mode
+- The header zoom badge has a fixed width, and when the window narrows the menu bar gives way instead of the controls on the right
+- Several settings labels and tooltips that were still English in the Japanese UI are translated
+
+### Fixed
+- Text on selected buttons and accent-coloured text on the settings page now reach a 4.5:1 contrast in light and dark modes
+- Hiding the sidebar also hides its resize handle
+- The tooltip of the editor AI button described the embedding model; it now describes the LLM button
+
+### Removed
+- Styles of the old master-AI pill and six unused strings
+
+## [0.3.28] - 2026-10-22
+
+### Added
+- The SAVE button opens a menu when pressed, with AutoSave, Overwrite (Save), Save As and Save All
+- AutoSave in the menu shows its state as an ON / OFF switch and stays open when pressed, so it can be switched in one go
+- Save All is disabled with fewer than two tabs open, and its hover text says that two or more tabs are needed
+
+### Changed
+- The SAVE button no longer saves by itself and no longer has a split arrow; Ctrl+S and File > Save save the document, and the SAVE button opens the menu
+- Save All and Save As keep their behaviour and move into the menu
+
+## [0.3.27] - 2026-10-22
+
+### Added
+- The PIPELINE button carries a lamp for the worst subsystem state (error, warning, loading, standby, ready), so a problem is visible while the strip is closed
+- A right-click menu on editor tabs with "Duplicate tab"
+- The About dialog names the parts in use: the app, engine, Monaco and Electron versions, the chosen theme with its license and source, and every downloaded embedding model with a link to its Hugging Face page. Project links live in one file (`src/shared/projectLinks.ts`)
+- Themes Solarized and Tomorrow, each with a light and a dark face. Theme credits (origin, license, source) are kept in one list (`src/shared/themeAttribution.json`) that About and the third-party notices both read
+- First-run AI step shows how the editor, the dictionary and the embedding model work together, and says when the model is already installed
+
+### Changed
+- Header: About is a plain button beside Help (it was inside the Help menu), and the appearance-mode toggle sits before the theme selector
+- First-run AI step is redesigned around the purpose of the embedding model; the cloud AI heading is gone
+- One UI font stack (`--font-ui`) is set once on `body` and everything inherits it; form controls follow it, section headings no longer use Inter, and the status bar and welcome text use the same face as the rest
+- Warning and error text colors are darker on light backgrounds
+- The tab duplicate button uses the shared icon set
+- Ctrl+S in the editor runs File > Save, the same command as the menu, instead of clicking the SAVE button (which follows the AutoSave split); the stray Ctrl+S binding on the Save as Text action is gone
+- Internal cleanup: removed the duplicate `sidebarResizer.js` and functions with no callers, and stopped loading the unused Inter web font
+
+### Fixed
+- Ctrl+S in the editor runs the same command as File > Save, instead of clicking the SAVE button (which follows the AutoSave split); the duplicate Ctrl+S binding on "Save as Text File" is removed
+
+## [0.3.26] - 2026-10-22
+
+### Added
+- Appearance modes System, Light and Dark in the header, in Settings and in first-run setup; every theme has a light and a dark face; the Tukune theme
+- Confirmation before closing tabs, toasts, modals and slots (a setting); a tab with unsaved changes always offers a choice dialog
+- Log panel: the backlog and live lines merge by id, a Save Logs button, and a mirrored log view in Settings > System
+- About shows the bundled license and third-party notices; embedding model licenses are verified before a download
+- A version badge on the startup loader and a Windows app icon
+- Settings for window features, including collapsing the logs
+
+### Changed
+- The Settings modal is restructured; tooltips across the UI are translatable
+- The Windows package is smaller: other-OS onnxruntime binaries and superseded engine builds are left out, and the packaging guard checks a built `app.asar` for them
+- 32 strings that were still English in the Japanese dictionary are translated
+
+## [0.3.25] - 2026-10-21
+
 ### Added
 - First-run setup in three steps (language and theme, save location, AI), with the tool name and version in the window's top-left corner, one typeface (Source Serif 4) throughout, and an (i) tip beside each heading that explains it on hover or focus
 - Shared parts: step tabs with an arrow connector and a progress line (`stepTabs.js`), a toggle switch with OFF on the left and ON on the right (`toggleSwitch.js`), and an info tip (`infoTip.js`)
@@ -20,6 +100,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Embedding model picker in Settings: 50 models with language fit, license, dimension, language-count and task filters, five sort orders and search. The model data lives in one registry (`src/shared/embeddingRegistry.json`) and the rules in `src/shared/embeddingCatalog.ts`. Only models with verified query/passage prefixes can be downloaded or used; the others are listed for comparison. A chosen model whose files are not on the device is shown as "Selected, not installed" with a Download button
 
 ### Changed
+- The default Gemini model is `gemini-3.1-flash-lite`, the chat model badge follows the chosen model, and the retired Claude models are replaced; only text blocks of a Claude reply are read
+- The header app title uses a serif face
 - The built-in save folder is now `Documents/VectOrEdit` (was `VectOrFoldEr`); the old folder is not looked at or moved
 - "Change location" now picks the place for the save folder and keeps its name; the name is changed in its own field
 - The embedding model starts switched on in first-run setup and is installed in the background after the last button is pressed. The setup installs the default model only (e5-small); Settings still lists the others. With the model off the last button reads "Start without the model"
@@ -46,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Model size is no longer written into labels (it said 45 MB; the file is about 118 MB)
 
 ### Removed
+- The AI Direct command bar of the log panel
 - The "Skip setup" button of first-run setup (every step already has defaults, so Next all the way is a valid setup)
 - Gemini-specific key IPC channels (replaced by the provider-generic `saveApiKey`, `hasApiKey` and `clearApiKey`)
 

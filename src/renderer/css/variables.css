@@ -15,6 +15,16 @@
   --border-primary: var(--border-color);
   --window-border: var(--border-color);
   --success-color: #10b981;
+  --warn-color: #f59e0b;
+  --error-color: #f87171;
+  /* Text on a solid accent background (buttons, selected chips) */
+  --text-on-accent: #ffffff;
+  /* Tooltips show the opposite of the mode, so they stand out from the window: light in dark mode, dark in light mode */
+  --tooltip-bg: #f1f5f9;
+  --tooltip-fg: #0f172a;
+  --tooltip-border: rgba(15, 23, 42, 0.35);
+  /* Accent colour for text: mixed with the main text colour so it stays readable (4.5:1) on dark and on tinted light backgrounds */
+  --accent-text: color-mix(in srgb, var(--accent-color) 62%, var(--text-main));
   --app-backdrop: #080c16;
 
   /* System log console */
@@ -22,7 +32,7 @@
   --log-header-bg: #222222;
   --log-fg: #f1f5f9;
   --log-title: #ffffff;
-  --log-time: #64748b;
+  --log-time: #8b9bb4;
   --log-source: #94a3b8;
   --log-msg: #e2e8f0;
   --log-btn-bg: rgba(0, 0, 0, 0.4);
@@ -53,6 +63,9 @@
 }
 
 :root.light-theme {
+  --tooltip-bg: #0f172a;
+  --tooltip-fg: #f1f5f9;
+  --tooltip-border: rgba(241, 245, 249, 0.35);
   --bg-primary: #edf3f9;
   --bg-secondary: #ffffff;
   --header-bg: #dfeaf5;
@@ -66,6 +79,9 @@
   --window-border: var(--border-color);
   --app-backdrop: #d6dde6;
   --success-color: #047857;
+  /* Darker on a light background, so the warning and error text stay readable */
+  --warn-color: #b45309;
+  --error-color: #b91c1c;
 
   --log-bg: #f6f8fa;
   --log-header-bg: #e6ebf1;

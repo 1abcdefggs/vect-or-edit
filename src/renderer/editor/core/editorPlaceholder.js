@@ -83,7 +83,7 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     </div>
 
     <!-- 2. Clean Compact Guidance List (Aligned with line numbers) -->
-    <div style="display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-13); line-height: 1.55; color: ${boxTextMuted}; margin-top: 6px; font-family: var(--font-family, sans-serif);">
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-13); line-height: 1.55; color: ${boxTextMuted}; margin-top: 6px;">
       <div>${kbLine}</div>
       <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_intellisense')}</div>
       <div><span style="color: var(--accent-color, #38bdf8); font-weight: 600;">- </span>${t('editor_placeholder_selection')}</div>

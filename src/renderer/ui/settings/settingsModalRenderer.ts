@@ -2,6 +2,7 @@ import { SETTINGS_REGISTRY } from '../../core/settingsRegistry';
 import { settingsStore } from '../../core/settingsStore';
 import { SettingItemDef, UiKey } from '../../types/settings';
 import { t } from '../../core/i18n';
+import { showToast } from '../notifications/toastManager.js';
 
 export function enhanceSettingsModalVisibilityControls(): void {
   const container = document.getElementById('settingsModal');
@@ -34,7 +35,7 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
   const wrapper = document.createElement('div');
   wrapper.className = 'vis-toggle-wrapper';
   wrapper.setAttribute('data-vis-key', visKey);
-  wrapper.style.cssText = 'display: inline-flex; align-items: center; margin-right: 8px; flex-shrink: 0;';
+  wrapper.style.cssText = 'display: inline-flex; align-items: center; flex-shrink: 0;';
 
   if (item.isEssential) {
     const lock = document.createElement('span');
@@ -59,6 +60,8 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
       const isVis = settingsStore.isVisible(visKey);
       updateEyeButtonState(btn, isVis);
       btn.title = t(isVis ? 'tip_vis_hide' : 'tip_vis_show');
+      // Parts that other features lean on say what stopped being available, and how to get it back
+      if (!isVis && item.hideNoticeKey) showToast(`${t(item.hideNoticeKey)} ${t('hide_notice_restore')}`, 'warning');
     });
 
     wrapper.appendChild(btn);
@@ -67,13 +70,15 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
   // Prepend wrapper to the setting row label area
   const labelContainer = targetRow.querySelector('.setting-label')?.parentElement || targetRow.firstElementChild;
   if (labelContainer) {
+    // The eye sits in front of the heading on one line (see .has-eye in settings-ui.css)
+    labelContainer.classList.add('has-eye');
     labelContainer.insertBefore(wrapper, labelContainer.firstChild);
   }
 }
 
 function updateEyeButtonState(btn: HTMLButtonElement, isVisible: boolean): void {
   btn.innerHTML = isVisible
-    ? '<span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">visibility</span>'
+    ? '<span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-text, #38bdf8);">visibility</span>'
     : '<span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--text-muted); opacity: 0.5;">visibility_off</span>';
   btn.style.cssText = `background: transparent; border: 1px solid ${isVisible ? 'rgba(56, 189, 248, 0.3)' : 'var(--border-color)'}; border-radius: 4px; padding: 2px 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;`;
 }

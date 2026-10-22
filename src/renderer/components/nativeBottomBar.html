@@ -1,15 +1,17 @@
 <div id="nativeBottomBar" data-ui="sys:bottom-bar" style="height: 24px; background: var(--bg-card); border-top: var(--border-width) solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; font-size: var(--fs-10);">
   
   <div class="bottom-bar-left" style="display: flex; align-items: center; gap: 8px;">
-    <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_console" data-ui="sys:log-console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
+    <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add" data-i18n-title="tip_console_toggle" data-ui="sys:log-console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
       <span class="material-symbols-outlined" style="font-size: var(--fs-18); flex-shrink: 0;">&#xeb8e;</span>
       <span class="bottom-bar-text" data-i18n="btn_console">LOGS</span>
       <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: var(--fs-10); height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
       <span data-disclosure-icon class="material-symbols-outlined" style="font-size: var(--fs-16); flex-shrink: 0;">&#xe5cf;</span>
     </button>
-    <button id="btnPipelineToggle" class="toolbar-btn" style="display: none; height: 20px; padding: 0 6px; align-items: center; gap: 4px;" data-i18n-title="tip_pipeline_show">
+    <!-- Looks like a button, and its LED shows the worst state of the pipeline while the strip is closed (statusManager.ts) -->
+    <button id="btnPipelineToggle" class="toolbar-btn" style="display: none; height: 20px; padding: 0 8px; align-items: center; gap: 6px; border: var(--border-width) solid var(--border-color); border-radius: 4px;" data-i18n-title="tip_pipeline_show">
       <span class="material-symbols-outlined" style="font-size: var(--fs-16);">monitor_heart</span>
       <span class="bottom-bar-text" data-i18n="btn_pipeline">PIPELINE</span>
+      <span id="pipelineToggleLed" class="status-led-dot status-loading" aria-hidden="true"></span>
     </button>
     <div id="pipelineStrip" style="display: none; align-items: center; gap: 4px;">
       <!-- Placed where btnPipelineToggle sits so open and close share one position -->
@@ -63,12 +65,12 @@
     <button id="btnSystemQuickSettings" class="gear-btn gear-btn--sm" data-ui="sys:quick-settings" data-tab-target="tabSystem" data-i18n-title="tip_system_quick_settings">
       <span class="material-symbols-outlined">settings</span>
     </button>
-    <div id="updateLedContainer" style="display: none; align-items: center; gap: 4px; color: var(--text-main); cursor: pointer; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2);">
+    <div id="updateLedContainer" data-ui="sys:update-status" style="display: none; align-items: center; gap: 4px; color: var(--text-main); cursor: pointer; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2);">
       <span id="updateLedIcon" class="material-symbols-outlined" style="font-size: var(--fs-15); line-height: 1;">&#xe86a;</span>
       <span id="updateLedText" class="bottom-bar-text" data-i18n="update_check_label" style="font-size: var(--fs-10);">Check Updates</span>
     </div>
 
-    <span id="statusSaveIndicator" class="status-save-indicator" role="status" aria-live="polite"></span>
+    <span id="statusSaveIndicator" data-ui="sys:save-status" class="status-save-indicator" role="status" aria-live="polite"></span>
 
     <span class="status-bar-item" data-ui="sys:status-meta" style="color: var(--text-main); display: flex; align-items: center; gap: 4px;">
       <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--text-muted); flex-shrink: 0;">&#xe322;</span>

@@ -2,6 +2,7 @@ import { tabs, activeTabId, switchTab, closeTab, createNewTab, duplicateTab } fr
 import { editorEvents } from '../core/editorEvents.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { t } from '../../core/i18n.js';
+import { icons } from '../../core/icons.js';
 
 export function triggerRpgSavedExpFloat(tabId = activeTabId) {
   const tabsContainer = document.getElementById('editorTabsList');
@@ -26,11 +27,51 @@ export function triggerRpgSavedExpFloat(tabId = activeTabId) {
 function updateSaveAllButtonState() {
   const btnSaveAll = document.getElementById('btnSaveAll');
   if (!btnSaveAll) return;
-  if (tabs.length >= 2) {
-    btnSaveAll.classList.remove('disabled');
-  } else {
-    btnSaveAll.classList.add('disabled');
-  }
+  // The hover text explains the rule: the tooltip key follows the enabled state
+  const enabled = tabs.length >= 2;
+  const tipKey = enabled ? 'btn_save_all_title' : 'tip_save_all_needs_tabs';
+  btnSaveAll.classList.toggle('disabled', !enabled);
+  btnSaveAll.setAttribute('data-i18n-title', tipKey);
+  btnSaveAll.title = t(tipKey);
+}
+
+// The right-click menu of a tab. It closes on a press outside it or on Escape.
+let tabMenuEl = null;
+
+function closeTabMenu() {
+  tabMenuEl?.remove();
+  tabMenuEl = null;
+  document.removeEventListener('mousedown', onOutsidePress);
+  document.removeEventListener('keydown', onMenuKey);
+}
+
+function onOutsidePress(e) {
+  if (!tabMenuEl?.contains(e.target)) closeTabMenu();
+}
+
+function onMenuKey(e) {
+  if (e.key === 'Escape') closeTabMenu();
+}
+
+function showTabMenu(x, y, tabId) {
+  closeTabMenu();
+  const menu = document.createElement('div');
+  menu.className = 'tab-context-menu';
+  menu.style.left = `${x}px`;
+  menu.style.top = `${y}px`;
+  const duplicate = document.createElement('button');
+  duplicate.type = 'button';
+  duplicate.className = 'tab-context-menu-item';
+  duplicate.textContent = t('menu_tab_duplicate');
+  duplicate.addEventListener('click', () => {
+    closeTabMenu();
+    duplicateTab(tabId);
+  });
+  menu.append(duplicate);
+  document.body.append(menu);
+  tabMenuEl = menu;
+  document.addEventListener('mousedown', onOutsidePress);
+  document.addEventListener('keydown', onMenuKey);
 }
 
 export function renderTabs() {
@@ -61,6 +102,10 @@ export function renderTabs() {
     // detaches the element before a double-click (rename) lands on it.
     tabEl.addEventListener('click', () => {
       if (tab.id !== activeTabId) switchTab(tab.id);
+    });
+    tabEl.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      showTabMenu(e.clientX, e.clientY, tab.id);
     });
 
     const titleSpan = tabEl.querySelector('.tab-title');
@@ -157,7 +202,7 @@ export function renderTabs() {
   btnInlineDuplicateTab.style.cursor = 'pointer';
   btnInlineDuplicateTab.style.flexShrink = '0';
   btnInlineDuplicateTab.style.marginLeft = '4px';
-  btnInlineDuplicateTab.innerHTML = `<span class="material-symbols-outlined" style="font-size: var(--fs-18);">&#xf744;</span>`;
+  btnInlineDuplicateTab.innerHTML = icons.duplicate;
   btnInlineDuplicateTab.addEventListener('click', () => duplicateTab());
   tabsContainer.appendChild(btnInlineDuplicateTab);
 
