@@ -8,6 +8,7 @@ import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
 import { t } from '../../core/i18n.js';
+import { commandManager } from '../../core/commandManager';
 
 let monacoEditorInstance = null;
 let monaco = null;
@@ -166,9 +167,9 @@ export async function initEditor() {
   registerTabManagementActions(monacoEditorInstance);
   initializeKnowledgeExtensions(monacoEditorInstance, monaco);
 
+  // Ctrl+S is the explicit save: it runs the same command as File > Save, not the SAVE button's AutoSave split
   monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-    const btnSave = document.getElementById('btnSave');
-    if (btnSave) btnSave.click();
+    void commandManager.executeCommand('file.save');
   });
 
   isEditorInitializing = false;

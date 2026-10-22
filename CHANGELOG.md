@@ -22,7 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - One UI font stack (`--font-ui`) is set once on `body` and everything inherits it; form controls follow it, section headings no longer use Inter, and the status bar and welcome text use the same face as the rest
 - Warning and error text colors are darker on light backgrounds
 - The tab duplicate button uses the shared icon set
+- Ctrl+S in the editor runs File > Save, the same command as the menu, instead of clicking the SAVE button (which follows the AutoSave split); the stray Ctrl+S binding on the Save as Text action is gone
 - Internal cleanup: removed the duplicate `sidebarResizer.js` and functions with no callers, and stopped loading the unused Inter web font
+
+### Fixed
+- Ctrl+S in the editor runs the same command as File > Save, instead of clicking the SAVE button (which follows the AutoSave split); the duplicate Ctrl+S binding on "Save as Text File" is removed
 
 ## [0.3.26] - 2026-10-22
 
