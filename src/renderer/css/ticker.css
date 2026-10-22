@@ -311,19 +311,19 @@
 
 .log-badge.badge-info {
   background: rgba(56, 189, 248, 0.15);
-  color: #66f;
+  color: color-mix(in srgb, #66f 55%, var(--text-main));
   border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
 .log-badge.badge-warn {
   background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  color: color-mix(in srgb, #f59e0b 55%, var(--text-main));
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .log-badge.badge-error {
   background: rgba(239, 68, 68, 0.15);
-  color: #fa1;
+  color: color-mix(in srgb, #ef4444 55%, var(--text-main));
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 

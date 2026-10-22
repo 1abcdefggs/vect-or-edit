@@ -57,6 +57,22 @@ export function t(key: string, params: Record<string, any> = {}): string {
   });
 }
 
+/**
+ * Shows a settings row's description as a bullet list, one bullet per sentence.
+ * Sentences end with "。" (ja) or ". " (en); a bullet drops the full stop at its end.
+ */
+function renderAsList(el: HTMLElement, text: string): void {
+  const sentences = text.split(/。|(?<=[.!?])\s+/).map((s) => s.trim().replace(/[.。]$/, '')).filter(Boolean);
+  const list = document.createElement('ul');
+  list.className = 'desc-list';
+  for (const sentence of sentences.length ? sentences : [text]) {
+    const item = document.createElement('li');
+    item.textContent = sentence;
+    list.appendChild(item);
+  }
+  el.replaceChildren(list);
+}
+
 export function applyI18n(): void {
   document.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
     try {
@@ -64,6 +80,8 @@ export function applyI18n(): void {
       if (key && i18n[key]) {
         if (el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement) {
           el.placeholder = i18n[key];
+        } else if (el.classList.contains('setting-desc') && el.closest('.setting-item') && !el.hasAttribute('data-no-list')) {
+          renderAsList(el, i18n[key]);
         } else {
           el.textContent = i18n[key];
         }

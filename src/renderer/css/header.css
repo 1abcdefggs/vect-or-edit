@@ -46,6 +46,10 @@
   flex: 1 1 auto;
   min-width: 0;
   height: 100%;
+  /* Menus that do not fit are cut off here instead of being drawn over the controls on the right.
+     Only the sideways overflow is clipped, so the drop-down menus still open downwards. */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .app-header__window-controls {
@@ -104,8 +108,8 @@
 .instant-tooltip {
   position: fixed;
   display: none;
-  background: var(--bg-card, rgba(0, 0, 0, 0.95));
-  color: var(--text-main, #f8fafc);
+  background: var(--tooltip-bg, #f1f5f9);
+  color: var(--tooltip-fg, #0f172a);
   padding: 10px 14px;
   border-radius: 6px;
   font-size: var(--fs-16);
@@ -113,84 +117,12 @@
   white-space: pre-wrap;
   z-index: 99999;
   pointer-events: none;
-  border: 1px solid var(--accent-color, rgba(56, 189, 248, 0.4));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   min-width: 200px;
   /* 75em: about 75 full-width (CJK) characters per line; em follows this tooltip's font size. */
   max-width: min(75em, calc(100vw - 16px));
   text-align: left;
-}
-
-/* Master AI Toggle Pill (Compact Modern) */
-.master-ai-pill {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  width: 50px;
-  height: 20px;
-  cursor: pointer;
-  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
-  overflow: hidden;
-  user-select: none;
-  margin: 0;
-  padding: 0;
-}
-
-.master-ai-pill .pill-slider {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 23px;
-  height: 16px;
-  background: #64748b;
-  border-radius: 8px;
-  transition: transform 0.25s cubic-bezier(0.4, 0.0, 0.2, 1), background-color 0.25s ease;
-  z-index: 1;
-}
-
-.master-ai-pill.active .pill-slider {
-  transform: translateX(24px);
-  background: var(--success-color, #10b981);
-}
-
-.master-ai-pill .pill-label {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  text-align: center;
-  font-size: var(--fs-9);
-  font-weight: 700;
-  color: var(--text-muted);
-  transition: color 0.3s ease;
-}
-
-.master-ai-pill.active .pill-on {
-  color: #fff;
-}
-
-.master-ai-pill:not(.active) .pill-off {
-  color: #fff;
-}
-
-.master-ai-pill.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.master-ai-pill.disabled .pill-slider {
-  background: #64748b;
-}
-
-.master-ai-divider,
-.editor-ai-divider {
-  width: 1px;
-  height: 16px;
-  flex: 0 0 1px;
-  margin: 0 4px;
-  background: var(--border-color, rgba(148, 163, 184, 0.4));
-  opacity: 0.9;
 }
 
 /* ==========================================================================
@@ -200,11 +132,13 @@
   display: flex;
   align-items: center;
   gap: 2px;
+  flex-wrap: nowrap;
   -webkit-app-region: no-drag !important;
   user-select: none;
 }
 
 .menu-bar-item {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   position: relative;
@@ -223,6 +157,7 @@
   border-radius: 4px;
   cursor: pointer;
   line-height: 1.2;
+  white-space: nowrap;
   transition: background-color 0.15s ease, color 0.15s ease;
   -webkit-app-region: no-drag !important;
   outline: none;
@@ -406,42 +341,6 @@
   margin: 0 4px;
   background: var(--border-color, rgba(148, 163, 184, 0.4));
   opacity: 0.8;
-}
-
-/* Header Zoom Badge (Mouse Wheel Scrollable, Click Reset) */
-.header-zoom-group {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 6px;
-  height: 24px;
-  border-radius: var(--radius-sm, 4px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  cursor: ns-resize; /* Indicates scroll wheel vertical adjustment */
-  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-  user-select: none;
-}
-
-.header-zoom-group:hover {
-  background: rgba(56, 189, 248, 0.08);
-  border-color: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 0 6px rgba(56, 189, 248, 0.15);
-}
-
-.header-zoom-btn {
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
-  user-select: none;
-  cursor: pointer;
-}
-
-.header-zoom-btn:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: var(--accent-color, #38bdf8) !important;
-}
-
-.header-zoom-btn:active {
-  transform: scale(0.92);
 }
 
 

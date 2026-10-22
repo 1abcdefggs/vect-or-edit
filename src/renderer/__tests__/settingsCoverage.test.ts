@@ -46,3 +46,36 @@ describe('settings page coverage', () => {
     expect(undefinedKeys, `Define these in core/constants.ts:\n${undefinedKeys.join('\n')}`).toEqual([]);
   });
 });
+
+describe('window parts and the settings registry', () => {
+  const COMPONENTS = path.join(RENDERER, 'components');
+  const htmlKeys = new Set<string>();
+  for (const f of fs.readdirSync(COMPONENTS).filter((n) => n.endsWith('.html'))) {
+    for (const m of fs.readFileSync(path.join(COMPONENTS, f), 'utf8').matchAll(/data-ui="((?:hdr|edt|sbr|sys):[a-z-]+)"/g)) htmlKeys.add(m[1]);
+  }
+  const registryKeys = new Set(SETTINGS_REGISTRY.map((i) => i.visibilityKey).filter(Boolean) as string[]);
+
+  it('registers every part of the window that carries a data-ui key', () => {
+    const missing = [...htmlKeys].filter((k) => !registryKeys.has(k));
+    expect(missing, `Add these to settingsRegistry.ts and types/settings.ts:\n${missing.join('\n')}`).toEqual([]);
+  });
+
+  it('has a part of the window for every registered key', () => {
+    const dead = [...registryKeys].filter((k) => !htmlKeys.has(k));
+    expect(dead, `No element carries these keys, so their eye buttons would do nothing:\n${dead.join('\n')}`).toEqual([]);
+  });
+
+  it('words the notice of every part that warns when hidden, in both languages', () => {
+    const en = locale('en');
+    const ja = locale('ja');
+    const missing: string[] = [];
+    for (const item of SETTINGS_REGISTRY) {
+      if (!item.hideNoticeKey) continue;
+      for (const key of [item.hideNoticeKey, 'hide_notice_restore']) {
+        if (!en[key]?.trim()) missing.push(`${key} (en)`);
+        if (!ja[key]?.trim()) missing.push(`${key} (ja)`);
+      }
+    }
+    expect(missing, `Add these to the locale files:\n${missing.join('\n')}`).toEqual([]);
+  });
+});

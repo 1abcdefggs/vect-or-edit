@@ -210,7 +210,7 @@
 }
 
 .settings-tab-btn.active {
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-text, #38bdf8);
   border-bottom-color: var(--accent-color, #38bdf8);
   background: rgba(56, 189, 248, 0.08);
   font-weight: 600;
@@ -314,7 +314,7 @@
   margin: 0 0 12px 0;
   font-size: var(--fs-13);
   font-weight: 600;
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-text, #38bdf8);
   border-bottom: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.06));
   padding-bottom: 8px;
   display: flex;
@@ -342,7 +342,7 @@
   padding: 4px 8px;
   border: var(--border-width) solid var(--border-color);
   border-radius: 999px;
-  color: var(--accent-color);
+  color: var(--accent-text);
   font-size: var(--fs-11);
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -439,7 +439,7 @@
 
 .ai-structure-connector {
   padding-bottom: 7px;
-  color: var(--accent-color);
+  color: var(--accent-text);
   font-size: var(--fs-16);
   font-weight: 700;
 }
@@ -461,7 +461,7 @@
   border: var(--border-width) solid var(--border-color);
   border-radius: 5px;
   background: transparent;
-  color: var(--accent-color);
+  color: var(--accent-text);
   cursor: pointer;
   font: inherit;
   white-space: nowrap;
@@ -522,12 +522,12 @@
 
 .capability-local {
   background: color-mix(in srgb, var(--accent-color) 14%, transparent);
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .capability-generation {
   background: color-mix(in srgb, var(--success-color, #10b981) 14%, transparent);
-  color: var(--success-color, #10b981);
+  color: color-mix(in srgb, var(--success-color, #10b981) 55%, var(--text-main));
 }
 
 .capability-yes {
@@ -816,7 +816,7 @@
 .first-run-heading::before {
   content: "■";
   font-size: 0.5em;
-  color: var(--accent-color);
+  color: var(--accent-text);
   align-self: center;
 }
 
@@ -1257,7 +1257,7 @@
 .first-run-path .material-symbols-outlined {
   flex-shrink: 0;
   font-size: var(--fs-28);
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .first-run-path-text {
@@ -1420,7 +1420,7 @@
 .first-run-path .first-run-field-icon {
   flex-shrink: 0;
   font-size: var(--fs-20, 20px);
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 /* The name sits in its own frame with the edit icon; the frame grows with the text, up to the row width */
@@ -1462,7 +1462,7 @@
 }
 
 .first-run-hint.is-saved {
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .first-run-hint.is-saved::before {
@@ -1889,7 +1889,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .setup-ai-link .material-symbols-outlined {
@@ -2165,7 +2165,7 @@
 }
 
 .ai-model-subtab-btn.active {
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-text, #38bdf8);
   border-bottom-color: var(--accent-color, #38bdf8);
   font-weight: 600;
 }

@@ -199,12 +199,11 @@
     <span class="header-control-divider" aria-hidden="true"></span>
 
     <!-- Zoom / UI Scaling Relative Adjustment (Mouse Wheel, Click Reset) -->
-    <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select"
-      style="height: 26px; padding: 2px 8px; gap: 4px;" data-i18n-title="tip_header_zoom">
-      <span class="material-symbols-outlined header-zoom-icon"
-        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">zoom_in</span>
-      <span id="headerZoomPercent" class="header-zoom-text"
-        style="font-size: var(--fs-12); font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text-main); min-width: 40px; text-align: center;">100%</span>
+    <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select" data-i18n-title="tip_header_zoom">
+      <span class="material-symbols-outlined header-zoom-icon">zoom_in</span>
+      <span id="headerZoomPercent" class="header-zoom-text">100%</span>
+      <!-- Shows that the mouse wheel changes the zoom (zoomController.ts) -->
+      <span class="material-symbols-outlined header-zoom-wheel" aria-hidden="true">mouse</span>
     </div>
   </div>
 </header>

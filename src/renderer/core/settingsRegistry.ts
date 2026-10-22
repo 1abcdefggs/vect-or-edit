@@ -41,29 +41,48 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'hdr:menu-view': true,
     'hdr:menu-window': true,
     'hdr:menu-help': true,
-    'hdr:master-ai': true,
     'hdr:theme-select': true,
     'hdr:color-mode': true,
     'hdr:locale-toggle': true,
     'hdr:zoom-select': true,
     'hdr:settings-btn': true,
-    'hdr:console-toggle': true,
     'edt:toolbar': true,
     'edt:font-family': true,
     'edt:font-size': true,
     'edt:ai-toggle': true,
     'edt:quick-settings': true,
+    'edt:save': true,
+    'edt:bg-tone': true,
+    'edt:tab-bar': true,
+    'edt:status-bar': true,
+    'edt:document-format': true,
+    'edt:markdown-preview': true,
+    'edt:llm-dock': true,
+    'edt:llm-key-config': true,
+    'edt:llm-clear-chat': true,
+    'edt:llm-collapse': true,
+    'edt:llm-close': true,
     'sbr:sidebar': true,
-    'sbr:query-input': true,
     'sbr:score-filter': true,
     'sbr:limit-select': true,
     'sbr:metadata-toggle': true,
     'sbr:quick-settings': true,
+    'sbr:embedding-toggle': true,
+    'sbr:import-dictionary': true,
+    'sbr:add-slot': true,
+    'sbr:rail': true,
+    'sbr:guideline-card': true,
+    'sbr:knowledge-card': true,
     'sys:bottom-bar': true,
     'sys:status-meta': true,
     'sys:pipeline-meter': true,
     'sys:log-console': true,
-    'sys:quick-settings': true
+    'sys:quick-settings': true,
+    'sys:log-clear': true,
+    'sys:log-copy': true,
+    'sys:log-download': true,
+    'sys:update-status': true,
+    'sys:save-status': true
   }
 };
 
@@ -83,6 +102,7 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     description: 'Top-level menu bar container (File, Edit, View, Window, Help).',
     category: 'header',
     visibilityKey: 'hdr:menu-bar',
+    hideNoticeKey: 'hide_notice_menu_bar',
     controlType: 'none'
   },
   {
@@ -118,14 +138,6 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     label: 'Menu: [Help]',
     category: 'header',
     visibilityKey: 'hdr:menu-help',
-    controlType: 'none'
-  },
-  {
-    id: 'h_master_ai',
-    label: 'Master AI Status Badge',
-    description: 'Header action badge indicating AI engine availability.',
-    category: 'header',
-    visibilityKey: 'hdr:master-ai',
     controlType: 'none'
   },
   {
@@ -194,14 +206,6 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     visibilityKey: 'hdr:settings-btn',
     controlType: 'none',
     isEssential: true
-  },
-  {
-    id: 'h_console_toggle',
-    label: 'Log Console Toggle Button',
-    description: 'Header action button to open/close system log console.',
-    category: 'header',
-    visibilityKey: 'hdr:console-toggle',
-    controlType: 'none'
   },
 
   // ── 2. EDITOR & GENERATIVE AI ──
@@ -286,6 +290,97 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     ]
   },
 
+  {
+    id: 'ed_save',
+    label: 'Save Button',
+    description: 'Save button with the autosave LED and its menu.',
+    category: 'editor',
+    visibilityKey: 'edt:save',
+    hideNoticeKey: 'hide_notice_save',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_bg_tone',
+    label: 'Editor Background Tone',
+    description: 'Quick selector for the editor background and text tone.',
+    category: 'editor',
+    visibilityKey: 'edt:bg-tone',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_tab_bar',
+    label: 'Document Tab Bar',
+    description: 'Tabs of the open documents.',
+    category: 'editor',
+    visibilityKey: 'edt:tab-bar',
+    hideNoticeKey: 'hide_notice_tab_bar',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_status_bar',
+    label: 'Editor Status Bar',
+    description: 'Character count, line count, encoding, format and preview.',
+    category: 'editor',
+    visibilityKey: 'edt:status-bar',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_document_format',
+    label: 'Document Format Switch',
+    description: 'Switches the current document between Markdown and Text.',
+    category: 'editor',
+    visibilityKey: 'edt:document-format',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_markdown_preview',
+    label: 'Markdown Preview Button',
+    description: 'Shows or hides the Markdown preview.',
+    category: 'editor',
+    visibilityKey: 'edt:markdown-preview',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_dock',
+    label: 'LLM Chat Dock',
+    description: 'Chat and rewriting panel below the editor.',
+    category: 'editor',
+    visibilityKey: 'edt:llm-dock',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_key_config',
+    label: 'LLM Chat: API Key Button',
+    description: 'Opens the API key entry in the chat dock.',
+    category: 'editor',
+    visibilityKey: 'edt:llm-key-config',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_clear_chat',
+    label: 'LLM Chat: Clear History Button',
+    description: 'Clears the chat history.',
+    category: 'editor',
+    visibilityKey: 'edt:llm-clear-chat',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_collapse',
+    label: 'LLM Chat: Collapse Button',
+    description: 'Minimizes or expands the chat dock.',
+    category: 'editor',
+    visibilityKey: 'edt:llm-collapse',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_close',
+    label: 'LLM Chat: Close Button',
+    description: 'Closes the chat dock.',
+    category: 'editor',
+    visibilityKey: 'edt:llm-close',
+    controlType: 'none'
+  },
+
   // ── 3. KNOWLEDGE & VECTOR SIDEBAR ──
   {
     id: 'sb_sidebar',
@@ -293,14 +388,7 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     description: 'Collapsible right sidebar for semantic search and slot management.',
     category: 'sidebar',
     visibilityKey: 'sbr:sidebar',
-    controlType: 'none'
-  },
-  {
-    id: 'sb_query_input',
-    label: 'Vector Search Query Box',
-    description: 'Search box for manual semantic similarity queries.',
-    category: 'sidebar',
-    visibilityKey: 'sbr:query-input',
+    hideNoticeKey: 'hide_notice_sidebar',
     controlType: 'none'
   },
   {
@@ -378,6 +466,58 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     controlType: 'toggle'
   },
 
+  {
+    id: 'sb_embedding_toggle',
+    label: 'Embedding On/Off Button',
+    description: 'Turns the embedding assistant on or off.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:embedding-toggle',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_import_dictionary',
+    label: 'Import Dictionary Button',
+    description: 'Loads a dictionary or knowledge file into a slot.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:import-dictionary',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_add_slot',
+    label: 'Add Knowledge Slot Button',
+    description: 'Adds an empty knowledge slot.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:add-slot',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_rail',
+    label: 'Collapsed Sidebar Rail',
+    description: 'Icon rail shown while the sidebar is collapsed.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:rail',
+    controlType: 'none'
+  },
+
+  {
+    id: 'sb_guideline_card',
+    label: 'Guideline Card',
+    description: 'Active guideline preset and its templates.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:guideline-card',
+    hideNoticeKey: 'hide_notice_guideline_card',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_knowledge_card',
+    label: 'Knowledge Slots Card',
+    description: 'Knowledge slots and their search results.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:knowledge-card',
+    hideNoticeKey: 'hide_notice_knowledge_card',
+    controlType: 'none'
+  },
+
   // ── 4. SYSTEM & BOTTOM BAR ──
   {
     id: 'sys_bottom_bar',
@@ -385,6 +525,7 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     description: 'Bottom bar containing system status and logs.',
     category: 'system',
     visibilityKey: 'sys:bottom-bar',
+    hideNoticeKey: 'hide_notice_bottom_bar',
     controlType: 'none'
   },
   {
@@ -426,5 +567,45 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     category: 'system',
     prefPath: 'system.collapseLogsOnStartup',
     controlType: 'toggle'
+  },
+  {
+    id: 'sys_log_clear',
+    label: 'Log Panel: Clear Button',
+    description: 'Clears the log.',
+    category: 'system',
+    visibilityKey: 'sys:log-clear',
+    controlType: 'none'
+  },
+  {
+    id: 'sys_log_copy',
+    label: 'Log Panel: Copy Button',
+    description: 'Copies the log to the clipboard.',
+    category: 'system',
+    visibilityKey: 'sys:log-copy',
+    controlType: 'none'
+  },
+  {
+    id: 'sys_log_download',
+    label: 'Log Panel: Save Button',
+    description: 'Saves the log to a file.',
+    category: 'system',
+    visibilityKey: 'sys:log-download',
+    controlType: 'none'
+  },
+  {
+    id: 'sys_update_status',
+    label: 'Update Indicator',
+    description: 'Shows when an update is available.',
+    category: 'system',
+    visibilityKey: 'sys:update-status',
+    controlType: 'none'
+  },
+  {
+    id: 'sys_save_status',
+    label: 'Save Status Indicator',
+    description: 'Shows the result of the last save.',
+    category: 'system',
+    visibilityKey: 'sys:save-status',
+    controlType: 'none'
   }
 ];

@@ -111,7 +111,7 @@
 
 .ep-action {
   border-color: var(--accent-color);
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .ep-action.is-primary {
@@ -136,7 +136,7 @@
   background: transparent;
   border: none;
   padding: 5px 4px;
-  color: var(--accent-color);
+  color: var(--accent-text);
   font: inherit;
   font-size: var(--fs-12);
   font-weight: 600;
@@ -295,7 +295,7 @@
 }
 
 .ep-progress-text {
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .ep-progress {

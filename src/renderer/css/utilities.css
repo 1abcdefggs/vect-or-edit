@@ -415,7 +415,6 @@ textarea {
 [id^="btn"],
 button,
 .pill-label,
-.master-ai-pill,
 .toolbar-select {
   cursor: pointer;
 }
