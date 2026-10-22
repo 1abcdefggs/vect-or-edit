@@ -64,7 +64,7 @@ describe('themes with light and dark faces', () => {
   });
 
   it('lists each theme once, every bundled one with both faces', () => {
-    expect(availableThemes).toEqual(['Dracula', 'GitHub', 'Monokai', 'Night Owl', 'Tukune']);
+    expect(availableThemes).toEqual(['Dracula', 'GitHub', 'Monokai', 'Night Owl', 'Solarized', 'Tomorrow', 'Tukune']);
     for (const name of availableThemes) expect(hasBothFaces(name)).toBe(true);
     for (const name of availableThemes) {
       expect(getThemeData(name, 'light').base).toBe('vs');

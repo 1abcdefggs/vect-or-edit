@@ -691,7 +691,7 @@
 }
 
 .first-run-dialog {
-  width: 780px;
+  width: 840px;
   max-width: 94vw;
   /* One height for every step and language, so the dialog never jumps; the body scrolls if a language needs more */
   height: min(780px, 100%);
@@ -1700,6 +1700,209 @@
 }
 
 /* Left of the footer: the "change later" line and, only while loading, the editor status under it */
+/* Step 3's picture of the editor: the left pane is what the user writes (writing assist below it), the right pane is the
+   dictionary the embedding model reads inside it. The panes are drawn, not forms; the controls sit inside them */
+/* The picture, its caption and the notice run to the step's own left edge, level with the heading's marker */
+.first-run-section:not(.first-run-section--row) > .setup-ai-window,
+.first-run-section:not(.first-run-section--row) > .setup-ai-flow,
+.first-run-section:not(.first-run-section--row) > .first-run-notice {
+  margin-left: 0;
+}
+
+.setup-ai-window {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.setup-ai-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 32px;
+  padding: 0 14px;
+  background: var(--active-bg);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+
+.setup-ai-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.setup-ai-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border-color);
+}
+
+.setup-ai-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr);
+}
+
+.setup-ai-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.setup-ai-pane--dict {
+  background: color-mix(in srgb, var(--accent-color) 7%, transparent);
+}
+
+.setup-ai-pane-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.setup-ai-pane-title {
+  font-size: var(--fs-14);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.setup-ai-pane-role {
+  font-size: var(--fs-12);
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Drawn bars that stand in for words; they carry no text of their own */
+.setup-ai-page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.setup-ai-line {
+  display: block;
+  flex-shrink: 0;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+}
+
+.setup-ai-line.is-long {
+  width: 88%;
+}
+
+.setup-ai-line.is-mid {
+  width: 62%;
+}
+
+.setup-ai-line.is-short {
+  width: 36%;
+}
+
+.setup-ai-caret {
+  width: 2px;
+  height: 16px;
+  background: var(--accent-color);
+}
+
+/* The writing assist sits at the foot of the editor pane, where the text it helps with would be */
+.setup-ai-assist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.setup-ai-assist-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.setup-ai-assist-title {
+  font-size: var(--fs-13);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Inside a pane the provider and key fields stack, one above the other */
+.setup-ai-assist .first-run-key-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.setup-ai-assist .first-run-key {
+  height: 40px;
+}
+
+.setup-ai-assist .first-run-hint {
+  font-size: var(--fs-12);
+}
+
+/* The toggle row is a surface of its own on the dictionary tint: the editor's canvas color, without a border */
+.setup-ai-pane--dict .first-run-setting {
+  padding: 10px 12px;
+  border: 0;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.setup-ai-pane .first-run-facts {
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 2px 12px;
+  font-size: var(--fs-12);
+}
+
+.setup-ai-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.setup-ai-entries li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Each dictionary entry is a dot (its vector) and a bar (its text) */
+.setup-ai-entries i {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-color);
+}
+
+/* The arrow runs from the dictionary to the editor: the embedding results come back to the text.
+   No rule around it; the gutter is the editor's own background, so the two panes meet by color alone */
+.setup-ai-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+}
+
+.setup-ai-link .material-symbols-outlined {
+  font-size: var(--fs-20);
+}
+
+.setup-ai-flow {
+  margin: 0;
+  font-size: var(--fs-13);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
 .first-run-footer-info {
   flex: 1 1 0;
   display: flex;
@@ -1868,6 +2071,19 @@
   gap: 10px;
   margin: 14px 0 16px 0;
   padding: 4px;
+
+  /* Narrow: the dictionary goes under the editor, and the arrow points up at it */
+  .setup-ai-panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .setup-ai-link {
+    height: 32px;
+  }
+
+  .setup-ai-link .material-symbols-outlined {
+    transform: rotate(90deg);
+  }
   background: var(--bg-primary, rgba(0, 0, 0, 0.25));
   border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: 8px;

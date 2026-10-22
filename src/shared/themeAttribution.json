@@ -1,0 +1,48 @@
+{
+  "Dracula": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (c) Brijesh Bittu",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "Dark face matches monaco-themes; the light face is original to this project."
+  },
+  "GitHub": {
+    "origin": "original",
+    "license": "MIT (this project)",
+    "source": "https://github.com/primer/primitives",
+    "note": "Original light and dark faces, styled after GitHub. The colors follow the public Primer palette (MIT)."
+  },
+  "Monokai": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (c) Brijesh Bittu",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "Dark face matches monaco-themes; the light face is original to this project."
+  },
+  "Night Owl": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (c) Brijesh Bittu",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "Dark face matches monaco-themes; the light face is original to this project."
+  },
+  "Solarized": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (c) 2011 Ethan Schoonover",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "Both faces match monaco-themes (Copyright (c) Brijesh Bittu, MIT), which follow the Solarized palette by Ethan Schoonover."
+  },
+  "Tomorrow": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (C) 2011 Chris Kempson",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "Both faces match monaco-themes (Copyright (c) Brijesh Bittu, MIT), which follow the Tomorrow color scheme by Chris Kempson."
+  },
+  "Tukune": {
+    "origin": "original",
+    "license": "MIT (this project)",
+    "note": "Original to this project."
+  }
+}
