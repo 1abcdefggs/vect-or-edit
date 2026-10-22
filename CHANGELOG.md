@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.29] - 2026-10-22
+
+### Added
+- The settings page is split in two: the settings on the left, and a guide for the open tab on the right (1000 px and wider, Japanese UI). The guide follows the setting that has focus, and a click on a guide row brings that setting into view
+- Every part of the window can be shown or hidden from Settings > System: the editor toolbar parts, the chat dock and its buttons, the document tabs, the status bars, the sidebar cards and rail, the log buttons and more. Hiding a part other features lean on says what stops being available and how to get it back
+- Settings that choose between a few options show the current choice as segmented buttons, and on/off settings as switches
+- The header zoom badge shows a mouse-wheel icon
+
+### Changed
+- The settings tabs follow the four areas of the window: Header, Editor, Sidebar, System. The LLM provider and keys moved to the Editor tab; the embedding settings stay in the Sidebar tab
+- Settings rows show the eye button and the heading on one line, with the description below as bullets
+- Tooltips show the opposite of the mode: dark in light mode, light in dark mode
+- The header zoom badge has a fixed width, and when the window narrows the menu bar gives way instead of the controls on the right
+- Several settings labels and tooltips that were still English in the Japanese UI are translated
+
+### Fixed
+- Text on selected buttons and accent-coloured text on the settings page now reach a 4.5:1 contrast in light and dark modes
+- Hiding the sidebar also hides its resize handle
+- The tooltip of the editor AI button described the embedding model; it now describes the LLM button
+
+### Removed
+- Styles of the old master-AI pill and six unused strings
+
 ## [0.3.28] - 2026-10-22
 
 ### Added
