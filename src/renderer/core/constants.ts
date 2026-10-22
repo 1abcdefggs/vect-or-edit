@@ -15,6 +15,8 @@ export const STORAGE_KEYS = {
   LINE_HIGHLIGHT: 'editor_lineHighlight',
   STICKY_SCROLL: 'editor_stickyScroll',
   RENDER_WHITESPACE: 'editor_renderWhitespace',
+  // JSON object of Monaco option overrides keyed by option path (editor/options/monacoOptionsModel.js)
+  MONACO_OPTIONS: 'editor_monacoOptions',
   SUGGEST_TRIGGER_MODE: 'vect_suggest_trigger_mode',
   AI_PROVIDER: 'ai_provider',
   AI_INFERENCE_SCOPE: 'ai_inference_scope',

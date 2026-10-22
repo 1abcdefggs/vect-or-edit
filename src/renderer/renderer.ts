@@ -23,6 +23,7 @@ import { initInstantTooltips } from './ui/tooltips/instantTooltip';
 import { initSelectMenus } from './ui/components/selectMenu';
 import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
 import { initDocumentFormatControl } from './editor/ui/documentFormatControl.js';
+import { initMonacoOptionsPanel } from './editor/options/monacoOptionsPanel.js';
 
 export { setLedStatus };
 
@@ -143,6 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initZoomControls();
   initSystemConsole();
   bindAppActionEvents();
+  initMonacoOptionsPanel();
   initAutoSaveControls();
 
   // 5. Finalize UI States

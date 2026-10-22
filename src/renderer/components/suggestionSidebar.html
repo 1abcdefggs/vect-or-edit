@@ -159,6 +159,28 @@
       </div>
     </div>
   </div>
+  <!-- Editor Options: every Monaco option, shown live in the main editor. Outside the header so it can use the height below it (collapsed until opened) -->
+  <div id="monacoOptionsCard" data-ui="sbr:editor-options-card" class="monaco-options-card semantic-module-card collapsed">
+    <div class="semantic-module-header" data-i18n-title="tip_section_editor_options">
+      <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
+        <span class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
+        <span class="material-symbols-outlined" style="font-size: var(--fs-19); color: var(--accent-color, #38bdf8); flex-shrink: 0;">tune</span>
+        <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
+        <span style="font-weight: 600; font-size: var(--fs-16);" data-i18n="monaco_opts_title">Editor Options</span>
+      </span>
+      <div class="semantic-module-actions">
+        <button id="btnMonacoOptionsResetAll" class="toolbar-btn semantic-btn-clear" type="button" style="display: none;" data-i18n-title="tip_monaco_opts_reset_all">
+          <span class="material-symbols-outlined" style="font-size: var(--fs-14);">restart_alt</span>
+        </button>
+      </div>
+    </div>
+    <div class="semantic-module-body monaco-options-body">
+      <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
+      <div id="monacoOptionsCount" class="monaco-options-count"></div>
+      <div id="monacoOptionsList" class="monaco-options-list"></div>
+    </div>
+  </div>
+
   <div id="vectorResultsList" class="results-list" style="flex: 1; overflow-y: auto; padding: 6px;"></div>
 
   <!-- Collapsed Rail: Shown only when .suggestion-sidebar.collapsed is active -->

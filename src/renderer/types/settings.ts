@@ -81,7 +81,8 @@ export type SidebarUiKey =
   | 'sbr:add-slot'
   | 'sbr:rail'
   | 'sbr:guideline-card'
-  | 'sbr:knowledge-card';
+  | 'sbr:knowledge-card'
+  | 'sbr:editor-options-card';
 
 export type SystemUiKey =
   | 'sys:bottom-bar'

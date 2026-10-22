@@ -73,6 +73,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'sbr:rail': true,
     'sbr:guideline-card': true,
     'sbr:knowledge-card': true,
+    'sbr:editor-options-card': true,
     'sys:bottom-bar': true,
     'sys:status-meta': true,
     'sys:pipeline-meter': true,
@@ -515,6 +516,14 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     category: 'sidebar',
     visibilityKey: 'sbr:knowledge-card',
     hideNoticeKey: 'hide_notice_knowledge_card',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_editor_options_card',
+    label: 'Editor Options Card',
+    description: 'Monaco editor options with live preview in the main editor.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:editor-options-card',
     controlType: 'none'
   },
 

@@ -9,6 +9,7 @@ import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
 import { t } from '../../core/i18n.js';
 import { commandManager } from '../../core/commandManager';
+import { captureBaseline, applyStoredOverrides, withCreateOnlyOverrides } from '../options/monacoOptionsStore.js';
 
 let monacoEditorInstance = null;
 let monaco = null;
@@ -89,7 +90,7 @@ export async function initEditor() {
     await loadTheme(currentTheme);
   } catch (_) {}
 
-  monacoEditorInstance = monaco.editor.create(monacoContainer, {
+  const baseOptions = {
     value: t('initial_document_content') || '',
     language: 'markdown',
     theme: currentTheme || 'vs-dark',
@@ -129,7 +130,13 @@ export async function initEditor() {
     overviewRulerBorder: false,
     hideCursorInOverviewRuler: true,
     contextmenu: false
-  });
+  };
+  // Options Monaco reads only at creation (from the Editor Options panel) are merged in here
+  monacoEditorInstance = monaco.editor.create(monacoContainer, await withCreateOnlyOverrides(baseOptions));
+
+  // Editor Options panel: remember the app's own values, then apply the user's overrides on top
+  captureBaseline(monacoEditorInstance);
+  applyStoredOverrides(monacoEditorInstance).catch((err) => console.warn('[MonacoOptions] Could not apply stored options:', err));
 
   // Inline AI Command & Prompt Trigger (Ctrl+K or Alt+Enter)
   monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK, () => {
