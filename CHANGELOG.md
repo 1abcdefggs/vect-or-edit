@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.30] - 2026-10-22
+
+### Added
+- Editor Options card in the right sidebar: every Monaco editor option (306 values; object options such as the minimap are expanded into their members) as a switch, choice list, number or text field. A change shows in the main editor at once and is kept for the next start. The card has a search box, groups, a reset button per option and one for all of them
+- Options the settings page already owns (font, size, line height, word wrap, line numbers, line highlight, whitespace, sticky scroll), and options the app depends on, are shown read-only. Six scrollbar options that Monaco reads only when the editor is created are stored and apply at the next start
+- Japanese and English texts for every option, a generated option catalog (`scripts/extract-monaco-options.mjs`, from the installed Monaco typings) and a test that fails when the catalog is older than the installed Monaco
+- The card can be shown or hidden like every other part of the window (Settings > System)
+
 ## [0.3.29] - 2026-10-22
 
 ### Added
