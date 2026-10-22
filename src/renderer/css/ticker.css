@@ -367,9 +367,6 @@
   color: rgba(255, 255, 255, 0.15);
 }
 
-.status-bar-item {
-  font-family: var(--font-family, sans-serif);
-}
 
 /* A status item that can be clicked (the document format switch) */
 .status-bar-button {

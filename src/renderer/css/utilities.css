@@ -6,7 +6,18 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-ui);
+}
+
+/* Form controls do not inherit the family by default. Family only: `font: inherit` would also reset their sizes. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 /* Status Indicators */
@@ -81,7 +92,6 @@
 }
 
 .section-title {
-  font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: var(--fs-12);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -301,12 +311,12 @@
 
 /* Startup loader (scan animation: light sweeps over the letters, then a thin line below)
    Fonts are set here only: --startup-logo-font / -weight / -size for the VectOrEdit letters, --startup-status-font for the status line.
-   Web fonts (Inter, Noto Sans JP, Cascadia Code, ...) load from Google Fonts and may not be ready on the first frame, so keep a system fallback at the end. */
+   Web fonts (Noto Sans JP, Cascadia Code, ...) load from Google Fonts and may not be ready on the first frame, so keep a system fallback at the end. */
 .app-startup-loader {
   --startup-logo-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --startup-logo-weight: 600;
   --startup-logo-size: 3rem;
-  --startup-status-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --startup-status-font: var(--font-ui);
   position: fixed;
   inset: 0;
   z-index: 99999;

@@ -1,7 +1,7 @@
 <!-- First-run setup. Shown during startup while the editor loads; every step has defaults, so "Next" all the way works. -->
 <div id="aiSetupModalOverlay" class="modal-overlay first-run-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
-  <!-- The tool name sits in the window's top-left corner, on the title bar line, outside the dialog -->
-  <h2 id="setupTitle" class="first-run-brandbar">
+  <!-- The tool name is shown once, in the app header above; this heading stays for screen readers -->
+  <h2 id="setupTitle" class="first-run-brandbar first-run-visually-hidden">
     <span class="first-run-brand">Vect<em>Or</em>Edit</span>
     <!-- Filled from package.json via app.getVersion() (topBarRenderer.js) -->
     <span id="setupVersionBadge" class="first-run-version"></span>

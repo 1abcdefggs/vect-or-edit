@@ -465,3 +465,9 @@ select option {
   background-color: #ffffff;
   color: #0f172a;
 }
+
+/* First-run setup: the header shows only its brand until setup is finished (menus and toolbar come after it) */
+:root.setup-active .app-header__menu,
+:root.setup-active .app-header__toolbar {
+  display: none;
+}

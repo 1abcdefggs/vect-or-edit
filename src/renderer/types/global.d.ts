@@ -20,6 +20,11 @@ declare module '*.json' {
   export default content;
 }
 
+// Set by electron.vite.config.ts at build time: the installed versions of the parts About lists
+declare global {
+  const __COMPONENT_VERSIONS__: { monaco: string; engine: string };
+}
+
 export interface ElectronAPI {
   invoke: (channel: string, ...args: any[]) => Promise<any>;
 }

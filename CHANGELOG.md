@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.27] - 2026-10-22
+
+### Added
+- The PIPELINE button carries a lamp for the worst subsystem state (error, warning, loading, standby, ready), so a problem is visible while the strip is closed
+- A right-click menu on editor tabs with "Duplicate tab"
+- The About dialog names the parts in use: the app, engine, Monaco and Electron versions, the chosen theme with its license and source, and every downloaded embedding model with a link to its Hugging Face page. Project links live in one file (`src/shared/projectLinks.ts`)
+- Themes Solarized and Tomorrow, each with a light and a dark face. Theme credits (origin, license, source) are kept in one list (`src/shared/themeAttribution.json`) that About and the third-party notices both read
+- First-run AI step shows how the editor, the dictionary and the embedding model work together, and says when the model is already installed
+
+### Changed
+- Header: About is a plain button beside Help (it was inside the Help menu), and the appearance-mode toggle sits before the theme selector
+- First-run AI step is redesigned around the purpose of the embedding model; the cloud AI heading is gone
+- One UI font stack (`--font-ui`) is set once on `body` and everything inherits it; form controls follow it, section headings no longer use Inter, and the status bar and welcome text use the same face as the rest
+- Warning and error text colors are darker on light backgrounds
+- The tab duplicate button uses the shared icon set
+- Internal cleanup: removed the duplicate `sidebarResizer.js` and functions with no callers, and stopped loading the unused Inter web font
+
+## [0.3.26] - 2026-10-22
+
+### Added
+- Appearance modes System, Light and Dark in the header, in Settings and in first-run setup; every theme has a light and a dark face; the Tukune theme
+- Confirmation before closing tabs, toasts, modals and slots (a setting); a tab with unsaved changes always offers a choice dialog
+- Log panel: the backlog and live lines merge by id, a Save Logs button, and a mirrored log view in Settings > System
+- About shows the bundled license and third-party notices; embedding model licenses are verified before a download
+- A version badge on the startup loader and a Windows app icon
+- Settings for window features, including collapsing the logs
+
+### Changed
+- The Settings modal is restructured; tooltips across the UI are translatable
+- The Windows package is smaller: other-OS onnxruntime binaries and superseded engine builds are left out, and the packaging guard checks a built `app.asar` for them
+- 32 strings that were still English in the Japanese dictionary are translated
+
+## [0.3.25] - 2026-10-21
+
 ### Added
 - First-run setup in three steps (language and theme, save location, AI), with the tool name and version in the window's top-left corner, one typeface (Source Serif 4) throughout, and an (i) tip beside each heading that explains it on hover or focus
 - Shared parts: step tabs with an arrow connector and a progress line (`stepTabs.js`), a toggle switch with OFF on the left and ON on the right (`toggleSwitch.js`), and an info tip (`infoTip.js`)
@@ -20,6 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Embedding model picker in Settings: 50 models with language fit, license, dimension, language-count and task filters, five sort orders and search. The model data lives in one registry (`src/shared/embeddingRegistry.json`) and the rules in `src/shared/embeddingCatalog.ts`. Only models with verified query/passage prefixes can be downloaded or used; the others are listed for comparison. A chosen model whose files are not on the device is shown as "Selected, not installed" with a Download button
 
 ### Changed
+- The default Gemini model is `gemini-3.1-flash-lite`, the chat model badge follows the chosen model, and the retired Claude models are replaced; only text blocks of a Claude reply are read
+- The header app title uses a serif face
 - The built-in save folder is now `Documents/VectOrEdit` (was `VectOrFoldEr`); the old folder is not looked at or moved
 - "Change location" now picks the place for the save folder and keeps its name; the name is changed in its own field
 - The embedding model starts switched on in first-run setup and is installed in the background after the last button is pressed. The setup installs the default model only (e5-small); Settings still lists the others. With the model off the last button reads "Start without the model"
@@ -46,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Model size is no longer written into labels (it said 45 MB; the file is about 118 MB)
 
 ### Removed
+- The AI Direct command bar of the log panel
 - The "Skip setup" button of first-run setup (every step already has defaults, so Next all the way is a valid setup)
 - Gemini-specific key IPC channels (replaced by the provider-generic `saveApiKey`, `hasApiKey` and `clearApiKey`)
 

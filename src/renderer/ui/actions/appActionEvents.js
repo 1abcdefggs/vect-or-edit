@@ -3,7 +3,6 @@ import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledge
 import { setLedStatus } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
 import { t } from '../../core/i18n.js';
-import { showWorkspaceModal } from '../layout/topBarRenderer.js';
 import { commitTabToFile } from '../../editor/io/tabCommit.js';
 
 export function bindAppActionEvents() {
@@ -186,9 +185,9 @@ export function bindAppActionEvents() {
       const content = getCurrentContent();
       const defaultName = currentTab.filePath || currentTab.title || 'untitled.md';
 
-      const executeSave = async (forceDialog = false) => {
+      const executeSave = async () => {
         if (window.engineAPI?.saveFile) {
-          const res = await window.engineAPI.saveFile(content, defaultName, forceDialog);
+          const res = await window.engineAPI.saveFile(content, defaultName, false);
           if (res?.success && res.filePath) {
             markActiveTabSaved(res.filePath);
             showToast(t('alert_file_saved', { path: res.filePath }) || `Saved: ${res.filePath}`, 'success');
@@ -197,24 +196,13 @@ export function bindAppActionEvents() {
         }
       };
 
-      // Check if this is the first save (no file path)
+      // A document without a location has no destination here: the split opens so AutoSave can decide it
       if (!currentTab.filePath) {
-        let hasWorkspace = false;
-        if (window.engineAPI?.getDefaultWorkspace) {
-          const wsRes = await window.engineAPI.getDefaultWorkspace(false);
-          hasWorkspace = Boolean(wsRes?.success && wsRes?.exists);
-        }
-
-        if (!hasWorkspace) {
-          showWorkspaceModal('save', () => executeSave(true));
-          return;
-        }
-        // If workspace exists, show save dialog for initial save
-        await executeSave(true);
-      } else {
-        // Overwrite directly without dialog
-        await executeSave(false);
+        setSaveMenuOpen(true);
+        return;
       }
+      // Overwrite directly without dialog
+      await executeSave();
     });
   }
 

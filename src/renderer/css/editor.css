@@ -14,13 +14,6 @@
   border-color: var(--accent-color, #66f);
 }
 
-/* Monaco Editor text: the global `* { font-family }` reset would override the font family that
-   Monaco sets on .view-lines, so the selected Font Family never reached the glyphs. Inherit it. */
-.monaco-editor .view-line,
-.monaco-editor .view-line span {
-  font-family: inherit;
-}
-
 /* Monaco Editor: Keep current line subtle without overflowing onto scrollbar */
 .monaco-editor .view-overlays .current-line {
   border-top: 0 !important;

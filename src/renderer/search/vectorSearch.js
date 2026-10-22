@@ -1,4 +1,4 @@
-import { showSelectionPopoverMenu, removeContextMenu } from '../editor/ui/contextMenuManager.js';
+import { removeContextMenu } from '../editor/ui/contextMenuManager.js';
 import { getQuickMatches } from './dictionary.js';
 import { STORAGE_KEYS, TIMINGS, DEFAULTS } from '../core/constants.js';
 
@@ -40,63 +40,6 @@ export function initVectorSearch() {
     // context menu manager logic
     if (window.activeContextMenu && !window.activeContextMenu.contains(e.target)) {
       removeContextMenu();
-    }
-  });
-}
-
-export function initVectorSearchForBasicEditor(editorInput) {
-  editorInput.addEventListener('mouseup', (e) => {
-    const mode = localStorage.getItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
-    if (mode !== 'selection') return;
-
-    setTimeout(() => {
-      const start = editorInput.selectionStart;
-      const end = editorInput.selectionEnd;
-      if (start !== end) {
-        const selectedText = editorInput.value.substring(start, end).trim();
-        if (selectedText.length > 0) {
-          showSelectionPopoverMenu(e.pageX, e.pageY - 40, selectedText);
-        }
-      }
-    }, 50);
-  });
-
-  editorInput.addEventListener('contextmenu', (e) => {
-    removeContextMenu();
-    let start = editorInput.selectionStart;
-    let end = editorInput.selectionEnd;
-
-    if (start === end) {
-      const text = editorInput.value;
-      while (start > 0 && /[^\\s]/.test(text[start - 1])) start--;
-      while (end < text.length && /[^\\s]/.test(text[end])) end++;
-      if (start !== end) {
-        editorInput.setSelectionRange(start, end);
-      }
-    }
-
-    if (start !== end || editorInput.selectionStart !== editorInput.selectionEnd) {
-      start = editorInput.selectionStart;
-      end = editorInput.selectionEnd;
-      const selectedText = editorInput.value.substring(start, end).trim();
-      if (selectedText.length > 0) {
-        e.preventDefault();
-        showSelectionPopoverMenu(e.pageX, e.pageY, selectedText);
-      }
-    }
-  });
-
-  editorInput.addEventListener('keydown', (e) => {
-    if ((e.altKey && (e.key === 's' || e.key === 'S')) || (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S'))) {
-      const start = editorInput.selectionStart;
-      const end = editorInput.selectionEnd;
-      if (start !== end) {
-        const selectedText = editorInput.value.substring(start, end).trim();
-        if (selectedText.length > 0) {
-          e.preventDefault();
-          triggerSearchAndRender(selectedText);
-        }
-      }
     }
   });
 }

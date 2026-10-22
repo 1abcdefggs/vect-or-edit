@@ -7,9 +7,11 @@
       <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: var(--fs-10); height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
       <span data-disclosure-icon class="material-symbols-outlined" style="font-size: var(--fs-16); flex-shrink: 0;">&#xe5cf;</span>
     </button>
-    <button id="btnPipelineToggle" class="toolbar-btn" style="display: none; height: 20px; padding: 0 6px; align-items: center; gap: 4px;" data-i18n-title="tip_pipeline_show">
+    <!-- Looks like a button, and its LED shows the worst state of the pipeline while the strip is closed (statusManager.ts) -->
+    <button id="btnPipelineToggle" class="toolbar-btn" style="display: none; height: 20px; padding: 0 8px; align-items: center; gap: 6px; border: var(--border-width) solid var(--border-color); border-radius: 4px;" data-i18n-title="tip_pipeline_show">
       <span class="material-symbols-outlined" style="font-size: var(--fs-16);">monitor_heart</span>
       <span class="bottom-bar-text" data-i18n="btn_pipeline">PIPELINE</span>
+      <span id="pipelineToggleLed" class="status-led-dot status-loading" aria-hidden="true"></span>
     </button>
     <div id="pipelineStrip" style="display: none; align-items: center; gap: 4px;">
       <!-- Placed where btnPipelineToggle sits so open and close share one position -->

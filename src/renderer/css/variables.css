@@ -15,6 +15,10 @@
   --border-primary: var(--border-color);
   --window-border: var(--border-color);
   --success-color: #10b981;
+  --warn-color: #f59e0b;
+  --error-color: #f87171;
+  /* Text on a solid accent background (buttons, selected chips) */
+  --text-on-accent: #ffffff;
   --app-backdrop: #080c16;
 
   /* System log console */
@@ -66,6 +70,9 @@
   --window-border: var(--border-color);
   --app-backdrop: #d6dde6;
   --success-color: #047857;
+  /* Darker on a light background, so the warning and error text stay readable */
+  --warn-color: #b45309;
+  --error-color: #b91c1c;
 
   --log-bg: #f6f8fa;
   --log-header-bg: #e6ebf1;

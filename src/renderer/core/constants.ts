@@ -89,9 +89,3 @@ export const DEFAULTS = {
   LOG_DISPLAY_POSITION: 'bottom',
   CONFIRM_BEFORE_CLOSE: 'on',
 } as const;
-
-export const LOG_COLORS = {
-  ERROR: 'var(--error-color, #ef4444)',
-  WARN: 'var(--warn-color, #f59e0b)',
-  INFO: 'var(--info-color, #38bdf8)'
-} as const;
