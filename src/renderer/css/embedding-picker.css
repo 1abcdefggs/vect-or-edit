@@ -1,0 +1,351 @@
+/* Embedding model picker in Settings (ui/settings/embeddingModelList.js). Colors come from the theme variables. */
+.embedding-picker {
+  --ep-partial: #fbbf24;
+  --ep-none: #f87171;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  container-type: inline-size;
+}
+
+:root.light-theme .embedding-picker {
+  --ep-partial: #92400e;
+  --ep-none: #b91c1c;
+}
+
+.ep-source,
+.ep-footer,
+.ep-note,
+.ep-muted {
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.ep-note strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.ep-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.ep-row {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 6px;
+  align-items: center;
+}
+
+.ep-row-label {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+
+.ep-row-body,
+.ep-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ep-row > .ep-chips,
+.ep-row > .ep-more,
+.ep-row > .ep-notes {
+  grid-column: 2;
+}
+
+.ep-notes,
+.ep-more,
+.ep-more-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ep-more[hidden],
+.ep-more-filters[hidden],
+.ep-chips[hidden],
+.ep-summary[hidden],
+.ep-hidden-note[hidden],
+.ep-link[hidden] {
+  display: none;
+}
+
+.ep-summary {
+  font-size: var(--fs-12);
+  color: var(--text-main);
+}
+
+.ep-chip {
+  cursor: pointer;
+  min-height: 30px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: var(--border-width) solid var(--border-color);
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+  font-size: var(--fs-12);
+  font-weight: 600;
+}
+
+.ep-chip:hover {
+  background: var(--hover-bg);
+}
+
+.ep-chip[aria-pressed='true'],
+.ep-chip[aria-expanded='true'] {
+  border-color: var(--accent-color);
+  background: var(--item-code-bg);
+}
+
+.ep-action {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.ep-action.is-primary {
+  background: var(--accent-color);
+  color: var(--bg-secondary);
+}
+
+.ep-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ep-chip:focus-visible,
+.ep-link:focus-visible,
+.ep-input:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+.ep-link {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 5px 4px;
+  color: var(--accent-color);
+  font: inherit;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.ep-input {
+  box-sizing: border-box;
+  min-height: 30px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: var(--border-width) solid var(--border-color);
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+  font-size: var(--fs-12);
+  width: 240px;
+  max-width: 100%;
+}
+
+.ep-search {
+  margin-left: auto;
+}
+
+.ep-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+
+.ep-hidden-note {
+  color: var(--ep-partial);
+}
+
+.ep-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 520px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.ep-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px 104px;
+  column-gap: 14px;
+  align-items: start;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--border-color);
+}
+
+.ep-card.is-active {
+  border-color: var(--success-color);
+}
+
+.ep-card.is-loading {
+  border-color: var(--accent-color);
+}
+
+.ep-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.ep-model-id {
+  font-family: var(--font-mono, ui-monospace, Consolas, monospace);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--text-main);
+  overflow-wrap: anywhere;
+}
+
+.ep-meta,
+.ep-langs {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.ep-langs {
+  font-family: var(--font-mono, ui-monospace, Consolas, monospace);
+}
+
+.ep-blurb {
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.ep-fit-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: var(--fs-12);
+  border: var(--border-width) solid transparent;
+}
+
+.ep-fit-badge.is-full {
+  color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.ep-fit-badge.is-partial {
+  color: var(--ep-partial);
+  border-color: var(--ep-partial);
+}
+
+.ep-fit-badge.is-none {
+  color: var(--ep-none);
+  border-color: var(--ep-none);
+}
+
+.ep-fit-badge.is-unknown {
+  color: var(--text-muted);
+  border: var(--border-width) dashed var(--border-color);
+}
+
+.ep-fit-badge.is-unselected {
+  color: var(--text-muted);
+}
+
+.ep-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--fs-12);
+}
+
+.ep-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  border: var(--border-width) dashed var(--border-color);
+}
+
+.ep-badge-active {
+  color: var(--success-color);
+  border: var(--border-width) solid var(--success-color);
+}
+
+.ep-downloaded,
+.ep-unavailable {
+  color: var(--text-muted);
+}
+
+.ep-unavailable {
+  cursor: help;
+  text-decoration: underline dotted;
+}
+
+.ep-progress-text {
+  color: var(--accent-color);
+}
+
+.ep-progress {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--active-bg);
+}
+
+.ep-progress-fill {
+  height: 100%;
+  background: var(--accent-color);
+}
+
+.ep-empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 14px;
+  border: var(--border-width) dashed var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-13);
+  color: var(--text-muted);
+}
+
+/* Narrow settings pane: labels above their controls, fit and state under the model text */
+@container (max-width: 560px) {
+  .ep-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ep-row > .ep-chips,
+  .ep-row > .ep-more,
+  .ep-row > .ep-notes {
+    grid-column: 1;
+  }
+
+  .ep-search {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .ep-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 8px;
+  }
+
+  .ep-card-main {
+    grid-column: 1 / -1;
+  }
+}

@@ -54,7 +54,6 @@ declare global {
     'app:settingsChanged': CustomEvent<void>;
     'app:requestLocalAiInit': CustomEvent<void>;
     'app:aiModelProgress': CustomEvent<{ pct: number; fileName?: string; status?: string }>;
-    'app:directVectorSearch': CustomEvent<{ query: string }>;
     'app:knowledgeSlotChanged': CustomEvent<any>;
   }
 }

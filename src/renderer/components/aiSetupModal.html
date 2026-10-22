@@ -1,113 +1,261 @@
-<div id="aiSetupModalOverlay" class="modal-overlay" style="display: none; z-index: 10000; position: fixed; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(14px); align-items: center; justify-content: center; padding: 24px;">
-  <div class="settings-modal-dialog" style="width: 860px; max-width: 94vw; height: auto; max-height: 90vh; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-lg, 14px); box-shadow: 0 32px 80px rgba(0,0,0,0.8); display: flex; flex-direction: column; overflow: hidden;">
-    
-    <!-- Modal Header -->
-    <div style="padding: 28px 36px 20px; border-bottom: var(--border-width) solid var(--border-color); text-align: center; background: rgba(255, 255, 255, 0.02);">
-      <h2 style="margin: 0; font-size: var(--fs-24); color: var(--text-main); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; line-height: 1.4;" data-i18n="ai_setup_title">
-        <span class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8); font-size: var(--fs-28); flex-shrink: 0;">auto_awesome</span>
-        VectOrEdit uses Embedding and LLM models
-      </h2>
-      <p style="margin: 10px 0 0; font-size: var(--fs-15); color: var(--text-muted); line-height: 1.5;" data-i18n="ai_setup_subtitle">Both can be configured later. Please select your initial models to get started.</p>
-    </div>
+<!-- First-run setup. Shown during startup while the editor loads; every step has defaults, so "Next" all the way works. -->
+<div id="aiSetupModalOverlay" class="modal-overlay first-run-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+  <!-- The tool name sits in the window's top-left corner, on the title bar line, outside the dialog -->
+  <h2 id="setupTitle" class="first-run-brandbar">
+    <span class="first-run-brand">Vect<em>Or</em>Edit</span>
+    <!-- Filled from package.json via app.getVersion() (topBarRenderer.js) -->
+    <span id="setupVersionBadge" class="first-run-version"></span>
+  </h2>
 
-    <!-- Modal Body: Dual Config Sections (Embedding & LLM) -->
-    <div style="padding: 26px 36px; overflow-y: auto; display: flex; flex-direction: column; gap: 22px;">
-      
-      <!-- Section 1: Embedding Configuration -->
-      <div style="background: rgba(255, 255, 255, 0.025); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md, 10px); padding: 22px 26px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
-          <span style="font-size: var(--fs-17); font-weight: 700; color: var(--accent-color, #38bdf8); display: flex; align-items: center; gap: 10px;">
-            <span class="material-symbols-outlined" style="font-size: var(--fs-22);">menu_book</span>
-            <span data-i18n="ai_setup_section_embedding">1. Embedding Model Setup (Dictionary Search & Semantic Alignment)</span>
-          </span>
-          <span class="tool-version" style="color: var(--success-color, #10b981); font-size: var(--fs-12); font-weight: 700; padding: 3px 10px; background: rgba(16, 185, 129, 0.12); border-radius: 4px;">HNSW Vector</span>
+  <div class="settings-modal-dialog first-run-dialog">
+
+    <!-- Step tabs (ui/components/stepTabs.js fills this) -->
+    <nav id="setupStepTabs"></nav>
+
+    <div class="first-run-body">
+      <!-- Step 1: language and theme (applied immediately) -->
+      <section class="first-run-step" data-setup-step="1">
+        <div class="first-run-section first-run-section--row" role="group" aria-labelledby="setupLangLabel">
+          <h2 class="first-run-heading"><span id="setupLangLabel" data-i18n="setup_lang_label">Language</span><span data-info-tip="setup_info_lang"></span></h2>
+          <!-- A two-position switch: the thumb slides to the chosen side (English left, Japanese right) -->
+          <div class="first-run-segment" role="radiogroup" aria-labelledby="setupLangLabel">
+            <label class="first-run-segment-option" data-i18n-title="tip_setup_lang_en"><input data-tip-exempt="its label carries the tip" type="radio" name="setup_lang" value="en" checked><span data-i18n="lang_name_en">English</span></label>
+            <label class="first-run-segment-option" data-i18n-title="tip_setup_lang_ja"><input data-tip-exempt="its label carries the tip" type="radio" name="setup_lang" value="ja"><span data-i18n="lang_name_ja">Japanese</span></label>
+            <span class="first-run-segment-thumb" aria-hidden="true"></span>
+          </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-          <!-- Emb Option 1: Local -->
-          <label style="display: flex; align-items: flex-start; gap: 14px; cursor: pointer; font-size: var(--fs-15); color: var(--text-main);">
-            <input type="radio" name="ai_setup_embedding" value="local" checked style="margin-top: 5px; width: 20px; height: 20px; accent-color: var(--accent-color, #38bdf8);">
-            <div style="flex: 1;">
-              <span style="font-weight: 600;" data-i18n="ai_setup_emb_local_title">Local Model (Recommended / 100% Offline / Zero Outbound)</span>
-              <div style="margin-top: 8px;">
-                <select id="aiSetupLocalModel" class="ai-setup-select" style="height: 42px; min-height: 42px; font-size: var(--fs-15); padding: 6px 14px;">
-                  <option value="Xenova/multilingual-e5-small" selected data-i18n="ai_setup_model_e5">multilingual-e5-small (45MB / Lightweight & Fast)</option>
-                  <option value="Xenova/bge-small-en-v1.5" data-i18n="ai_setup_model_bge">bge-small-en (45MB / English only, high accuracy)</option>
-                  <option value="nomic-ai/nomic-embed-text-v1.5" data-i18n="ai_setup_model_nomic">nomic-embed-text (137MB / High accuracy)</option>
-                </select>
+        <hr class="first-run-divider">
+
+        <div class="first-run-section first-run-section--row" role="group" aria-labelledby="setupModeLabel">
+          <h2 class="first-run-heading"><span id="setupModeLabel" data-i18n="color_mode_label">Appearance</span><span data-info-tip="setup_info_color_mode"></span></h2>
+          <!-- A three-position switch, the same control as the language one: System, Light, Dark -->
+          <div class="first-run-segment first-run-segment--three" role="radiogroup" aria-labelledby="setupModeLabel">
+            <label class="first-run-segment-option" data-i18n-title="tip_setup_mode_system"><input data-tip-exempt="its label carries the tip" type="radio" name="setup_mode" value="system" checked><span data-i18n="color_mode_system">System</span></label>
+            <label class="first-run-segment-option" data-i18n-title="tip_setup_mode_light"><input data-tip-exempt="its label carries the tip" type="radio" name="setup_mode" value="light"><span data-i18n="color_mode_light">Light</span></label>
+            <label class="first-run-segment-option" data-i18n-title="tip_setup_mode_dark"><input data-tip-exempt="its label carries the tip" type="radio" name="setup_mode" value="dark"><span data-i18n="color_mode_dark">Dark</span></label>
+            <span class="first-run-segment-thumb" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="first-run-section" role="group" aria-labelledby="setupThemeLabel">
+          <h2 class="first-run-heading"><span id="setupThemeLabel" data-i18n="setup_theme_label">Theme</span><span data-info-tip="setup_info_theme"></span></h2>
+          <!-- One card per theme, drawn from the theme files (setupThemeCards in aiSetupController.js) -->
+          <div id="setupThemeCards" class="first-run-theme-grid"></div>
+        </div>
+      </section>
+
+      <!-- Step 2: save location and AutoSave -->
+      <section class="first-run-step" data-setup-step="2" hidden>
+        <div class="first-run-section">
+          <h2 class="first-run-heading"><span data-i18n="setup_save_location_label">Save location</span><span data-info-tip="setup_info_save"></span></h2>
+          <div class="first-run-save-box">
+            <div class="first-run-path" data-save-name-field>
+              <span class="material-symbols-outlined" aria-hidden="true">folder</span>
+              <span id="setupSaveLocation" class="first-run-path-text" data-parent-only></span>
+              <label class="first-run-visually-hidden" for="setupFolderName" data-i18n="setup_folder_name_label">Folder name</label>
+              <span class="first-run-name-box">
+                <span class="material-symbols-outlined first-run-field-icon" aria-hidden="true">edit</span>
+                <input id="setupFolderName" class="first-run-input" type="text" spellcheck="false" autocomplete="off" aria-describedby="setupFolderNameHint" data-i18n-title="tip_save_folder_name">
+              </span>
+              <button id="btnSetupChangeLocation" class="btn first-run-btn first-run-path-btn" type="button" hidden data-i18n-title="tip_change_save_location"><span class="material-symbols-outlined" aria-hidden="true">folder_open</span><span data-i18n="save_location_change">Change save location...</span></button>
+            </div>
+            <div class="first-run-save-foot">
+              <p id="setupFolderNameHint" class="first-run-hint" data-i18n="setup_folder_name_commit_hint">Press Enter or click outside the field to save the name.</p>
+              <button id="btnSetupResetLocation" class="btn first-run-btn-quiet" type="button" data-i18n="save_location_reset" hidden data-i18n-title="tip_reset_save_folder">Reset to default</button>
+            </div>
+          </div>
+        </div>
+
+        <hr class="first-run-divider">
+
+        <!-- The format new documents start in. The Markdown card shows its own title as "## heading" and can be switched to the
+             rendered view (same renderer as the editor preview); the Text card stays as plain text. -->
+        <div class="first-run-section" role="group" aria-labelledby="setupFormatLabel">
+          <h2 class="first-run-heading">
+            <span id="setupFormatLabel" data-i18n="setup_format_heading">File format</span>
+            <span data-info-tip="setup_info_format"></span>
+          </h2>
+          <div class="first-run-choice-row" role="radiogroup" aria-labelledby="setupFormatLabel">
+            <div class="first-run-choice first-run-choice--detail" id="setupFormatCardMarkdown">
+              <input type="radio" id="setupFormatMarkdown" name="setup_format" value="markdown" checked data-tip-exempt="the choice card beside it names and explains the option">
+              <div class="first-run-choice-text">
+                <label for="setupFormatMarkdown" class="first-run-choice-title">
+                  <span class="first-run-md-marker" aria-hidden="true">## </span><span data-i18n="setup_format_markdown">Markdown</span> <code class="first-run-code">.md</code>
+                </label>
+                <span class="first-run-hint" data-i18n="setup_format_markdown_hint">Write with symbols; see it formatted in a preview.</span>
+                <div class="first-run-sample">
+                  <pre id="setupSampleMarkdownSource" class="first-run-sample-source"></pre>
+                  <div id="setupSampleMarkdownView" class="markdown-preview first-run-sample-view" hidden></div>
+                </div>
+              </div>
+              <span class="first-run-choice-mark material-symbols-outlined" aria-hidden="true">check</span>
+              <button type="button" id="btnSetupSampleToggle" class="first-run-sample-toggle" aria-pressed="false" data-i18n-title="tip_setup_sample_toggle">
+                <svg class="first-run-sample-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span id="setupSampleToggleLabel"></span>
+              </button>
+            </div>
+            <div class="first-run-choice first-run-choice--detail" id="setupFormatCardText">
+              <input type="radio" id="setupFormatText" name="setup_format" value="text" data-tip-exempt="the choice card beside it names and explains the option">
+              <div class="first-run-choice-text">
+                <label for="setupFormatText" class="first-run-choice-title"><span data-i18n="setup_format_text">Text</span> <code class="first-run-code">.txt</code></label>
+                <span class="first-run-hint" data-i18n="setup_format_text_hint">Plain sentences, no symbols.</span>
+                <div class="first-run-sample">
+                  <pre id="setupSampleText" class="first-run-sample-source"></pre>
+                </div>
+              </div>
+              <span class="first-run-choice-mark material-symbols-outlined" aria-hidden="true">check</span>
+            </div>
+          </div>
+
+          <div class="first-run-setting-box">
+            <div class="first-run-setting-head">
+              <div class="first-run-setting-head-text">
+                <p id="setupAutoSaveAllLabel" class="first-run-setting-title" data-i18n="setup_autosave_label">While you write, save automatically</p>
+                <p class="first-run-hint" data-i18n="setup_autosave_hint">You are never asked where to save.</p>
+              </div>
+              <button type="button" id="btnSetupAutoSaveDetails" class="first-run-disclosure" aria-expanded="false" aria-controls="setupAutoSaveDetails" data-i18n-title="tip_setup_autosave_details">
+                <span data-i18n="setup_autosave_details">Adjust each</span>
+                <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
+              </button>
+              <span class="toggle-switch-group">
+                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+                <button type="button" id="toggleSetupAutoSaveAll" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveAllLabel" data-i18n-title="tip_autosave_toggle"><span class="toggle-switch__knob"></span></button>
+                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+              </span>
+            </div>
+            <div id="setupAutoSaveDetails" hidden>
+            <div class="first-run-setting">
+              <span id="setupAutoSaveIdleLabel" class="first-run-setting-text">
+                <span class="first-run-delay-line">
+                  <span data-i18n="setup_autosave_idle_before">After you stop typing for</span>
+                  <input id="setupAutoSaveDelay" class="first-run-delay-input" type="number" min="0.5" max="10" step="0.5" inputmode="decimal" value="1.5" spellcheck="false" autocomplete="off" data-i18n-title="tip_setup_autosave_delay">
+                  <span data-i18n="setup_autosave_idle_after">seconds</span>
+                </span>
+                <span class="first-run-hint" data-i18n="setup_autosave_delay_hint">If saving feels heavy, try a longer pause.</span>
+              </span>
+              <span class="toggle-switch-group">
+                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+                <button type="button" id="toggleSetupAutoSaveIdle" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveIdleLabel" data-i18n-title="tip_setup_autosave_idle"><span class="toggle-switch__knob"></span></button>
+                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+              </span>
+            </div>
+            <div class="first-run-setting">
+              <span id="setupAutoSaveNewlineLabel" class="first-run-setting-text" data-i18n="setup_autosave_newline_label">At each new line</span>
+              <span class="toggle-switch-group">
+                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+                <button type="button" id="toggleSetupAutoSaveNewline" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveNewlineLabel" data-i18n-title="tip_setup_autosave_newline"><span class="toggle-switch__knob"></span></button>
+                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+              </span>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3: AI (the embedding model installs in the background after setup) -->
+      <section class="first-run-step" data-setup-step="3" hidden>
+        <div class="first-run-section">
+          <h2 class="first-run-heading">
+            <span data-i18n="setup_ai_embedding_heading">Embedding AI</span>
+            <span class="first-run-badge" data-i18n="setup_ai_core_badge">Core feature</span>
+            <span class="first-run-heading-note" data-i18n="setup_ai_local_note">Runs on this PC</span>
+            <span data-info-tip="setup_info_embedding"></span>
+          </h2>
+          <div class="first-run-setting">
+            <span id="setupLocalAiLabel" class="first-run-setting-text">
+              <span class="first-run-check-title" data-i18n="setup_ai_local_label">Install the embedding model (recommended)</span>
+              <span class="first-run-hint" data-i18n="setup_ai_local_hint">Finds knowledge related to the selected text offline. The download runs in the background.</span>
+            </span>
+            <span class="toggle-switch-group">
+              <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
+              <button type="button" id="toggleSetupInstallLocal" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupLocalAiLabel" data-i18n-title="tip_setup_install_local"><span class="toggle-switch__knob"></span></button>
+              <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
+            </span>
+          </div>
+          <p id="setupLocalNotice" class="first-run-notice" role="status">
+            <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            <span id="setupLocalNoticeText"></span>
+          </p>
+          <dl class="first-run-facts">
+            <dt data-i18n="setup_ai_fact_model">Model</dt>
+            <dd>
+              <code id="setupInstallModelId" class="first-run-code"></code>
+              <span class="first-run-hint-inline" data-i18n="setup_ai_fact_model_note">Lightweight and multilingual (90+ languages)</span>
+            </dd>
+            <dt data-i18n="setup_ai_fact_use">Purpose</dt>
+            <dd data-i18n="setup_ai_fact_use_value">Semantic search (it does not generate text)</dd>
+            <dt data-i18n="setup_ai_fact_source">Source</dt>
+            <dd data-i18n="setup_ai_fact_source_value">Downloaded once from Hugging Face (huggingface.co)</dd>
+            <dt data-i18n="setup_ai_fact_place">Install location</dt>
+            <dd><code id="setupInstallPath" class="first-run-code"></code> <span class="first-run-hint-inline" data-i18n="setup_ai_fact_place_note">(inside the app cache; works offline after the download)</span></dd>
+          </dl>
+        </div>
+
+        <hr class="first-run-divider">
+
+        <div class="first-run-section">
+          <h2 class="first-run-heading">
+            <span data-i18n="setup_ai_cloud_heading">Cloud AI</span>
+            <span class="first-run-heading-note" data-i18n="setup_ai_cloud_note">Supporting, optional</span>
+            <span data-info-tip="setup_info_cloud"></span>
+          </h2>
+          <div class="first-run-key-grid">
+            <label class="first-run-field">
+              <span class="first-run-label" data-i18n="setup_ai_provider_label">Provider</span>
+              <select id="aiSetupCloudProvider" class="ai-setup-select" data-i18n-title="tip_setup_cloud_provider">
+                <option value="" selected data-i18n="setup_ai_provider_none">Not used</option>
+                <option value="gemini">Gemini (Google)</option>
+                <option value="claude">Claude (Anthropic)</option>
+                <option value="openai">OpenAI (GPT)</option>
+              </select>
+            </label>
+            <div class="first-run-field">
+              <label class="first-run-label" for="aiSetupCloudKey" data-i18n="setup_ai_key_label">API key</label>
+              <div class="api-key-input-container first-run-key">
+                <span class="material-symbols-outlined" aria-hidden="true">key</span>
+                <input type="password" id="aiSetupCloudKey" placeholder="Enter API Key (Optional / Configurable later)..." autocomplete="off" spellcheck="false" data-i18n-placeholder="ai_setup_api_key_placeholder" disabled data-i18n-title="tip_api_key_input">
+                <button type="button" id="btnToggleAiSetupKeyVisibility" class="toolbar-btn" aria-label="Toggle Visibility" data-i18n-title="tip_toggle_key_visibility">
+                  <span class="material-symbols-outlined">visibility_off</span>
+                </button>
               </div>
             </div>
-          </label>
-
-          <!-- Emb Option 2: Cloud -->
-          <label style="display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: var(--fs-15); color: var(--text-muted);">
-            <input type="radio" name="ai_setup_embedding" value="cloud" style="width: 20px; height: 20px; accent-color: var(--accent-color, #38bdf8);">
-            <span data-i18n="ai_setup_emb_cloud_title">Cloud Embeddings API (Gemini / OpenAI)</span>
-          </label>
-
-          <!-- Emb Option 3: None -->
-          <label style="display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: var(--fs-15); color: var(--text-muted);">
-            <input type="radio" name="ai_setup_embedding" value="none" style="width: 20px; height: 20px; accent-color: var(--accent-color, #38bdf8);">
-            <span data-i18n="ai_setup_emb_none_title">Do Not Use (Exact Match & Lexical Search Only)</span>
-          </label>
+          </div>
+          <p class="first-run-hint first-run-hint--icon">
+            <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+            <span data-i18n="setup_ai_key_hint">The key is stored encrypted by the OS and is never kept on screen.</span>
+          </p>
         </div>
-      </div>
+      </section>
+    </div>
 
-      <!-- Section 2: LLM Configuration -->
-      <div style="background: rgba(255, 255, 255, 0.025); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md, 10px); padding: 22px 26px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
-          <span style="font-size: var(--fs-17); font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 10px;">
-            <span class="material-symbols-outlined" style="font-size: var(--fs-22);">chat</span>
-            <span data-i18n="ai_setup_section_llm">2. LLM Model Setup (Writing Assistant & Chat)</span>
+    <div class="first-run-footer">
+      <div class="first-run-footer-info">
+        <!-- One sentence with the gear where the word "Settings" is -->
+        <p class="first-run-later">
+          <span data-i18n="setup_footer_before">You can change this later in</span>
+          <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+          <span data-i18n="setup_footer_after">Settings (Ctrl+,)</span>
+        </p>
+        <!-- Only while the editor is still loading; empty (and hidden) once it is ready -->
+        <span id="setupLoadStatus" class="first-run-status" role="status" aria-live="polite"></span>
+      </div>
+      <div class="first-run-actions">
+        <!-- Each button names where it leads: a small caption ("Next") over the step name -->
+        <button id="btnSetupBack" class="btn first-run-btn first-run-nav-btn" type="button" hidden data-i18n-title="tip_setup_back">
+          <span class="material-symbols-outlined first-run-nav-icon" aria-hidden="true">chevron_left</span>
+          <span class="first-run-nav-text">
+            <span id="btnSetupBackCaption" class="first-run-nav-caption"></span>
+            <span id="btnSetupBackLabel" class="first-run-nav-label"></span>
           </span>
-          <span class="tool-version" style="color: #c084fc; font-size: var(--fs-12); font-weight: 700; padding: 3px 10px; background: rgba(192, 132, 252, 0.12); border-radius: 4px;">Cloud LLM</span>
-        </div>
-
-        <div style="font-size: var(--fs-14); color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;" data-i18n="ai_setup_llm_desc">
-          Configure provider and API key used for chat and inline rewriting (Optional / Configurable later)
-        </div>
-
-        <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-          <select id="aiSetupCloudProvider" class="ai-setup-select" style="flex: 1; height: 42px; min-height: 42px; font-size: var(--fs-15); padding: 6px 14px;">
-            <option value="gemini" selected>Google Gemini (v1beta / Flash)</option>
-            <option value="openai">OpenAI (GPT-4o mini)</option>
-            <option value="claude">Anthropic Claude (v3)</option>
-          </select>
-        </div>
-
-        <div class="api-key-input-container" style="display: flex; align-items: center; background: rgba(0, 0, 0, 0.35); border: var(--border-width) solid var(--border-color); border-radius: 8px; padding: 0 8px 0 14px; height: 42px;">
-          <span class="material-symbols-outlined" style="font-size: var(--fs-20); color: var(--text-muted); margin-right: 8px;">key</span>
-          <input type="password" id="aiSetupCloudKey" placeholder="Enter API Key (Optional / Configurable later)..." autocomplete="off" spellcheck="false" data-i18n-placeholder="ai_setup_api_key_placeholder"
-            style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: var(--fs-15); height: 100%;">
-          <button type="button" id="btnToggleAiSetupKeyVisibility" class="toolbar-btn" title="Toggle Visibility"
-            style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); padding: 0; border-radius: 4px;">
-            <span class="material-symbols-outlined" style="font-size: var(--fs-19);">visibility_off</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Progress Area -->
-    <div id="aiSetupProgressArea" style="display: none; padding: 0 36px 14px;">
-      <div style="font-size: var(--fs-13); font-weight: 600; color: var(--accent-color); margin-bottom: 6px; display: flex; justify-content: space-between;">
-        <span id="aiSetupProgressText" data-i18n="ai_setup_downloading">Downloading model...</span>
-        <span id="aiSetupProgressPct">0%</span>
-      </div>
-      <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
-        <div id="aiSetupProgressBar" style="width: 0%; height: 100%; background: var(--accent-color); transition: width 0.2s ease;"></div>
-      </div>
-    </div>
-
-    <!-- Modal Footer Actions: btn_ai_setup_later (cancel) | btn_download_start (primary) -->
-    <div style="padding: 16px 36px 20px; border-top: var(--border-width) solid var(--border-color); background: rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: space-between; gap: 14px;">
-      <button id="btnAiSetupOpenSettings" class="btn" type="button" style="padding: 8px 16px; font-size: var(--fs-13); display: flex; align-items: center; gap: 8px; background: transparent; border: var(--border-width) solid var(--border-color); color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer;" data-i18n-title="btn_open_detailed_settings">
-        <span class="material-symbols-outlined" style="font-size: var(--fs-17);">settings</span>
-        <span data-i18n="menu_help_settings">Preferences & Settings...</span>
-      </button>
-      <div style="display: flex; align-items: center; gap: 14px;">
-        <button id="btnAiSetupCancel" class="btn" style="padding: 8px 20px; font-size: var(--fs-14); border: var(--border-width) solid var(--border-color); background: transparent; color: var(--text-main); border-radius: var(--radius-sm); cursor: pointer;" data-i18n="btn_ai_setup_later">Configure Later</button>
-        <button id="btnAiSetupSave" class="btn primary" style="padding: 9px 28px; font-size: var(--fs-14); font-weight: 700; background: var(--accent-color, #38bdf8); color: #0f172a; border-radius: var(--radius-sm); border: none; box-shadow: 0 2px 10px rgba(56, 189, 248, 0.35); cursor: pointer;" data-i18n="btn_download_start">Download</button>
+        </button>
+        <button id="btnSetupNext" class="btn primary first-run-btn-primary first-run-nav-btn" type="button" data-i18n-title="tip_setup_next">
+          <span class="first-run-nav-text">
+            <span id="btnSetupNextCaption" class="first-run-nav-caption"></span>
+            <span id="btnSetupNextLabel" class="first-run-nav-label"></span>
+          </span>
+          <span class="material-symbols-outlined first-run-nav-icon" aria-hidden="true">chevron_right</span>
+        </button>
       </div>
     </div>
   </div>

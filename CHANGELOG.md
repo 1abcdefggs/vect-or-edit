@@ -5,6 +5,50 @@ All notable changes to the **VectOrEdit** (`vect-or-edit`) desktop application w
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- First-run setup in three steps (language and theme, save location, AI), with the tool name and version in the window's top-left corner, one typeface (Source Serif 4) throughout, and an (i) tip beside each heading that explains it on hover or focus
+- Shared parts: step tabs with an arrow connector and a progress line (`stepTabs.js`), a toggle switch with OFF on the left and ON on the right (`toggleSwitch.js`), and an info tip (`infoTip.js`)
+- Language switch (English left, Japanese right) and theme cards that draw a small editor sample from each theme file
+- File format choice, Markdown (.md) or Text (.txt), in first-run setup and in Settings. The Markdown card shows its title as "## heading" and a Preview button shows the rendered view (the same renderer as the editor preview). The status bar shows the format of the current document and a click switches it; the Preview button is hidden for Text documents
+- Save folder can be changed, renamed in place or reset; settings follow the folder. A folder name with a problem is explained beside the field and blocks "Next"
+- First-run AI step names the vector inference model, its purpose, source and install location, and warns that search cannot run without it
+- Gemini, OpenAI and Claude API keys are encrypted with the OS key store in the main process
+- AutoSave has two triggers, a pause in typing (0.5 to 10 seconds, 1.5 by default) and each new line, with one master switch; the two triggers are folded under "Adjust each" and set in first-run setup
+- A "Custom" theme card in first-run setup: it overrides the editor background and text color, and choosing a theme returns them to the theme's own
+- Embedding model picker in Settings: 50 models with language fit, license, dimension, language-count and task filters, five sort orders and search. The model data lives in one registry (`src/shared/embeddingRegistry.json`) and the rules in `src/shared/embeddingCatalog.ts`. Only models with verified query/passage prefixes can be downloaded or used; the others are listed for comparison. A chosen model whose files are not on the device is shown as "Selected, not installed" with a Download button
+
+### Changed
+- The built-in save folder is now `Documents/VectOrEdit` (was `VectOrFoldEr`); the old folder is not looked at or moved
+- "Change location" now picks the place for the save folder and keeps its name; the name is changed in its own field
+- The embedding model starts switched on in first-run setup and is installed in the background after the last button is pressed. The setup installs the default model only (e5-small); Settings still lists the others. With the model off the last button reads "Start without the model"
+- New documents, their file names, the save dialog and AutoSave file names follow the chosen format
+- The step bar's Back and Next buttons name the step they lead to (a small caption over the step name)
+- The setup dialog keeps one height on every step and in every language and sits clear of the title bar
+- The Markdown format sample shows a heading 1 and a heading 2 above the list, so the preview shows what headings look like
+- The welcome text now explains how to try the editor, what the first-run setup set, what the areas of the window do, the difference between the LLM and the embedding model, and what to do when something fails
+- Renderer runs sandboxed; IPC accepts calls only from the app's own page; permissions other than clipboard are denied
+- CSP no longer allows `unsafe-eval` or inline scripts
+- Renderer console output appears in the log panel with its own source and level
+- The "setup completed" flag is kept per installation and is no longer restored from `.settings.json`
+
+### Fixed
+- The AUTO button works again; AutoSave is switched from the save menu
+- Plain-text API keys from older versions are moved into the encrypted store and removed from `.settings.json`
+- Swapping the welcome text for another language no longer marks the tab dirty
+- The worker build resolves `.js` imports of `.ts` files, so `worker.js` can import `embeddingModels.js` and the app builds again
+- A language change swaps the welcome text only while it is an unedited copy, so text the user typed (or saved and reopened) is never replaced
+- The welcome text describes the save button, the AutoSave menu, the menu bar and the pipeline lights as they work
+- The page background and the log panel follow the light theme
+- Settings, AI MODEL: the Embedding, LLM and Capability scope tabs are back, so the LLM keys and the capability table can be reached and left again
+- Settings: the Claude model choice, the real-time validation switch, the minimum score and the result limit are saved and applied
+- Model size is no longer written into labels (it said 45 MB; the file is about 118 MB)
+
+### Removed
+- The "Skip setup" button of first-run setup (every step already has defaults, so Next all the way is a valid setup)
+- Gemini-specific key IPC channels (replaced by the provider-generic `saveApiKey`, `hasApiKey` and `clearApiKey`)
+
 ## [0.3.24] - 2026-10-19
 
 ### Added

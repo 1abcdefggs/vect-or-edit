@@ -1,6 +1,8 @@
 import { getEditorInstance } from '../core/editorCore.js';
 import { i18n, t } from '../../core/i18n.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
+import { DOCUMENT_FORMATS } from '../../../shared/documentFormat';
+import { setPreviewAvailable } from './markdownPreview.js';
 
 const statusElements = {
   charCount: null,
@@ -50,6 +52,12 @@ export function updateStatusBar() {
   if (!monacoEditorInstance) return;
 
   const val = monacoEditorInstance.getValue();
+
+  // The format follows the document's language mode: the label and the Preview button show only what applies to it
+  const isText = monacoEditorInstance.getModel()?.getLanguageId() === DOCUMENT_FORMATS.text.languageId;
+  const syntaxEl = document.getElementById('statusSyntaxLabel');
+  if (syntaxEl) syntaxEl.textContent = isText ? 'Plain Text' : 'Markdown';
+  setPreviewAvailable(!isText);
 
   if (elements.charCount) {
     elements.charCount.textContent = `${val.length.toLocaleString()} ${i18n.unit_chars || 'chars'}`;

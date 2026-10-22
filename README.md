@@ -97,7 +97,7 @@ See full release history in [CHANGELOG.md](CHANGELOG.md).
 - **Command-Driven Navigation & Header Extras**: Centralized `CommandManager` architecture with streamlined header controls (theme selector, zoom, language switcher, window actions).
 - **Streamlined Selection Popover & Widget**: Select any text to immediately trigger semantic vector matching or external queries with intelligent context-menu exclusion.
 - **Dynamic Multi-Slot Knowledge & Presets**: Load, merge, and inspect multiple domain JSON slots (`kb_*.json`) or drafting templates dynamically.
-- **Curated Modern Themes & Windows TitleBar Overlay**: Bundled with `Dracula`, `GitHub Dark`, `GitHub Light`, `Monokai`, `Night Owl`, syncing with Windows native control buttons.
+- **Curated Modern Themes with Light & Dark Modes & Windows TitleBar Overlay**: Bundled with `Dracula`, `GitHub`, `Monokai`, `Night Owl` and `Tukune`, each with a light and a dark face; the appearance mode (System / Light / Dark) picks the face, syncing with Windows native control buttons. A theme is `Name.json`, or `Name.light.json` + `Name.dark.json`.
 - **Dynamic Bilingual UI (i18n)**: Seamless English & Japanese live switching without restart.
 - **Real-Time Diagnostic Pipeline**: 7-stage LED status indicators monitoring Rust DLL, Knowledge Base, Config, Theme, Locale, Monaco, and AI Engine.
 

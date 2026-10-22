@@ -72,6 +72,8 @@ export interface EngineStatus {
 }
 
 export interface SystemLogEntry {
+  /** Assigned by the main process; absent on entries created in the renderer */
+  id?: number;
   time: string;
   source: string;
   level: 'INFO' | 'WARN' | 'ERROR' | string;
@@ -92,12 +94,32 @@ export interface SemanticState {
   totalItems: number;
 }
 
+export type ApiKeyProvider = 'gemini' | 'openai' | 'claude';
+
+export interface DefaultWorkspaceResponse {
+  success: boolean;
+  path?: string;
+  exists?: boolean;
+  /** true when the save folder is the built-in Documents/VectOrEdit */
+  isBuiltIn?: boolean;
+  canceled?: boolean;
+  /** Why a folder name was refused (see src/shared/folderName.ts) */
+  problem?: 'empty' | 'chars' | 'dots' | 'reserved' | 'long';
+  error?: string;
+}
+
 export interface EngineAPI {
   searchVector: (vector: number[], limit?: number) => Promise<SearchVectorResponse>;
   saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => Promise<{ success: boolean, path?: string, filePath?: string, error?: string }>;
   openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, encoding?: string, error?: string }>;
   openWorkspace: () => Promise<{ success: boolean, path?: string, error?: string }>;
-  getDefaultWorkspace: (createIfMissing?: boolean) => Promise<{ success: boolean, path?: string, exists?: boolean, error?: string }>;
+  getDefaultWorkspace: (createIfMissing?: boolean) => Promise<DefaultWorkspaceResponse>;
+  /** Opens a folder picker for the location of the save folder; the folder keeps its name (also where .settings.json is kept). */
+  chooseDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
+  /** Renames the save folder in place: same location, new name. Files are not moved. */
+  renameDefaultWorkspace: (name: string) => Promise<DefaultWorkspaceResponse>;
+  /** Returns the save folder to the built-in Documents/VectOrEdit. */
+  resetDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
   loadSettings: () => Promise<{ success: boolean, settings?: any, error?: string }>;
   saveSettings: (settings: any) => Promise<{ success: boolean, error?: string }>;
   validateDocument: (text: string) => Promise<ValidationResponse>;
@@ -108,11 +130,14 @@ export interface EngineAPI {
   getEngineStatus: () => Promise<EngineStatus>;
   onEngineStatus: (callback: (status: EngineStatus) => void) => () => void;
   onSystemLog: (callback: (log: SystemLogEntry) => void) => () => void;
+  /** Everything the main process has logged so far; call after onSystemLog is registered. */
+  requestLogBacklog: () => Promise<SystemLogEntry[]>;
   claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
-  saveGeminiApiKey: (apiKey: string) => Promise<{ success: boolean; error?: string }>;
-  hasGeminiApiKey: () => Promise<boolean>;
-  clearGeminiApiKey: () => Promise<{ success: boolean; error?: string }>;
+  /** Encrypted API key store (OS key store) for every cloud LLM provider. */
+  saveApiKey: (provider: ApiKeyProvider, apiKey: string) => Promise<{ success: boolean; error?: string }>;
+  hasApiKey: (provider: ApiKeyProvider) => Promise<boolean>;
+  clearApiKey: (provider: ApiKeyProvider) => Promise<{ success: boolean; error?: string }>;
   getCursorBaseSize: () => Promise<number>;
   listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }>>;
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
@@ -139,4 +164,8 @@ export interface EngineAPI {
   installUpdate: () => Promise<void>;
   querySemantics?: (query: string, context?: string) => Promise<any>;
   getAppVersion: () => Promise<string>;
+  /** Folder where the app keeps its own data (settings, encrypted keys, model cache) */
+  getUserDataPath: () => Promise<string>;
+  /** The app's LICENSE and the third-party notices as one text; null when they are not bundled */
+  getThirdPartyNotices: () => Promise<string | null>;
 }

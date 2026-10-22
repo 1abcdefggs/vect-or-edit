@@ -1,6 +1,7 @@
 import { tabs, activeTabId, switchTab, closeTab, createNewTab, duplicateTab } from './tabState.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { saveTextToFile } from '../io/fileIO.js';
+import { t } from '../../core/i18n.js';
 
 export function triggerRpgSavedExpFloat(tabId = activeTabId) {
   const tabsContainer = document.getElementById('editorTabsList');
@@ -41,7 +42,7 @@ export function renderTabs() {
     const tabEl = document.createElement('div');
     tabEl.setAttribute('data-tab-id', tab.id);
     tabEl.className = `editor-tab-item ${tab.id === activeTabId ? 'active' : ''} ${tab.isDirty ? 'is-dirty' : 'is-saved'}`;
-    tabEl.title = `${tab.filePath || tab.title} (Double-click to rename)`;
+    tabEl.title = t('tip_tab_rename', { name: tab.filePath || tab.title });
 
     const statusBadgeHtml = tab.isDirty
       ? `<span class="tab-dirty-dot" title="Unsaved changes"></span>`
@@ -49,7 +50,7 @@ export function renderTabs() {
 
     // Left-aligned close button (larger, distinct) + status badge + title
     tabEl.innerHTML = `
-      <button class="btn-tab-close" title="Close Tab">
+      <button class="btn-tab-close" title="${t('tip_menu_close_tab')}">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
       ${statusBadgeHtml}
@@ -143,7 +144,7 @@ export function renderTabs() {
   const btnInlineDuplicateTab = document.createElement('button');
   btnInlineDuplicateTab.className = 'toolbar-btn';
   btnInlineDuplicateTab.id = 'btnDuplicateTabInline';
-  btnInlineDuplicateTab.title = 'Duplicate Tab (Copy Document)';
+  btnInlineDuplicateTab.title = t('tip_tab_duplicate');
   btnInlineDuplicateTab.style.height = '28px';
   btnInlineDuplicateTab.style.width = '28px';
   btnInlineDuplicateTab.style.padding = '0';
@@ -164,7 +165,7 @@ export function renderTabs() {
   const btnInlineNewTab = document.createElement('button');
   btnInlineNewTab.className = 'toolbar-btn';
   btnInlineNewTab.id = 'btnNewTabInline';
-  btnInlineNewTab.title = 'New Tab (Ctrl+T)';
+  btnInlineNewTab.title = t('tip_tab_new');
   btnInlineNewTab.style.height = '28px';
   btnInlineNewTab.style.width = '28px';
   btnInlineNewTab.style.padding = '0';

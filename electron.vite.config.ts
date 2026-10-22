@@ -2,6 +2,24 @@ import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import { resolve, dirname } from 'path';
 import { existsSync } from 'fs';
 
+// Source files import "./x.js" for modules that are written as x.ts
+const resolveTsForJsImports = {
+  name: 'resolve-ts-for-js-imports',
+  resolveId(source: string, importer?: string) {
+    if (importer && source.endsWith('.js') && (source.startsWith('./') || source.startsWith('../'))) {
+      const resolvedPath = resolve(dirname(importer), source.slice(0, -3) + '.ts');
+      try {
+        if (existsSync(resolvedPath)) {
+          return resolvedPath;
+        }
+      } catch {
+        // fallback
+      }
+    }
+    return null;
+  }
+};
+
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()]
@@ -24,24 +42,11 @@ export default defineConfig({
     resolve: {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
     },
-    plugins: [
-      {
-        name: 'resolve-ts-for-js-imports',
-        resolveId(source, importer) {
-          if (importer && source.endsWith('.js') && (source.startsWith('./') || source.startsWith('../'))) {
-            const resolvedPath = resolve(dirname(importer), source.slice(0, -3) + '.ts');
-            try {
-              if (existsSync(resolvedPath)) {
-                return resolvedPath;
-              }
-            } catch {
-              // fallback
-            }
-          }
-          return null;
-        }
-      }
-    ],
+    plugins: [resolveTsForJsImports],
+    // Workers are bundled separately and need the same resolution (worker.js imports embeddingModels.js)
+    worker: {
+      plugins: () => [resolveTsForJsImports]
+    },
     optimizeDeps: {
       exclude: ['@huggingface/transformers', 'onnxruntime-web']
     },

@@ -8,18 +8,25 @@ const LOCALES: Record<string, Record<string, string>> = {
   en: enLocale as Record<string, string>
 };
 
-const savedLangInit = (typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEYS.APP_LANG) : null);
-const systemLangInit = (typeof navigator !== 'undefined' ? (navigator.language || DEFAULTS.APP_LANG).split('-')[0] : DEFAULTS.APP_LANG);
-const initialLang = (savedLangInit || systemLangInit) === 'ja' ? 'ja' : 'en';
+/**
+ * Saved language; before the user picks one, the OS language when it is Japanese, else English (DEFAULTS.APP_LANG).
+ * First-run setup starts with this language selected.
+ */
+function resolveLang(): string {
+  const saved = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEYS.APP_LANG) : null;
+  if (saved && LOCALES[saved]) return saved;
+  const osLang = typeof navigator !== 'undefined' ? (navigator.language || '').split('-')[0] : '';
+  return osLang === 'ja' ? 'ja' : DEFAULTS.APP_LANG;
+}
+
+const initialLang = resolveLang();
 
 export let currentLang: string = initialLang;
 export let i18n: Record<string, string> = LOCALES[initialLang] || LOCALES.ja;
 
 export async function loadLocales(): Promise<void> {
   try {
-    const savedLang = localStorage.getItem(STORAGE_KEYS.APP_LANG);
-    const systemLang = (navigator.language || DEFAULTS.APP_LANG).split('-')[0];
-    const lang = (savedLang || systemLang) === 'ja' ? 'ja' : 'en';
+    const lang = resolveLang();
     currentLang = lang;
     // Keeps the document language in step with the UI language; the browser uses it to pick CJK fallback fonts.
     document.documentElement.lang = lang;

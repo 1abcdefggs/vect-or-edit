@@ -12,6 +12,9 @@ const engineAPI: EngineAPI = {
   openFile: () => ipcRenderer.invoke('app:openFile'),
   openWorkspace: () => ipcRenderer.invoke('app:openWorkspace'),
   getDefaultWorkspace: (createIfMissing?: boolean) => ipcRenderer.invoke('app:getDefaultWorkspace', createIfMissing),
+  chooseDefaultWorkspace: () => ipcRenderer.invoke('app:chooseDefaultWorkspace'),
+  renameDefaultWorkspace: (name: string) => ipcRenderer.invoke('app:renameDefaultWorkspace', name),
+  resetDefaultWorkspace: () => ipcRenderer.invoke('app:resetDefaultWorkspace'),
   loadSettings: () => ipcRenderer.invoke('app:loadSettings'),
   saveSettings: (settings: any) => ipcRenderer.invoke('app:saveSettings', settings),
   validateDocument: (text: string) => ipcRenderer.invoke('app:validateDocument', text),
@@ -34,11 +37,12 @@ const engineAPI: EngineAPI = {
       ipcRenderer.removeListener('app:systemLog', handler);
     };
   },
+  requestLogBacklog: () => ipcRenderer.invoke('app:requestLogBacklog') as Promise<SystemLogEntry[]>,
   claudeSemanticSuggest: (payload) => ipcRenderer.invoke('app:claudeSemanticSuggest', payload),
   geminiSemanticSuggest: (payload) => ipcRenderer.invoke('app:geminiSemanticSuggest', payload),
-  saveGeminiApiKey: (apiKey: string) => ipcRenderer.invoke('app:saveGeminiApiKey', apiKey),
-  hasGeminiApiKey: () => ipcRenderer.invoke('app:hasGeminiApiKey'),
-  clearGeminiApiKey: () => ipcRenderer.invoke('app:clearGeminiApiKey'),
+  saveApiKey: (provider: string, apiKey: string) => ipcRenderer.invoke('app:saveApiKey', provider, apiKey),
+  hasApiKey: (provider: string) => ipcRenderer.invoke('app:hasApiKey', provider),
+  clearApiKey: (provider: string) => ipcRenderer.invoke('app:clearApiKey', provider),
   getCursorBaseSize: () => ipcRenderer.invoke('app:getCursorBaseSize') as Promise<number>,
   listGeminiModels: (apiKey?: string) => ipcRenderer.invoke('app:listGeminiModels', apiKey),
   openaiSemanticSuggest: (payload) => ipcRenderer.invoke('app:openaiSemanticSuggest', payload),
@@ -76,7 +80,9 @@ const engineAPI: EngineAPI = {
     }
   },
   querySemantics: (query: string, context?: string) => ipcRenderer.invoke('semantics:query', query, context),
-  getAppVersion: () => ipcRenderer.invoke('app:getVersion')
+  getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
+  getUserDataPath: () => ipcRenderer.invoke('app:getUserDataPath'),
+  getThirdPartyNotices: () => ipcRenderer.invoke('app:getThirdPartyNotices')
 };
 
 const updaterAPI = {

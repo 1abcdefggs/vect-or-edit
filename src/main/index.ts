@@ -1,10 +1,11 @@
-import { app, ipcMain, BrowserWindow, shell, dialog, session } from 'electron';
+import { app, BrowserWindow, shell, dialog, session } from 'electron';
+import { handleTrusted, installPermissionPolicy } from './ipcSecurity';
 
 import path from 'node:path';
 import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 
-import { initLogger } from './logger';
+import { initLogger, exportLogBacklog } from './logger';
 import { initRustEngine, getEngine, getVault, isRustBinaryLoaded } from './engine/rustEngine';
 import {
   knowledgeSlots,
@@ -22,9 +23,9 @@ import {
   clearKnowledgeSlots
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
-import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, hasStoredGeminiApiKey, listGeminiModels, saveGeminiApiKey, clearGeminiApiKey } from './ai/aiServices';
+import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
-import { saveFile, openFile, openWorkspace, getDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
+import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 import { getCursorBaseSize } from './cursorSize';
 
 let currentKbPath: string = ""; // Default empty
@@ -53,8 +54,27 @@ if (!gotTheLock) {
     }
 
     await initRustEngine();
+    installPermissionPolicy();
 
-    ipcMain.handle('app:getVersion', () => app.getVersion());
+    handleTrusted('app:getVersion', () => app.getVersion());
+    handleTrusted('app:requestLogBacklog', () => exportLogBacklog());
+    // Where the app keeps its own data (the embedding model is cached inside it); shown in first-run setup
+    handleTrusted('app:getUserDataPath', () => app.getPath('userData'));
+    // The app's own license plus the generated third-party notices (scripts/generate-notices.mjs); null when not bundled
+    handleTrusted('app:getThirdPartyNotices', () => {
+      const dirs = app.isPackaged
+        ? [process.resourcesPath]
+        : [app.getAppPath(), path.join(app.getAppPath(), 'build-dist')];
+      const read = (name: string): string | null => {
+        for (const dir of dirs) {
+          try { return fs.readFileSync(path.join(dir, name), 'utf8'); } catch { /* try the next folder */ }
+        }
+        return null;
+      };
+      const license = read('LICENSE');
+      const notices = read('THIRD_PARTY_NOTICES.txt');
+      return license === null && notices === null ? null : [license, notices].filter(Boolean).join('\n\n');
+    });
 
     createWindow(
       path.join(__dirname, '../preload/index.cjs'),
@@ -80,35 +100,41 @@ if (!gotTheLock) {
     });
 
     // --- File System IPC ---
-    ipcMain.handle('app:saveFile', (_event, content, defaultName, forceDialog) => saveFile(content, defaultName, forceDialog));
-    ipcMain.handle('app:openFile', () => openFile());
-    ipcMain.handle('app:openWorkspace', () => openWorkspace());
-    ipcMain.handle('app:getDefaultWorkspace', (_event, createIfMissing) => getDefaultWorkspace(createIfMissing));
+    handleTrusted('app:saveFile', (_event, content, defaultName, forceDialog) => saveFile(content, defaultName, forceDialog));
+    handleTrusted('app:openFile', () => openFile());
+    handleTrusted('app:openWorkspace', () => openWorkspace());
+    handleTrusted('app:getDefaultWorkspace', (_event, createIfMissing) => getDefaultWorkspace(createIfMissing));
+    handleTrusted('app:chooseDefaultWorkspace', () => chooseDefaultWorkspace());
+    handleTrusted('app:renameDefaultWorkspace', (_event, name: unknown) => renameDefaultWorkspace(name));
+    handleTrusted('app:resetDefaultWorkspace', () => resetDefaultWorkspace());
 
-    ipcMain.handle('app:loadSettings', () => loadSettings());
-    ipcMain.handle('app:saveSettings', (_event, settings) => saveSettings(settings));
+    handleTrusted('app:loadSettings', () => loadSettings());
+    handleTrusted('app:saveSettings', (_event, settings) => saveSettings(settings));
 
     // --- AI Suggest IPC ---
-    ipcMain.handle('app:claudeSemanticSuggest', (_event, payload) => fetchClaudeSemanticSuggest(payload.prompt, payload.apiKey, payload.model));
-    ipcMain.handle('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, undefined, payload.model));
-    ipcMain.handle('app:saveGeminiApiKey', (_event, apiKey: string) => saveGeminiApiKey(apiKey));
-    ipcMain.handle('app:hasGeminiApiKey', () => hasStoredGeminiApiKey());
-    ipcMain.handle('app:clearGeminiApiKey', () => clearGeminiApiKey());
-    ipcMain.handle('app:getCursorBaseSize', () => getCursorBaseSize());
-    ipcMain.handle('app:listGeminiModels', (_event, apiKey?: string) => listGeminiModels(apiKey));
-    ipcMain.handle('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, payload.apiKey, payload.model));
+    // Keys are never taken from the renderer: every request reads the encrypted key stored in the main process.
+    handleTrusted('app:claudeSemanticSuggest', (_event, payload) => fetchClaudeSemanticSuggest(payload.prompt, undefined, payload.model));
+    handleTrusted('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, undefined, payload.model));
+    handleTrusted('app:saveApiKey', (_event, provider: unknown, apiKey: string) =>
+      isApiKeyProvider(provider) ? saveApiKey(provider, apiKey) : { success: false, error: 'Unknown provider.' });
+    handleTrusted('app:hasApiKey', (_event, provider: unknown) => isApiKeyProvider(provider) ? hasStoredApiKey(provider) : false);
+    handleTrusted('app:clearApiKey', (_event, provider: unknown) =>
+      isApiKeyProvider(provider) ? clearApiKey(provider) : { success: false, error: 'Unknown provider.' });
+    handleTrusted('app:getCursorBaseSize', () => getCursorBaseSize());
+    handleTrusted('app:listGeminiModels', (_event, apiKey?: string) => listGeminiModels(apiKey));
+    handleTrusted('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, undefined, payload.model));
     // LLM-as-Embedding: converts text → pseudo-vector via LLM response
-    ipcMain.handle('app:llmEmbedding', (_event, payload) =>
-      fetchLLMEmbedding(payload.text, payload.provider, payload.model, payload.apiKey, payload.dimensions)
+    handleTrusted('app:llmEmbedding', (_event, payload) =>
+      fetchLLMEmbedding(payload.text, payload.provider, payload.model, undefined, payload.dimensions)
     );
 
     // --- Engine IPC ---
-    ipcMain.handle('engine:searchVector', async (_event, vector: number[], limit = 5) => {
+    handleTrusted('engine:searchVector', async (_event, vector: number[], limit = 5) => {
       if (!isRustEngineReady()) return { success: false, error: 'Knowledge base not ready' };
       return handleSearchVector({ vector, topK: limit });
     });
 
-    ipcMain.handle('semantics:query', async (_event, queryText: string, contextText?: string) => {
+    handleTrusted('semantics:query', async (_event, queryText: string, contextText?: string) => {
       try {
         const activeProf = getActiveProfile();
         const rules = activeProf?.rules || [];
@@ -141,7 +167,7 @@ if (!gotTheLock) {
 
 
     // --- Multi-Slot Knowledge & Goal Profile IPC Handlers ---
-    ipcMain.handle('engine:getSemanticState', () => {
+    handleTrusted('engine:getSemanticState', () => {
       return {
         activeGoal: getActiveProfile(),
         slots: knowledgeSlots,
@@ -149,7 +175,7 @@ if (!gotTheLock) {
       };
     });
 
-    ipcMain.handle('engine:setGoalProfile', async (_event, customPath?: string) => {
+    handleTrusted('engine:setGoalProfile', async (_event, customPath?: string) => {
       const mainWindow = getMainWindow();
       if (!mainWindow) return { success: false, error: 'No main window' };
       try {
@@ -186,7 +212,7 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('engine:addKnowledgeSlot', async (_event, customPath?: string, vencPassword?: string) => {
+    handleTrusted('engine:addKnowledgeSlot', async (_event, customPath?: string, vencPassword?: string) => {
       const mainWindow = getMainWindow();
       if (!mainWindow) return { success: false, error: 'No main window' };
       try {
@@ -295,7 +321,7 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('engine:removeKnowledgeSlot', async (_event, slotId: string) => {
+    handleTrusted('engine:removeKnowledgeSlot', async (_event, slotId: string) => {
       const idx = knowledgeSlots.findIndex(s => s.id === slotId);
       if (idx !== -1) {
         const removed = knowledgeSlots.splice(idx, 1)[0];
@@ -309,7 +335,7 @@ if (!gotTheLock) {
       return { success: false, error: 'Slot not found' };
     });
 
-    ipcMain.handle('engine:clearAllKnowledgeSlots', async () => {
+    handleTrusted('engine:clearAllKnowledgeSlots', async () => {
       clearKnowledgeSlots();
       const totalCount = await reloadCombinedKnowledgeIndex();
       const mainWindow = getMainWindow();
@@ -325,7 +351,7 @@ if (!gotTheLock) {
       return { success: true, slots: [], totalCount: 0, data: [] };
     });
 
-    ipcMain.handle('engine:resetGoalProfile', () => {
+    handleTrusted('engine:resetGoalProfile', () => {
       resetActiveProfile();
       const mainWindow = getMainWindow();
       if (mainWindow && !mainWindow.isDestroyed()) {
@@ -340,14 +366,14 @@ if (!gotTheLock) {
       return { success: true, goal: null };
     });
 
-    ipcMain.handle('engine:getActiveDictName', () => {
+    handleTrusted('engine:getActiveDictName', () => {
       if (knowledgeSlots.length === 0) return path.basename(currentKbPath);
       return knowledgeSlots.map(s => s.name).join(', ');
     });
 
-    ipcMain.handle('engine:getActiveProfile', () => getActiveProfile());
+    handleTrusted('engine:getActiveProfile', () => getActiveProfile());
 
-    ipcMain.handle('engine:getKnowledgeBase', async () => {
+    handleTrusted('engine:getKnowledgeBase', async () => {
       const allStripped: any[] = [];
       for (const items of slotItemsCache.values()) allStripped.push(...items);
       if (allStripped.length > 0) return allStripped;
@@ -359,15 +385,14 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('engine:importKnowledgeBase', async () => {
+    handleTrusted('engine:importKnowledgeBase', async () => {
       const mainWindow = getMainWindow();
       if (!mainWindow) return { success: false, error: 'No main window' };
       const engine = getEngine();
       if (!engine) return { success: false, error: 'Engine not loaded' };
       try {
-        const docsPath = app.getPath('documents');
-        const defaultWorkspace = path.join(docsPath, 'VectOrFoldEr');
-        await fsPromises.mkdir(defaultWorkspace, { recursive: true }).catch(() => { });
+        const ws = await getDefaultWorkspace(true);
+        const defaultWorkspace = ws.path;
 
         const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
           title: 'Import Knowledge Base / Dictionary JSON',
@@ -433,7 +458,7 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('app:loadImeDict', async () => {
+    handleTrusted('app:loadImeDict', async () => {
       try {
         const dictPath = app.isPackaged
           ? path.join(process.resourcesPath, 'custom-ime-dict.txt')
@@ -446,7 +471,7 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('app:setTitleBarOverlay', async (_event, options: { color: string; symbolColor: string; height?: number }) => {
+    handleTrusted('app:setTitleBarOverlay', async (_event, options: { color: string; symbolColor: string; height?: number }) => {
       try {
         const mainWindow = getMainWindow();
         if (mainWindow && process.platform === 'win32') {
@@ -463,7 +488,7 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('app:clearCache', async () => {
+    handleTrusted('app:clearCache', async () => {
       try {
         await session.defaultSession.clearCache();
         return { success: true };
@@ -472,16 +497,16 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('app:restart', () => {
+    handleTrusted('app:restart', () => {
       app.relaunch();
       app.exit(0);
     });
 
-    ipcMain.handle('app:validateDocument', async (_event, text: string) => {
+    handleTrusted('app:validateDocument', async (_event, text: string) => {
       return handleValidateDocument({ text });
     });
 
-    ipcMain.handle('app:openExternal', async (_event, url) => {
+    handleTrusted('app:openExternal', async (_event, url) => {
       try {
         const parsed = new URL(url);
         if (!['https:', 'http:'].includes(parsed.protocol)) {
@@ -495,7 +520,7 @@ if (!gotTheLock) {
       }
     });
 
-    ipcMain.handle('engine:getEngineStatus', async () => {
+    handleTrusted('engine:getEngineStatus', async () => {
       return {
         binReady: isRustBinaryLoaded(),
         kbReady: isRustEngineReady(),

@@ -4,8 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- CSP: scripts only from the app itself (no inline handlers, no eval; WebAssembly allowed for the ONNX runtime).
+       Inline styles stay allowed: the templates use style attributes throughout. -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://fonts.googleapis.com https://fonts.gstatic.com https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co https://cdnjs.cloudflare.com; font-src 'self' data: blob: https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' data: blob: https://api.github.com https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co ws://localhost:* http://localhost:*; worker-src 'self' blob: data:; img-src 'self' data: blob:;">
+    content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' data: blob: https://api.github.com https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co ws://localhost:* http://localhost:*; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
   <title data-i18n="app_title">VectOrEdit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +20,7 @@
   <style>
     /* Critical initial styling to prevent FOUC / blank flash during startup */
     html, body {
-      background-color: #080c16 !important;
+      background-color: var(--app-backdrop, #080c16);
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -33,10 +35,13 @@
   </style>
 </head>
 
-<body style="background-color: #080c16;">
+<body>
   <div id="appStartupLoader" class="app-startup-loader" role="status" aria-live="polite">
-    <div class="startup-logo" aria-hidden="true">
-      <span style="--i:0">V</span><span style="--i:1">e</span><span style="--i:2">c</span><span style="--i:3">t</span><span style="--i:4">O</span><span style="--i:5">r</span><span style="--i:6">E</span><span style="--i:7">d</span><span style="--i:8">i</span><span style="--i:9">t</span>
+    <div class="startup-logo-row">
+      <div class="startup-logo" aria-hidden="true">
+        <span style="--i:0">V</span><span style="--i:1">e</span><span style="--i:2">c</span><span style="--i:3">t</span><span style="--i:4">O</span><span style="--i:5">r</span><span style="--i:6">E</span><span style="--i:7">d</span><span style="--i:8">i</span><span style="--i:9">t</span>
+      </div>
+      <span id="startupVersionBadge" class="startup-loader-version" aria-hidden="true"></span>
     </div>
     <div class="neural-glow-line startup-loader-line" aria-hidden="true"></div>
     <div id="loaderStatusText" class="startup-loader-status" data-i18n="loader_initializing">Initializing Monaco &amp; Core Engine...</div>

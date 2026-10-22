@@ -1,6 +1,7 @@
 import path from 'node:path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import { bindLoggerToWindow, flushLogsToRenderer } from './logger';
+import { app, BrowserWindow, shell } from 'electron';
+import { bindLoggerToWindow, captureRendererConsole } from './logger';
+import { handleTrusted, isTrustedUrl, setTrustedRenderer } from './ipcSecurity';
 
 let mainWindowInstance: BrowserWindow | null = null;
 
@@ -13,6 +14,9 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     ? path.join(__dirname, '../renderer/assets/icon.png')
     : path.join(__dirname, '../../public/icon.png');
 
+  // The dev server is trusted only in development; a packaged app trusts its bundled index.html alone
+  setTrustedRenderer(app.isPackaged ? '' : (process.env.ELECTRON_RENDERER_URL || rendererUrl), indexPath);
+
   mainWindowInstance = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -23,7 +27,8 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
       preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false
+      // The preload only uses contextBridge, ipcRenderer and webFrame, which the sandbox allows
+      sandbox: true
     },
     titleBarStyle: 'hidden',
     titleBarOverlay: {
@@ -41,7 +46,6 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
   mainWindowInstance.once('ready-to-show', () => {
     if (mainWindowInstance && !mainWindowInstance.isVisible()) {
       mainWindowInstance.show();
-      flushLogsToRenderer();
     }
   });
 
@@ -49,7 +53,6 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
   setTimeout(() => {
     if (mainWindowInstance && !mainWindowInstance.isVisible()) {
       mainWindowInstance.show();
-      flushLogsToRenderer();
     }
   }, 1500);
 
@@ -69,21 +72,18 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
   });
 
   // Security: Prevent in-app navigation to unauthorized URLs
+  // Only the app's own page (dev server origin or the bundled index.html) may load; other file: URLs are blocked
   mainWindowInstance.webContents.on('will-navigate', (event, navigationUrl) => {
-    const parsedUrl = new URL(navigationUrl);
-    const targetUrl = process.env.ELECTRON_RENDERER_URL || rendererUrl;
-    if (targetUrl) {
-      try {
-        const allowedOrigin = new URL(targetUrl).origin;
-        if (parsedUrl.origin === allowedOrigin) return;
-      } catch { }
-    }
-    if (parsedUrl.protocol === 'file:') return;
+    if (isTrustedUrl(navigationUrl)) return;
 
     // Block unknown navigation and open safely in external browser if http(s)
     event.preventDefault();
-    if (['https:', 'http:'].includes(parsedUrl.protocol)) {
-      shell.openExternal(navigationUrl);
+    try {
+      if (['https:', 'http:'].includes(new URL(navigationUrl).protocol)) {
+        shell.openExternal(navigationUrl);
+      }
+    } catch {
+      console.warn('[Security] Malformed navigation URL rejected:', navigationUrl);
     }
   });
 
@@ -103,14 +103,13 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     console.log('[Window] Renderer did-finish-load');
     mainWindowInstance?.show();
     mainWindowInstance?.focus();
-    flushLogsToRenderer();
     if (!app.isPackaged) {
       mainWindowInstance?.webContents.openDevTools({ mode: 'detach' });
     }
   });
 
   mainWindowInstance.webContents.on('console-message', (_event, level, message, line, sourceId) => {
-    console.log(`[Renderer Console - Lvl ${level}] ${message} (${sourceId}:${line})`);
+    captureRendererConsole(level, message, sourceId, line);
   });
 
   mainWindowInstance.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL) => {
@@ -123,12 +122,12 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
 
 
   // Register Window IPCs
-  ipcMain.handle('window:minimize', () => {
+  handleTrusted('window:minimize', () => {
     mainWindowInstance?.minimize();
     return true;
   });
 
-  ipcMain.handle('window:toggleMaximize', () => {
+  handleTrusted('window:toggleMaximize', () => {
     if (mainWindowInstance?.isMaximized()) {
       mainWindowInstance.unmaximize();
     } else {
@@ -137,12 +136,12 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     return true;
   });
 
-  ipcMain.handle('window:close', () => {
+  handleTrusted('window:close', () => {
     mainWindowInstance?.close();
     return true;
   });
 
-  ipcMain.handle('window:isMaximized', () => {
+  handleTrusted('window:isMaximized', () => {
     return mainWindowInstance?.isMaximized() || false;
   });
 

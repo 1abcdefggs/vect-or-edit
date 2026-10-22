@@ -1,4 +1,6 @@
 import { showLogToastStrip } from './logToastStrip.js';
+import { confirmClose } from './closeGuard.js';
+import { t } from '../../core/i18n.js';
 
 export function showToast(message, type = 'info', action = null) {
   // Toasts without action buttons go to the LOGS strip when the panel is open.
@@ -36,7 +38,7 @@ export function showToast(message, type = 'info', action = null) {
     <div class="toast-actions" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
       ${actionHtml}
     </div>
-    <button class="toast-close-btn" title="Close" aria-label="Close">&times;</button>
+    <button class="toast-close-btn" aria-label="Close">&times;</button>
   `;
   document.body.appendChild(toast);
 
@@ -76,9 +78,10 @@ export function showToast(message, type = 'info', action = null) {
 
   const closeBtn = toast.querySelector('.toast-close-btn');
   if (closeBtn) {
-    closeBtn.addEventListener('click', (e) => {
+    closeBtn.title = t('tip_close');
+    closeBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      dismiss();
+      if (await confirmClose('toast')) dismiss();
     });
   }
 

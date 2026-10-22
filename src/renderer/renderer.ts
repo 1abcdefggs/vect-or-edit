@@ -1,9 +1,11 @@
 import { icons } from './core/icons';
-import { initStartupFlow, hideStartupLoader } from './core/startupManager';
+import { initStartupFlow, completeStartup, hideStartupLoader } from './core/startupManager';
 import { loadLocales } from './core/i18n';
 import { initSettings, loadSettingsFromBackend } from './ui/settings.js';
+import { syncSettingsToBackend } from './ui/settings/settingsState.js';
+import { migratePlaintextApiKeys, refreshApiKeyStatus } from './core/apiKeyStore.js';
 import { initQuickDictionary } from './search/dictionary.js';
-import { initEditor, updateEditorOptions, initMemoryMonitor, applyEditorCanvasTone } from './editor/editorManager.js';
+import { initEditor, updateEditorOptions, initMemoryMonitor, applyEditorCanvasTone, initAutoSaveControls } from './editor/editorManager.js';
 import { setLedStatus, initAllLedTooltips } from './core/statusManager';
 import { initVectorSearch } from './search/vectorSearch.js';
 import { initUpdateChecker } from './ui/updateChecker.js';
@@ -20,6 +22,7 @@ import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsMo
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
 import { initSelectMenus } from './ui/components/selectMenu';
 import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
+import { initDocumentFormatControl } from './editor/ui/documentFormatControl.js';
 
 export { setLedStatus };
 
@@ -30,7 +33,14 @@ const STARTUP_LOADER_MAX_MS = 15000;
 document.addEventListener('DOMContentLoaded', async () => {
   // 0. Inject lazy HTML components (Modals, System Logs)
   injectLazyUIComponents();
-  
+
+  // 0.1. Restore the Dual-Sync settings (.settings.json) first, so the saved language and setup state apply from the first paint
+  await loadSettingsFromBackend();
+
+  // 0.15. API keys: move plain-text keys from older versions into the encrypted store, then drop them from .settings.json
+  if (await migratePlaintextApiKeys()) await syncSettingsToBackend();
+  await refreshApiKeyStatus();
+
   // 0.2. Immediately apply Locale (Ensures 3. LOCALE is ready and UI text is localized instantly)
   await loadLocales();
 
@@ -38,6 +48,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   initAllLedTooltips();
   initInstantTooltips();
   initSelectMenus();
+
+  // 0.6. First-run setup opens now and stays usable while the editor loads behind it
+  // A failure here must not stop the editor from starting (the startup loader is dismissed by the editor init)
+  try {
+    initStartupFlow();
+  } catch (err) {
+    console.error('[Startup] First-run setup failed to open:', err);
+  }
 
   // 0.7. Initialize master settings store & UI visibility
   await settingsStore.syncWithBackend();
@@ -100,20 +118,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 3. Launch Editor & Core Modules in Parallel
   const editorPromise = initEditor();
   const initModulesPromise = (async () => {
-    await loadSettingsFromBackend();
-    await loadLocales();
     initSettings(updateEditorOptions);
   })();
 
   Promise.all([editorPromise, initModulesPromise])
     .then(() => {
-      initStartupFlow();
+      completeStartup();
     })
     .catch((err) => {
       console.error('[Startup] Init failed:', err);
-    })
-    .finally(() => {
-      // Fallback guarantee: the loader never outlives startup, even when the AI setup modal or an init error blocks the normal dismissal
+      // The loader never outlives a failed startup
       setTimeout(hideStartupLoader, 500);
     });
 
@@ -122,12 +136,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 4. Background Services & Controllers
   initMarkdownPreview();
+  initDocumentFormatControl();
   initQuickDictionary();
   initVectorSearch();
   initAiControls();
   initZoomControls();
   initSystemConsole();
   bindAppActionEvents();
+  initAutoSaveControls();
 
   // 5. Finalize UI States
   await Promise.all([editorPromise, initModulesPromise]);

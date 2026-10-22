@@ -90,7 +90,7 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
       const desc = item.kana || item.description || item.subtitle || '';
       const chip = createMenuButton({
         className: 'pill-candidate-chip',
-        title: `${title} ${desc ? `(${desc})` : ''} - Click to insert`,
+        title: t('tip_insert_candidate', { label: `${title} ${desc ? `(${desc})` : ''}`.trim() }),
         innerHTML: `
           <span class="chip-title">${title}</span>
           ${desc ? `<span class="chip-desc">${desc}</span>` : ''}

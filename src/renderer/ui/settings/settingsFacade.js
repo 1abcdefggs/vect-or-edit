@@ -1,14 +1,20 @@
 import { icons } from '../../core/icons.js';
 import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
-import { loadTheme, availableThemes, getResolvedThemeName } from '../../editor/core/themeLoader.js';
+import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { importDictionary } from '../../search/dictionary.js';
-import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, updateAutoSaveUI } from '../../editor/editorManager.js';
+import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, refreshLinter, updateAutoSaveUI } from '../../editor/editorManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
 import { showToast } from '../notifications/toastManager.js';
-import { updateActiveModelBadgeInTable } from '../../search/searchLocalAi.js';
+import { notifyEmbeddingModelsChanged } from '../../search/searchLocalAi.js';
+import { bindEmbeddingModelEvents, renderEmbeddingModelList } from './embeddingModelList.js';
 import { initEmbeddingSourceController } from './embeddingSourceController.js';
+import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
+import { bindSaveLocationControls } from './saveLocation.js';
+import { getDefaultDocumentFormat } from '../../editor/tabs/tabState.js';
+import { confirmClose } from '../notifications/closeGuard.js';
+import { initWindowFeatureSettings } from './windowFeatureSettings.js';
 
 function setAndSync(key, value) {
   localStorage.setItem(key, value);
@@ -17,11 +23,139 @@ function setAndSync(key, value) {
 
 let updateEditorOptionsCallback = null;
 
+const FALLBACK_THEMES = ['Dracula', 'GitHub', 'Monokai', 'Night Owl', 'Tukune'];
+const THEME_SELECT_IDS = ['themeSelect', 'modalThemeSelect'];
+
+/** Every theme the app can apply, in the order the pickers show them (the first-run theme cards use it too). */
+export function getThemeList() {
+  return (availableThemes && availableThemes.length > 0) ? availableThemes : FALLBACK_THEMES;
+}
+
+export { getStoredThemeSetting, getColorMode };
+
+/** Fills a theme select with every theme, keeping its current value. A theme's light or dark face follows the mode. */
+export function populateThemeDropdown(selectEl) {
+  if (!selectEl) return;
+  const currentVal = selectEl.value;
+  selectEl.innerHTML = '';
+
+  getThemeList().forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    selectEl.appendChild(opt);
+  });
+
+  if (currentVal) {
+    selectEl.value = currentVal;
+  }
+}
+
+const COLOR_MODE_ICONS = { system: 'brightness_auto', light: 'light_mode', dark: 'dark_mode' };
+
+/**
+ * Shows the stored appearance mode on every control that sets it: the settings select (System / Light / Dark),
+ * the header button's icon and the first-run switch.
+ */
+export function refreshColorModeControls() {
+  const mode = getColorMode();
+  const sel = document.getElementById('modalColorModeSelect');
+  if (sel) {
+    sel.innerHTML = '';
+    COLOR_MODES.forEach((m) => {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = i18n[`color_mode_${m}`] || m;
+      sel.appendChild(opt);
+    });
+    sel.value = mode;
+  }
+  const icon = document.getElementById('colorModeIcon');
+  if (icon) icon.textContent = COLOR_MODE_ICONS[mode];
+  document.getElementById('btnColorMode')?.setAttribute('aria-label', `${i18n.color_mode_label || 'Appearance'}: ${i18n[`color_mode_${mode}`] || mode}`);
+  const radio = document.querySelector(`input[name="setup_mode"][value="${mode}"]`);
+  if (radio) radio.checked = true;
+}
+
+/** The mode after the current one, in the order the header button steps through: System, Light, Dark. */
+export function nextColorMode() {
+  return COLOR_MODES[(COLOR_MODES.indexOf(getColorMode()) + 1) % COLOR_MODES.length];
+}
+
+/**
+ * Switches the appearance mode. The theme stays; its light or dark face shows.
+ * Anything else that shows the mode or the theme (the first-run cards) listens to app:themeChanged.
+ */
+export async function applyColorMode(mode) {
+  if (!COLOR_MODES.includes(mode)) return;
+  setAndSync(STORAGE_KEYS.COLOR_MODE, mode);
+  refreshColorModeControls();
+  await loadTheme(getStoredThemeSetting());
+  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: getStoredThemeSetting(), mode } }));
+}
+
+/**
+ * Applies and stores a theme, and keeps every theme select (header, settings) in step. The mode stays as it is.
+ * Anything else that shows the theme (the first-run theme cards) listens to app:themeChanged.
+ */
+export async function applyThemeSetting(themeName) {
+  if (!themeName) return;
+  // A mode implied by a setting from before modes existed is stored first, so changing the theme cannot change it
+  if (!localStorage.getItem(STORAGE_KEYS.COLOR_MODE)) setAndSync(STORAGE_KEYS.COLOR_MODE, getColorMode());
+  THEME_SELECT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = themeName;
+  });
+  await loadTheme(themeName);
+  setAndSync(STORAGE_KEYS.LEGACY_THEME, themeName);
+  setAndSync(STORAGE_KEYS.THEME, themeName);
+  window.dispatchEvent(new CustomEvent('app:themeChanged', { detail: { theme: themeName, mode: getColorMode() } }));
+}
+
+/** Switches the UI language. Labels and selects follow through the app:languageChanged listener in initSettings. */
+export async function applyLanguageSetting(lang) {
+  await changeLanguage(lang);
+  syncSettingsToBackend();
+}
+
 export function initSettings(updateEditorCb) {
   updateEditorOptionsCallback = updateEditorCb;
 
+  // The custom text color used to be stored under the key "undefined" (CUSTOM_EDITOR_FG was missing): move it
+  const legacyTextColor = localStorage.getItem('undefined');
+  if (legacyTextColor !== null) {
+    if (!localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG)) setAndSync(STORAGE_KEYS.CUSTOM_EDITOR_FG, legacyTextColor);
+    localStorage.removeItem('undefined');
+  }
+
+  // Autosave, AI assistants and the log panel: settings for features the window also has
+  initWindowFeatureSettings();
+
   // Init Embedding Source Selector (idempotent – safe to call on every modal open)
   initEmbeddingSourceController();
+
+  bindSaveLocationControls({
+    pathEl: document.getElementById('settingsSaveLocationPath'),
+    changeBtn: document.getElementById('btnSettingsChangeLocation'),
+    resetBtn: document.getElementById('btnSettingsResetLocation'),
+    nameInput: document.getElementById('settingsFolderName'),
+    nameHintEl: document.getElementById('settingsFolderNameHint'),
+    browserTextKey: 'setup_save_location_browser'
+  });
+
+  // Format new documents start in (Markdown or Text); documents already open keep theirs
+  const documentFormatSelect = document.getElementById('modalDocumentFormatSelect');
+  if (documentFormatSelect) {
+    documentFormatSelect.value = getDefaultDocumentFormat();
+    documentFormatSelect.addEventListener('change', () => setAndSync(STORAGE_KEYS.DOCUMENT_FORMAT, documentFormatSelect.value));
+  }
+
+  // Whether × asks before closing; unsaved tabs are asked about either way
+  const confirmCloseSelect = document.getElementById('modalConfirmCloseSelect');
+  if (confirmCloseSelect) {
+    confirmCloseSelect.value = localStorage.getItem(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE) === 'off' ? 'off' : DEFAULTS.CONFIRM_BEFORE_CLOSE;
+    confirmCloseSelect.addEventListener('change', () => setAndSync(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE, confirmCloseSelect.value));
+  }
 
   // Front UI Elements
   const fontFamilySelect = document.getElementById('fontFamilySelect');
@@ -59,66 +193,32 @@ export function initSettings(updateEditorCb) {
 
 
 
-  // Theme list population
-  const themeList = (availableThemes && availableThemes.length > 0)
-    ? availableThemes
-    : ['Dracula', 'GitHub Dark', 'GitHub Light', 'Monokai', 'Night Owl'];
-
-  function populateThemeDropdown(selectEl) {
-    if (!selectEl) return;
-    const currentVal = selectEl.value;
-    selectEl.innerHTML = '';
-
-    // Add System (Auto) option first
-    const autoOpt = document.createElement('option');
-    autoOpt.value = 'auto';
-    autoOpt.textContent = i18n.theme_system_auto || 'System (Auto)';
-    selectEl.appendChild(autoOpt);
-
-    themeList.forEach(name => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      selectEl.appendChild(opt);
-    });
-
-    if (currentVal) {
-      selectEl.value = currentVal;
-    }
-  }
-
   populateThemeDropdown(themeSelect);
   populateThemeDropdown(modalThemeSelect);
 
-  const storedThemeName = localStorage.getItem(STORAGE_KEYS.LEGACY_THEME) || localStorage.getItem(STORAGE_KEYS.THEME) || 'auto';
-  const initialTheme = (storedThemeName === 'auto' || themeList.includes(storedThemeName)) ? storedThemeName : 'auto';
+  const initialTheme = getStoredThemeSetting();
   if (themeSelect) themeSelect.value = initialTheme;
   if (modalThemeSelect) modalThemeSelect.value = initialTheme;
   loadTheme(initialTheme);
 
-  async function applyTheme(themeName) {
-    if (!themeName) return;
-    if (themeSelect) themeSelect.value = themeName;
-    if (modalThemeSelect) modalThemeSelect.value = themeName;
-    await loadTheme(themeName);
-    setAndSync(STORAGE_KEYS.LEGACY_THEME, themeName);
-    setAndSync(STORAGE_KEYS.THEME, themeName);
-  }
-
   if (themeSelect) {
     themeSelect.addEventListener('change', async () => {
-      await applyTheme(themeSelect.value);
+      await applyThemeSetting(themeSelect.value);
     });
   }
   if (modalThemeSelect) {
     modalThemeSelect.addEventListener('change', async () => {
-      await applyTheme(modalThemeSelect.value);
+      await applyThemeSetting(modalThemeSelect.value);
     });
   }
+  refreshColorModeControls();
+  document.getElementById('modalColorModeSelect')?.addEventListener('change', (e) => applyColorMode(e.target.value));
+  document.getElementById('btnColorMode')?.addEventListener('click', () => applyColorMode(nextColorMode()));
 
-  // Language toggle & 2-way sync
-  async function applyLanguage(lang) {
-    await changeLanguage(lang);
+  // Language toggle & 2-way sync. Any language change (header, settings, first-run setup) ends in app:languageChanged.
+  const applyLanguage = (lang) => applyLanguageSetting(lang);
+  window.addEventListener('app:languageChanged', (e) => {
+    const lang = e.detail?.lang || currentLang;
     const langToggleLabel = document.getElementById('langToggleLabel');
     if (langToggleLabel) {
       langToggleLabel.textContent = lang.toUpperCase();
@@ -126,10 +226,9 @@ export function initSettings(updateEditorCb) {
       btnLangToggle.textContent = lang.toUpperCase();
     }
     if (modalLangSelect) modalLangSelect.value = lang;
-    populateThemeDropdown(themeSelect);
-    populateThemeDropdown(modalThemeSelect);
+    refreshColorModeControls();
     updateAutoSaveUI();
-  }
+  });
 
   if (btnLangToggle) {
     const langToggleLabel = document.getElementById('langToggleLabel');
@@ -340,6 +439,23 @@ export function initSettings(updateEditorCb) {
         setAndSync('vect_show_full_metadata', String(chkShowFullMetadata.checked));
       }
     }
+    // Both sides hold the same values now; keep them for the next start
+    if (numMinScore) setAndSync(STORAGE_KEYS.MIN_SCORE_PCT, numMinScore.value);
+    if (selSearchLimit) setAndSync(STORAGE_KEYS.SEARCH_LIMIT, selSearchLimit.value);
+  }
+
+  // Restore the score and limit on both the sidebar and the modal
+  const savedMinScore = localStorage.getItem(STORAGE_KEYS.MIN_SCORE_PCT);
+  const savedLimit = localStorage.getItem(STORAGE_KEYS.SEARCH_LIMIT);
+  [numMinScore, modalMinScoreInput].forEach(el => { if (el && savedMinScore) el.value = savedMinScore; });
+  [selSearchLimit, modalLimitSelect].forEach(el => { if (el && savedLimit) el.value = savedLimit; });
+
+  if (modalLinterSelect) {
+    modalLinterSelect.value = localStorage.getItem(STORAGE_KEYS.LINTER_ENABLED) === 'off' ? 'off' : 'on';
+    modalLinterSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.LINTER_ENABLED, modalLinterSelect.value);
+      refreshLinter();
+    });
   }
 
   if (numMinScore) numMinScore.addEventListener('input', () => syncSearchSettings('front'));
@@ -368,21 +484,41 @@ export function initSettings(updateEditorCb) {
   const modalAiScopeSelect = document.getElementById('modalAiScopeSelect');
 
   const storedAiProvider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
-  const storedClaudeKey = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
   const storedClaudeModel = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
-  const storedGeminiKey = '';
   const storedGeminiModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-  const storedOpenAiKey = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
   const storedOpenAiModel = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
   const storedAiScope = localStorage.getItem(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
 
-  if (storedAiProvider === 'gemini' && window.engineAPI?.hasGeminiApiKey) {
-    window.engineAPI.hasGeminiApiKey().then((configured) => {
-      window.__geminiApiKeyConfigured = Boolean(configured);
-      window.dispatchEvent(new Event('app:settingsChanged'));
-    }).catch(() => {
-      window.__geminiApiKeyConfigured = false;
+  // Key inputs stay empty: stored keys are encrypted in the main process and never sent back to the page.
+  const KEY_SET_PLACEHOLDER = '•••••••••••••••••••• (API Key Configured)';
+  const keyInputs = { gemini: modalGeminiKeyInput, openai: modalOpenAiKeyInput, claude: modalClaudeKeyInput };
+  const showKeyState = () => {
+    Object.entries(keyInputs).forEach(([provider, input]) => {
+      if (!input) return;
+      if (!input.dataset.defaultPlaceholder) input.dataset.defaultPlaceholder = input.placeholder || '';
+      input.placeholder = isApiKeyConfigured(provider) ? KEY_SET_PLACEHOLDER : input.dataset.defaultPlaceholder;
     });
+  };
+  refreshApiKeyStatus().then(() => {
+    showKeyState();
+    window.dispatchEvent(new Event('app:settingsChanged'));
+  });
+
+  /** Encrypts and stores a key typed into the settings modal. */
+  async function storeKeyFromInput(provider, input) {
+    const keyVal = input.value.trim();
+    if (!keyVal) return false;
+    const result = await saveApiKey(provider, keyVal);
+    if (!result.success) {
+      input.setCustomValidity(result.error || 'Unable to save API key securely.');
+      input.reportValidity();
+      return false;
+    }
+    input.setCustomValidity('');
+    input.value = '';
+    showKeyState();
+    window.dispatchEvent(new Event('app:settingsChanged'));
+    return true;
   }
 
   if (modalAiScopeSelect) {
@@ -454,7 +590,7 @@ export function initSettings(updateEditorCb) {
       const models = await window.engineAPI.listGeminiModels(keyToUse || undefined);
       if (Array.isArray(models) && models.length > 0) {
         modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || 'gemini-1.5-flash';
+        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
         let foundSaved = false;
 
         models.forEach((m) => {
@@ -472,6 +608,7 @@ export function initSettings(updateEditorCb) {
         if (!foundSaved && modalGeminiModelSelect.options.length > 0) {
           modalGeminiModelSelect.selectedIndex = 0;
           setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
+          window.dispatchEvent(new Event('app:settingsChanged'));
         }
 
         // Cache for offline/quick load
@@ -500,7 +637,7 @@ export function initSettings(updateEditorCb) {
       const models = JSON.parse(cached);
       if (Array.isArray(models) && models.length > 0) {
         modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || 'gemini-1.5-flash';
+        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
         models.forEach((m) => {
           const opt = document.createElement('option');
           opt.value = m.name;
@@ -513,21 +650,10 @@ export function initSettings(updateEditorCb) {
   } catch (_) { }
 
   if (modalGeminiKeyInput) {
-    modalGeminiKeyInput.value = storedGeminiKey;
     modalGeminiKeyInput.addEventListener('change', async () => {
       const keyVal = modalGeminiKeyInput.value.trim();
-      if (keyVal) {
-        const result = await window.engineAPI.saveGeminiApiKey(keyVal);
-        localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
-        if (!result.success) {
-          modalGeminiKeyInput.setCustomValidity(result.error || 'Unable to save API key securely.');
-        } else {
-          modalGeminiKeyInput.setCustomValidity('');
-          window.__geminiApiKeyConfigured = true;
-          // Automatically fetch official models from Google upon setting key
-          fetchAndPopulateGeminiModels(keyVal);
-        }
-      }
+      // Automatically fetch official models from Google upon setting key
+      if (await storeKeyFromInput('gemini', modalGeminiKeyInput)) fetchAndPopulateGeminiModels(keyVal);
     });
   }
 
@@ -541,27 +667,37 @@ export function initSettings(updateEditorCb) {
     modalGeminiModelSelect.value = storedGeminiModel;
     modalGeminiModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
+      window.dispatchEvent(new Event('app:settingsChanged'));
     });
   }
 
+  // Saved on change (blur or Enter), not on every keystroke, so partial keys are never stored
   if (modalOpenAiKeyInput) {
-    modalOpenAiKeyInput.value = storedOpenAiKey;
-    modalOpenAiKeyInput.addEventListener('input', () => {
-      setAndSync(STORAGE_KEYS.OPENAI_API_KEY, modalOpenAiKeyInput.value.trim());
-    });
+    modalOpenAiKeyInput.addEventListener('change', () => storeKeyFromInput('openai', modalOpenAiKeyInput));
   }
 
   if (modalOpenAiModelSelect) {
     modalOpenAiModelSelect.value = storedOpenAiModel;
     modalOpenAiModelSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.OPENAI_MODEL, modalOpenAiModelSelect.value);
+      window.dispatchEvent(new Event('app:settingsChanged'));
     });
   }
 
   if (modalClaudeKeyInput) {
-    modalClaudeKeyInput.value = storedClaudeKey;
-    modalClaudeKeyInput.addEventListener('input', () => {
-      setAndSync(STORAGE_KEYS.CLAUDE_API_KEY, modalClaudeKeyInput.value.trim());
+    modalClaudeKeyInput.addEventListener('change', () => storeKeyFromInput('claude', modalClaudeKeyInput));
+  }
+
+  if (modalClaudeModelSelect) {
+    modalClaudeModelSelect.value = storedClaudeModel;
+    // A stored id that is no longer offered (a retired model) falls back to the default and is saved again
+    if (modalClaudeModelSelect.value !== storedClaudeModel) {
+      modalClaudeModelSelect.value = DEFAULTS.CLAUDE_MODEL;
+      setAndSync(STORAGE_KEYS.CLAUDE_MODEL, DEFAULTS.CLAUDE_MODEL);
+    }
+    modalClaudeModelSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.CLAUDE_MODEL, modalClaudeModelSelect.value);
+      window.dispatchEvent(new Event('app:settingsChanged'));
     });
   }
 
@@ -593,20 +729,16 @@ export function initSettings(updateEditorCb) {
     btnEditorClearApiKey.addEventListener('click', async () => {
       if (!window.confirm('Clear all stored Cloud LLM API keys (Gemini, OpenAI, Claude)?')) return;
 
-      // Gemini's key lives in the main process (encrypted file), so remove it there too.
-      const geminiRes = await window.engineAPI?.clearGeminiApiKey?.();
-      if (geminiRes && !geminiRes.success) {
-        window.alert(`Failed to remove the stored Gemini key: ${geminiRes.error || 'unknown error'}`);
+      // All keys live in the main process (encrypted files), so remove them there.
+      const clearRes = await clearAllApiKeys();
+      if (!clearRes.success) {
+        window.alert(`Failed to remove a stored key: ${clearRes.error || 'unknown error'}`);
         return;
       }
-      window.__geminiApiKeyConfigured = false;
-
-      localStorage.removeItem(STORAGE_KEYS.GEMINI_API_KEY);
-      localStorage.removeItem(STORAGE_KEYS.OPENAI_API_KEY);
-      localStorage.removeItem(STORAGE_KEYS.CLAUDE_API_KEY);
       if (modalGeminiKeyInput) modalGeminiKeyInput.value = '';
       if (modalOpenAiKeyInput) modalOpenAiKeyInput.value = '';
       if (modalClaudeKeyInput) modalClaudeKeyInput.value = '';
+      showKeyState();
       // Recomputes modelConfigured, which turns the LLM master off when no key remains.
       window.dispatchEvent(new Event('app:settingsChanged'));
       window.alert('Cloud LLM API keys cleared successfully.');
@@ -628,33 +760,18 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  // 384-dim Local Embedding Model Switching
-  const selLocalEmbeddingModel = document.getElementById('selLocalEmbeddingModel');
-  const storedLocalModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
-  if (selLocalEmbeddingModel) {
-    selLocalEmbeddingModel.value = storedLocalModel;
-    selLocalEmbeddingModel.addEventListener('change', () => {
-      const selectedModel = selLocalEmbeddingModel.value;
-      setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, selectedModel);
-      const modelShortName = selectedModel.split('/').pop();
-      showToast(`Switched model to ${modelShortName}. Initializing...`, 'info');
-      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: selectedModel } }));
-    });
+  // Embedding model cards: Download (files only) / Use (switch active model) / Active
+  const embeddingModelList = document.getElementById('embeddingModelList');
+  const useEmbeddingModel = (modelId) => {
+    setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, modelId);
+    showToast(`Selected ${modelId.split('/').pop()}. Initializing...`, 'info');
+    window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: modelId } }));
+    notifyEmbeddingModelsChanged();
+  };
+  if (embeddingModelList) {
+    bindEmbeddingModelEvents(embeddingModelList, { onUse: useEmbeddingModel });
+    renderEmbeddingModelList(embeddingModelList, { onUse: useEmbeddingModel });
   }
-
-  // Handle table "Use" action buttons
-  document.querySelectorAll('.btn-switch-model').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetModel = btn.getAttribute('data-model');
-      if (targetModel) {
-        if (selLocalEmbeddingModel) selLocalEmbeddingModel.value = targetModel;
-        setAndSync(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL, targetModel);
-        const modelShortName = targetModel.split('/').pop();
-        showToast(`Selected ${modelShortName}. Initializing...`, 'info');
-        window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: targetModel } }));
-      }
-    });
-  });
 
   const btnModalImportDict = document.getElementById('btnModalImportDict');
   if (btnModalImportDict) {
@@ -671,11 +788,9 @@ export function initSettings(updateEditorCb) {
 
   function switchAiModelTab(targetTab) {
     aiModelTabBtns.forEach(btn => {
-      if (btn.dataset.aimodelTab === targetTab) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+      const selected = btn.dataset.aimodelTab === targetTab;
+      btn.classList.toggle('active', selected);
+      btn.setAttribute('aria-selected', String(selected));
     });
 
     if (panelEmbedding) {
@@ -765,7 +880,7 @@ export function initSettings(updateEditorCb) {
       if (c.id === tabId) {
         c.classList.add('active');
         if (tabId === 'tabAiSearch') {
-          updateActiveModelBadgeInTable();
+          notifyEmbeddingModelsChanged();
           if (subtab === 'llm' || subtab === 'embedding') {
             switchAiModelTab(subtab);
           }
@@ -800,7 +915,9 @@ export function initSettings(updateEditorCb) {
   }
 
   if (btnCloseSettingsModal) {
-    btnCloseSettingsModal.addEventListener('click', closeSettingsView);
+    btnCloseSettingsModal.addEventListener('click', async () => {
+      if (await confirmClose('settings')) closeSettingsView();
+    });
   }
 
   if (btnBackToEditor) {
@@ -891,10 +1008,9 @@ export function initSettings(updateEditorCb) {
 
 export function getTheme() {
   const themeSelect = typeof document !== 'undefined' ? document.getElementById('themeSelect') : null;
-  const storedThemeName = typeof localStorage !== 'undefined' ? (localStorage.getItem(STORAGE_KEYS.LEGACY_THEME) || localStorage.getItem(STORAGE_KEYS.THEME)) : null;
-  const currentChoice = (themeSelect && themeSelect.value) || storedThemeName || 'auto';
-  const resolved = getResolvedThemeName(currentChoice);
-  return resolved ? resolved.replace(/[^a-zA-Z0-9_-]/g, '-') : 'vs-dark';
+  const storedThemeName = typeof localStorage !== 'undefined' ? getStoredThemeSetting() : null;
+  const currentChoice = (themeSelect && themeSelect.value) || storedThemeName;
+  return currentChoice ? getMonacoThemeId(currentChoice) : 'vs-dark';
 }
 
 export function getFontFamily() {

@@ -12,6 +12,11 @@
   cursor: pointer;
 }
 
+/* A Text document has no rendered view, so the button is hidden for it (setPreviewAvailable) */
+.markdown-preview-toggle[hidden] {
+  display: none;
+}
+
 .markdown-preview-toggle[aria-pressed="true"] {
   color: var(--accent-color, #38bdf8);
 }

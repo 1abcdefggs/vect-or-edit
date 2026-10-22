@@ -31,6 +31,14 @@ export function bindAppActionEvents() {
     }
   });
 
+  // Sidebar section headers (Guidelines, Knowledge) collapse on click; their action buttons do not
+  document.querySelectorAll('.semantic-module-header').forEach((header) => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.semantic-module-actions')) return;
+      header.parentElement.classList.toggle('collapsed');
+    });
+  });
+
   // Focus tracking
   window.addEventListener('focus', () => document.body.classList.add('window-active'));
   window.addEventListener('blur', () => document.body.classList.remove('window-active'));
@@ -172,10 +180,7 @@ export function bindAppActionEvents() {
 
   // Save current active tab
   if (btnSave) {
-    btnSave.addEventListener('click', async (e) => {
-      // If click originated from the inner autosave checkbox or LED dot, don't trigger manual save
-      if (e.target && (e.target.id === 'chkAutoSaveToggle' || e.target.id === 'autoSaveLedDot')) return;
-
+    btnSave.addEventListener('click', async () => {
       const currentTab = getActiveTab();
       if (!currentTab) return;
       const content = getCurrentContent();

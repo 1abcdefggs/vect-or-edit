@@ -1,28 +1,17 @@
 import { aiManager } from '../../core/aiStateManager.js';
-import { STORAGE_KEYS } from '../../core/constants.js';
+import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
 import { isAiModelConfigured } from '../settings/settingsState.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
+import { confirmClose } from '../notifications/closeGuard.js';
 import { queryLlmChat } from '../../search/searchProviders.js';
 import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editorManager.js';
 
-// The dock's quick key input used to save under `vect_*` names that nothing else reads; move those values over.
-function migrateLegacyApiKeys() {
-  const legacyNames = [
-    ['vect_openai_api_key', STORAGE_KEYS.OPENAI_API_KEY],
-    ['vect_claude_api_key', STORAGE_KEYS.CLAUDE_API_KEY]
-  ];
-  for (const [legacy, current] of legacyNames) {
-    const value = localStorage.getItem(legacy);
-    if (value === null) continue;
-    if (value && !localStorage.getItem(current)) localStorage.setItem(current, value);
-    localStorage.removeItem(legacy);
-  }
-}
+const KEY_PLACEHOLDERS = { openai: 'sk-proj-...', claude: 'sk-ant-api03-...', gemini: 'AIzaSy... (Gemini)' };
 
 export function initAiControls() {
-  migrateLegacyApiKeys();
   const isMasterAiOn = isAiModelConfigured();
   aiManager.init(isMasterAiOn);
 
@@ -30,7 +19,6 @@ export function initAiControls() {
   const editorAiStatusDot = document.getElementById('editorAiStatusDot');
   const editorAiLabel = document.getElementById('editorAiLabel');
   const activeAiModelStatusDot = document.getElementById('activeAiModelStatusDot');
-  const consoleAiInputGroup = document.getElementById('consoleAiInputGroup');
 
   function updateSettingsOverview(state = aiManager.getState()) {
     const embeddingStatus = document.getElementById('settingsEmbeddingStatus');
@@ -112,11 +100,9 @@ export function initAiControls() {
     if (state.master) {
       document.body.classList.add('master-ai-active', 'glow-master-active');
       document.body.classList.remove('master-ai-standby');
-      if (consoleAiInputGroup) consoleAiInputGroup.style.display = 'flex';
     } else {
       document.body.classList.remove('master-ai-active', 'glow-master-active');
       document.body.classList.add('master-ai-standby');
-      if (consoleAiInputGroup) consoleAiInputGroup.style.display = 'none';
     }
 
     const editorContainer = document.querySelector('.editor-section');
@@ -134,7 +120,7 @@ export function initAiControls() {
       const state = aiManager.getState();
       sidebarEmbeddingNameEl.textContent = state.sidebar ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
       if (btnSidebarEmbeddingModel) {
-        btnSidebarEmbeddingModel.title = `Vector Embedding (${window.__isLocalAiModelReady ? localModel : 'Ready'}): Click to toggle ON/OFF`;
+        btnSidebarEmbeddingModel.title = t('tip_embed_model_status', { model: window.__isLocalAiModelReady ? localModel : 'Ready' });
       }
     }
   }
@@ -238,44 +224,34 @@ function initLlmChatDock() {
   function updateDockModelBadge() {
     if (!modelBadge) return;
     const provider = localStorage.getItem('ai_provider') || 'gemini';
+    // The model the next request will use (same lookup as searchProviders.js)
     if (provider === 'gemini') {
-      const model = localStorage.getItem('gemini_model') || '1.5-flash';
+      const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
       modelBadge.textContent = `Gemini (${model.replace('gemini-', '')})`;
     } else if (provider === 'openai') {
-      const model = localStorage.getItem('openai_model') || 'gpt-4o-mini';
+      const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
       modelBadge.textContent = `OpenAI (${model})`;
     } else if (provider === 'claude') {
-      const model = localStorage.getItem('claude_model') || '3.5-sonnet';
-      modelBadge.textContent = `Claude (${model.includes('haiku') ? 'Haiku' : 'Sonnet'})`;
+      const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+      modelBadge.textContent = `Claude (${model.replace('claude-', '')})`;
     } else {
       modelBadge.textContent = 'LLM (Cloud)';
     }
   }
 
-  // Auto-init model badge on startup
+  // Auto-init model badge on startup, and follow model changes made in Settings
   updateDockModelBadge();
+  window.addEventListener('app:settingsChanged', updateDockModelBadge);
 
   // Quick API Key Banner Logic
   function syncQuickApiKeyInput() {
     if (!selQuickProvider || !quickApiKeyInput) return;
+    // Stored keys are encrypted in the main process and never shown again; the placeholder only says one is set.
     const provider = selQuickProvider.value;
-    if (provider === 'openai') {
-      quickApiKeyInput.value = localStorage.getItem(STORAGE_KEYS.OPENAI_API_KEY) || '';
-      quickApiKeyInput.placeholder = 'sk-proj-...';
-    } else if (provider === 'claude') {
-      quickApiKeyInput.value = localStorage.getItem(STORAGE_KEYS.CLAUDE_API_KEY) || '';
-      quickApiKeyInput.placeholder = 'sk-ant-api03-...';
-    } else {
-      quickApiKeyInput.value = '';
-      quickApiKeyInput.placeholder = 'AIzaSy... (Gemini)';
-      if (window.engineAPI?.hasGeminiApiKey) {
-        window.engineAPI.hasGeminiApiKey().then((hasKey) => {
-          if (hasKey && !quickApiKeyInput.value) {
-            quickApiKeyInput.placeholder = '•••••••••••••••••••• (API Key Configured)';
-          }
-        }).catch(() => { });
-      }
-    }
+    quickApiKeyInput.value = '';
+    quickApiKeyInput.placeholder = isApiKeyConfigured(provider)
+      ? '•••••••••••••••••••• (API Key Configured)'
+      : (KEY_PLACEHOLDERS[provider] || KEY_PLACEHOLDERS.gemini);
   }
 
   if (btnKeyConfig && quickApiBanner) {
@@ -319,15 +295,13 @@ function initLlmChatDock() {
         return;
       }
 
+      const res = await saveApiKey(provider, key);
+      if (!res.success) {
+        showToast(res.error || `Failed to save the ${provider} key`, 'error');
+        return;
+      }
       localStorage.setItem('ai_provider', provider);
       if (provider === 'gemini') {
-        const res = await window.engineAPI.saveGeminiApiKey(key);
-          if (!res.success) {
-            showToast(res.error || 'Failed to save Gemini key', 'error');
-            return;
-          }
-          window.__geminiApiKeyConfigured = true;
-
           // Automatically fetch and cache official Gemini models
           try {
             const models = await window.engineAPI.listGeminiModels(key);
@@ -342,11 +316,8 @@ function initLlmChatDock() {
           } catch (modelErr) {
             console.warn('[Gemini] Automatic model fetch warning:', modelErr);
           }
-      } else if (provider === 'openai') {
-        localStorage.setItem(STORAGE_KEYS.OPENAI_API_KEY, key);
-      } else if (provider === 'claude') {
-        localStorage.setItem(STORAGE_KEYS.CLAUDE_API_KEY, key);
       }
+      quickApiKeyInput.value = '';
 
       updateDockModelBadge();
       window.dispatchEvent(new Event('app:settingsChanged'));
@@ -400,7 +371,11 @@ function initLlmChatDock() {
     }
   });
 
-  if (btnClose) btnClose.addEventListener('click', closeDock);
+  if (btnClose) {
+    btnClose.addEventListener('click', async () => {
+      if (await confirmClose('chat')) closeDock();
+    });
+  }
   if (btnCollapse) btnCollapse.addEventListener('click', toggleCollapseDock);
 
   if (btnClear) {

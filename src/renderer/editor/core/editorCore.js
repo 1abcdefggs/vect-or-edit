@@ -13,11 +13,16 @@ let monacoEditorInstance = null;
 let monaco = null;
 let isEditorInitializing = false;
 
-// Configure Monaco WebWorker environment safely for Vite & Electron
+// Configure Monaco WebWorker environment safely for Vite & Electron.
+// Monaco gets a no-op worker built from a Blob: the CSP allows blob: workers (worker-src) but not data: scripts.
 if (typeof window !== 'undefined') {
+  let stubWorkerUrl = null;
   window.MonacoEnvironment = {
-    getWorkerUrl: function (_moduleId, _label) {
-      return `data:text/javascript;charset=utf-8,${encodeURIComponent(`self.onmessage = () => {};`)}`;
+    getWorker: function (_moduleId, _label) {
+      if (!stubWorkerUrl) {
+        stubWorkerUrl = URL.createObjectURL(new Blob(['self.onmessage = () => {};'], { type: 'text/javascript' }));
+      }
+      return new Worker(stubWorkerUrl);
     }
   };
 }

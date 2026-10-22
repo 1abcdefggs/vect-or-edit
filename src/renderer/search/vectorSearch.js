@@ -269,12 +269,3 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
     }
   }, 300);
 }
-
-if (typeof window !== 'undefined') {
-  window.addEventListener('app:directVectorSearch', (e) => {
-    const query = e.detail?.query;
-    if (query) {
-      triggerSearchAndRender(query);
-    }
-  });
-}
