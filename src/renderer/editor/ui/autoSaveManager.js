@@ -43,6 +43,7 @@ let domCache = {};
 
 function getDomElements() {
   if (!domCache.menuToggle) domCache.menuToggle = document.getElementById('btnAutoSaveToggle');
+  if (!domCache.menuSwitch) domCache.menuSwitch = document.getElementById('autoSaveMenuSwitch');
   if (!domCache.labelEl) domCache.labelEl = document.getElementById('btnSaveLabel');
   if (!domCache.saveInd) domCache.saveInd = document.getElementById('statusSaveIndicator');
   if (!domCache.ledDot) domCache.ledDot = document.getElementById('autoSaveLedDot');
@@ -117,7 +118,7 @@ export function updateAutoSaveUI() {
   // The settings page follows the toolbar switch
   window.dispatchEvent(new CustomEvent('app:autosaveChanged'));
   const enabled = isAutoSaveEnabled();
-  const { menuToggle, ledDot, labelEl, btnSave } = getDomElements();
+  const { menuToggle, menuSwitch, ledDot, labelEl, btnSave } = getDomElements();
   const activeTab = typeof getActiveTab === 'function' ? getActiveTab() : null;
   const filePath = activeTab?.filePath || '';
 
@@ -137,6 +138,7 @@ export function updateAutoSaveUI() {
     menuToggle.setAttribute('aria-checked', String(enabled));
     menuToggle.classList.toggle('is-checked', enabled);
   }
+  if (menuSwitch) menuSwitch.setAttribute('aria-checked', String(enabled));
 }
 
 export function initAutoSaveControls() {

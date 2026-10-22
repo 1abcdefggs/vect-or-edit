@@ -214,33 +214,6 @@
   display: flex;
 }
 
-/* Split part of the save button (opens the menu; the main part saves) */
-.save-menu-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 22px;
-  height: calc(var(--control-h-lg) - 2px);
-  padding: 0;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.save-menu-toggle:hover,
-.save-dropdown-container.is-open .save-menu-toggle {
-  background: var(--hover-bg);
-  color: var(--text-main);
-}
-
-.save-menu-toggle .material-symbols-outlined {
-  font-size: var(--fs-19);
-  line-height: 1;
-}
-
 .save-dropdown-item {
   display: flex;
   align-items: center;
@@ -262,7 +235,6 @@
 .save-dropdown-item.disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  pointer-events: none;
 }
 
 /* Monaco vector suggestion widget (searchWidget.js); hover lives here because the CSP allows no inline handlers */
@@ -284,14 +256,30 @@
   background: var(--border-color);
 }
 
-/* AutoSave menu item: the check mark shows only while AutoSave is on */
-.autosave-menu-item .autosave-check {
-  visibility: hidden;
-  color: var(--success-color);
+/* AutoSave menu item: a small switch at the right edge shows the state (drawn from aria-checked, set in autoSaveManager.js).
+   The selectors are nested under the item so they win over the shared .toggle-switch size. */
+.save-dropdown-item.autosave-menu-item {
+  justify-content: space-between;
 }
 
-.autosave-menu-item.is-checked .autosave-check {
-  visibility: visible;
+.save-dropdown-item .autosave-menu-switch {
+  display: inline-block;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+}
+
+.save-dropdown-item .autosave-menu-switch .toggle-switch__knob {
+  top: 2px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+}
+
+.save-dropdown-item .autosave-menu-switch[aria-checked="true"] .toggle-switch__knob {
+  left: 15px;
 }
 
 /* AutoSave LED on the save button (state set by autoSaveManager.js) */

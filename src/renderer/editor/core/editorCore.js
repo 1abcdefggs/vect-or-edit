@@ -167,7 +167,7 @@ export async function initEditor() {
   registerTabManagementActions(monacoEditorInstance);
   initializeKnowledgeExtensions(monacoEditorInstance, monaco);
 
-  // Ctrl+S is the explicit save: it runs the same command as File > Save, not the SAVE button's AutoSave split
+  // Ctrl+S runs the same command as File > Save
   monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
     void commandManager.executeCommand('file.save');
   });

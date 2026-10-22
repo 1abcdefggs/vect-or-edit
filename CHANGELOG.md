@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.28] - 2026-10-22
+
+### Added
+- The SAVE button opens a menu when pressed, with AutoSave, Overwrite (Save), Save As and Save All
+- AutoSave in the menu shows its state as an ON / OFF switch and stays open when pressed, so it can be switched in one go
+- Save All is disabled with fewer than two tabs open, and its hover text says that two or more tabs are needed
+
+### Changed
+- The SAVE button no longer saves by itself and no longer has a split arrow; Ctrl+S and File > Save save the document, and the SAVE button opens the menu
+- Save All and Save As keep their behaviour and move into the menu
+
 ## [0.3.27] - 2026-10-22
 
 ### Added

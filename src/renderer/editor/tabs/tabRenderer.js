@@ -27,11 +27,12 @@ export function triggerRpgSavedExpFloat(tabId = activeTabId) {
 function updateSaveAllButtonState() {
   const btnSaveAll = document.getElementById('btnSaveAll');
   if (!btnSaveAll) return;
-  if (tabs.length >= 2) {
-    btnSaveAll.classList.remove('disabled');
-  } else {
-    btnSaveAll.classList.add('disabled');
-  }
+  // The hover text explains the rule: the tooltip key follows the enabled state
+  const enabled = tabs.length >= 2;
+  const tipKey = enabled ? 'btn_save_all_title' : 'tip_save_all_needs_tabs';
+  btnSaveAll.classList.toggle('disabled', !enabled);
+  btnSaveAll.setAttribute('data-i18n-title', tipKey);
+  btnSaveAll.title = t(tipKey);
 }
 
 // The right-click menu of a tab. It closes on a press outside it or on Escape.

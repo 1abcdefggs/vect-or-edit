@@ -4,6 +4,7 @@ import { setLedStatus } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
 import { t } from '../../core/i18n.js';
 import { commitTabToFile } from '../../editor/io/tabCommit.js';
+import { commandManager } from '../../core/commandManager';
 
 export function bindAppActionEvents() {
   const btnSave = document.getElementById('btnSave');
@@ -150,8 +151,7 @@ export function bindAppActionEvents() {
   const btnSaveAs = document.getElementById('btnSaveAs');
   const btnSaveAll = document.getElementById('btnSaveAll');
 
-  // Save button split: the arrow toggles Save As / Save All; it closes on any outside click, Esc, or item pick.
-  const saveMenuToggle = document.getElementById('btnSaveMenuToggle');
+  // Save button: a press opens or closes the menu (AutoSave, Save As, Save All). It closes on any outside click, Esc, or item pick.
   const saveDropdown = document.querySelector('.save-dropdown-container');
   const saveDropdownMenu = saveDropdown?.querySelector('.save-dropdown-menu');
   const setSaveMenuOpen = (isOpen) => {
@@ -161,13 +161,14 @@ export function bindAppActionEvents() {
       saveDropdownMenu.style.left = `${rect.left}px`;
     }
     saveDropdown?.classList.toggle('is-open', isOpen);
-    saveMenuToggle?.setAttribute('aria-expanded', String(isOpen));
+    btnSave?.setAttribute('aria-expanded', String(isOpen));
   };
-  saveMenuToggle?.addEventListener('click', (e) => {
+  btnSave?.addEventListener('click', (e) => {
     e.stopPropagation();
     setSaveMenuOpen(!saveDropdown?.classList.contains('is-open'));
   });
-  saveDropdown?.querySelectorAll('.save-dropdown-item').forEach((item) => {
+  // The AutoSave switch keeps the menu open so the state can be read and changed in one go
+  saveDropdown?.querySelectorAll('.save-dropdown-item:not(.autosave-menu-item)').forEach((item) => {
     item.addEventListener('click', () => setSaveMenuOpen(false));
   });
   document.addEventListener('click', (e) => {
@@ -177,32 +178,12 @@ export function bindAppActionEvents() {
     if (e.key === 'Escape') setSaveMenuOpen(false);
   });
 
-  // Save current active tab
-  if (btnSave) {
-    btnSave.addEventListener('click', async () => {
-      const currentTab = getActiveTab();
-      if (!currentTab) return;
-      const content = getCurrentContent();
-      const defaultName = currentTab.filePath || currentTab.title || 'untitled.md';
-
-      const executeSave = async () => {
-        if (window.engineAPI?.saveFile) {
-          const res = await window.engineAPI.saveFile(content, defaultName, false);
-          if (res?.success && res.filePath) {
-            markActiveTabSaved(res.filePath);
-            showToast(t('alert_file_saved', { path: res.filePath }) || `Saved: ${res.filePath}`, 'success');
-          }
-          setTimeout(() => focusEditor(), 50);
-        }
-      };
-
-      // A document without a location has no destination here: the split opens so AutoSave can decide it
-      if (!currentTab.filePath) {
-        setSaveMenuOpen(true);
-        return;
-      }
-      // Overwrite directly without dialog
-      await executeSave();
+  // Save: the same command as Ctrl+S and File > Save (a document without a location still asks for one)
+  const btnSaveOverwrite = document.getElementById('btnSaveOverwrite');
+  if (btnSaveOverwrite) {
+    btnSaveOverwrite.addEventListener('click', async () => {
+      await commandManager.executeCommand('file.save');
+      setTimeout(() => focusEditor(), 50);
     });
   }
 
@@ -228,6 +209,8 @@ export function bindAppActionEvents() {
   // Save All
   if (btnSaveAll) {
     btnSaveAll.addEventListener('click', async () => {
+      // Disabled below two tabs; the item stays hoverable so its tooltip can say why
+      if (btnSaveAll.classList.contains('disabled')) return;
       const currentTabs = tabs || [];
       let savedCount = 0;
       let failedCount = 0;
