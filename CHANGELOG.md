@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- The guide beside the settings is also shown in English (it follows the UI language)
+
 ## [0.3.30] - 2026-10-22
 
 ### Added

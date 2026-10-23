@@ -5,9 +5,10 @@
  * - The pane follows the tab: Header, Editor, Sidebar, System.
  * - When a control on the left gets focus, its row on the right is marked and scrolled into view.
  * - A click on a row on the right brings the control on the left into view.
- * - The generated text is Japanese only for now, so the pane is shown while the UI language is Japanese.
+ * - The guide is generated in Japanese and English; the pane follows the UI language (any other language shows English).
  */
 import helpJa from '../../generated/ui_help.ja.json';
+import helpEn from '../../generated/ui_help.en.json';
 import { currentLang, t } from '../../core/i18n.js';
 
 const TAB_AREA = {
@@ -20,13 +21,16 @@ const TAB_AREA = {
 let bound = false;
 let shown = '';
 
+const guideFor = (lang) => (lang === 'ja' ? helpJa : helpEn);
+
 function activeTabId(modal) {
   return modal.querySelector('.settings-tab-content.active')?.id ?? '';
 }
 
 function render(modal, pane) {
-  const area = helpJa.areas[TAB_AREA[activeTabId(modal)]];
-  const visible = currentLang === 'ja' && Boolean(area);
+  const guide = guideFor(currentLang);
+  const area = guide.areas[TAB_AREA[activeTabId(modal)]];
+  const visible = Boolean(area);
   // Draw again only when the tab or the language changed, not on every class change inside the settings
   const state = visible ? `${currentLang}:${activeTabId(modal)}` : 'off';
   if (state === shown) return;
@@ -35,7 +39,7 @@ function render(modal, pane) {
   modal.classList.toggle('has-help-pane', visible);
   if (!visible) return;
   pane.setAttribute('aria-label', t('settings_help_title'));
-  const about = `<details class="help-about"><summary>${t('settings_help_about')}</summary>${helpJa.intro}</details>`;
+  const about = `<details class="help-about"><summary>${t('settings_help_about')}</summary>${guide.intro}</details>`;
   pane.innerHTML = `<h2 class="help-title">${area.title}</h2>${about}${area.html}`;
   pane.scrollTop = 0;
 }

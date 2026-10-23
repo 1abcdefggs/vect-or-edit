@@ -78,4 +78,14 @@ describe('window parts and the settings registry', () => {
     }
     expect(missing, `Add these to the locale files:\n${missing.join('\n')}`).toEqual([]);
   });
+
+  it('ships the generated guide of the settings page in both languages, one chapter per area', () => {
+    for (const lang of ['ja', 'en']) {
+      const file = path.join(RENDERER, 'generated', `ui_help.${lang}.json`);
+      expect(fs.existsSync(file), `Missing ${file}: run control/tools/build_ui_help_md.mjs --lang ${lang}`).toBe(true);
+      const guide = JSON.parse(fs.readFileSync(file, 'utf8'));
+      expect(Object.keys(guide.areas).sort()).toEqual(['Editor', 'Header', 'Sidebar', 'System']);
+      for (const area of Object.values<{ html: string }>(guide.areas)) expect(area.html.length).toBeGreaterThan(200);
+    }
+  });
 });
