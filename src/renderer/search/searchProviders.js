@@ -1,7 +1,11 @@
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
 import { isApiKeyConfigured } from '../core/apiKeyStore.js';
+import { canUseLlm } from '../core/aiAccess.js';
+import { t } from '../core/i18n.js';
 
 export async function fetchAiSuggestions(query, provider) {
+  // The LLM switch is the power for every cloud call (ADR-11): off means no request leaves the app
+  if (!canUseLlm()) return null;
   if (!provider) {
     provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
   }
@@ -18,6 +22,7 @@ export async function fetchAiSuggestions(query, provider) {
             name: `Gemini (${model.replace('gemini-', '')}) Suggestion`,
             score: 0.99,
             description: geminiRes.text,
+            insertText: geminiRes.text,
             provider: 'Google Gemini'
           };
         }
@@ -35,6 +40,7 @@ export async function fetchAiSuggestions(query, provider) {
             name: `OpenAI (${model}) Suggestion`,
             score: 0.99,
             description: openaiRes.text,
+            insertText: openaiRes.text,
             provider: 'OpenAI'
           };
         }
@@ -52,6 +58,7 @@ export async function fetchAiSuggestions(query, provider) {
             name: `Claude (${model.includes('haiku') ? 'Haiku' : 'Sonnet'}) Suggestion`,
             score: 0.99,
             description: claudeRes.text,
+            insertText: claudeRes.text,
             provider: 'Anthropic Claude'
           };
         }
@@ -64,6 +71,7 @@ export async function fetchAiSuggestions(query, provider) {
 }
 
 export async function queryLlmChat(prompt, userProvider = null) {
+  if (!canUseLlm()) return { error: t('llm_off_hint') };
   const provider = userProvider || localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || 'gemini';
   try {
     // Keys stay in the main process; each request uses the stored key of its provider.

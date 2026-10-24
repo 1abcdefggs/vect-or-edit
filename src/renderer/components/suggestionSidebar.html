@@ -7,18 +7,18 @@
   <div class="sidebar-header">
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; width: 100%;">
       <!-- Sidebar Toggle / Collapse Button on the Top-Left of Sidebar -->
-      <button id="btnHeaderToggleSidebar" class="toolbar-btn" data-i18n-title="btn_toggle_sidebar"
-        style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 4px; flex-shrink: 0;">
-        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xf705;</span>
+      <button id="btnHeaderToggleSidebar" class="toolbar-btn icon-btn" data-i18n-title="btn_toggle_sidebar"
+        style="color: var(--text-muted);">
+        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8);">&#xf705;</span>
       </button>
 
       <!-- Right-Aligned Action Group: [ Embedding Toggle Pill | Gear Icon ] -->
       <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
         <!-- Embedding ON/OFF Status Pill (Shared UI/UX with Editor LLM Button) -->
         <button id="btnSidebarEmbeddingModel" class="ai-chip-pill" data-ui="sbr:embedding-toggle" data-i18n-title="tip_embed_toggle">
-          <span id="activeAiModelStatusDot" style="color: #ef4444; font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
           <span id="iconNeuroContainer" class="material-symbols-outlined vector-activity-icon" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8); flex-shrink: 0;">neurology</span>
           <span id="sidebarEmbeddingModelName" data-i18n="sidebar_ai_off">EMBED OFF</span>
+          <span id="activeAiModelStatusDot" style="color: var(--text-muted, #94a3b8); font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
         </button>
 
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
@@ -161,9 +161,9 @@
   </div>
   <!-- Editor Options: every Monaco option, shown live in the main editor. Outside the header so it can use the height below it (collapsed until opened) -->
   <div id="monacoOptionsCard" data-ui="sbr:editor-options-card" class="monaco-options-card semantic-module-card collapsed">
-    <div class="semantic-module-header" data-i18n-title="tip_section_editor_options">
+    <div class="semantic-module-header" role="button" tabindex="0" aria-expanded="false" aria-controls="monacoOptionsBody" data-i18n-title="tip_section_editor_options">
       <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
-        <span class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
+        <span aria-hidden="true" class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
         <span class="material-symbols-outlined" style="font-size: var(--fs-19); color: var(--accent-color, #38bdf8); flex-shrink: 0;">tune</span>
         <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
         <span style="font-weight: 600; font-size: var(--fs-16);" data-i18n="monaco_opts_title">Editor Options</span>
@@ -174,9 +174,9 @@
         </button>
       </div>
     </div>
-    <div class="semantic-module-body monaco-options-body">
+    <div id="monacoOptionsBody" class="semantic-module-body monaco-options-body">
       <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
-      <div id="monacoOptionsCount" class="monaco-options-count"></div>
+      <div id="monacoOptionsCount" class="monaco-options-count" role="status" aria-live="polite"></div>
       <div id="monacoOptionsList" class="monaco-options-list"></div>
     </div>
   </div>

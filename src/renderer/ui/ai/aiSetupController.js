@@ -472,7 +472,7 @@ async function saveCloudKey() {
     showToast(res.error || t('setup_key_failed'), 'error');
     return;
   }
-  localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, provider);
+  localStorage.setItem(STORAGE_KEYS.LLM_PROVIDER, provider);
   $('aiSetupCloudKey').value = '';
 }
 

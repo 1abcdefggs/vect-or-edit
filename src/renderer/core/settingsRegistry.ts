@@ -41,6 +41,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'hdr:menu-view': true,
     'hdr:menu-window': true,
     'hdr:menu-help': true,
+    'hdr:menu-overflow': true,
     'hdr:theme-select': true,
     'hdr:color-mode': true,
     'hdr:locale-toggle': true,
@@ -139,6 +140,13 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     label: 'Menu: [Help]',
     category: 'header',
     visibilityKey: 'hdr:menu-help',
+    controlType: 'none'
+  },
+  {
+    id: 'h_menu_overflow',
+    label: 'Menu: [Overflow]',
+    category: 'header',
+    visibilityKey: 'hdr:menu-overflow',
     controlType: 'none'
   },
   {

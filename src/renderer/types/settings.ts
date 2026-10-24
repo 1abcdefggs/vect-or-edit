@@ -46,6 +46,7 @@ export type HeaderUiKey =
   | 'hdr:menu-view'
   | 'hdr:menu-window'
   | 'hdr:menu-help'
+  | 'hdr:menu-overflow'
   | 'hdr:theme-select'
   | 'hdr:color-mode'
   | 'hdr:locale-toggle'

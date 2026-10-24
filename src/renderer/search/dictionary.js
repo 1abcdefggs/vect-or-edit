@@ -89,8 +89,9 @@ export async function updateSemanticStateDisplay() {
     const searchFiltersContainer = document.getElementById('searchFiltersContainer');
     const hasSlots = (state?.slots && state.slots.length > 0);
 
+    // "Unload All" only makes sense with two or more files; with one file the row's X is the way (ADR-11)
     if (btnClearAllSlots) {
-      btnClearAllSlots.style.display = hasSlots ? 'inline-flex' : 'none';
+      btnClearAllSlots.style.display = (state?.slots?.length ?? 0) >= 2 ? 'inline-flex' : 'none';
     }
     if (searchFiltersContainer) {
       searchFiltersContainer.style.display = hasSlots ? 'flex' : 'none';
