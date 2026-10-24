@@ -29,6 +29,17 @@
   padding: 6px 8px 8px;
 }
 
+.monaco-options-card .semantic-module-header:focus-visible,
+.mo-group-title:focus-visible,
+.mo-reset:focus-visible,
+.mo-select:focus-visible,
+.mo-input:focus-visible,
+.mo-switch:focus-visible,
+.monaco-options-search:focus-visible {
+  outline: 2px solid var(--accent-color, #38bdf8);
+  outline-offset: 1px;
+}
+
 .monaco-options-search {
   width: 100%;
   box-sizing: border-box;
@@ -189,4 +200,16 @@
 
 .mo-reset:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* Editor Options mode (ui/layout/editorOptionsMode.js): the dictionary side steps back, the options card takes the panel */
+body.sidebar-options-mode #guidelineModuleCard,
+body.sidebar-options-mode #knowledgeModuleCard,
+body.sidebar-options-mode #vectorResultsList {
+  display: none !important;
+}
+body.sidebar-options-mode .monaco-options-card {
+  flex: 1 1 0;
+  min-height: 0;
+  margin-bottom: 8px;
 }

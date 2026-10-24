@@ -93,7 +93,6 @@ textarea {
 
 .section-title {
   font-size: var(--fs-12);
-  text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-main);
   min-height: 40px;
@@ -139,7 +138,7 @@ textarea {
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
-  color: var(--accent-color, #66f);
+  color: var(--accent-text, #66f);
   background: var(--hover-bg, rgba(255, 255, 255, 0.05));
   border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.1));
   transition: all 0.18s ease;
@@ -468,4 +467,9 @@ button,
 /* Master Settings UI Visibility rule: Ensure hidden elements are strictly eliminated even inside flex layouts */
 [hidden] {
   display: none !important;
+}
+
+/* An icon that opens, closes or jumps somewhere: the accent colour says "you can click this" (style_rules.csv actionable-icon) */
+.actionable-icon {
+  color: var(--accent-color, #38bdf8);
 }

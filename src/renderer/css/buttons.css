@@ -11,7 +11,7 @@
 
 .toolbar-btn {
   background: transparent;
-  border: 1px solid transparent;
+  border: var(--border-width) solid var(--control-border);
   color: var(--text-main);
   height: 32px;
   min-width: 32px;
@@ -30,6 +30,30 @@
 .toolbar-btn:hover {
   background: var(--hover-bg);
   border-color: var(--border-color);
+}
+
+/* Icon-only button: the icon gets the space, the padding stays at zero. Placed after .toolbar-btn so it wins. */
+.icon-btn {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-width: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.icon-btn svg,
+.icon-btn .material-symbols-outlined {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  font-size: var(--icon-size);
+}
+
+/* Editor style group: the font name gives way as the top bar narrows. The width comes from the
+   --font-name-width property set in ui/layout/editorStyleGroupFit.ts. !important: the viewport-width
+   rules further down (#fontFamilySelect, min-width 90px) would otherwise win. */
+.font-control-integrated-group #fontFamilySelect {
+  min-width: 0 !important;
+  max-width: var(--font-name-width, 115px) !important;
 }
 
 .toolbar-btn:active {

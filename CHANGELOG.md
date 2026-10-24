@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.34] - 2026-10-24
+
+### Changed
+- Editor bars, lamps and borders follow the style rules: one font for labels, no forced uppercase, the lamp color and border rules
+- The editor status bar and the style group keep the agreed order and widths
+- Editor Options card styles follow the same rules
+- Japanese and English text for the window and settings changes
+
 ## [0.3.33] - 2026-10-24
 
 ### Changed

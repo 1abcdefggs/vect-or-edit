@@ -10,6 +10,11 @@ import { setLedStatus, initAllLedTooltips } from './core/statusManager';
 import { initVectorSearch } from './search/vectorSearch.js';
 import { initUpdateChecker } from './ui/updateChecker.js';
 import { initSidebarResizer } from './ui/layout/sidebarResizer.js';
+import { initEditorStyleGroupFit } from './ui/layout/editorStyleGroupFit.js';
+import { migrateLlmProvider } from './core/llmProviderMigration.js';
+import { initPanelResizers } from './ui/layout/panelResizer.js';
+import { initEditorOptionsMode } from './ui/layout/editorOptionsMode.js';
+import { initLampNavigation } from './ui/layout/lampNavigation.js';
 import { initTopBarRenderer, bindTopLevelUIEvents } from './ui/layout/topBarRenderer.js';
 import { initAiControls } from './ui/ai/aiToolbarController.js';
 import { initSystemConsole } from './ui/console/systemConsoleManager.js';
@@ -59,6 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // 0.7. Initialize master settings store & UI visibility
+  migrateLlmProvider();
   await settingsStore.syncWithBackend();
   settingsStore.applyAllDomVisibility();
   enhanceSettingsModalVisibilityControls();
@@ -80,6 +86,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindTopLevelUIEvents();
   initMenuBar();
   initSidebarResizer();
+  initEditorStyleGroupFit();
+  initPanelResizers();
+  initEditorOptionsMode();
+  initLampNavigation();
 
   // 2. Setup Engine & Knowledge Base IPC Listeners
   if (window.engineAPI?.onEngineStatus) {

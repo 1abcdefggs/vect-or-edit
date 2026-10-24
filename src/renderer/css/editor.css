@@ -308,9 +308,9 @@
   background: var(--bg-card, #0f172a);
   border-top: var(--border-width) solid var(--border-color);
   border-bottom: var(--border-width) solid var(--border-color);
-  height: 220px;
+  height: var(--llm-dock-height, 220px);
   min-height: 140px;
-  max-height: 380px;
+  max-height: 70vh;
   overflow: hidden;
   position: relative;
   z-index: 10;
@@ -350,9 +350,10 @@
 }
 
 .llm-model-badge {
-  font-size: var(--fs-10);
+  /* About the size of the heading text next to it (style_rules.csv model-badge) */
+  font-size: var(--fs-13);
   font-family: var(--font-mono, monospace);
-  padding: 1px 6px;
+  padding: 1px 8px;
   background: rgba(56, 189, 248, 0.15);
   color: var(--accent-color, #38bdf8);
   border: 1px solid rgba(56, 189, 248, 0.3);
@@ -537,7 +538,9 @@
   font-size: var(--fs-12);
   font-weight: 700;
   background: var(--accent-color, #38bdf8);
-  color: #0f172a;
+  /* 4.5:1 or more on the accent, in dark and light (style_rules.csv primary-button-text) */
+  color: var(--text-on-accent, #ffffff);
+  font-family: inherit;
   border: none;
   border-radius: 6px;
   cursor: pointer;

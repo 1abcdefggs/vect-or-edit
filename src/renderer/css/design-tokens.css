@@ -10,6 +10,13 @@
   --transition-fast: 0.2s ease;
   /* The single UI font stack. Set once on body (utilities.css); everything else inherits it. */
   --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Icon-only buttons (tab bar, sidebar toggle): one square size and one icon size for all of them. */
+  --icon-btn-size: 28px;
+  --icon-size: 20px;
+  /* The brand face for the product name (the header logo wordmark and the About title). */
+  --font-brand: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
+  /* Monospace for versions, paths and codes. Cascadia Code is loaded in index.html. */
+  --font-mono: 'Cascadia Code', Consolas, monospace;
 
   /* Type scale: the single place for UI font sizes. Names are px at a 16px root; values are rem so they
      follow the reader's text size. Steps are 1px, the smallest difference worth keeping; add a step here

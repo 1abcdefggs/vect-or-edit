@@ -62,7 +62,7 @@
 }
 
 .app-header__title {
-  font-family: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
+  font-family: var(--font-brand);
   font-size: var(--fs-14);
   font-weight: 600;
   letter-spacing: 0.6px;
@@ -115,13 +115,13 @@
   font-size: var(--fs-16);
   line-height: 1.5;
   white-space: pre-wrap;
-  z-index: 99999;
+  z-index: 100020; /* above the first-run setup overlay (100000) */
   pointer-events: none;
   border: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   min-width: 200px;
-  /* 75em: about 75 full-width (CJK) characters per line; em follows this tooltip's font size. */
-  max-width: min(75em, calc(100vw - 16px));
+  /* --wrap-width: 75 half-width characters per line (ADR-11); the text wraps and stays left-aligned */
+  max-width: min(var(--wrap-width, 75ch), calc(100vw - 16px));
   text-align: left;
 }
 
@@ -172,6 +172,55 @@
 .menu-bar-item.active .menu-bar-btn {
   background-color: var(--accent-color, #38bdf8);
   color: #ffffff;
+}
+
+/* Overflow menu: menus that do not fit are listed here, one group per menu (menuBarController.ts fitMenuBar) */
+.menu-bar-item[data-menu="overflow"]:not(.menu-overflow-needed) {
+  display: none;
+}
+
+#menuDropdownOverflow {
+  left: auto;
+  right: 0;
+  min-width: 220px;
+  padding: 4px 0;
+}
+
+#menuDropdownOverflow .menu-overflow-entry.menu-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#menuDropdownOverflow .menu-overflow-entry > .menu-bar-btn {
+  padding: 6px 12px 2px;
+  color: var(--text-muted, #94a3b8);
+  background: none;
+  pointer-events: none;
+}
+
+#menuDropdownOverflow .menu-overflow-entry > .menu-dropdown {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  animation: none;
+}
+
+/* The open overflow item is .active, so .menu-bar-item.active .menu-bar-btn would paint this row blue; reset it here */
+#menuDropdownOverflow .menu-overflow-entry.menu-bar-btn {
+  display: flex;
+  width: 100%;
+  padding: 6px 12px;
+  text-align: left;
+  background-color: transparent;
+  color: var(--text-main, #f8fafc);
 }
 
 /* Dropdown Container */

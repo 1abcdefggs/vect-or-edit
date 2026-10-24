@@ -134,6 +134,8 @@ function buildInput(control, onCommit) {
     });
   }
   input.disabled = disabled;
+  // The visible name is a separate element; the control carries it as its accessible name
+  input.setAttribute('aria-label', labelOf(control));
   return { node: input, setValue };
 }
 
@@ -159,6 +161,7 @@ function buildRow(control) {
   reset.type = 'button';
   reset.textContent = '↺';
   reset.title = t('tip_monaco_opt_reset');
+  reset.setAttribute('aria-label', `${t('tip_monaco_opt_reset')}: ${labelOf(control)}`);
   reset.hidden = true;
   reset.addEventListener('click', () => {
     resetOverride(getEditor(), control.path, { live: !control.createOnly });
@@ -263,10 +266,25 @@ export function initMonacoOptionsPanel() {
   if (!card) return;
 
   // The header toggles the card (appActionEvents); build the list the first time it opens
-  card.querySelector('.semantic-module-header')?.addEventListener('click', (e) => {
+  const header = card.querySelector('.semantic-module-header');
+  header?.addEventListener('click', (e) => {
     if (e.target.closest('.semantic-module-actions')) return;
-    if (!card.classList.contains('collapsed')) ensureBuilt();
+    const open = !card.classList.contains('collapsed');
+    header.setAttribute('aria-expanded', String(open));
+    if (open) ensureBuilt();
   });
+  // The header is a button for the keyboard too: Enter and Space do what a click does
+  header?.addEventListener('keydown', (e) => {
+    if (e.target !== header || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    header.click();
+  });
+
+  header?.setAttribute('aria-label', t('monaco_opts_title'));
+
+  // Icon-only and placeholder-only controls get an accessible name from the same texts as their tooltips
+  document.getElementById('monacoOptionsSearch')?.setAttribute('aria-label', t('tip_monaco_opts_search'));
+  document.getElementById('btnMonacoOptionsResetAll')?.setAttribute('aria-label', t('tip_monaco_opts_reset_all'));
 
   let timer = null;
   document.getElementById('monacoOptionsSearch')?.addEventListener('input', () => {

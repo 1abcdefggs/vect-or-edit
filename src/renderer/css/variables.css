@@ -5,13 +5,15 @@
   --header-fg: #f8fafc;
   --editor-fg: #f8fafc;
   --bg-card: rgba(17, 24, 39, 0.82);
-  --accent-color: #6366f1;
-  --accent-hover: #4f46e5;
+  --accent-color: #2563eb;
+  --accent-hover: #1d4ed8;
   --text-main: #edf5ff;
   --text-muted: #b7c6dc;
   --window-border-width: 1px;
   --border-width: 1px;
   --border-color: #64748b;
+  /* Outline of an operable control: at least 3:1 against the background (style_rules: control-border) */
+  --control-border: #64748b;
   --border-primary: var(--border-color);
   --window-border: var(--border-color);
   --success-color: #10b981;
@@ -19,6 +21,9 @@
   --error-color: #f87171;
   /* Text on a solid accent background (buttons, selected chips) */
   --text-on-accent: #ffffff;
+  /* Longest line of a tooltip or a toast: about 75 characters of running text. 65ch, because the digit "0" the unit counts is
+     wider than an average letter in the UI font (75ch came to about 87 letters). See style_rules.csv wrap-width */
+  --wrap-width: 65ch;
   /* Tooltips show the opposite of the mode, so they stand out from the window: light in dark mode, dark in light mode */
   --tooltip-bg: #f1f5f9;
   --tooltip-fg: #0f172a;
@@ -75,6 +80,7 @@
   --text-main: #0f172a;
   --text-muted: #475569;
   --border-color: #94a3b8;
+  --control-border: #64748b;
   --border-primary: var(--border-color);
   --window-border: var(--border-color);
   --app-backdrop: #d6dde6;
