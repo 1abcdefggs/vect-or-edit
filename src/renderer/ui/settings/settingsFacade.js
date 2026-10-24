@@ -14,9 +14,12 @@ import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } 
 import { bindSaveLocationControls } from './saveLocation.js';
 import { getDefaultDocumentFormat } from '../../editor/tabs/tabState.js';
 import { confirmClose } from '../notifications/closeGuard.js';
+import { showConfirmModal } from '../notifications/confirmModal.js';
+import { resetApp } from './resetApp.js';
 import { initWindowFeatureSettings } from './windowFeatureSettings.js';
 import { initChoiceControls } from './choiceControls.js';
 import { initSettingsHelpPane } from './settingsHelpPane.js';
+import { initSettingsAreaMap } from './settingsAreaMap.js';
 
 function setAndSync(key, value) {
   localStorage.setItem(key, value);
@@ -134,6 +137,7 @@ export function initSettings(updateEditorCb) {
   initChoiceControls();
   // The generated guide beside the settings follows the open tab
   initSettingsHelpPane();
+  initSettingsAreaMap();
 
   // Autosave, AI assistants and the log panel: settings for features the window also has
   initWindowFeatureSettings();
@@ -490,7 +494,7 @@ export function initSettings(updateEditorCb) {
 
   const modalAiScopeSelect = document.getElementById('modalAiScopeSelect');
 
-  const storedAiProvider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
+  const storedAiProvider = localStorage.getItem(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
   const storedClaudeModel = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
   const storedGeminiModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
   const storedOpenAiModel = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
@@ -560,7 +564,7 @@ export function initSettings(updateEditorCb) {
 
     modalAiProviderSelect.addEventListener('change', () => {
       const val = modalAiProviderSelect.value;
-      setAndSync(STORAGE_KEYS.AI_PROVIDER, val);
+      setAndSync(STORAGE_KEYS.LLM_PROVIDER, val);
       updateAiProviderVisibility(val);
       updateActiveProviderCard(val);
     });
@@ -571,10 +575,6 @@ export function initSettings(updateEditorCb) {
     if (geminiSettingsBlock) geminiSettingsBlock.style.display = provider === 'gemini' ? 'flex' : 'none';
     if (openaiSettingsBlock) openaiSettingsBlock.style.display = provider === 'openai' ? 'flex' : 'none';
     if (claudeSettingsBlock) claudeSettingsBlock.style.display = provider === 'claude' ? 'flex' : 'none';
-    // If provider is local or none, ensure gemini shows as default fallback in LLM tab if none selected
-    if (provider === 'local' || provider === 'none') {
-      if (geminiSettingsBlock) geminiSettingsBlock.style.display = 'flex';
-    }
   }
 
   const btnFetchGeminiModels = document.getElementById('btnFetchGeminiModels');
@@ -730,12 +730,13 @@ export function initSettings(updateEditorCb) {
   const btnEditorClearApiKey = document.getElementById('btnEditorClearApiKey');
   if (btnEditorClearApiKey) {
     btnEditorClearApiKey.addEventListener('click', async () => {
-      if (!window.confirm('Clear all stored Cloud LLM API keys (Gemini, OpenAI, Claude)?')) return;
+      const confirmed = await showConfirmModal({ title: t('api_clear_title'), message: t('api_clear_confirm'), type: 'warning', confirmText: t('api_keys_clear_btn') });
+      if (!confirmed) return;
 
       // All keys live in the main process (encrypted files), so remove them there.
       const clearRes = await clearAllApiKeys();
       if (!clearRes.success) {
-        window.alert(`Failed to remove a stored key: ${clearRes.error || 'unknown error'}`);
+        showToast(`${t('api_clear_failed')}: ${clearRes.error || 'unknown error'}`, 'error');
         return;
       }
       if (modalGeminiKeyInput) modalGeminiKeyInput.value = '';
@@ -744,7 +745,7 @@ export function initSettings(updateEditorCb) {
       showKeyState();
       // Recomputes modelConfigured, which turns the LLM master off when no key remains.
       window.dispatchEvent(new Event('app:settingsChanged'));
-      window.alert('Cloud LLM API keys cleared successfully.');
+      showToast(t('api_clear_done'), 'success');
     });
   }
 
@@ -934,15 +935,17 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  const btnResetSettings = document.getElementById('btnResetSettings');
-  if (btnResetSettings) {
-    btnResetSettings.addEventListener('click', () => {
-      if (!window.confirm(t('maint_reset_confirm'))) return;
-      // Autosaved drafts live in localStorage too; clear() would wipe them, so keep those entries.
-      Object.keys(localStorage)
-        .filter((key) => !key.startsWith('autosave_'))
-        .forEach((key) => localStorage.removeItem(key));
-      window.location.reload();
+  // Both resets ask first and then call one shared function (ui/settings/resetApp.js)
+  for (const [id, dev] of [['btnResetSettings', false], ['btnResetSettingsDev', true]]) {
+    document.getElementById(id)?.addEventListener('click', async () => {
+      const confirmed = await showConfirmModal({
+        title: t(dev ? 'maint_reset_dev_label' : 'maint_reset_label'),
+        message: t(dev ? 'maint_reset_dev_confirm' : 'maint_reset_confirm'),
+        confirmText: t(dev ? 'maint_reset_dev_btn' : 'maint_reset_btn'),
+        cancelText: t('btn_cancel'),
+        type: 'warning'
+      });
+      if (confirmed) await resetApp({ dev });
     });
   }
 

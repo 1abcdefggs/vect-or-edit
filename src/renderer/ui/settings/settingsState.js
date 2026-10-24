@@ -1,11 +1,16 @@
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { isApiKeyConfigured, SECRET_STORAGE_KEYS } from '../../core/apiKeyStore.js';
 
-export function isAiModelConfigured() {
-  const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
-  if (provider === 'local') return Boolean(window.__isLocalAiModelReady);
+/** The LLM is configured when a cloud provider is chosen and its key is stored (ADR-11). */
+export function isLlmConfigured() {
+  const provider = localStorage.getItem(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
   if (provider === 'claude' || provider === 'gemini' || provider === 'openai') return isApiKeyConfigured(provider);
   return false;
+}
+
+/** The Embedding is configured when the local model is downloaded and ready. */
+export function isEmbedConfigured() {
+  return Boolean(window.__isLocalAiModelReady);
 }
 
 // Per-installation state that must not travel through .settings.json. That file lives in the save folder and

@@ -35,7 +35,7 @@ function fillComponentRows(div: HTMLElement): void {
     if (url) {
       el.href = '#';
       el.dataset.url = url;
-      el.style.color = 'var(--accent-color, #38bdf8)';
+      el.style.color = 'var(--accent-text)';
     } else {
       el.removeAttribute('href');
       delete el.dataset.url;
@@ -70,14 +70,14 @@ function fillComponentRows(div: HTMLElement): void {
     const link = document.createElement('a');
     link.href = '#';
     link.dataset.url = `https://huggingface.co/${id}`;
-    link.style.cssText = 'display: block; color: var(--accent-color, #38bdf8); text-decoration: none;';
+    link.style.cssText = 'display: block; color: var(--accent-text); text-decoration: none;';
     link.textContent = `${id === activeModelId ? '● ' : ''}${id}${license ? ` (${license})` : ''}`;
     link.title = id === activeModelId ? 'In use' : 'Downloaded';
     return link;
   }));
 
   // A cloud provider is named only when one is chosen; a service has its own terms, not an open-source license
-  const cloudProvider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) ?? '';
+  const cloudProvider = localStorage.getItem(STORAGE_KEYS.LLM_PROVIDER) ?? '';
   const cloudName = CLOUD_PROVIDER_NAMES[cloudProvider];
   setLink('aboutCloudValue', cloudName ? `${cloudName} (API, provider terms apply)` : 'Not used', CLOUD_PROVIDER_URLS[cloudProvider]);
 }
@@ -86,7 +86,7 @@ let modalInstance: HTMLElement | null = null;
 
 /** A small heading that splits the info box into groups: what is built in, and what is in use now. */
 const groupLabel = (text: string) =>
-  `<div style="margin-top: 4px; font-size: var(--fs-11); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-color, #38bdf8);">${text}</div>`;
+  `<div style="margin-top: 4px; font-size: var(--fs-11); font-weight: 600; letter-spacing: 0.06em; color: var(--accent-text);">${text}</div>`;
 
 const CLOUD_PROVIDER_NAMES: Record<string, string> = {
   gemini: 'Gemini (Google)',
@@ -142,28 +142,29 @@ function createAboutModalElement(): HTMLElement {
       <div class="settings-modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 24px; text-align: center;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
           <img src="${appLogoUrl}" alt="VectOrEdit" style="width: 48px; height: 48px; border-radius: 14px; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);">
-          <div style="font-size: var(--fs-22); font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;">VectOrEdit</div>
-          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 20px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-color, #38bdf8); font-size: var(--fs-13); font-family: monospace; font-weight: 600;">
-            <span id="aboutVersionBadge"></span>
+          <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;">
+            <span style="font-family: var(--font-brand); font-size: var(--fs-22); font-weight: 600; letter-spacing: 0.6px; color: var(--text-main);">VectOrEdit</span>
+            <span style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 20px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent-text); font-family: var(--font-mono); font-size: var(--fs-12); font-weight: 600;">
+              <span id="aboutVersionBadge"></span>
+            </span>
           </div>
         </div>
         <p style="font-size: var(--fs-13); color: var(--text-muted); line-height: 1.6; margin: 0;">
-          Next-Generation Vector-Native Semantic Knowledge Editor & Real-Time Linter.<br>
-          Organizes knowledge in a 10-layer DIKWP-based semantic model.
+          ${t('about_tagline')}
         </p>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 6px; background: var(--bg-primary); border: var(--border-width) solid var(--border-color); border-radius: 8px; padding: 12px 16px; text-align: left; font-size: var(--fs-12); box-sizing: border-box;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Author</span>
-            <a id="btnAboutOpenAuthor" href="#" style="font-weight: 600; color: var(--accent-color, #38bdf8); text-decoration: none;">${GITHUB_MARK}${AUTHOR}</a>
+            <a id="btnAboutOpenAuthor" href="#" style="font-weight: 600; color: var(--accent-text); text-decoration: none;">${GITHUB_MARK}${AUTHOR}</a>
           </div>
           ${groupLabel('Components')}
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Inference Engine</span>
-            <a id="aboutEngineValue" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none;">${GITHUB_MARK}vect-or-engine (Rust HNSW Core)</a>
+            <a id="aboutEngineValue" href="#" style="color: var(--accent-text); text-decoration: none;">${GITHUB_MARK}vect-or-engine (Rust HNSW Core)</a>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Editor</span>
-            <span id="aboutEditorValue" style="color: var(--text-main);"><a id="aboutMonacoLink" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none;">${GITHUB_MARK}<span id="aboutMonacoValue"></span></a> on <a id="aboutElectronLink" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none;">${GITHUB_MARK}<span id="aboutElectronValue"></span></a></span>
+            <span id="aboutEditorValue" style="color: var(--text-main);"><a id="aboutMonacoLink" href="#" style="color: var(--accent-text); text-decoration: none;">${GITHUB_MARK}<span id="aboutMonacoValue"></span></a> on <a id="aboutElectronLink" href="#" style="color: var(--accent-text); text-decoration: none;">${GITHUB_MARK}<span id="aboutElectronValue"></span></a></span>
           </div>
           ${groupLabel('In use')}
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -181,21 +182,21 @@ function createAboutModalElement(): HTMLElement {
           <div style="border-top: var(--border-width) solid var(--border-color); margin: 4px 0;"></div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">License</span>
-            <a id="btnAboutToggleLicense" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none; font-weight: 500;">MIT License ↓</a>
+            <a id="btnAboutToggleLicense" href="#" style="color: var(--accent-text); text-decoration: none; font-weight: 500;">MIT License ↓</a>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Third-party licenses</span>
-            <a id="btnAboutToggleNotices" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none; font-weight: 500;">Show ↓</a>
+            <a id="btnAboutToggleNotices" href="#" style="color: var(--accent-text); text-decoration: none; font-weight: 500;">Show ↓</a>
           </div>
           <pre id="aboutNoticesText" style="display: none; margin: 4px 0 0; max-height: 220px; overflow: auto; padding: 8px 10px; background: var(--bg-secondary); border: var(--border-width) solid var(--border-color); border-radius: 6px; font-size: var(--fs-11); line-height: 1.5; white-space: pre-wrap; word-break: break-word; user-select: text;"></pre>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Repository</span>
-            <a id="btnAboutOpenRepo" href="#" style="color: var(--accent-color, #38bdf8); text-decoration: none; font-weight: 500;">${GITHUB_MARK}${REPOSITORY_URL.replace('https://github.com/', '')}</a>
+            <a id="btnAboutOpenRepo" href="#" style="color: var(--accent-text); text-decoration: none; font-weight: 500;">${GITHUB_MARK}${REPOSITORY_URL.replace('https://github.com/', '')}</a>
           </div>
         </div>
         <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: var(--border-width) solid var(--border-color); font-size: var(--fs-12); color: var(--text-muted);">
           <span>© 2026 ${AUTHOR}. MIT License.</span>
-          <button id="btnAboutOk" class="toolbar-btn" style="padding: 6px 18px; background: var(--accent-color, #38bdf8); color: #020617; font-weight: 600; border-radius: 6px; font-size: var(--fs-13); cursor: pointer;">OK</button>
+          <button id="btnAboutOk" class="toolbar-btn" style="padding: 6px 18px; background: var(--accent-color, #38bdf8); color: var(--text-on-accent, #ffffff); font-weight: 600; border-radius: 6px; font-size: var(--fs-13); cursor: pointer;">OK</button>
         </div>
       </div>
     </div>

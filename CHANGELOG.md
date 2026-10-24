@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.32] - 2026-10-24
+
+### Changed
+- The settings page is grouped by window area (Header, Editor, Sidebar, System), with a map of the window at the top
+- The guide beside the settings lists the parts of the window and their settings in the order they sit in the window
+- Choice buttons mark the default option with (Default)
+- Panel sizes and the Editor Options mode are remembered between starts
+
 ## [0.3.31] - 2026-10-24
 
 ### Changed

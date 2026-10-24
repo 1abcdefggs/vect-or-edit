@@ -22,6 +22,9 @@
           <span data-i18n="settings_title">Application Settings</span>
         </h3>
       </div>
+      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
+        <span class="material-symbols-outlined">help</span><span data-i18n="btn_settings_guide">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
+      </button>
       <button id="btnCloseSettingsModal" class="log-panel-btn settings-close-btn" data-i18n-title="tip_close_settings">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
@@ -30,6 +33,26 @@
         </svg>
       </button>
     </div>
+
+    <!-- Window map: the four areas of the settings laid out as in the window. A press selects the tab (settingsAreaMap.js) -->
+    <nav class="settings-area-map" aria-label="Settings areas">
+      <button type="button" class="settings-area" data-area-tab="tabAppearance" data-i18n-title="tip_tab_appearance" style="grid-area: hdr;">
+        <span class="settings-area-name" data-i18n="tab_appearance">Header</span>
+        <span class="settings-area-desc" data-i18n="tab_appearance_desc">The top of the window: title bar and menus</span>
+      </button>
+      <button type="button" class="settings-area" data-area-tab="tabEditor" data-i18n-title="tip_tab_editor" style="grid-area: edt;">
+        <span class="settings-area-name" data-i18n="tab_editor">Editor</span>
+        <span class="settings-area-desc" data-i18n="tab_editor_desc">The writing area: fonts, documents, AutoSave, LLM chat</span>
+      </button>
+      <button type="button" class="settings-area" data-area-tab="tabAiSearch" data-i18n-title="tip_tab_ai" style="grid-area: sbr;">
+        <span class="settings-area-name" data-i18n="tab_ai_search">Sidebar</span>
+        <span class="settings-area-desc" data-i18n="tab_ai_search_desc">The right panel: Embedding, knowledge search, validation</span>
+      </button>
+      <button type="button" class="settings-area" data-area-tab="tabSystem" data-i18n-title="tip_tab_system" style="grid-area: sys;">
+        <span class="settings-area-name" data-i18n="tab_system">System</span>
+        <span class="settings-area-desc" data-i18n="tab_system_desc">The bottom of the window: closing, log, window parts, maintenance</span>
+      </button>
+    </nav>
 
     <div class="settings-modal-tabs">
       <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance" data-i18n-title="tip_tab_appearance">Header</button>
@@ -62,7 +85,7 @@
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">language</span><span data-i18n="grp_display">Language & display</span></h4>
+          <h4><span class="material-symbols-outlined">translate</span><span data-i18n="grp_language">Language</span></h4>
           <div class="setting-item">
             <div>
               <div class="setting-label" data-i18n="language_label">UI Language</div>
@@ -73,13 +96,17 @@
               <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
             </select>
           </div>
+        </div>
+
+        <div class="settings-section-card">
+          <h4><span class="material-symbols-outlined">zoom_in</span><span data-i18n="grp_display_view">Display</span></h4>
           <div class="setting-item">
             <div>
               <div class="setting-label" data-i18n="setting_ui_scaling">UI Scaling (Zoom)</div>
               <div class="setting-desc" data-i18n="setting_ui_scaling_desc">Adjust the overall size of the application UI.</div>
             </div>
             <select id="modalZoomSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_zoom">
-              <option value="1.0" data-i18n="zoom_100">100% (Default)</option>
+              <option value="1.0" selected data-i18n="zoom_100">100%</option>
               <option value="1.1" data-i18n="zoom_110">110%</option>
               <option value="1.25" data-i18n="zoom_125">125%</option>
               <option value="1.4" data-i18n="zoom_140">140%</option>
@@ -313,13 +340,13 @@
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">smart_toy</span><span data-i18n="grp_llm_assistant">LLM assistant</span></h4>
+          <h4><span class="material-symbols-outlined">cloud</span><span data-i18n="grp_llm_assistant">LLM assistant</span></h4>
           <div class="setting-item">
             <div>
-              <div class="setting-label" data-i18n="setting_master_ai">AI assistant (master switch)</div>
+              <div class="setting-label" data-i18n="setting_master_ai">LLM (cloud AI)</div>
               <div class="setting-desc" data-i18n="setting_master_ai_desc">Turns the cloud LLM assistant and the suggestion sidebar on or off. A model must be set up first.</div>
             </div>
-            <select id="modalMasterAiSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
+            <select id="modalLlmSwitchSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
@@ -345,7 +372,7 @@
             </h4>
             <div class="setting-desc" data-i18n="llm_card_desc">Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.</div>
 
-            <input type="hidden" id="modalAiProviderSelect" value="gemini">
+            <input type="hidden" id="modalAiProviderSelect" value="none">
             <div class="provider-cards-grid" role="group">
               <div class="provider-card" data-provider="gemini" role="button" data-tip-exempt="the provider name on the card names it">
                 <div class="provider-name">Google Gemini</div>
@@ -478,11 +505,11 @@
       <!-- Tab 3: Sidebar (sbr) - embedding, knowledge search and validation -->
       <div id="tabAiSearch" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">memory</span><span data-i18n="grp_embedding_assistant">Embedding assistant</span></h4>
+          <h4><span class="material-symbols-outlined">neurology</span><span data-i18n="grp_embedding_assistant">Embedding assistant</span></h4>
           <div class="setting-item">
             <div>
               <div class="setting-label" data-i18n="setting_embedding_assistant">Embedding assistant</div>
-              <div class="setting-desc" data-i18n="setting_embedding_assistant_desc">Real-time semantic suggestions in the sidebar. Works while the AI assistant is on.</div>
+              <div class="setting-desc" data-i18n="setting_embedding_assistant_desc">Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on).</div>
             </div>
             <select id="modalEmbeddingAssistantSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_embedding_assistant">
               <option value="on" data-i18n="opt_toggle_on">On</option>
@@ -762,6 +789,16 @@
               <option value="closed" data-i18n="opt_logs_closed">Closed</option>
             </select>
           </div>
+          <div class="setting-item">
+            <div>
+              <div class="setting-label" data-i18n="setting_remember_layout">Remember layout</div>
+              <div class="setting-desc" data-i18n="setting_remember_layout_desc">Remembers the height of the log panel and the chat dock and the width of the sidebar, and restores them at the next start. Turning it off forgets them.</div>
+            </div>
+            <select id="modalRememberLayoutSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_remember_layout">
+              <option value="on" selected data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
         </div>
 
 <div class="settings-section-card">
@@ -799,6 +836,13 @@
               <div class="setting-desc" data-i18n="maint_reset_desc">Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor.</div>
             </div>
             <button id="btnResetSettings" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_btn" data-i18n-title="tip_reset_settings">Restore Defaults</button>
+          </div>
+          <div class="setting-item">
+            <div>
+              <div class="setting-label" data-i18n="maint_reset_dev_label">Dev reset</div>
+              <div class="setting-desc" data-i18n="maint_reset_dev_desc">Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again.</div>
+            </div>
+            <button id="btnResetSettingsDev" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_dev_btn" data-i18n-title="tip_reset_settings_dev">Dev reset</button>
           </div>
         </div>
       </div>
