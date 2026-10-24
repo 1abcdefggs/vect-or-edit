@@ -3,6 +3,7 @@
  */
 import { STORAGE_KEYS, TIMINGS } from '../../core/constants.js';
 import { t } from '../../core/i18n.js';
+import { getWorkspaceRoot } from '../../core/workspaceRoot';
 import { editorEvents } from '../core/editorEvents.js';
 import { getActiveTab } from '../tabs/tabState.js';
 import { markSavedAsUtf8 } from './statusBarManager.js';
@@ -128,7 +129,8 @@ export function updateAutoSaveUI() {
     ? t('autosave_state_on', { path: filePath })
     : t(`autosave_state_${state}`);
 
-  if (labelEl) labelEl.textContent = state === 'on' ? t('btn_save_auto') : t('btn_save');
+  if (labelEl) labelEl.textContent = state === 'on' ? t('btn_save_auto') : (state === 'pending' ? t('btn_save_as') : t('btn_save'));
+  if (btnSave) btnSave.dataset.autosaveState = state;
   if (ledDot) {
     ledDot.className = `status-led-dot autosave-led is-${state}`;
     ledDot.title = tooltip;
@@ -211,8 +213,8 @@ async function ensureAutoSaveTarget(tab) {
     }
 
     if (useDefault) {
-      const ws = await api.getDefaultWorkspace(true);
-      if (ws?.success && ws.path) {
+      const ws = await getWorkspaceRoot({ create: true });
+      if (ws) {
         const sep = ws.path.includes('\\') ? '\\' : '/';
         // The file keeps the format of its tab: a Text document is written as .txt, a Markdown one as .md
         const fileName = withFormatExtension(`${(tab.title || 'Untitled').replace(/\.(md|markdown|txt)$/i, '')}-${Date.now()}`, formatOfName(tab.title));

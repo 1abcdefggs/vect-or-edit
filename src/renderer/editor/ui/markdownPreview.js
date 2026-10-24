@@ -86,9 +86,12 @@ export async function toggleMarkdownPreview() {
 export function setPreviewAvailable(available) {
   const button = document.getElementById('btnMarkdownPreview');
   if (!button) return;
-  button.hidden = !available;
+  // It stays in the layout (invisible), so the format button beside it does not shift when the format changes
+  button.classList.toggle('is-unavailable', !available);
+  button.tabIndex = available ? 0 : -1;
+  button.setAttribute('aria-hidden', String(!available));
   const separator = document.querySelector('[data-preview-separator]');
-  if (separator) separator.hidden = !available;
+  if (separator) separator.classList.toggle('is-unavailable', !available);
   if (!available && isPreviewVisible) toggleMarkdownPreview();
 }
 

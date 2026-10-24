@@ -5,7 +5,7 @@ import { duplicateCurrentTab } from '../tabs/tabManager.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { triggerSearchAndRender } from '../../search/vectorSearch.js';
 import { getQuickMatches } from '../../search/dictionary.js';
-import { aiManager } from '../../core/aiStateManager.js';
+import { canUseEmbedding, canUseLlm } from '../../core/aiAccess.js';
 
 export function createMenuButton({ className, title, innerHTML, onClick }) {
   const btn = document.createElement('button');
@@ -30,7 +30,8 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   topRow.style.flexDirection = 'column';
   topRow.style.alignItems = 'stretch';
 
-  const modelReady = Boolean(aiManager?.getState?.().modelConfigured);
+  // AI Suggest has something to run with while either switch is on (the dictionary search itself always works)
+  const modelReady = canUseEmbedding() || canUseLlm();
 
   const btnSuggest = createMenuButton({
     className: 'pill-action-btn primary',

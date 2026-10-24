@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.33] - 2026-10-24
+
+### Changed
+- Save is a split button: the left part saves at once, and the arrow opens AutoSave, Save As and Save All
+- Save As and Save All run the same commands as the File menu
+- The workspace root is read in one place, so Save, Open, AutoSave and the settings page agree
+- Closing the settings, the tabs and the app asks first; Exit and Close Window ask the same way
+- The window RAM figure sits on the left of the bottom bar, next to LOGS
+
 ## [0.3.32] - 2026-10-24
 
 ### Changed

@@ -6,7 +6,7 @@ import { showConfirmModal } from './confirmModal.js';
  * One place for "are you sure?" on every × that closes something, so a stray click cannot close it.
  * The user can turn it off in Settings (System tab): the × then closes at once.
  */
-export type CloseTarget = 'tab' | 'chat' | 'settings' | 'update' | 'about' | 'toast' | 'slot';
+export type CloseTarget = 'app' | 'tab' | 'chat' | 'settings' | 'update' | 'about' | 'toast' | 'slot';
 
 export function isCloseConfirmEnabled(): boolean {
   try {
@@ -20,9 +20,10 @@ export function isCloseConfirmEnabled(): boolean {
 export async function confirmClose(target: CloseTarget, params: Record<string, string> = {}): Promise<boolean> {
   if (!isCloseConfirmEnabled()) return true;
   return showConfirmModal({
-    title: t('close_confirm_title'),
-    message: t(`close_confirm_${target}`, params),
-    confirmText: t('btn_close_confirm'),
+    // The title is the question itself; a second line would only repeat it
+    title: t(`close_confirm_${target}`, params),
+    message: '',
+    confirmText: t(target === 'app' ? 'btn_exit_confirm' : 'btn_close_confirm'),
     cancelText: t('btn_keep_open'),
     type: 'warning'
   });

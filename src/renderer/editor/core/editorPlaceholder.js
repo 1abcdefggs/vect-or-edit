@@ -32,14 +32,14 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
   // 2. Resolve AI Status & Guidance
   const aiState = aiManager.getState();
   let aiStatusHtml = '';
-  if (!aiState.modelConfigured) {
+  if (!aiState.llmConfigured && !aiState.embedConfigured) {
     aiStatusHtml = `<span style="color: #f59e0b; display: inline-flex; align-items: center; gap: 4px; background: rgba(245, 158, 11, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.3);">[ AI Model: ${t('ai_model_unset')} ] ${t('placeholder_ai_unset_hint')}</span>`;
-  } else if (!aiState.master) {
-    aiStatusHtml = `<span style="color: #94a3b8; display: inline-flex; align-items: center; gap: 4px; background: rgba(148, 163, 184, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.2);">[ Master AI: OFF ] ${t('placeholder_master_off_hint')}</span>`;
+  } else if (!aiState.llm && !aiState.embed) {
+    aiStatusHtml = `<span style="color: #94a3b8; display: inline-flex; align-items: center; gap: 4px; background: rgba(148, 163, 184, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.2);">[ AI: OFF ] ${t('placeholder_master_off_hint')}</span>`;
   } else {
-    const editorStatus = aiState.editor ? '<span style="color: #10b981;">Editor AI: ON</span>' : '<span style="color: #94a3b8;">Editor AI: OFF</span>';
-    const sidebarStatus = aiState.sidebar ? '<span style="color: #38bdf8;">Suggest AI: ON</span>' : '<span style="color: #94a3b8;">Suggest AI: OFF</span>';
-    aiStatusHtml = `<span style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.25);"><span style="font-weight: 700; color: #10b981;">[ Master AI: ON ]</span> (${editorStatus} / ${sidebarStatus})</span>`;
+    const llmStatus = aiState.llm ? '<span style="color: #10b981;">LLM: ON</span>' : '<span style="color: #94a3b8;">LLM: OFF</span>';
+    const embedStatus = aiState.embed ? '<span style="color: #38bdf8;">Embedding: ON</span>' : '<span style="color: #94a3b8;">Embedding: OFF</span>';
+    aiStatusHtml = `<span style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.25);">${llmStatus} / ${embedStatus}</span>`;
   }
 
   // 3. Knowledge Status

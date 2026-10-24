@@ -132,6 +132,8 @@ export function initSystemConsole() {
         onChange: (open) => {
           btnToggleConsole.classList.toggle('btn-logs-closed', !open);
           btnToggleConsole.classList.toggle('toolbar-btn-active', open);
+          const closeLogs = document.getElementById('btnCloseLogs');
+          if (closeLogs) { closeLogs.hidden = !open; closeLogs.style.display = open ? 'inline-flex' : 'none'; }
           if (open && logEntriesContainer) {
             logEntriesContainer.scrollTop = logEntriesContainer.scrollHeight;
           }
@@ -140,6 +142,7 @@ export function initSystemConsole() {
     : null;
 
   logsDisclosure?.set(!settingsStore.getPreference('system.collapseLogsOnStartup'));
+  document.getElementById('btnCloseLogs')?.addEventListener('click', () => logsDisclosure?.set(false));
 
   const clearLogs = () => {
     logBuffer.length = 0;

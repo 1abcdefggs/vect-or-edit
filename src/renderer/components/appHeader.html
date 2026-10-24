@@ -44,6 +44,10 @@
             <span class="menu-item-label" data-i18n="menu_file_close">Close Tab</span>
             <span class="menu-accelerator">Ctrl+W</span>
           </button>
+          <button class="menu-dropdown-item" id="menuItemCloseAllTabs" role="menuitem" type="button" style="display: none;"
+            data-command="file.closeAllTabs" data-i18n-title="tip_menu_close_all_tabs">
+            <span class="menu-item-label" data-i18n="menu_file_close_all">Close All Tabs</span>
+          </button>
           <button class="menu-dropdown-item" id="menuItemFileSettings" role="menuitem" type="button"
             data-command="help.settings" data-i18n-title="tip_menu_preferences">
             <span class="menu-item-label" data-i18n="menu_help_settings">Preferences & Settings...</span>
@@ -163,6 +167,13 @@
       <!-- About: a plain button beside Help (no dropdown), it opens the About dialog -->
       <button class="menu-bar-btn" id="menuBtnAbout" type="button" data-command="help.about"
         data-i18n="menu_about" data-i18n-title="tip_menu_about">About</button>
+
+      <!-- Overflow: the menus that do not fit are moved into this panel (menuBarController.ts fitMenuBar) -->
+      <div class="menu-bar-item" data-menu="overflow" data-ui="hdr:menu-overflow">
+        <button class="menu-bar-btn" id="menuBtnOverflow" type="button" aria-haspopup="true" aria-expanded="false"
+          data-i18n-title="tip_menu_overflow">&raquo;</button>
+        <div class="menu-dropdown" id="menuDropdownOverflow" role="menu"></div>
+      </div>
     </nav>
   </div>
 
@@ -204,6 +215,12 @@
       <span id="headerZoomPercent" class="header-zoom-text">100%</span>
       <!-- Shows that the mouse wheel changes the zoom (zoomController.ts) -->
       <span class="material-symbols-outlined header-zoom-wheel" aria-hidden="true">mouse</span>
+      <!-- Hover hint: bold arrows say the wheel zooms in (up) and out (down). The label stays English (style_rules.csv zoom-label) -->
+      <span class="header-zoom-hint" aria-hidden="true">
+        <span class="material-symbols-outlined header-zoom-hint__arrow">arrow_upward</span>
+        <span class="header-zoom-hint__label"><span class="material-symbols-outlined">search</span>Zoom</span>
+        <span class="material-symbols-outlined header-zoom-hint__arrow">arrow_downward</span>
+      </span>
     </div>
   </div>
 </header>
