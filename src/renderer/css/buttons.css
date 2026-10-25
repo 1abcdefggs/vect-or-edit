@@ -194,12 +194,11 @@ body.resizing-sidebar * {
 /* Log action buttons (CLEAR, COPY, DOWNLOAD): a light accent tint at rest, stronger on hover, no outline.
    The tint shows they are buttons; the icon and label keep the panel's text color. */
 .log-panel-btn {
-  background: color-mix(in srgb, var(--accent-color, #38bdf8) 14%, transparent);
+  background: var(--log-btn-bg);
   border: none;
   color: var(--log-title);
   padding: 3px 8px;
   font-size: var(--fs-12);
-  
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
@@ -209,7 +208,7 @@ body.resizing-sidebar * {
 }
 
 .log-panel-btn:hover {
-  background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
+  background: var(--log-btn-hover);
   color: var(--log-title);
 }
 
@@ -303,12 +302,13 @@ button.btn-phi {
 }
 
 /* LOGS chip states (one model): closed = the resting chip face with an accent tint, open = a neutral pressed face.
-   The label always uses the main text colour, which holds contrast on both faces; only the icon takes the accent.
+   The label always uses the title colour (--log-title): the tinted faces are darker than the text-main colour allows
+   (measured: text-main reached 3.79:1 on the closed hover face). Only the icon takes the accent.
    The open face needs !important to beat the generic .toolbar-btn-active used by other buttons. */
 .bottom-bar-left > .bottom-bar-chip.btn-logs-closed {
   background: color-mix(in srgb, var(--accent-color, #38bdf8) 14%, transparent);
   box-shadow: none;
-  color: var(--text-main);
+  color: var(--log-title);
   transition: background 0.2s ease;
 }
 
@@ -316,10 +316,11 @@ button.btn-phi {
   background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
 }
 
+/* The open face is darker than the closed one, so its label uses the full-contrast title colour (LOG title token: 4.5:1 or more) */
 .bottom-bar-left > .bottom-bar-chip.toolbar-btn-active {
   background: rgba(255, 255, 255, 0.1) !important;
   border: none !important;
-  color: var(--text-main) !important;
+  color: var(--log-title) !important;
 }
 
 /* Bottom bar chips (LOGS, PIPELINE): a tinted fill shows they are buttons; no outline */
@@ -345,6 +346,10 @@ button.btn-phi {
 
 .bottom-bar-close:hover {
   background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
+}
+
+.bottom-bar-close .material-symbols-outlined {
+  font-size: var(--fs-16);
 }
 
 .toolbar-btn-active {

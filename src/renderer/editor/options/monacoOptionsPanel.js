@@ -265,14 +265,16 @@ export function initMonacoOptionsPanel() {
   const card = document.getElementById('monacoOptionsCard');
   if (!card) return;
 
-  // The header toggles the card (appActionEvents); build the list the first time it opens
+  // The header toggles the card (appActionEvents). Watch the card's class instead of the click: the two click handlers
+  // share the header, and whichever runs first would otherwise read the state before or after the toggle
   const header = card.querySelector('.semantic-module-header');
-  header?.addEventListener('click', (e) => {
-    if (e.target.closest('.semantic-module-actions')) return;
+  const syncOpen = () => {
     const open = !card.classList.contains('collapsed');
-    header.setAttribute('aria-expanded', String(open));
+    header?.setAttribute('aria-expanded', String(open));
     if (open) ensureBuilt();
-  });
+  };
+  new MutationObserver(syncOpen).observe(card, { attributes: true, attributeFilter: ['class'] });
+  syncOpen();
   // The header is a button for the keyboard too: Enter and Space do what a click does
   header?.addEventListener('keydown', (e) => {
     if (e.target !== header || (e.key !== 'Enter' && e.key !== ' ')) return;

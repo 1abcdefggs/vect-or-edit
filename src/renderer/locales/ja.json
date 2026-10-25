@@ -800,6 +800,7 @@
   "tip_about_logo": "VectOrEdit - クリックでバージョン情報を表示します",
   "tip_header_theme": "配色テーマ: どのテーマにも明るい面と暗い面があり、外観モードでどちらかを使います",
   "tip_header_zoom": "ズームと画面の倍率（100%）\nマウスホイール: 拡大・縮小\nクリック: 100%に戻す",
+  "tip_header_minimize": "ヘッダーを最小化または展開します",
   "tip_header_zoom_slider": "ドラッグして倍率を決めます",
   "tip_save_menu": "保存の種類（自動保存、名前を付けて保存、すべて保存）",
   "tip_save": "保存（Ctrl+S）",

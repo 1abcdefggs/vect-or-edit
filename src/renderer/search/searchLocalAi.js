@@ -2,7 +2,7 @@ import { setLedStatus } from '../core/statusManager.js';
 import { i18n } from '../core/i18n.js';
 import { renderResults } from './searchUi.js';
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
-import { markModelDownloaded } from './embeddingModels.js';
+import { markModelDownloaded, getActiveModelId, getDownloadedModelIds } from './embeddingModels.js';
 
 let isLocalAiReady = false;
 let isLocalAiDownloading = false;
@@ -189,6 +189,11 @@ export function initLocalAiWorker(getCurrentResults) {
         }
       }
     });
+    // A model already on this device loads at startup. Until the worker reports ready, the Embedding counts as not configured
+    const activeModel = getActiveModelId();
+    if (getDownloadedModelIds().has(activeModel)) {
+      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: activeModel } }));
+    }
   } catch (e) {
     console.error("Worker initialization failed", e);
   }

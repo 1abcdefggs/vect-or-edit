@@ -684,6 +684,7 @@
   "tip_about_logo": "VectOrEdit - Click for About & Details",
   "tip_header_theme": "Color theme: each theme has a light and a dark face; the appearance mode picks one",
   "tip_header_zoom": "Zoom and UI scale (100%)\nMouse wheel: zoom in or out\nClick: reset to 100%",
+  "tip_header_minimize": "Minimize or expand the header",
   "tip_header_zoom_slider": "Drag to set the zoom",
   "tip_save_menu": "More save options (AutoSave, Save As, Save All)",
   "tip_save": "Save (Ctrl+S)",
