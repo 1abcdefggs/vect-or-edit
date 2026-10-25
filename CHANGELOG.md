@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.38] - 2026-10-25
+
+### Changed
+- Editor Options opens from the toolbar, stays open in that mode, and its label shrinks with the toolbar width
+
 ## [0.3.37] - 2026-10-25
 
 ### Changed
