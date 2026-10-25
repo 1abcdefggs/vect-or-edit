@@ -1,7 +1,7 @@
 <div id="nativeBottomBar" data-ui="sys:bottom-bar" style="height: 24px; background: var(--bg-card); border-top: var(--border-width) solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; font-size: var(--fs-10);">
   
   <div class="bottom-bar-left" style="display: flex; align-items: center; gap: 8px;">
-    <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add" data-i18n-title="tip_console_toggle" data-ui="sys:log-console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
+    <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add bottom-bar-chip" data-i18n-title="tip_console_toggle" data-ui="sys:log-console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
       <span class="material-symbols-outlined" style="font-size: var(--fs-18); flex-shrink: 0;">&#xeb8e;</span>
       <span class="bottom-bar-text" data-i18n="btn_console">LOGS</span>
       <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: var(--fs-10); height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
@@ -13,7 +13,7 @@
       <span id="statusMemoryUsage" class="bottom-bar-text" data-i18n="label_ram">RAM: ~45 MB</span>
     </span>
     <!-- Looks like a button, and its LED shows the worst state of the pipeline while the strip is closed (statusManager.ts) -->
-    <button id="btnPipelineToggle" class="toolbar-btn" style="display: none; height: 20px; padding: 0 8px; align-items: center; gap: 6px; border: var(--border-width) solid var(--border-color); border-radius: 4px;" data-i18n-title="tip_pipeline_show">
+    <button id="btnPipelineToggle" class="toolbar-btn bottom-bar-chip" style="display: none; height: 20px; padding: 0 8px; align-items: center; gap: 6px; border-radius: 4px;" data-i18n-title="tip_pipeline_show">
       <span class="material-symbols-outlined actionable-icon" style="font-size: var(--fs-16);">monitor_heart</span>
       <span class="bottom-bar-text" data-i18n="btn_pipeline">PIPELINE</span>
       <span id="pipelineToggleLed" class="status-led-dot status-loading" aria-hidden="true"></span>

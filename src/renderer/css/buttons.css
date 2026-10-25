@@ -302,9 +302,10 @@ button.btn-phi {
 }
 
 /* Header Logs Button Dynamic State (Blue when Bottom Panel is Closed) */
+/* Closed state: a tint, no outline (one edge per region; the tint carries the state) */
 .btn-logs-closed {
   background: rgba(56, 189, 248, 0.16) !important;
-  border: 1px solid var(--accent-color, #66f) !important;
+  border: none !important;
   color: var(--accent-color, #66f) !important;
   
   box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
@@ -313,7 +314,16 @@ button.btn-phi {
 
 .btn-logs-closed:hover {
   background: rgba(255, 255, 255, 0.12) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Bottom bar chips (LOGS, PIPELINE): a tinted fill shows they are buttons; no outline */
+.bottom-bar-left > .bottom-bar-chip {
+  border: none;
+  background: var(--log-btn-bg);
+}
+
+.bottom-bar-left > .bottom-bar-chip:hover {
+  background: var(--log-btn-hover);
 }
 
 .toolbar-btn-active {

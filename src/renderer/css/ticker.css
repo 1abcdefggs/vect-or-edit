@@ -330,9 +330,9 @@
   font-size: var(--fs-12);
 }
 
-/* Ghost button: no outline (the band already has one rule), the icon in the accent colour, a fill on hover */
+/* Ghost button: no outline (the band already has one rule), a tinted fill so it reads as a button, the icon in the accent colour */
 .log-head-actions .log-panel-btn {
-  background: transparent;
+  background: var(--log-btn-bg);
   border: none;
   color: var(--text-main);
 }
@@ -342,7 +342,7 @@
 }
 
 .log-head-actions .log-panel-btn:hover {
-  background: var(--hover-bg);
+  background: var(--log-btn-hover);
 }
 
 @container (max-width: 520px) {
