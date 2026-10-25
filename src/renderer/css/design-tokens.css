@@ -13,6 +13,13 @@
   /* Icon-only buttons (tab bar, sidebar toggle): one square size and one icon size for all of them. */
   --icon-btn-size: 28px;
   --icon-size: 20px;
+  /* Button padding from the font size alone (golden ratio, em based): vertical 1/phi^3, horizontal 1/phi.
+     Used with class btn-phi. Basis: layout-core docs/control-sizing-evidence.md sections 8 and 10. */
+  --phi: 1.618;
+  /* Smallest clickable height (WCAG 2.2 target size, level AA). A control that looks smaller gets a transparent hit strip. */
+  --hit-min: 24px;
+  --btn-pad-y: calc(1em / var(--phi) / var(--phi) / var(--phi));
+  --btn-pad-x: calc(1em / var(--phi));
   /* The brand face for the product name (the header logo wordmark and the About title). */
   --font-brand: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
   /* Monospace for versions, paths and codes. Cascadia Code is loaded in index.html. */

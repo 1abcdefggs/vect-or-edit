@@ -216,6 +216,18 @@ body.resizing-sidebar * {
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* Compact button size: the padding follows the button's own font size (--btn-pad-y / --btn-pad-x), the height comes from
+   the content. The only place this rule is written; add class btn-phi to a button instead of copying it.
+   `button.btn-phi` is one element name more specific than a single class, so it wins over .toolbar-btn (height 32px),
+   .semantic-btn-add, .log-panel-btn and the others whatever the order of the style files. */
+button.btn-phi {
+  height: auto;
+  /* The font box (ascent + descent) is taller than the 1em line, so the glyphs sit low; 0.06em (about 0.75px at 12px) moves
+     the padding from the top to the bottom. The height does not change. Basis: control-sizing-evidence.md section 13. */
+  padding: calc(var(--btn-pad-y) - 0.06em) var(--btn-pad-x) calc(var(--btn-pad-y) + 0.06em);
+  line-height: 1;
+}
+
 /* Chrome-style Multi-Document Tab Bar */
 .editor-tab-bar {
   display: flex;

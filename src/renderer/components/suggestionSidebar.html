@@ -49,10 +49,11 @@
         .semantic-module-header { cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; padding: 6px 10px; }
         .semantic-module-header:hover { background: rgba(255,255,255,0.03); }
         .semantic-module-title { min-width: 0; overflow: hidden; }
-        .semantic-module-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        .semantic-module-actions { display: flex; align-items: stretch; align-self: center; gap: 4px; flex-shrink: 0; }
+        /* Size comes from class btn-phi (buttons.css); the row stretches the buttons to one height */
         .semantic-module-card .semantic-btn-add,
         .semantic-module-card .semantic-btn-clear,
-        .semantic-module-card #btnInsertTemplate { height: 24px; padding: 0 8px; border-radius: 4px; }
+        .semantic-module-card #btnInsertTemplate { border-radius: 4px; }
         .semantic-module-card .semantic-btn-add { width: 78px; justify-content: center; }
         .semantic-module-card .semantic-btn-add .plus { font-size: var(--fs-14); line-height: 1; }
         /* Leading icons share one fixed column so the title separators line up across both cards */
@@ -81,16 +82,16 @@
             <span id="profileHeaderLabel" style="font-weight: 600; font-size: var(--fs-16);" data-i18n="active_guideline_preset_label">Guideline</span>
           </span>
           <div class="semantic-module-actions">
-            <button id="btnInsertTemplate" class="toolbar-btn"
-              style="padding: 2px 7px; font-size: var(--fs-11);  border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-main); border: var(--border-width) solid var(--border-color);"
+            <button id="btnInsertTemplate" class="toolbar-btn btn-phi"
+              style="font-size: var(--fs-11);  border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-main); border: var(--border-width) solid var(--border-color);"
               data-i18n-title="btn_insert_template">
               <span data-i18n="btn_insert_template">Template</span>
             </button>
-            <button id="btnImportDictionary" data-ui="sbr:import-dictionary" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_import_preset">
+            <button id="btnImportDictionary" data-ui="sbr:import-dictionary" class="toolbar-btn semantic-btn-add btn-phi" data-i18n-title="btn_import_preset">
               <span class="plus">＋</span>
               <span class="btn-label" data-i18n="btn_import_preset_short">Add files</span>
             </button>
-            <button id="btnResetGoal" class="toolbar-btn semantic-btn-clear" style="display: none;"
+            <button id="btnResetGoal" class="toolbar-btn semantic-btn-clear btn-phi" style="display: none;"
               data-i18n-title="btn_reset_profile">
               <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">&#xe419;</span>
               <span data-i18n="btn_unload_profile">Unload</span>
@@ -110,12 +111,12 @@
             <span id="knowledgeSlotsCountBadge" style="display: none;" data-i18n-title="tip_slots_count">0 Slots</span>
           </span>
           <div class="semantic-module-actions">
-            <button id="btnClearAllSlots" class="toolbar-btn semantic-btn-clear" style="display: none;"
+            <button id="btnClearAllSlots" class="toolbar-btn semantic-btn-clear btn-phi" style="display: none;"
               data-i18n-title="btn_clear_all_slots">
               <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">&#xe419;</span>
               <span data-i18n="btn_clear_slots">Unload</span>
             </button>
-            <button id="btnAddSlot" data-ui="sbr:add-slot" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_add_slot">
+            <button id="btnAddSlot" data-ui="sbr:add-slot" class="toolbar-btn semantic-btn-add btn-phi" data-i18n-title="btn_add_slot">
               <span class="plus">＋</span>
               <span class="btn-label" data-i18n="btn_add_slot_short">Add files</span>
             </button>
@@ -169,7 +170,7 @@
         <span style="font-weight: 600; font-size: var(--fs-16);" data-i18n="monaco_opts_title">Editor Options</span>
       </span>
       <div class="semantic-module-actions">
-        <button id="btnMonacoOptionsResetAll" class="toolbar-btn semantic-btn-clear" type="button" style="display: none;" data-i18n-title="tip_monaco_opts_reset_all">
+        <button id="btnMonacoOptionsResetAll" class="toolbar-btn semantic-btn-clear btn-phi" type="button" style="display: none;" data-i18n-title="tip_monaco_opts_reset_all">
           <span class="material-symbols-outlined" style="font-size: var(--fs-14);">restart_alt</span>
         </button>
       </div>

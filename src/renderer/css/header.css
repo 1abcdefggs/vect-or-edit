@@ -148,19 +148,30 @@
 
 .menu-bar-btn {
   background: transparent;
-  border: none;
+  border: var(--border-width) solid transparent;
   color: var(--header-fg, var(--text-main));
   font-size: var(--fs-12);
   font-family: inherit;
   font-weight: 500;
-  padding: 4px 8px;
+  /* padding and line-height come from class btn-phi (buttons.css) */
   border-radius: 4px;
   cursor: pointer;
-  line-height: 1.2;
   white-space: nowrap;
   transition: background-color 0.15s ease, color 0.15s ease;
   -webkit-app-region: no-drag !important;
   outline: none;
+}
+
+/* The look stays at the font-size rule; the clickable area grows to --hit-min (24px) with a transparent strip above and below. */
+.menu-bar-btn { position: relative; }
+.menu-bar-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: max(100%, var(--hit-min));
+  transform: translateY(-50%);
 }
 
 .menu-bar-btn:hover,

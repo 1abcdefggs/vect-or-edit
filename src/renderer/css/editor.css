@@ -196,6 +196,25 @@
   position: relative;
 }
 
+/* Both parts of the split button sit inside the group frame: no frame or glow of their own (the group frame shows the hover),
+   the hover only tints the background. Without this the arrow button drew a second border inside the group. */
+.save-dropdown-container > #btnSave,
+.save-dropdown-container > #btnSaveMenu {
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: none;
+  transform: none;
+}
+
+.save-dropdown-container > #btnSave:hover,
+.save-dropdown-container > #btnSaveMenu:hover {
+  background: var(--hover-bg);
+  border: none;
+  box-shadow: none;
+  transform: none;
+}
+
 /* Fixed so the toolbar row (overflow: hidden) cannot clip it; top/left are set when it opens. */
 .save-dropdown-menu {
   display: none;
