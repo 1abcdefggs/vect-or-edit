@@ -229,22 +229,14 @@
   padding: 4px 0;
 }
 
-.save-dropdown-container.is-open .save-dropdown-menu {
+/* The open state is the same class as the menu bar's (.open), so one rule set describes both */
+.save-dropdown-container.open .save-dropdown-menu {
   display: flex;
 }
 
+/* Shared item base: dropdown-menu.css. Here only the gap of the Save menu */
 .save-dropdown-item {
-  display: flex;
-  align-items: center;
   gap: 8px;
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
-  color: var(--text-main);
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  font-size: var(--fs-12);
 }
 
 .save-dropdown-item:hover {
@@ -269,11 +261,6 @@
   background: var(--active-bg);
 }
 
-.save-dropdown-separator {
-  height: 1px;
-  margin: 4px 0;
-  background: var(--border-color);
-}
 
 /* AutoSave menu item: a small switch at the right edge shows the state (drawn from aria-checked, set in autoSaveManager.js).
    The selectors are nested under the item so they win over the shared .toggle-switch size. */

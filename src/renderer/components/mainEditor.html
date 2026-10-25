@@ -40,7 +40,7 @@
         <!-- BG/FG Theme -->
         <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_bg_theme">&#xe41d;</span>
         <span class="style-label style-label--bg" style="font-size: var(--fs-12); font-weight: 700; color: var(--text-main); margin-right: 2px;" data-i18n-title="tip_editor_bg_colors">BG/FG</span>
-        <select id="quickEditorToneSelect" data-ui="edt:bg-tone" class="editor-toolbar-select" style="max-width: 110px; height: 28px; border: none; background: transparent;"
+        <select id="quickEditorToneSelect" data-ui="edt:bg-tone" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 110px;"
           data-i18n-title="setting_editor_bg">
           <option value="default" selected data-i18n="tone_default">Default</option>
           <option value="oled" data-i18n="tone_dark_oled">OLED Black</option>
@@ -52,8 +52,8 @@
         <!-- FONT Family -->
         <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_family">&#xe165;</span>
         <div data-ui="edt:font-family" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_family">
-          <select id="fontFamilySelect" class="editor-toolbar-select"
-            style="border: none; background: transparent; height: 28px;" data-i18n-title="tip_editor_font_family">
+          <select id="fontFamilySelect" class="editor-toolbar-select editor-toolbar-select--flat"
+            data-i18n-title="tip_editor_font_family">
             <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
               data-i18n="font_serif">Source Serif 4</option>
             <option
@@ -69,8 +69,8 @@
         <!-- Font Size -->
         <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_size">&#xe245;</span>
         <div data-ui="edt:font-size" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_size">
-          <select id="fontSizeSelect" class="editor-toolbar-select"
-            style="border: none; background: transparent; height: 28px; max-width: 80px;" data-i18n-title="tip_editor_font_size">
+          <select id="fontSizeSelect" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 80px;"
+            data-i18n-title="tip_editor_font_size">
             <option value="14" data-i18n="font_small">14px</option>
             <option value="16" selected data-i18n="font_normal">16px</option>
             <option value="18" data-i18n="font_large">18px</option>

@@ -7,6 +7,7 @@ import { showHelpPage } from '../help/helpPage.js';
  */
 
 import {
+  createBlankTab,
   createNewTab,
   closeTab,
   getActiveTab,
@@ -150,7 +151,7 @@ export function registerAppCommands(): void {
       title: 'New File',
       category: 'File',
       shortcut: 'Ctrl+N',
-      handler: () => createNewTab()
+      handler: () => createBlankTab()
     },
     {
       id: 'file.open',
@@ -388,8 +389,11 @@ export function registerAppCommands(): void {
       title: 'Toggle Language',
       category: 'View',
       handler: () => {
-        const btnLang = document.getElementById('btnLangToggle');
-        if (btnLang) btnLang.click();
+        // The language lives in the settings page now (no header button): flip its select, which applies the language
+        const langSelect = document.getElementById('modalLangSelect') as HTMLSelectElement | null;
+        if (!langSelect) return;
+        langSelect.value = langSelect.value === 'en' ? 'ja' : 'en';
+        langSelect.dispatchEvent(new Event('change'));
       }
     },
     {

@@ -8,6 +8,7 @@ import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, re
 import { syncSettingsToBackend } from './settingsState.js';
 import { showToast } from '../notifications/toastManager.js';
 import { notifyEmbeddingModelsChanged } from '../../search/searchLocalAi.js';
+import { getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
 import { bindEmbeddingModelEvents, renderEmbeddingModelList } from './embeddingModelList.js';
 import { initEmbeddingSourceController } from './embeddingSourceController.js';
 import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
@@ -747,6 +748,13 @@ export function initSettings(updateEditorCb) {
       window.dispatchEvent(new Event('app:settingsChanged'));
       showToast(t('api_clear_done'), 'success');
     });
+  }
+
+  // The model is already on disk (downloaded in an earlier run or in setup): no download button, say what to do next
+  if (btnInitLocalAi && getDownloadedModelIds().has(getActiveModelId())) {
+    btnInitLocalAi.style.display = 'none';
+    const localAiStatusBadge = document.getElementById('localAiStatusBadge');
+    if (localAiStatusBadge) localAiStatusBadge.textContent = t('local_ai_downloaded_standby');
   }
 
   if (btnInitLocalAi) {

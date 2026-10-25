@@ -1,4 +1,6 @@
-import { tabs, activeTabId, switchTab, closeTab, createNewTab, duplicateTab } from './tabState.js';
+import { tabs, activeTabId, switchTab, closeTab, createBlankTab, duplicateTab, setTabFormat, getTabFormat } from './tabState.js';
+import { formatOfName } from '../../../shared/documentFormat';
+import { showConfirmModal } from '../../ui/notifications/confirmModal.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { t } from '../../core/i18n.js';
@@ -141,9 +143,19 @@ export function renderTabs() {
           if (isHandled) return;
           isHandled = true;
           const newName = input.value.trim();
-          if (newName && newName !== tab.title) {
+          // A typed extension sets the format; a change of format asks first, as Windows does when an extension changes
+          const nextFormat = /\.(md|markdown|txt)$/i.test(newName) ? formatOfName(newName) : null;
+          const formatChanges = nextFormat !== null && nextFormat !== getTabFormat(tab);
+          const confirmed = !formatChanges || await showConfirmModal({
+            title: t('rename_format_title'),
+            message: t('rename_format_confirm'),
+            type: 'warning',
+            confirmText: t('rename_format_btn')
+          });
+          if (newName && newName !== tab.title && confirmed) {
             tab.title = newName;
             tab.isDirty = true;
+            if (formatChanges) setTabFormat(tab, nextFormat, { notify: false });
             editorEvents.emit('onStatusBarUpdateNeeded', tab.title);
 
             // Auto-persist new name to local autosave cache
@@ -204,7 +216,7 @@ export function renderTabs() {
   btnInlineNewTab.style.color = 'var(--text-muted)';
   btnInlineNewTab.style.marginLeft = '2px';
   btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">&#xf741;</span>`;
-  btnInlineNewTab.addEventListener('click', () => createNewTab());
+  btnInlineNewTab.addEventListener('click', () => createBlankTab());
   tabsContainer.appendChild(btnInlineNewTab);
 
   updateSaveAllButtonState();

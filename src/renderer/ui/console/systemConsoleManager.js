@@ -2,6 +2,8 @@ import { createDisclosure } from '../components/disclosureToggle.js';
 import { saveTextToFile } from '../../editor/io/fileIO.js';
 import { settingsStore } from '../../core/settingsStore.js';
 import { formatLogTime } from '../../core/logTime.js';
+import { showConfirmModal } from '../notifications/confirmModal.js';
+import { t } from '../../core/i18n.js';
 
 export function initSystemConsole() {
   const logEntriesContainer = document.getElementById('logEntriesContainer');
@@ -130,6 +132,7 @@ export function initSystemConsole() {
     ? createDisclosure({
         button: btnToggleConsole,
         panel: systemLogPanel,
+        animate: true,
         onChange: (open) => {
           btnToggleConsole.classList.toggle('btn-logs-closed', !open);
           btnToggleConsole.classList.toggle('toolbar-btn-active', open);
@@ -145,7 +148,17 @@ export function initSystemConsole() {
   logsDisclosure?.set(!settingsStore.getPreference('system.collapseLogsOnStartup'));
   document.getElementById('btnCloseLogs')?.addEventListener('click', () => logsDisclosure?.set(false));
 
-  const clearLogs = () => {
+  // Clearing cannot be undone, so it asks first, but only when there is something to lose
+  const clearLogs = async () => {
+    if (logBuffer.length > 0) {
+      const confirmed = await showConfirmModal({
+        title: t('log_clear_title'),
+        message: t('log_clear_confirm'),
+        type: 'warning',
+        confirmText: t('log_clear_btn')
+      });
+      if (!confirmed) return;
+    }
     logBuffer.length = 0;
     if (logEntriesContainer) logEntriesContainer.innerHTML = '';
     liveMirrors().forEach((view) => view.replaceChildren());

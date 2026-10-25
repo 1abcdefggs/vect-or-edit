@@ -22,6 +22,8 @@ import { bindAppActionEvents } from './ui/actions/appActionEvents.js';
 import { initZoomControls } from './ui/zoomController.js';
 import { injectLazyUIComponents } from './core/uiLoader';
 import { initMenuBar } from './ui/layout/menuBarController';
+import { renderMenuDropdowns } from './ui/layout/menuRenderer';
+import { renderStaticSettingsText } from './ui/settings/settingsStaticMarkup';
 import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
@@ -48,6 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await refreshApiKeyStatus();
 
   // 0.2. Immediately apply Locale (Ensures 3. LOCALE is ready and UI text is localized instantly)
+  // Settings text placeholders first: loadLocales applies the locale to them as well
+  renderStaticSettingsText();
   await loadLocales();
 
   // 0.5. Initialize LED tooltips consistently
@@ -84,6 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 1. Initialize UI Layout & Elements
   initTopBarRenderer();
   bindTopLevelUIEvents();
+  renderMenuDropdowns();
   initMenuBar();
   initSidebarResizer();
   initEditorStyleGroupFit();

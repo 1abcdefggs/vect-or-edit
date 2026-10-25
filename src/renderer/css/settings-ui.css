@@ -281,8 +281,6 @@
   gap: 4px;
   font-size: var(--fs-12);
   border-radius: 4px;
-  background: var(--log-btn-bg);
-  border: 1px solid var(--log-btn-border);
 }
 
 .settings-log-btn .material-symbols-outlined { font-size: var(--fs-14); flex-shrink: 0; color: inherit; }

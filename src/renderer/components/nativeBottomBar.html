@@ -20,7 +20,7 @@
     </button>
     <div id="pipelineStrip" style="display: none; align-items: center; gap: 4px;">
       <!-- Placed where btnPipelineToggle sits so open and close share one position -->
-      <button id="btnPipelineClose" class="toolbar-btn" style="display: flex; align-items: center; height: 20px; padding: 0 6px;" data-i18n-title="tip_pipeline_hide">
+      <button id="btnPipelineClose" class="bottom-bar-close" data-i18n-title="tip_pipeline_hide">
         <span class="material-symbols-outlined actionable-icon" style="font-size: var(--fs-16);">chevron_left</span>
       </button>
 
@@ -78,7 +78,7 @@
     <span id="statusSaveIndicator" data-ui="sys:save-status" class="status-save-indicator" role="status" aria-live="polite"></span>
 
     <!-- Hides the log panel while it is open (nothing is discarded, so it never asks). The LOGS row on the left is the minimized state -->
-    <button id="btnCloseLogs" class="toolbar-btn" type="button" hidden style="height: 20px; padding: 0 4px; align-items: center;" data-i18n-title="tip_logs_close">
+    <button id="btnCloseLogs" class="bottom-bar-close" type="button" hidden data-i18n-title="tip_logs_close">
       <span class="material-symbols-outlined actionable-icon" style="font-size: var(--fs-16);">close</span>
     </button>
   </div>

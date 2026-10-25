@@ -227,17 +227,6 @@
   animation: pulse-glow 1.5s infinite alternate;
 }
 
-/* Unified Semantic Module Cards (Guideline & Knowledge Shared Components) */
-.semantic-module-card {
-  background: var(--bg-primary);
-  padding: 8px 10px;
-  border-radius: var(--radius-md, 6px);
-  border: var(--border-width) solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  box-sizing: border-box;
-}
 
 /* Slide-up System Logs Console Panel */
 .system-log-panel {
@@ -330,19 +319,13 @@
   font-size: var(--fs-12);
 }
 
-/* Ghost button: no outline (the band already has one rule), a tinted fill so it reads as a button, the icon in the accent colour */
+/* The tinted face and hover come from .log-panel-btn (buttons.css); here only the text colours */
 .log-head-actions .log-panel-btn {
-  background: var(--log-btn-bg);
-  border: none;
   color: var(--text-main);
 }
 
 .log-head-actions .log-panel-btn .material-symbols-outlined {
   color: var(--accent-color);
-}
-
-.log-head-actions .log-panel-btn:hover {
-  background: var(--log-btn-hover);
 }
 
 @container (max-width: 520px) {

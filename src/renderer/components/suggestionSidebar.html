@@ -39,51 +39,19 @@
     </div>
 
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
-      <style>
-        .semantic-module-card { transition: max-height 0.2s ease; }
-        .semantic-module-card.collapsed .semantic-module-body { display: none !important; }
-        .semantic-module-card .collapse-icon { transition: transform 0.2s ease; }
-        .semantic-module-card.collapsed .collapse-icon { transform: rotate(-90deg); }
-        /* Shared card frame: both modules use the same radius, border, header height and button rhythm */
-        .semantic-module-card { border: var(--border-width) solid var(--border-color); border-radius: 8px; background: rgba(255,255,255,0.02); overflow: hidden; }
-        .semantic-module-header { cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; padding: 6px 10px; }
-        .semantic-module-header:hover { background: rgba(255,255,255,0.03); }
-        .semantic-module-title { min-width: 0; overflow: hidden; }
-        .semantic-module-actions { display: flex; align-items: stretch; align-self: center; gap: 4px; flex-shrink: 0; }
-        /* Size comes from class btn-phi (buttons.css); the row stretches the buttons to one height */
-        .semantic-module-card .semantic-btn-add,
-        .semantic-module-card .semantic-btn-clear,
-        .semantic-module-card #btnInsertTemplate { border-radius: 4px; }
-        .semantic-module-card .semantic-btn-add { width: 78px; justify-content: center; }
-        .semantic-module-card .semantic-btn-add .plus { font-size: var(--fs-14); line-height: 1; }
-        /* Leading icons share one fixed column so the title separators line up across both cards */
-        .semantic-module-title > .material-symbols-outlined,
-        .semantic-module-title > #profileIcon { width: 20px; display: inline-flex; justify-content: center; flex-shrink: 0; }
-        .semantic-module-title > .collapse-icon { width: 16px; }
-        /* Hide the Knowledge body (and its empty padding) until at least one slot exists */
-        #knowledgeModuleCard .semantic-module-body:not(:has(#knowledgeSlotsList:not(:empty))) { display: none; }
-        /* Narrow sidebar: keep only the "+" icon on the add buttons (title tooltip still shows the full action).
-           With the label the header content needs about 250px, which a 280px container still holds */
-        .semantic-control-container { container: semantic-controls / inline-size; }
-        @container semantic-controls (max-width: 280px) {
-          .semantic-control-container .semantic-btn-add .btn-label { display: none; }
-          .semantic-control-container .semantic-btn-add { width: 24px; }
-        }
-      </style>
-      <!-- 1. Guidelines & Presets Section (Active) -->
+      <!-- 1. Guidelines & Presets Section (Active) (card rules: module-cards.css) -->
       <div id="guidelineModuleCard" data-ui="sbr:guideline-card" class="profile-control-card semantic-module-card">
         <div class="semantic-module-header" data-i18n-title="tip_section_guideline">
-          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
-            <span class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
+          <span class="semantic-module-title">
+            <span class="material-symbols-outlined collapse-icon">expand_more</span>
             <span id="profileIcon" style="display: flex; align-items: center; color: var(--accent-color, #38bdf8);">
-              <span class="material-symbols-outlined" style="font-size: var(--fs-19); flex-shrink: 0;">&#xf1c9;</span>
+              <span class="material-symbols-outlined semantic-module-icon">&#xf1c9;</span>
             </span>
-            <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
-            <span id="profileHeaderLabel" style="font-weight: 600; font-size: var(--fs-16);" data-i18n="active_guideline_preset_label">Guideline</span>
+            <span class="module-title-separator semantic-module-sep">|</span>
+            <span id="profileHeaderLabel" data-i18n="active_guideline_preset_label">Guideline</span>
           </span>
           <div class="semantic-module-actions">
-            <button id="btnInsertTemplate" class="toolbar-btn btn-phi"
-              style="font-size: var(--fs-11);  border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-main); border: var(--border-width) solid var(--border-color);"
+            <button id="btnInsertTemplate" class="toolbar-btn btn-phi semantic-btn-template"
               data-i18n-title="btn_insert_template">
               <span data-i18n="btn_insert_template">Template</span>
             </button>
@@ -101,13 +69,13 @@
       </div>
 
       <!-- 2. Knowledge Section -->
-      <div id="knowledgeModuleCard" data-ui="sbr:knowledge-card" class="slots-control-card semantic-module-card">
+      <div id="knowledgeModuleCard" data-ui="sbr:knowledge-card" class="slots-control-card semantic-module-card has-body">
         <div class="semantic-module-header" data-i18n-title="tip_section_slots">
-          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
-            <span class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
-            <span class="material-symbols-outlined" style="font-size: var(--fs-19); color: var(--accent-color, #38bdf8); flex-shrink: 0;">&#xea19;</span>
-            <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
-            <span style="font-weight: 600; font-size: var(--fs-16);" data-i18n="knowledge_slots_label">Knowledge</span>
+          <span class="semantic-module-title">
+            <span class="material-symbols-outlined collapse-icon">expand_more</span>
+            <span class="material-symbols-outlined semantic-module-icon">&#xea19;</span>
+            <span class="module-title-separator semantic-module-sep">|</span>
+            <span data-i18n="knowledge_slots_label">Knowledge</span>
             <span id="knowledgeSlotsCountBadge" style="display: none;" data-i18n-title="tip_slots_count">0 Slots</span>
           </span>
           <div class="semantic-module-actions">
@@ -123,7 +91,7 @@
           </div>
         </div>
 
-        <div class="semantic-module-body" style="display: flex; flex-direction: column; gap: 4px; padding-top: 4px;">
+        <div class="semantic-module-body">
           <!-- Dynamic Slots List (SLOT 1, SLOT 2, ...) -->
           <div id="knowledgeSlotsList"
             style="display: flex; flex-direction: column; gap: 4px; max-height: 140px; overflow-y: auto;" data-i18n-title="tip_slots_list"></div>

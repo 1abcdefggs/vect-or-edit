@@ -148,8 +148,9 @@ body.ai-standby .header-full-border-line {
   display: none !important;
 }
 
+/* Top padding 5px puts the row's centre on the editor toolbar's centre (both rows are 30px tall) */
 .sidebar-header {
-  padding: 10px var(--sidebar-inset, 14px) 10px;
+  padding: 5px var(--sidebar-inset, 14px) 10px;
   border-bottom: var(--border-width) solid var(--border-color);
   background: var(--header-bg, var(--bg-secondary));
   flex-shrink: 0;

@@ -40,6 +40,9 @@ export function initZoomControls(): void {
       percentEl.textContent = `${Math.round(currentZoom * 100)}%`;
     }
 
+    const sliderEl = document.getElementById('headerZoomSlider') as HTMLInputElement | null;
+    if (sliderEl) sliderEl.value = currentZoom.toString();
+
     if (modalZoomSelect) {
       modalZoomSelect.value = currentZoom.toString();
       if (!modalZoomSelect.value) {
@@ -85,6 +88,11 @@ export function initZoomControls(): void {
         applyZoom(1.0);
       }
     });
+
+    // The slider sits inside the badge: dragging it sets the value and must not count as a click (reset)
+    const zoomSlider = document.getElementById('headerZoomSlider') as HTMLInputElement | null;
+    zoomSlider?.addEventListener('click', (e) => e.stopPropagation());
+    zoomSlider?.addEventListener('input', () => applyZoom(parseFloat(zoomSlider.value), false));
   }
 
   // Ctrl + Mouse Wheel global zoom support

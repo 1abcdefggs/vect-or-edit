@@ -191,9 +191,11 @@ body.resizing-sidebar * {
   animation: popIn 0.15s ease-out;
 }
 
+/* Log action buttons (CLEAR, COPY, DOWNLOAD): a light accent tint at rest, stronger on hover, no outline.
+   The tint shows they are buttons; the icon and label keep the panel's text color. */
 .log-panel-btn {
-  background: var(--log-btn-bg);
-  border: 1px solid var(--log-btn-border);
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 14%, transparent);
+  border: none;
   color: var(--log-title);
   padding: 3px 8px;
   font-size: var(--fs-12);
@@ -207,8 +209,7 @@ body.resizing-sidebar * {
 }
 
 .log-panel-btn:hover {
-  background: var(--log-btn-hover);
-  border-color: var(--log-btn-border);
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
   color: var(--log-title);
 }
 
@@ -301,19 +302,24 @@ button.btn-phi {
   user-select: none;
 }
 
-/* Header Logs Button Dynamic State (Blue when Bottom Panel is Closed) */
-/* Closed state: a tint, no outline (one edge per region; the tint carries the state) */
-.btn-logs-closed {
-  background: rgba(56, 189, 248, 0.16) !important;
-  border: none !important;
-  color: var(--accent-color, #66f) !important;
-  
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
-  transition: all 0.2s ease;
+/* LOGS chip states (one model): closed = the resting chip face with an accent tint, open = a neutral pressed face.
+   The label always uses the main text colour, which holds contrast on both faces; only the icon takes the accent.
+   The open face needs !important to beat the generic .toolbar-btn-active used by other buttons. */
+.bottom-bar-left > .bottom-bar-chip.btn-logs-closed {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 14%, transparent);
+  box-shadow: none;
+  color: var(--text-main);
+  transition: background 0.2s ease;
 }
 
-.btn-logs-closed:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
+.bottom-bar-left > .bottom-bar-chip.btn-logs-closed:hover {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
+}
+
+.bottom-bar-left > .bottom-bar-chip.toolbar-btn-active {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  color: var(--text-main) !important;
 }
 
 /* Bottom bar chips (LOGS, PIPELINE): a tinted fill shows they are buttons; no outline */
@@ -324,6 +330,21 @@ button.btn-phi {
 
 .bottom-bar-left > .bottom-bar-chip:hover {
   background: var(--log-btn-hover);
+}
+
+/* Close controls of the bottom bar (LOGS, PIPELINE): the same tinted fill as the chips, no outline */
+.bottom-bar-close {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border: none;
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 14%, transparent);
+  color: var(--text-main);
+}
+
+.bottom-bar-close:hover {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
 }
 
 .toolbar-btn-active {
@@ -523,7 +544,21 @@ button.btn-phi {
   min-width: 0;
 }
 
+/* Flat selects in the editor toolbar: no outline, no fill, the same 28px height as the toolbar's controls */
+.editor-toolbar-select--flat {
+  border: none;
+  background: transparent;
+  height: 28px;
+}
+
+/* The group's free space goes to the selects (not left empty at the right), so their names show more before the ellipsis */
+.editor-toolbar .font-control-integrated-group > [data-ui^="edt:"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .editor-toolbar select.editor-toolbar-select {
+  flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -531,8 +566,9 @@ button.btn-phi {
   white-space: nowrap;
 }
 
-.editor-toolbar .editor-header-right {
-  flex-shrink: 0;
+/* The left part must be allowed to shrink below its content width; the right part (editor.css) never shrinks. */
+.editor-toolbar > :not(.editor-header-right) {
+  min-width: 0;
 }
 
 @container editor-toolbar (max-width: 759px) {

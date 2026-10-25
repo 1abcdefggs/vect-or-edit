@@ -270,20 +270,9 @@
 }
 
 /* Dropdown Items */
+/* Shared item and separator base: dropdown-menu.css. Here only what the menu bar adds */
 .menu-dropdown-item {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
-  color: var(--text-main, #f1f5f9);
-  font-size: var(--fs-12);
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  outline: none;
   transition: background-color 0.12s ease, color 0.12s ease;
   white-space: nowrap;
   gap: 16px;
@@ -316,9 +305,6 @@
 
 /* Dividers */
 .menu-divider {
-  height: 1px;
-  background-color: var(--border-color, rgba(148, 163, 184, 0.15));
-  margin: 4px 0;
   pointer-events: none;
 }
 

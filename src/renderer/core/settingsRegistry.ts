@@ -46,7 +46,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'hdr:menu-overflow': true,
     'hdr:theme-select': true,
     'hdr:color-mode': true,
-    'hdr:locale-toggle': true,
     'hdr:zoom-select': true,
     'hdr:settings-btn': true,
     'edt:toolbar': true,
@@ -186,7 +185,6 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     description: 'Switch application display language.',
     category: 'header',
     prefPath: 'header.locale',
-    visibilityKey: 'hdr:locale-toggle',
     controlType: 'select',
     options: [
       { label: 'English (EN)', value: 'en' },
@@ -237,7 +235,7 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     visibilityKey: 'edt:font-family',
     controlType: 'select',
     options: [
-      { label: 'Source Serif 4 (Serif)', value: "'Source Serif 4', 'Noto Serif JP', Georgia, serif" },
+      { label: 'Source Serif 4', value: "'Source Serif 4', 'Noto Serif JP', Georgia, serif" },
       { label: 'Source Sans 3 (Sans-serif)', value: "'Source Sans 3', 'Noto Sans JP', sans-serif" },
       { label: 'Source Code Pro (Monospace)', value: "'Source Code Pro', 'Cascadia Code', monospace" }
     ]

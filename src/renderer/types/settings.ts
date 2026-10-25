@@ -51,7 +51,6 @@ export type HeaderUiKey =
   | 'hdr:menu-overflow'
   | 'hdr:theme-select'
   | 'hdr:color-mode'
-  | 'hdr:locale-toggle'
   | 'hdr:zoom-select'
   | 'hdr:settings-btn';
 

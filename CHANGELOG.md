@@ -7,8 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.41] - 2026-10-25
+
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
+- Log clear asks for confirmation when the log has entries; the log action buttons and close controls show a tint at rest
+- The LOGS panel opens with a short slide and fade (off for reduced motion)
+- Renaming a tab with an extension that changes the format asks first and then switches the format
+- Zoom slider in the zoom hint
+- Downloaded embedding model: EMBED turns on by itself after the first-run download; the settings page no longer offers to download it again
+
+### Changed
+- Header: colour mode, theme and zoom form one frame; the settings button sits at the right end; the language switch is in the settings page only
+- Sidebar module cards share one definition; Knowledge opens after files are added; card padding is 4px
+- Toolbar selects use the free space before they shorten the text; the sidebar header top padding aligns with the editor toolbar
+- The menu bar and Save menu items come from one definition; the settings card headings and row text come from shared markup
+- A new tab is empty; only the first document of a session shows the welcome text
+
+### Fixed
+- Toolbar overflow at narrow widths (the right group no longer pushes past the edge)
+- Header and log controls no longer carry outlines
 
 ## [0.3.40] - 2026-10-25
 

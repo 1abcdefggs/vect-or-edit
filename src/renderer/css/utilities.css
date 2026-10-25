@@ -105,29 +105,7 @@ textarea {
   box-sizing: border-box;
 }
 
-/* Semantic Rule Actions */
-.semantic-module-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.semantic-module-header > div:last-child {
-  margin-left: auto;
-}
-
-.semantic-module-title {
-  font-size: var(--fs-16);
-  font-weight: 600;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  letter-spacing: 0.2px;
-}
-
+/* Semantic Rule Actions (module card header and title: module-cards.css) */
 .semantic-btn-add {
   padding: 2px 8px;
   font-size: var(--fs-12);

@@ -120,6 +120,8 @@ export function bindAppActionEvents() {
     const handleAddSlot = async () => {
       const res = await addKnowledgeSlot();
       if (res?.success) {
+        // Show what was just set: open the Knowledge card (search collapses it to make room for results)
+        document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
         setLedStatus('kb', true, `7. HNSW: Indexed (${res.totalCount?.toLocaleString()} items)`);
       }
@@ -170,7 +172,7 @@ export function bindAppActionEvents() {
       saveDropdownMenu.style.top = `${rect.bottom + 4}px`;
       saveDropdownMenu.style.left = `${rect.left}px`;
     }
-    saveDropdown?.classList.toggle('is-open', isOpen);
+    saveDropdown?.classList.toggle('open', isOpen);
     document.getElementById('btnSaveMenu')?.setAttribute('aria-expanded', String(isOpen));
   };
   // Left part saves at once; while AutoSave is pending (no file yet) it asks for a location instead
@@ -181,7 +183,7 @@ export function bindAppActionEvents() {
   });
   document.getElementById('btnSaveMenu')?.addEventListener('click', (e) => {
     e.stopPropagation();
-    setSaveMenuOpen(!saveDropdown?.classList.contains('is-open'));
+    setSaveMenuOpen(!saveDropdown?.classList.contains('open'));
   });
   // The AutoSave switch keeps the menu open so the state can be read and changed in one go
   saveDropdown?.querySelectorAll('.save-dropdown-item:not(.autosave-menu-item)').forEach((item) => {
