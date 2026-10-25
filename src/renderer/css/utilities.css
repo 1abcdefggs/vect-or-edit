@@ -412,12 +412,6 @@ button,
    - Window Width > 700px: Prominent font size (1.0rem+)
    ========================================================================== */
 @media (max-width: 700px) {
-  .semantic-module-title {
-    font-size: var(--fs-12) !important;
-  }
-  .semantic-module-title .material-symbols-outlined {
-    font-size: var(--fs-15) !important;
-  }
   .system-status-panel span[data-i18n="log_panel_title"] {
     font-size: var(--fs-10) !important;
   }
@@ -427,13 +421,6 @@ button,
 }
 
 @media (min-width: 701px) {
-  .semantic-module-title {
-    font-size: var(--fs-17) !important;
-    font-weight: 600;
-  }
-  .semantic-module-title .material-symbols-outlined {
-    font-size: var(--fs-20) !important;
-  }
   .system-status-panel span[data-i18n="log_panel_title"] {
     font-size: var(--fs-13) !important;
   }

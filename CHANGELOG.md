@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.44] - 2026-10-25
+
+### Changed
+- Sidebar module cards: the title size rules live in the card stylesheet; the Editor Options header uses the shared classes
+- Bottom bar close controls and LOGS action buttons: the resting tint comes from the shared log tokens
+- LOGS chip labels use the title colour in the closed and open states (contrast 4.5:1 or more on each face)
+
+### Fixed
+- A downloaded embedding model loads at startup, so the Embedding shows as configured after a restart
+
 ## [0.3.43] - 2026-10-25
 
 ### Changed

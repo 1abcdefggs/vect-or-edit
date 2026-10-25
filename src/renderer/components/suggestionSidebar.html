@@ -44,7 +44,7 @@
         <div class="semantic-module-header" data-i18n-title="tip_section_guideline">
           <span class="semantic-module-title">
             <span class="material-symbols-outlined collapse-icon">expand_more</span>
-            <span id="profileIcon" style="display: flex; align-items: center; color: var(--accent-color, #38bdf8);">
+            <span id="profileIcon">
               <span class="material-symbols-outlined semantic-module-icon">&#xf1c9;</span>
             </span>
             <span class="module-title-separator semantic-module-sep">|</span>
@@ -131,11 +131,11 @@
   <!-- Editor Options: every Monaco option, shown live in the main editor. Outside the header so it can use the height below it (collapsed until opened) -->
   <div id="monacoOptionsCard" data-ui="sbr:editor-options-card" class="monaco-options-card semantic-module-card collapsed">
     <div class="semantic-module-header" role="button" tabindex="0" aria-expanded="false" aria-controls="monacoOptionsBody" data-i18n-title="tip_section_editor_options">
-      <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
-        <span aria-hidden="true" class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
-        <span class="material-symbols-outlined" style="font-size: var(--fs-19); color: var(--accent-color, #38bdf8); flex-shrink: 0;">tune</span>
-        <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
-        <span style="font-weight: 600; font-size: var(--fs-16);" data-i18n="monaco_opts_title">Editor Options</span>
+      <span class="semantic-module-title">
+        <span aria-hidden="true" class="material-symbols-outlined collapse-icon">expand_more</span>
+        <span class="material-symbols-outlined semantic-module-icon">tune</span>
+        <span class="module-title-separator semantic-module-sep">|</span>
+        <span data-i18n="monaco_opts_title">Editor Options</span>
       </span>
       <div class="semantic-module-actions">
         <button id="btnMonacoOptionsResetAll" class="toolbar-btn semantic-btn-clear btn-phi" type="button" style="display: none;" data-i18n-title="tip_monaco_opts_reset_all">
