@@ -791,6 +791,28 @@
           </div>
           <div class="setting-item">
             <div>
+              <div class="setting-label" data-i18n="setting_log_time_format">Log time format</div>
+              <div class="setting-desc" data-i18n="setting_log_time_format_desc">How the time of each log line is shown. The stored time is always the same; only the display changes.</div>
+            </div>
+            <select id="modalLogTimeFormatSelect" class="toolbar-select" data-i18n-title="tip_set_log_time_format">
+              <option value="h24" selected data-i18n="opt_time_h24">24 hours</option>
+              <option value="h12" data-i18n="opt_time_h12">12 hours</option>
+              <option value="os" data-i18n="opt_time_os">Follow OS</option>
+              <option value="iso" data-i18n="opt_time_iso">ISO 8601</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div>
+              <div class="setting-label" data-i18n="setting_log_time_zone">Log time zone</div>
+              <div class="setting-desc" data-i18n="setting_log_time_zone_desc">Show the time in this computer's time zone, or in UTC. ISO 8601 is always UTC.</div>
+            </div>
+            <select id="modalLogTimeZoneSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_log_time_zone">
+              <option value="local" selected data-i18n="opt_time_local">Local</option>
+              <option value="utc" data-i18n="opt_time_utc">UTC</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div>
               <div class="setting-label" data-i18n="setting_remember_layout">Remember layout</div>
               <div class="setting-desc" data-i18n="setting_remember_layout_desc">Remembers the height of the log panel and the chat dock and the width of the sidebar, and restores them at the next start. Turning it off forgets them.</div>
             </div>

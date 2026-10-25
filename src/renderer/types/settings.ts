@@ -29,6 +29,8 @@ export interface SidebarPreferences {
 
 export interface SystemPreferences {
   collapseLogsOnStartup: boolean;
+  logTimeFormat: 'h24' | 'h12' | 'os' | 'iso';
+  logTimeZone: 'local' | 'utc';
 }
 
 export interface AppPreferences {

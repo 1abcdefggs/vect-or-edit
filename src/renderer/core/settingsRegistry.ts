@@ -30,7 +30,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
       linterEnabled: true
     },
     system: {
-      collapseLogsOnStartup: false
+      collapseLogsOnStartup: false,
+      logTimeFormat: 'h24',
+      logTimeZone: 'local'
     }
   },
   visibility: {

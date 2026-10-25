@@ -38,7 +38,7 @@ export function captureLog(level: string, args: any[], source = 'Main:System') {
   const entry = {
     // The renderer ignores ids it has already shown, so the backlog and live pushes can overlap safely
     id: nextLogId++,
-    time: new Date().toLocaleTimeString(),
+    time: new Date().toISOString(),
     source,
     level,
     message

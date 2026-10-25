@@ -22,6 +22,8 @@ import {
 } from '../../editor/ui/autoSaveManager.js';
 
 const LOGS_PATH = 'system.collapseLogsOnStartup';
+const LOG_TIME_PATH = 'system.logTimeFormat';
+const LOG_TIME_ZONE_PATH = 'system.logTimeZone';
 const onOff = (value) => (value ? 'on' : 'off');
 
 function bindAutoSave() {
@@ -108,6 +110,20 @@ function bindLogsOnStart() {
   select.addEventListener('change', () => settingsStore.updatePreference(LOGS_PATH, select.value === 'closed'));
 }
 
+function bindLogTimeFormat() {
+  const select = document.getElementById('modalLogTimeFormatSelect');
+  if (!select) return;
+  select.value = settingsStore.getPreference(LOG_TIME_PATH) || 'h24';
+  select.addEventListener('change', () => settingsStore.updatePreference(LOG_TIME_PATH, select.value));
+}
+
+function bindLogTimeZone() {
+  const select = document.getElementById('modalLogTimeZoneSelect');
+  if (!select) return;
+  select.value = settingsStore.getPreference(LOG_TIME_ZONE_PATH) || 'local';
+  select.addEventListener('change', () => settingsStore.updatePreference(LOG_TIME_ZONE_PATH, select.value));
+}
+
 function bindRememberLayout() {
   const select = document.getElementById('modalRememberLayoutSelect');
   if (!select) return;
@@ -127,5 +143,7 @@ export function initWindowFeatureSettings() {
   bindAutoSave();
   bindAssistants();
   bindLogsOnStart();
+  bindLogTimeFormat();
+  bindLogTimeZone();
   bindRememberLayout();
 }

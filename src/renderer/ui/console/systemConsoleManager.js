@@ -1,6 +1,7 @@
 import { createDisclosure } from '../components/disclosureToggle.js';
 import { saveTextToFile } from '../../editor/io/fileIO.js';
 import { settingsStore } from '../../core/settingsStore.js';
+import { formatLogTime } from '../../core/logTime.js';
 
 export function initSystemConsole() {
   const logEntriesContainer = document.getElementById('logEntriesContainer');
@@ -35,7 +36,7 @@ export function initSystemConsole() {
     const badgeClass = entry.level === 'ERROR' ? 'badge-error' : (entry.level === 'WARN' ? 'badge-warn' : 'badge-info');
     // Built with textContent: messages carry raw console text (renderer HTML, file paths) that must not be parsed as markup
     const cells = [
-      ['log-time', `[${entry.time}]`],
+      ['log-time', `[${formatLogTime(entry.time, settingsStore.getPreference('system.logTimeFormat'), settingsStore.getPreference('system.logTimeZone'))}]`],
       [`log-badge ${badgeClass}`, entry.level],
       ['log-source', `[${entry.source}]`],
       ['log-msg', entry.message]
@@ -82,7 +83,7 @@ export function initSystemConsole() {
   const SYSTEM_LOG_LEVELS = { success: 'INFO', info: 'INFO', warn: 'WARN', error: 'ERROR' };
   window.appendSystemLog = function appendSystemLog(msg, type = 'info') {
     appendLogEntry({
-      time: new Date().toLocaleTimeString(),
+      time: new Date().toISOString(),
       source: 'Pipeline',
       level: SYSTEM_LOG_LEVELS[type] ?? 'INFO',
       message: String(msg),
@@ -91,7 +92,7 @@ export function initSystemConsole() {
   };
 
   appendLogEntry({
-    time: new Date().toLocaleTimeString(),
+    time: new Date().toISOString(),
     source: 'App:Init',
     level: 'INFO',
     message: 'VectOrEdit core system online. Ready.'
