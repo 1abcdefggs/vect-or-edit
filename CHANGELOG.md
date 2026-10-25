@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.37] - 2026-10-25
+
+### Changed
+- Bottom bar LOGS and PIPELINE are tinted buttons without an outline; the log actions are tinted too
+
 ## [0.3.36] - 2026-10-25
 
 ### Added
