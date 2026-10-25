@@ -488,3 +488,28 @@ button.btn-phi {
   border-color: rgba(56, 189, 248, 0.45) !important;
   color: var(--accent-color, #38bdf8) !important;
 }
+/* Editor Options label, shrinking step by step with the toolbar width (owner decision 2026-10-25):
+   full name -> short name -> last word -> icon only. The icon always stays. Thresholds are provisional. */
+.editor-toolbar {
+  container-type: inline-size;
+  container-name: editor-toolbar;
+}
+
+.editor-opt-label--short,
+.editor-opt-label--min {
+  display: none;
+}
+
+@container editor-toolbar (max-width: 859px) {
+  .editor-opt-label--full { display: none; }
+  .editor-opt-label--short { display: inline; }
+}
+
+@container editor-toolbar (max-width: 699px) {
+  .editor-opt-label--short { display: none; }
+  .editor-opt-label--min { display: inline; }
+}
+
+@container editor-toolbar (max-width: 639px) {
+  .editor-opt-label--min { display: none; }
+}

@@ -76,7 +76,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'sbr:rail': true,
     'sbr:guideline-card': true,
     'sbr:knowledge-card': true,
-    'sbr:editor-options-card': true,
+    'sbr:editor-options-card': false,
     'sys:bottom-bar': true,
     'sys:status-meta': true,
     'sys:pipeline-meter': true,

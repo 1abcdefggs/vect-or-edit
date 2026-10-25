@@ -149,7 +149,7 @@ body.ai-standby .header-full-border-line {
 }
 
 .sidebar-header {
-  padding: 10px 14px 10px;
+  padding: 10px var(--sidebar-inset, 14px) 10px;
   border-bottom: var(--border-width) solid var(--border-color);
   background: var(--header-bg, var(--bg-secondary));
   flex-shrink: 0;

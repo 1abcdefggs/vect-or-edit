@@ -970,6 +970,8 @@
   "vis_sb_editor_options_card": "Editor options card",
   "tip_section_editor_options": "Click to expand or collapse the Editor Options section",
   "monaco_opts_title": "Editor Options",
+  "monaco_opts_short": "Editor opt",
+  "monaco_opts_min": "opt",
   "tip_monaco_opts_reset_all": "Reset every changed option to its default",
   "tip_monaco_opts_search": "Search options by name or description",
   "monaco_opts_search_placeholder": "Search options...",

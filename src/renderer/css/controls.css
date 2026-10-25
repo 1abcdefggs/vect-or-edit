@@ -32,6 +32,20 @@
   -webkit-app-region: no-drag;
 }
 
+/* Pressed (the mode is on): an accent frame, accent icon and a tint, so the button reads as active.
+   Hover only tints, so the two states stay different. */
+.gear-btn[aria-pressed="true"],
+.gear-btn.active {
+  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+  border: var(--border-width) solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.gear-btn[aria-pressed="true"] .material-symbols-outlined,
+.gear-btn.active .material-symbols-outlined {
+  color: var(--accent-color);
+}
+
 .gear-btn--sm { --gear-size: var(--control-h-sm); }
 .gear-btn--md { --gear-size: var(--control-h-md); }
 .gear-btn--lg { --gear-size: var(--control-h-lg); }

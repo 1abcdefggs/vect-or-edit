@@ -1086,6 +1086,8 @@
   "vis_sb_editor_options_card": "エディタオプションのカード",
   "tip_section_editor_options": "クリックで「エディタオプション」の欄を開閉します",
   "monaco_opts_title": "エディタオプション",
+  "monaco_opts_short": "オプション",
+  "monaco_opts_min": "",
   "tip_monaco_opts_reset_all": "変更したオプションを、すべて既定値に戻します",
   "tip_monaco_opts_search": "名前や説明でオプションを検索します",
   "monaco_opts_search_placeholder": "オプションを検索...",

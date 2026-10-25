@@ -1,5 +1,5 @@
 <section class="editor-section" style="display: flex; flex-direction: column;">
-  <div class="section-title" data-ui="edt:toolbar"
+  <div class="section-title editor-toolbar" data-ui="edt:toolbar"
     style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px;">
     <!-- Center: Editor Header Actions (Save, AutoSave, Typography, Tone) -->
     <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
@@ -83,7 +83,10 @@
         <!-- Turns the right panel over: the dictionary side steps back and only the Editor Options card shows (editorOptionsMode.js) -->
         <button id="btnEditorOptionsToggle" class="gear-btn gear-btn--lg" type="button" aria-pressed="false" data-i18n-title="tip_editor_options_toggle" style="display: flex; align-items: center; gap: 4px; width: auto; padding: 0 4px;">
           <span class="material-symbols-outlined">tune</span>
-          <span class="style-label" style="font-size: var(--fs-12); font-weight: 700; color: var(--text-main);" data-i18n="monaco_opts_title">Editor Options</span>
+          <!-- The label shrinks with the toolbar width (css/buttons.css, editor-opt-label): full name, short name, last word, icon only -->
+          <span class="style-label editor-opt-label editor-opt-label--full" style="font-size: var(--fs-12); font-weight: 700; color: var(--text-main);" data-i18n="monaco_opts_title">Editor Options</span>
+          <span class="style-label editor-opt-label editor-opt-label--short" style="font-size: var(--fs-12); font-weight: 700; color: var(--text-main);" data-i18n="monaco_opts_short">Editor opt</span>
+          <span class="style-label editor-opt-label editor-opt-label--min" style="font-size: var(--fs-12); font-weight: 700; color: var(--text-main);" data-i18n="monaco_opts_min">opt</span>
         </button>
       </div>
 
