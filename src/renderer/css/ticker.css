@@ -118,22 +118,43 @@
   color: #e2e8f0;
 }
 
-/* Micro LED Square Pixel Matrix Cell */
+/* Status LED (pipeline lamps): one base and one rule per state. The state is set by statusManager.ts (SEVERITY_LED) */
 .status-led-dot {
   position: relative;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #1a2333;
-  transition: all 0.2s ease;
+  display: inline-block;
   flex-shrink: 0;
+  background: #64748b;
+  transition: all 0.2s ease;
 }
 
-/* 1. Ready State: Emerald Success (#1b8) */
+/* Ready: emerald, lights once with the ignition */
 .status-led-dot.status-ready {
-  background: #1b8;
-  box-shadow: 0 0 4px #1b8, 0 0 8px #1b8;
+  background: #10b981;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
   animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Loading and warning: amber, pulses while the work runs */
+.status-led-dot.status-loading {
+  background: #f59e0b;
+  box-shadow: 0 0 5px rgba(251, 191, 36, 0.8), 0 0 8px rgba(251, 191, 36, 0.5);
+  animation: pulse-dot 1.2s infinite ease-in-out;
+}
+
+/* Standby: slate and dimmed, no motion */
+.status-led-dot.status-standby {
+  background: #64748b;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+/* Error: red and lit, no motion (a blinking alarm distracts; the colour and the hover text carry the message) */
+.status-led-dot.status-error {
+  background: #fa1;
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
 }
 
 .status-pill.pill-ready {
@@ -147,26 +168,12 @@
   background: rgba(17, 187, 136, 0.25) !important;
 }
 
-/* 2. Loading / Processing State: Amber Pulsing (#fbbf24) */
-.status-led-dot.status-loading,
-.status-led-dot.status-pending {
-  background: #fbbf24;
-  box-shadow: 0 0 5px rgba(251, 191, 36, 0.8), 0 0 8px rgba(251, 191, 36, 0.5);
-  animation: matrix-pulse-yellow 1.2s infinite alternate;
-}
-
+/* Loading pill colours (the LED is in the status block above) */
 .status-pill.pill-loading,
 .status-pill.pill-pending {
   color: #fbbf24 !important;
   background: rgba(251, 191, 36, 0.12) !important;
   border-color: rgba(251, 191, 36, 0.35) !important;
-}
-
-/* 3. Standby / Unloaded State: Calm Slate (#64748b) */
-.status-led-dot.status-standby {
-  background: #64748b;
-  box-shadow: none;
-  opacity: 0.8;
 }
 
 .status-pill.pill-standby {
@@ -177,13 +184,6 @@
 
 .status-pill.pill-standby:hover {
   color: #cbd5e1 !important;
-}
-
-/* 4. Error State: Alert Red Pulsing (#ef4444) */
-.status-led-dot.status-error {
-  background: #ef4444;
-  box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
-  animation: matrix-pulse-red 0.8s infinite alternate;
 }
 
 .status-pill.pill-error {
@@ -523,28 +523,6 @@
 .status-pill.ready .status-pill-label {
   color: var(--text-main);
   opacity: 1;
-}
-
-.status-led-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #64748b;
-  display: inline-block;
-}
-
-.status-led-dot.status-ready {
-  background: #10b981;
-  box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
-}
-
-.status-led-dot.status-loading {
-  background: #f59e0b;
-  animation: pulse-dot 1.2s infinite ease-in-out;
-}
-
-.status-led-dot.status-error {
-  background: #fa1;
 }
 
 /* Flow Arrow between pipeline stages */
