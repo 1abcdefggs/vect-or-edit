@@ -10,6 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.36] - 2026-10-25
+
+### Added
+- Log time format (24 hours, 12 hours, follow OS, ISO 8601) and time zone (local, UTC) settings; stored times are ISO 8601 (UTC)
+- Column header in the log panel (Time, Level, Source, Message), with the log actions at its right end
+
+### Changed
+- Log buttons are ghost buttons with accent icons; labels hide when the header is narrow
+- Log badges have no border and do not set the row height; the row gap is 2px
+- Bottom bar LOGS and PIPELINE are tinted buttons without an outline; the closed LOGS state is a tint too
+- Editor Options opens the right panel's card; the card is hidden by default and stays open while the mode is on
+- The toolbar button shows a pressed state (accent frame, accent icon)
+- The Editor Options label shrinks in steps with the toolbar width: full name, short name, last word, icon only
+- The right panel's inner inset is one token (--sidebar-inset); the options card lines up with the other cards
+- Corner radius and spacing steps are defined once in design-tokens.css
+
 ## [0.3.35] - 2026-10-24
 
 ### Changed
