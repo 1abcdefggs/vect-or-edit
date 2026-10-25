@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.35] - 2026-10-24
+
+### Changed
+- Button size follows the font size: height and padding from one rule, compact buttons for the menu bar, log panel and sidebar card
+- Buttons under 24px get a transparent hit area
+
+### Added
+- Editor Options button sits in the editor style group, with its label
+
+### Fixed
+- Long titles in the confirm dialog wrap instead of overflowing
+
 ## [0.3.34] - 2026-10-24
 
 ### Changed
