@@ -24,6 +24,7 @@ import { injectLazyUIComponents } from './core/uiLoader';
 import { initMenuBar } from './ui/layout/menuBarController';
 import { renderMenuDropdowns } from './ui/layout/menuRenderer';
 import { renderStaticSettingsText } from './ui/settings/settingsStaticMarkup';
+import { renderToggleSwitches } from './ui/components/toggleSwitchMarkup';
 import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 0.2. Immediately apply Locale (Ensures 3. LOCALE is ready and UI text is localized instantly)
   // Settings text placeholders first: loadLocales applies the locale to them as well
   renderStaticSettingsText();
+  renderToggleSwitches();
   await loadLocales();
 
   // 0.5. Initialize LED tooltips consistently

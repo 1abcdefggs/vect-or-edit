@@ -118,11 +118,7 @@
                 <span data-i18n="setup_autosave_details">Adjust each</span>
                 <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
               </button>
-              <span class="toggle-switch-group">
-                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
-                <button type="button" id="toggleSetupAutoSaveAll" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveAllLabel" data-i18n-title="tip_autosave_toggle"><span class="toggle-switch__knob"></span></button>
-                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
-              </span>
+              <span class="toggle-switch-group" data-toggle-switch data-id="toggleSetupAutoSaveAll" data-labelledby="setupAutoSaveAllLabel" data-tip="tip_autosave_toggle"></span>
             </div>
             <div id="setupAutoSaveDetails" hidden>
             <div class="first-run-setting">
@@ -134,19 +130,11 @@
                 </span>
                 <span class="first-run-hint" data-i18n="setup_autosave_delay_hint">If saving feels heavy, try a longer pause.</span>
               </span>
-              <span class="toggle-switch-group">
-                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
-                <button type="button" id="toggleSetupAutoSaveIdle" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveIdleLabel" data-i18n-title="tip_setup_autosave_idle"><span class="toggle-switch__knob"></span></button>
-                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
-              </span>
+              <span class="toggle-switch-group" data-toggle-switch data-id="toggleSetupAutoSaveIdle" data-labelledby="setupAutoSaveIdleLabel" data-tip="tip_setup_autosave_idle"></span>
             </div>
             <div class="first-run-setting">
               <span id="setupAutoSaveNewlineLabel" class="first-run-setting-text" data-i18n="setup_autosave_newline_label">At each new line</span>
-              <span class="toggle-switch-group">
-                <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
-                <button type="button" id="toggleSetupAutoSaveNewline" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupAutoSaveNewlineLabel" data-i18n-title="tip_setup_autosave_newline"><span class="toggle-switch__knob"></span></button>
-                <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
-              </span>
+              <span class="toggle-switch-group" data-toggle-switch data-id="toggleSetupAutoSaveNewline" data-labelledby="setupAutoSaveNewlineLabel" data-tip="tip_setup_autosave_newline"></span>
             </div>
             </div>
           </div>
@@ -231,11 +219,7 @@
                     <span class="first-run-check-title" data-i18n="setup_ai_local_label">Install the embedding model (recommended)</span>
                     <span class="first-run-hint" data-i18n="setup_ai_local_hint">Finds knowledge related to the selected text offline. The download runs in the background.</span>
                   </span>
-                  <span class="toggle-switch-group">
-                    <span class="toggle-switch-word" data-side="off" aria-hidden="true">OFF</span>
-                    <button type="button" id="toggleSetupInstallLocal" class="toggle-switch" role="switch" aria-checked="true" aria-labelledby="setupLocalAiLabel" data-i18n-title="tip_setup_install_local"><span class="toggle-switch__knob"></span></button>
-                    <span class="toggle-switch-word" data-side="on" aria-hidden="true">ON</span>
-                  </span>
+                  <span class="toggle-switch-group" data-toggle-switch data-id="toggleSetupInstallLocal" data-labelledby="setupLocalAiLabel" data-tip="tip_setup_install_local"></span>
                 </div>
                 <dl class="first-run-facts">
                   <dt data-i18n="setup_ai_fact_model">Model</dt>

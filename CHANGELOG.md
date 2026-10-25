@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.42] - 2026-10-25
+
+### Changed
+- Toggle switches in the first-run setup are built from one shared markup function
+
 ## [0.3.41] - 2026-10-25
 
 ### Added
