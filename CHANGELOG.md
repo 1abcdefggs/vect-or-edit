@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.39] - 2026-10-25
+
+### Changed
+- Help for the log time and Editor Options settings is regenerated
+
 ## [0.3.38] - 2026-10-25
 
 ### Changed
