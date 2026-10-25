@@ -8,6 +8,7 @@ import { aiManager } from '../../core/aiStateManager.js';
 import { settingsStore } from '../../core/settingsStore.js';
 import { showToast } from '../notifications/toastManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
+import { isLayoutRemembered, setLayoutRemembered } from '../layout/layoutMemory.js';
 import {
   AUTO_SAVE_DELAY_RANGE_MS,
   getAutoSaveDelayMs,
@@ -21,6 +22,8 @@ import {
 } from '../../editor/ui/autoSaveManager.js';
 
 const LOGS_PATH = 'system.collapseLogsOnStartup';
+const LOG_TIME_PATH = 'system.logTimeFormat';
+const LOG_TIME_ZONE_PATH = 'system.logTimeZone';
 const onOff = (value) => (value ? 'on' : 'off');
 
 function bindAutoSave() {
@@ -62,14 +65,16 @@ function bindAutoSave() {
 }
 
 function bindAssistants() {
-  const master = document.getElementById('modalMasterAiSelect');
+  const master = document.getElementById('modalLlmSwitchSelect');
   const embedding = document.getElementById('modalEmbeddingAssistantSelect');
   if (!master || !embedding) return;
 
+  // "master" is the settings-page control of the LLM switch (it keeps its element id until the rename in planned.csv S04).
+  // The two switches are independent (ADR-11).
   const refresh = () => {
     const state = aiManager.getState();
-    master.value = onOff(state.master);
-    embedding.value = onOff(state.sidebar);
+    master.value = onOff(state.llm);
+    embedding.value = onOff(state.embed);
   };
   refresh();
   window.addEventListener('app:aiStateChanged', refresh);
@@ -77,8 +82,9 @@ function bindAssistants() {
   master.addEventListener('change', () => {
     const wantOn = master.value === 'on';
     try {
-      if (wantOn && !aiManager.getState().modelConfigured) throw new Error(t('assistant_not_configured'));
-      aiManager.setMasterAi(wantOn);
+      if (wantOn && !aiManager.getState().llmConfigured) throw new Error(t('assistant_not_configured'));
+      aiManager.setLlm(wantOn, 'settings');
+      if (wantOn) window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: {} }));
     } catch (err) {
       showToast(err instanceof Error ? err.message : String(err), 'warning');
       refresh();
@@ -88,8 +94,8 @@ function bindAssistants() {
   embedding.addEventListener('change', () => {
     const wantOn = embedding.value === 'on';
     try {
-      if (wantOn && !aiManager.getState().master) throw new Error(t('assistant_need_master'));
-      aiManager.setSidebarAi(wantOn);
+      if (wantOn && !aiManager.getState().embedConfigured) throw new Error(t('toast_embed_not_ready'));
+      aiManager.setEmbed(wantOn, 'settings');
     } catch (err) {
       showToast(err instanceof Error ? err.message : String(err), 'warning');
       refresh();
@@ -104,6 +110,30 @@ function bindLogsOnStart() {
   select.addEventListener('change', () => settingsStore.updatePreference(LOGS_PATH, select.value === 'closed'));
 }
 
+function bindLogTimeFormat() {
+  const select = document.getElementById('modalLogTimeFormatSelect');
+  if (!select) return;
+  select.value = settingsStore.getPreference(LOG_TIME_PATH) || 'h24';
+  select.addEventListener('change', () => settingsStore.updatePreference(LOG_TIME_PATH, select.value));
+}
+
+function bindLogTimeZone() {
+  const select = document.getElementById('modalLogTimeZoneSelect');
+  if (!select) return;
+  select.value = settingsStore.getPreference(LOG_TIME_ZONE_PATH) || 'local';
+  select.addEventListener('change', () => settingsStore.updatePreference(LOG_TIME_ZONE_PATH, select.value));
+}
+
+function bindRememberLayout() {
+  const select = document.getElementById('modalRememberLayoutSelect');
+  if (!select) return;
+  select.value = onOff(isLayoutRemembered());
+  select.addEventListener('change', () => {
+    setLayoutRemembered(select.value === 'on');
+    syncSettingsToBackend();
+  });
+}
+
 let bound = false;
 
 /** Wires the new controls once; initSettings can run again without stacking listeners. */
@@ -113,4 +143,7 @@ export function initWindowFeatureSettings() {
   bindAutoSave();
   bindAssistants();
   bindLogsOnStart();
+  bindLogTimeFormat();
+  bindLogTimeZone();
+  bindRememberLayout();
 }

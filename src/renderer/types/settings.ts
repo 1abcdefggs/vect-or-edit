@@ -29,6 +29,8 @@ export interface SidebarPreferences {
 
 export interface SystemPreferences {
   collapseLogsOnStartup: boolean;
+  logTimeFormat: 'h24' | 'h12' | 'os' | 'iso';
+  logTimeZone: 'local' | 'utc';
 }
 
 export interface AppPreferences {
@@ -46,9 +48,9 @@ export type HeaderUiKey =
   | 'hdr:menu-view'
   | 'hdr:menu-window'
   | 'hdr:menu-help'
+  | 'hdr:menu-overflow'
   | 'hdr:theme-select'
   | 'hdr:color-mode'
-  | 'hdr:locale-toggle'
   | 'hdr:zoom-select'
   | 'hdr:settings-btn';
 

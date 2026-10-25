@@ -5,16 +5,15 @@
  * First-run setup and the settings modal bind the same controls; both follow app:saveLocationChanged.
  */
 import { t } from '../../core/i18n';
+import { getWorkspaceRoot } from '../../core/workspaceRoot';
 import { showToast } from '../notifications/toastManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
 import { checkFolderName } from '../../../shared/folderName';
 
 /** @returns {Promise<{ path: string, isBuiltIn: boolean } | null>} null in the browser build */
 export async function getSaveLocation() {
-  const api = window.engineAPI;
-  if (!api?.getDefaultWorkspace) return null;
-  const ws = await api.getDefaultWorkspace(false);
-  return ws?.success ? { path: ws.path, isBuiltIn: ws.isBuiltIn !== false } : null;
+  const root = await getWorkspaceRoot();
+  return root ? { path: root.path, isBuiltIn: root.isBuiltIn } : null;
 }
 
 /** Splits a folder path into where it is and what it is called. Works for Windows and POSIX separators. */

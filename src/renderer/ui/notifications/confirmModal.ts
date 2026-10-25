@@ -38,6 +38,8 @@ export function showChoiceModal(options: ChoiceModalOptions): Promise<string | n
     const icon = options.icon || (options.type === 'warning' ? 'warning' : 'info');
     const iconColor = options.type === 'warning' ? '#f59e0b' : 'var(--accent-color, #38bdf8)';
     const accentBg = options.type === 'warning' ? '#f59e0b' : 'var(--accent-color, #38bdf8)';
+    // Text on the primary button: dark on the orange warning colour, the on-accent token on the blue one (4.5:1 in both modes)
+    const onAccent = options.type === 'warning' ? '#000000' : 'var(--text-on-accent, #ffffff)';
 
     const modalOverlay = document.createElement('div');
     modalOverlay.id = 'globalConfirmModal';
@@ -57,21 +59,21 @@ export function showChoiceModal(options: ChoiceModalOptions): Promise<string | n
     `;
 
     modalOverlay.innerHTML = `
-      <div class="settings-modal-dialog elevated-modal-card" style="width: 480px; max-width: 92vw; height: auto; padding: 0; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 12px; background: #0f172a; box-shadow: 0 24px 60px -12px rgba(0,0,0,0.85), 0 0 24px rgba(56, 189, 248, 0.15);">
-        <div class="modal-header" style="padding: 14px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.02);">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="confirmIcon" class="material-symbols-outlined" style="font-size: var(--fs-22); color: ${iconColor};"></span>
-            <span id="confirmTitle" style="font-size: var(--fs-15); font-weight: 700; color: #ffffff;"></span>
+      <div class="settings-modal-dialog elevated-modal-card" style="width: 480px; max-width: 92vw; height: auto; padding: 0; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-secondary, #0f172a); box-shadow: 0 24px 60px -12px rgba(0,0,0,0.85), 0 0 24px rgba(56, 189, 248, 0.15);">
+        <div class="modal-header" style="padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: var(--hover-bg);">
+          <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+            <span id="confirmIcon" class="material-symbols-outlined" style="font-size: var(--fs-22); color: ${iconColor}; flex-shrink: 0;"></span>
+            <span id="confirmTitle" style="font-size: var(--fs-15); font-weight: 700; color: var(--text-main); min-width: 0; overflow-wrap: anywhere;"></span>
           </div>
-          <button id="btnConfirmClose" class="toolbar-btn" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 4px; display: flex; align-items: center;">
+          <button id="btnConfirmClose" class="toolbar-btn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center;">
             <span class="material-symbols-outlined" style="font-size: var(--fs-19);">close</span>
           </button>
         </div>
-        <div class="modal-body" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; color: #e2e8f0; font-size: var(--fs-14); line-height: 1.55;">
-          <div id="confirmMessage" style="font-weight: 600; color: #f8fafc; font-size: var(--fs-15); word-break: break-word;"></div>
-          <div id="confirmDetail" style="display: none; font-size: var(--fs-13); color: #94a3b8; background: rgba(0, 0, 0, 0.25); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.06); word-break: break-word; white-space: pre-line;"></div>
+        <div class="modal-body" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; color: var(--text-main); font-size: var(--fs-14); line-height: 1.55;">
+          <div id="confirmMessage" style="font-weight: 600; color: var(--text-main); font-size: var(--fs-15); word-break: break-word;"></div>
+          <div id="confirmDetail" style="display: none; font-size: var(--fs-13); color: var(--text-muted); background: var(--result-bg, rgba(0, 0, 0, 0.25)); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); word-break: break-word; white-space: pre-line;"></div>
         </div>
-        <div id="confirmFooter" class="modal-footer" style="padding: 12px 20px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; background: rgba(255, 255, 255, 0.015);"></div>
+        <div id="confirmFooter" class="modal-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; background: var(--hover-bg);"></div>
       </div>
     `;
 
@@ -82,6 +84,10 @@ export function showChoiceModal(options: ChoiceModalOptions): Promise<string | n
     setText('confirmIcon', icon);
     setText('confirmTitle', title);
     setText('confirmMessage', options.message);
+    // A question that already fits in the title needs no body
+    if (!options.message && !options.detail) {
+      modalOverlay.querySelector<HTMLElement>('.modal-body')!.style.display = 'none';
+    }
     if (options.detail) {
       setText('confirmDetail', options.detail);
       modalOverlay.querySelector<HTMLElement>('#confirmDetail')!.style.display = 'block';
@@ -108,17 +114,17 @@ export function showChoiceModal(options: ChoiceModalOptions): Promise<string | n
       resolve(result);
     };
 
-    makeButton('btnConfirmCancel', cancelText, 'font-weight: 500; background: rgba(255, 255, 255, 0.08); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.15);')
+    makeButton('btnConfirmCancel', cancelText, 'font-weight: 500; background: var(--hover-bg); color: var(--text-main); border: 1px solid var(--border-color);')
       .addEventListener('click', () => cleanup(null));
 
     const primary = options.choices.find((c) => c.primary);
     let primaryButton: HTMLElement | null = null;
     options.choices.forEach((choice) => {
       const style = choice.danger
-        ? 'font-weight: 600; background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.45);'
+        ? 'font-weight: 600; background: rgba(239, 68, 68, 0.15); color: var(--error-color); border: 1px solid rgba(239, 68, 68, 0.45);'
         : choice.primary
-          ? `padding: 7px 18px; font-weight: 700; background: ${accentBg}; color: #000000; border: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);`
-          : 'font-weight: 500; background: rgba(255, 255, 255, 0.08); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.15);';
+          ? `padding: 7px 18px; font-weight: 700; background: ${accentBg}; color: ${onAccent}; border: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);`
+          : 'font-weight: 500; background: var(--hover-bg); color: var(--text-main); border: 1px solid var(--border-color);';
       const btn = makeButton(choice.primary ? 'btnConfirmOk' : `btnConfirmChoice_${choice.id}`, choice.text, style);
       btn.addEventListener('click', () => cleanup(choice.id));
       if (choice.primary) primaryButton = btn;

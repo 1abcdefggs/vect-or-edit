@@ -6,6 +6,14 @@
  *   <select data-ui-control="switch">     two options, "on" and "off"
  *   <select data-ui-control="segmented">  a few options, one button each
  */
+import { t } from '../../core/i18n.js';
+
+/** The option written as selected in the page is the default and is marked here; option texts must not carry the mark themselves. */
+function labelOf(option) {
+  const text = option.textContent.trim();
+  return option.defaultSelected ? `${text}${t('opt_default_mark')}` : text;
+}
+
 function renderSwitch(select, host) {
   const on = select.value === 'on';
   host.setAttribute('aria-checked', String(on));
@@ -26,7 +34,7 @@ function renderSegments(select, host) {
   options.forEach((option, i) => {
     const btn = host.children[i];
     btn.dataset.value = option.value;
-    btn.textContent = option.textContent.trim();
+    btn.textContent = labelOf(option);
     const selected = option.value === select.value;
     btn.classList.toggle('active', selected);
     btn.setAttribute('aria-checked', String(selected));

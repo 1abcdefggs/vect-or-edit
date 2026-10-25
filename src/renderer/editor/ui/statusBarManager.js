@@ -3,6 +3,7 @@ import { i18n, t } from '../../core/i18n.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
 import { DOCUMENT_FORMATS } from '../../../shared/documentFormat';
 import { setPreviewAvailable } from './markdownPreview.js';
+import { syncFormatMenu } from './documentFormatControl.js';
 
 const statusElements = {
   charCount: null,
@@ -58,6 +59,7 @@ export function updateStatusBar() {
   const syntaxEl = document.getElementById('statusSyntaxLabel');
   if (syntaxEl) syntaxEl.textContent = isText ? 'Plain Text' : 'Markdown';
   setPreviewAvailable(!isText);
+  syncFormatMenu(isText);
 
   if (elements.charCount) {
     elements.charCount.textContent = `${val.length.toLocaleString()} ${i18n.unit_chars || 'chars'}`;

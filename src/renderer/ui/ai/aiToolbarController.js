@@ -1,7 +1,9 @@
 import { aiManager } from '../../core/aiStateManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
-import { isAiModelConfigured } from '../settings/settingsState.js';
+import { isLlmConfigured, isEmbedConfigured } from '../settings/settingsState.js';
+import { canUseLlm } from '../../core/aiAccess.js';
+import { withHelpContext } from '../help/helpKnowledge.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
@@ -12,8 +14,7 @@ import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editor
 const KEY_PLACEHOLDERS = { openai: 'sk-proj-...', claude: 'sk-ant-api03-...', gemini: 'AIzaSy... (Gemini)' };
 
 export function initAiControls() {
-  const isMasterAiOn = isAiModelConfigured();
-  aiManager.init(isMasterAiOn);
+  aiManager.init({ llm: isLlmConfigured(), embed: isEmbedConfigured() });
 
   const btnEditorAiToggle = document.getElementById('btnEditorAiToggle');
   const editorAiStatusDot = document.getElementById('editorAiStatusDot');
@@ -58,8 +59,9 @@ export function initAiControls() {
 
     const monacoContainerEl = document.getElementById('monacoContainer');
     if (btnEditorAiToggle) {
-      btnEditorAiToggle.style.opacity = state.master ? '1' : '0.5';
-      if (state.editor) {
+      // Only the lamp is dimmed while nothing is set up; the label and the button stay fully readable and pressable
+      btnEditorAiToggle.style.opacity = '';
+      if (state.llm) {
         btnEditorAiToggle.classList.add('active');
       } else {
         btnEditorAiToggle.classList.remove('active');
@@ -68,20 +70,22 @@ export function initAiControls() {
       btnEditorAiToggle.style.borderColor = '';
       btnEditorAiToggle.style.color = '';
       if (editorAiLabel) {
-        editorAiLabel.textContent = state.editor ? (t('editor_ai_on') || 'Editor AI ON') : (t('editor_ai_off') || 'Editor AI OFF');
+        editorAiLabel.textContent = state.llm ? (t('editor_ai_on') || 'LLM ON') : (t('editor_ai_off') || 'LLM OFF');
       }
     }
-    if (editorAiStatusDot) editorAiStatusDot.style.color = state.editor ? 'var(--success-color, #10b981)' : '#ef4444';
+    // Lamp colours follow status_lamps.csv: green = on, grey = switched off on purpose (red is for errors only)
+    if (editorAiStatusDot) editorAiStatusDot.style.opacity = state.llmConfigured ? '1' : '0.45';
+    if (editorAiStatusDot) editorAiStatusDot.style.color = state.llm ? 'var(--success-color, #10b981)' : 'var(--text-muted, #94a3b8)';
     if (monacoContainerEl) {
-      if (state.editor) monacoContainerEl.classList.add('glow-editor-active');
+      if (state.llm) monacoContainerEl.classList.add('glow-editor-active');
       else monacoContainerEl.classList.remove('glow-editor-active');
     }
 
     const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
     const sidebarEmbeddingNameEl = document.getElementById('sidebarEmbeddingModelName');
     if (btnSidebarEmbeddingModel) {
-      btnSidebarEmbeddingModel.style.opacity = state.master ? '1' : '0.5';
-      if (state.sidebar) {
+      btnSidebarEmbeddingModel.style.opacity = '';
+      if (state.embed) {
         btnSidebarEmbeddingModel.classList.add('active');
       } else {
         btnSidebarEmbeddingModel.classList.remove('active');
@@ -90,24 +94,25 @@ export function initAiControls() {
       btnSidebarEmbeddingModel.style.borderColor = '';
       btnSidebarEmbeddingModel.style.color = '';
       if (sidebarEmbeddingNameEl) {
-        sidebarEmbeddingNameEl.textContent = state.sidebar ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
+        sidebarEmbeddingNameEl.textContent = state.embed ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
       }
     }
     if (activeAiModelStatusDot) {
-      activeAiModelStatusDot.style.color = state.sidebar ? 'var(--success-color, #10b981)' : '#ef4444';
+      activeAiModelStatusDot.style.opacity = state.embedConfigured ? '1' : '0.45';
+      activeAiModelStatusDot.style.color = state.embed ? 'var(--success-color, #10b981)' : 'var(--text-muted, #94a3b8)';
     }
 
-    if (state.master) {
-      document.body.classList.add('master-ai-active', 'glow-master-active');
-      document.body.classList.remove('master-ai-standby');
+    if (state.llm || state.embed) {
+      document.body.classList.add('ai-active');
+      document.body.classList.remove('ai-standby');
     } else {
-      document.body.classList.remove('master-ai-active', 'glow-master-active');
-      document.body.classList.add('master-ai-standby');
+      document.body.classList.remove('ai-active');
+      document.body.classList.add('ai-standby');
     }
 
     const editorContainer = document.querySelector('.editor-section');
     if (editorContainer) {
-      if (state.editor) editorContainer.classList.add('glow-editor-active');
+      if (state.llm) editorContainer.classList.add('glow-editor-active');
       else editorContainer.classList.remove('glow-editor-active');
     }
   });
@@ -118,7 +123,7 @@ export function initAiControls() {
     if (sidebarEmbeddingNameEl) {
       const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
       const state = aiManager.getState();
-      sidebarEmbeddingNameEl.textContent = state.sidebar ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
+      sidebarEmbeddingNameEl.textContent = state.embed ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
       if (btnSidebarEmbeddingModel) {
         btnSidebarEmbeddingModel.title = t('tip_embed_model_status', { model: window.__isLocalAiModelReady ? localModel : 'Ready' });
       }
@@ -132,17 +137,27 @@ export function initAiControls() {
   updateSidebarEmbeddingLabel();
   updateSettingsOverview();
   window.addEventListener('app:settingsChanged', () => {
-    const isConfigured = isAiModelConfigured();
-    aiManager.setModelConfigured(isConfigured);
+    aiManager.setConfigured({ llm: isLlmConfigured(), embed: isEmbedConfigured() });
     updateSidebarEmbeddingLabel();
     updateSettingsOverview();
   });
 
-  // Both the header chip and the chat dock button share one handler. The dock closes while
-  // Master AI is off, so the header chip must be able to turn it on and reopen the dock.
+  // One announcer for every switch change, whoever caused it (header chip, sidebar, settings page, lost key):
+  // the toast and the log carry the same sentence (ADR-11 section 2.5).
+  window.addEventListener('app:aiSwitchChanged', (e) => {
+    const { which, from, to, source } = e.detail.change;
+    const name = which === 'llm' ? 'LLM' : 'Embedding';
+    const label = (on) => (on ? 'ON' : 'OFF');
+    window.appendSystemLog?.(`[AI] ${name}: ${label(from)} → ${label(to)} (${source})`, 'info');
+    const toastKey = which === 'llm' ? (to ? 'toast_editor_ai_on' : 'toast_editor_ai_off') : (to ? 'toast_sidebar_ai_on' : 'toast_sidebar_ai_off');
+    showToast(t(toastKey) || `${name}: ${label(to)}`, to ? 'success' : 'info');
+  });
+
+  // The header chip is the LLM switch: ON opens the chat dock, OFF closes it (the dock follows the state).
+  // It does not touch the Embedding switch.
   async function handleLlmToggleClick() {
     const state = aiManager.getState();
-    if (!state.modelConfigured) {
+    if (!state.llmConfigured) {
       const confirmed = await showConfirmModal({
         title: t('ai_setup_required_title') || 'AI Setup Required',
         message: t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.',
@@ -158,36 +173,32 @@ export function initAiControls() {
       }
       return;
     }
-    if (!state.master) {
-      // Auto-turn on Master AI when user wants to use Editor AI
-      aiManager.setMasterAi(true);
-      aiManager.setEditorAi(true);
-      showToast(t('toast_editor_ai_auto_enabled'), 'success');
-      window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: {} }));
+    if (state.llm) {
+      aiManager.setLlm(false, 'toolbar');
       return;
     }
-    const nextEditor = !state.editor;
-    aiManager.setEditorAi(nextEditor);
-    showToast(nextEditor ? t('toast_editor_ai_on') : t('toast_editor_ai_off'), nextEditor ? 'success' : 'info');
+    aiManager.setLlm(true, 'toolbar');
+    window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: {} }));
   }
 
   btnEditorAiToggle?.addEventListener('click', handleLlmToggleClick);
 
-  // Sidebar Embedding Model Pill Click: Toggle Sidebar AI (ON/OFF) matching Editor AI UX
+  // Sidebar Embedding pill: the Embedding switch. It does not touch the LLM switch.
   const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
   if (btnSidebarEmbeddingModel) {
-    btnSidebarEmbeddingModel.addEventListener('click', async () => {
+    btnSidebarEmbeddingModel.addEventListener('click', () => {
       const state = aiManager.getState();
-      if (!state.master) {
-        // Auto-turn on Master AI when user wants to use Sidebar Embedding AI
-        aiManager.setMasterAi(true);
-        aiManager.setSidebarAi(true);
-        showToast(t('toast_sidebar_ai_auto_enabled') || 'Master AI activated; Embedding turned ON', 'success');
+      if (state.embed) {
+        aiManager.setEmbed(false, 'sidebar');
         return;
       }
-      const nextSidebar = !state.sidebar;
-      aiManager.setSidebarAi(nextSidebar);
-      showToast(nextSidebar ? (t('toast_sidebar_ai_on') || 'Embedding: ON') : (t('toast_sidebar_ai_off') || 'Embedding: OFF'), nextSidebar ? 'success' : 'info');
+      if (!state.embedConfigured) {
+        // No ready model: say so and go to where it is installed
+        showToast(t('toast_embed_not_ready'), 'warning');
+        openAiSettingsTab('tabAiSearch');
+        return;
+      }
+      aiManager.setEmbed(true, 'sidebar');
     });
   }
 
@@ -224,7 +235,7 @@ function initLlmChatDock() {
 
   function updateDockModelBadge() {
     if (!modelBadge) return;
-    const provider = localStorage.getItem('ai_provider') || 'gemini';
+    const provider = localStorage.getItem('llm_provider') || 'gemini';
     // The model the next request will use (same lookup as searchProviders.js)
     if (provider === 'gemini') {
       const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
@@ -244,14 +255,23 @@ function initLlmChatDock() {
   updateDockModelBadge();
   window.addEventListener('app:settingsChanged', updateDockModelBadge);
 
+  // The eye shows what was typed; with an empty field there is nothing to show (a saved key is never sent back to the window)
+  function syncQuickKeyEye() {
+    if (!btnToggleQuickVisibility || !quickApiKeyInput) return;
+    btnToggleQuickVisibility.disabled = !quickApiKeyInput.value;
+    btnToggleQuickVisibility.style.opacity = quickApiKeyInput.value ? '1' : '0.4';
+  }
+  quickApiKeyInput?.addEventListener('input', syncQuickKeyEye);
+
   // Quick API Key Banner Logic
   function syncQuickApiKeyInput() {
     if (!selQuickProvider || !quickApiKeyInput) return;
     // Stored keys are encrypted in the main process and never shown again; the placeholder only says one is set.
     const provider = selQuickProvider.value;
     quickApiKeyInput.value = '';
+    syncQuickKeyEye();
     quickApiKeyInput.placeholder = isApiKeyConfigured(provider)
-      ? '•••••••••••••••••••• (API Key Configured)'
+      ? `•••••••• ${t('api_key_saved_placeholder')}`
       : (KEY_PLACEHOLDERS[provider] || KEY_PLACEHOLDERS.gemini);
   }
 
@@ -260,8 +280,8 @@ function initLlmChatDock() {
       const isVisible = quickApiBanner.style.display === 'block';
       quickApiBanner.style.display = isVisible ? 'none' : 'block';
       if (!isVisible) {
-        const currentProvider = localStorage.getItem('ai_provider') || 'gemini';
-        if (selQuickProvider) selQuickProvider.value = (currentProvider === 'local') ? 'gemini' : currentProvider;
+        const currentProvider = localStorage.getItem('llm_provider') || 'gemini';
+        if (selQuickProvider) selQuickProvider.value = (currentProvider === 'none') ? 'gemini' : currentProvider;
         syncQuickApiKeyInput();
         setTimeout(() => quickApiKeyInput?.focus(), 50);
       }
@@ -301,7 +321,7 @@ function initLlmChatDock() {
         showToast(res.error || `Failed to save the ${provider} key`, 'error');
         return;
       }
-      localStorage.setItem('ai_provider', provider);
+      localStorage.setItem('llm_provider', provider);
       if (provider === 'gemini') {
           // Automatically fetch and cache official Gemini models
           try {
@@ -328,10 +348,9 @@ function initLlmChatDock() {
   }
 
   function openDock(initialPrompt = '') {
-    // Only allow opening when Master AI is active
-    const state = aiManager.getState?.() ?? {};
-    if (!state.master) {
-      showToast('LLM Chat is inactive. Activate Master AI to use.', 'warning');
+    // The chat only opens while the LLM is ON (Ctrl+K, the right-click menu and the /ai command all come through here)
+    if (!canUseLlm()) {
+      showToast(t('llm_off_hint'), 'warning');
       return;
     }
     dock.style.display = 'flex';
@@ -364,10 +383,10 @@ function initLlmChatDock() {
     const prompt = e.detail?.prompt || '';
     openDock(prompt);
   });
-  // Close LLM Chat dock automatically when Master AI is turned off
+  // The dock follows the LLM switch: it closes as soon as the LLM goes off
   window.addEventListener('app:aiStateChanged', (e) => {
     const state = e.detail.state;
-    if (!state.master) {
+    if (!state.llm) {
       closeDock();
     }
   });
@@ -389,11 +408,10 @@ function initLlmChatDock() {
       `;
     });
   }
-  // Disable input when Master AI is OFF
+  // Disable input while the LLM is OFF
   const updateChatInputState = () => {
-    const state = aiManager.getState?.() ?? {};
-    // Input needs both the master switch and a configured model (key present).
-    const disabled = !state.master || !state.modelConfigured;
+    // Input needs the LLM switch on and a configured provider (key present).
+    const disabled = !canUseLlm();
     if (chatInput) chatInput.disabled = disabled;
     if (btnSend) btnSend.disabled = disabled;
     if (btnClear) btnClear.disabled = disabled;
@@ -410,8 +428,12 @@ function initLlmChatDock() {
     if (!prompt) return;
 
     // Without a configured key, keep the prompt in the input and point to setup instead of sending.
-    if (!aiManager.getState?.().modelConfigured) {
+    if (!aiManager.getState?.().llmConfigured) {
       showToast(t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.', 'warning');
+      return;
+    }
+    if (!canUseLlm()) {
+      showToast(t('llm_off_hint'), 'warning');
       return;
     }
 
@@ -442,7 +464,8 @@ function initLlmChatDock() {
     btnSend.disabled = true;
 
     try {
-      const response = await queryLlmChat(prompt);
+      // A question about the app is answered from the guide: its best matching cards go in front of the question
+      const response = await queryLlmChat(withHelpContext(prompt));
       if (response && response.text) {
         const text = response.text;
         const modelName = response.model || 'AI Assistant';

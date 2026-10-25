@@ -93,7 +93,6 @@ textarea {
 
 .section-title {
   font-size: var(--fs-12);
-  text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-main);
   min-height: 40px;
@@ -106,29 +105,7 @@ textarea {
   box-sizing: border-box;
 }
 
-/* Semantic Rule Actions */
-.semantic-module-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.semantic-module-header > div:last-child {
-  margin-left: auto;
-}
-
-.semantic-module-title {
-  font-size: var(--fs-16);
-  font-weight: 600;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  letter-spacing: 0.2px;
-}
-
+/* Semantic Rule Actions (module card header and title: module-cards.css) */
 .semantic-btn-add {
   padding: 2px 8px;
   font-size: var(--fs-12);
@@ -139,7 +116,7 @@ textarea {
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
-  color: var(--accent-color, #66f);
+  color: var(--accent-text, #66f);
   background: var(--hover-bg, rgba(255, 255, 255, 0.05));
   border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.1));
   transition: all 0.18s ease;
@@ -468,4 +445,9 @@ button,
 /* Master Settings UI Visibility rule: Ensure hidden elements are strictly eliminated even inside flex layouts */
 [hidden] {
   display: none !important;
+}
+
+/* An icon that opens, closes or jumps somewhere: the accent colour says "you can click this" (style_rules.csv actionable-icon) */
+.actionable-icon {
+  color: var(--accent-color, #38bdf8);
 }

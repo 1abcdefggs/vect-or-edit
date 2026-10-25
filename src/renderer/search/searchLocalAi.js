@@ -6,6 +6,9 @@ import { markModelDownloaded } from './embeddingModels.js';
 
 let isLocalAiReady = false;
 let isLocalAiDownloading = false;
+// The model that last reported ready. transformers.js sends "done" once per downloaded file and "ready" more than once,
+// so the ready line (and the pipeline log) is written once per model, not once per message (ADR-11 section 2.10)
+let lastReadyModel = null;
 let embeddingWorker = null;
 let isWorkerInitialized = false;
 
@@ -129,11 +132,16 @@ export function initLocalAiWorker(getCurrentResults) {
           `;
           logContainer.scrollTop = logContainer.scrollHeight;
         }
-      } else if (status === 'done' || status === 'ready') {
+      } else if (status === 'done') {
+        // One file finished downloading. The model is not ready until the worker reports "ready", so say nothing here
+        return;
+      } else if (status === 'ready') {
+        const loadedModel = data.model || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+        if (isLocalAiReady && lastReadyModel === loadedModel) return;
+        lastReadyModel = loadedModel;
         isLocalAiReady = true;
         window.__isLocalAiModelReady = true;
         isLocalAiDownloading = false;
-        const loadedModel = data.model || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
         const modelShortName = loadedModel.split('/').pop();
         setLedStatus('ai', true, `6. AI-MODEL: Ready (${modelShortName})`);
         window.dispatchEvent(new CustomEvent('app:settingsChanged'));

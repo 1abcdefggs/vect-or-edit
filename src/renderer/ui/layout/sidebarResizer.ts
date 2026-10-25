@@ -1,15 +1,15 @@
+import { loadLayoutSize, saveLayoutSize } from './layoutMemory.js';
+import { SIDEBAR_PANE, clampPaneWidth, isStoredPaneWidthValid } from './paneLimits.js';
+
 export function initSidebarResizer(): void {
   const resizer = document.getElementById('sidebarResizer');
   const sidebar = document.getElementById('suggestionSidebar');
   if (!resizer || !sidebar) return;
 
   // Restore saved width
-  const savedWidth = localStorage.getItem('vectoreditor_sidebar_width');
-  if (savedWidth) {
-    const parsed = parseInt(savedWidth, 10);
-    if (parsed >= 320 && parsed <= 800) {
-      document.documentElement.style.setProperty('--sidebar-width', `${parsed}px`);
-    }
+  const parsed = loadLayoutSize(SIDEBAR_PANE.storageKey);
+  if (parsed !== null && isStoredPaneWidthValid(SIDEBAR_PANE, parsed)) {
+    document.documentElement.style.setProperty(SIDEBAR_PANE.cssVar, `${parsed}px`);
   }
 
   let isDragging = false;
@@ -27,9 +27,8 @@ export function initSidebarResizer(): void {
     const onMouseMove = (moveEvent: MouseEvent) => {
       if (!isDragging) return;
       const deltaX = startX - moveEvent.clientX;
-      const maxWidth = Math.min(window.innerWidth * 0.65, 800);
-      const newWidth = Math.max(320, Math.min(maxWidth, startWidth + deltaX));
-      document.documentElement.style.setProperty('--sidebar-width', `${newWidth}px`);
+      const newWidth = clampPaneWidth(SIDEBAR_PANE, startWidth + deltaX, window.innerWidth);
+      document.documentElement.style.setProperty(SIDEBAR_PANE.cssVar, `${newWidth}px`);
       if ((window as any).monacoEditorInstance) {
         (window as any).monacoEditorInstance.layout();
       }
@@ -41,7 +40,7 @@ export function initSidebarResizer(): void {
         resizer.classList.remove('is-dragging');
         document.body.classList.remove('resizing-sidebar');
         const finalWidth = sidebar.getBoundingClientRect().width;
-        localStorage.setItem('vectoreditor_sidebar_width', String(Math.round(finalWidth)));
+        saveLayoutSize(SIDEBAR_PANE.storageKey, finalWidth);
         if ((window as any).monacoEditorInstance) {
           (window as any).monacoEditorInstance.layout();
         }

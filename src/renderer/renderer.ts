@@ -10,6 +10,11 @@ import { setLedStatus, initAllLedTooltips } from './core/statusManager';
 import { initVectorSearch } from './search/vectorSearch.js';
 import { initUpdateChecker } from './ui/updateChecker.js';
 import { initSidebarResizer } from './ui/layout/sidebarResizer.js';
+import { initEditorStyleGroupFit } from './ui/layout/editorStyleGroupFit.js';
+import { migrateLlmProvider } from './core/llmProviderMigration.js';
+import { initPanelResizers } from './ui/layout/panelResizer.js';
+import { initEditorOptionsMode } from './ui/layout/editorOptionsMode.js';
+import { initLampNavigation } from './ui/layout/lampNavigation.js';
 import { initTopBarRenderer, bindTopLevelUIEvents } from './ui/layout/topBarRenderer.js';
 import { initAiControls } from './ui/ai/aiToolbarController.js';
 import { initSystemConsole } from './ui/console/systemConsoleManager.js';
@@ -17,6 +22,8 @@ import { bindAppActionEvents } from './ui/actions/appActionEvents.js';
 import { initZoomControls } from './ui/zoomController.js';
 import { injectLazyUIComponents } from './core/uiLoader';
 import { initMenuBar } from './ui/layout/menuBarController';
+import { renderMenuDropdowns } from './ui/layout/menuRenderer';
+import { renderStaticSettingsText } from './ui/settings/settingsStaticMarkup';
 import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
@@ -43,6 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await refreshApiKeyStatus();
 
   // 0.2. Immediately apply Locale (Ensures 3. LOCALE is ready and UI text is localized instantly)
+  // Settings text placeholders first: loadLocales applies the locale to them as well
+  renderStaticSettingsText();
   await loadLocales();
 
   // 0.5. Initialize LED tooltips consistently
@@ -59,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // 0.7. Initialize master settings store & UI visibility
+  migrateLlmProvider();
   await settingsStore.syncWithBackend();
   settingsStore.applyAllDomVisibility();
   enhanceSettingsModalVisibilityControls();
@@ -78,8 +88,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 1. Initialize UI Layout & Elements
   initTopBarRenderer();
   bindTopLevelUIEvents();
+  renderMenuDropdowns();
   initMenuBar();
   initSidebarResizer();
+  initEditorStyleGroupFit();
+  initPanelResizers();
+  initEditorOptionsMode();
+  initLampNavigation();
 
   // 2. Setup Engine & Knowledge Base IPC Listeners
   if (window.engineAPI?.onEngineStatus) {

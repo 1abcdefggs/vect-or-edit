@@ -53,6 +53,11 @@ function generateDefaultDocumentTitle() {
   return `Doc-${n}${DOCUMENT_FORMATS[getDefaultDocumentFormat()].extension}`;
 }
 
+/** A user's new document is empty; only the very first document of a session shows the welcome text. */
+export function createBlankTab() {
+  return createNewTab(null, '');
+}
+
 export function createNewTab(title = null, initialContent = null, filePath = null) {
   const monaco = getMonaco();
   if (!monaco) return null;
@@ -147,7 +152,7 @@ export async function closeTab(tabId, e) {
   }
 
   if (tabs.length === 0) {
-    createNewTab();
+    createBlankTab();
   } else if (activeTabId === tabId) {
     const nextIndex = Math.max(0, index - 1);
     switchTab(tabs[nextIndex].id);

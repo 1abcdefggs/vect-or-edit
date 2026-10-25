@@ -15,6 +15,7 @@ import { syncSettingsToBackend } from '../settings/settingsState.js';
 import { saveApiKey } from '../../core/apiKeyStore.js';
 import { bindSaveLocationControls } from '../settings/saveLocation.js';
 import { getDownloadedModelIds } from '../../search/embeddingModels.js';
+import { aiManager } from '../../core/aiStateManager.js';
 import { createStepTabs } from '../components/stepTabs.js';
 import { bindToggleSwitch } from '../components/toggleSwitch.js';
 import { renderInfoTips } from '../components/infoTip.js';
@@ -472,7 +473,7 @@ async function saveCloudKey() {
     showToast(res.error || t('setup_key_failed'), 'error');
     return;
   }
-  localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, provider);
+  localStorage.setItem(STORAGE_KEYS.LLM_PROVIDER, provider);
   $('aiSetupCloudKey').value = '';
 }
 
@@ -486,6 +487,9 @@ function queueLocalModelInstall() {
     const status = e.detail?.status;
     if (status === 'ready' || status === 'done') {
       window.removeEventListener('app:aiModelProgress', onProgress);
+      // The user chose the download in setup, so EMBED turns on by itself once the model is ready
+      aiManager.setConfigured({ embed: true });
+      aiManager.setEmbed(true, 'config');
     } else if (status === 'error') {
       window.removeEventListener('app:aiModelProgress', onProgress);
       showToast(t('setup_ai_failed'), 'error');

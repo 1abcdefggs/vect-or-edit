@@ -172,7 +172,8 @@ function renderSingleCard(r, index, isPreliminary = false) {
 
   const tooltip = escapeHtml(tooltipParts.join('\n'));
   const isCodePresent = Boolean(code);
-  const insertPayload = (isCodePresent && !title.includes(code)) ? `${title} (${code})` : title;
+  // An AI suggestion inserts its answer; the name and id on the card are only labels (they must never reach the document)
+  const insertPayload = typeof r.insertText === 'string' ? r.insertText : ((isCodePresent && !title.includes(code)) ? `${title} (${code})` : title);
   const btnInsertText = escapeHtml(t('btn_insert') || "Insert");
 
   return `

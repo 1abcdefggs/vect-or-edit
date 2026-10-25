@@ -19,6 +19,7 @@ export const STORAGE_KEYS = {
   MONACO_OPTIONS: 'editor_monacoOptions',
   SUGGEST_TRIGGER_MODE: 'vect_suggest_trigger_mode',
   AI_PROVIDER: 'ai_provider',
+  LLM_PROVIDER: 'llm_provider',
   AI_INFERENCE_SCOPE: 'ai_inference_scope',
   // *_API_KEY: plain-text names from older versions, read only to migrate them (core/apiKeyStore.js)
   CLAUDE_API_KEY: 'claude_api_key',
@@ -82,6 +83,7 @@ export const DEFAULTS = {
   AI_INFERENCE_SCOPE: 'suggestion_only',
   SUGGEST_TRIGGER_MODE: 'selection',
   AI_PROVIDER: 'local',
+  LLM_PROVIDER: 'none',
   /** Default Vectorizer source */
   EMBEDDING_SOURCE: 'local',
   APP_LANG: 'en',

@@ -1,0 +1,25 @@
+/* Dropdown menus (menu bar and Save): one item base and one separator definition.
+   Markup: components/appHeader.html and components/mainEditor.html. Hover and gap stay in header.css and editor.css. */
+
+.menu-dropdown-item,
+.save-dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: var(--fs-12);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+.menu-divider,
+.save-dropdown-separator {
+  height: 1px;
+  margin: 4px 0;
+  background-color: var(--border-color);
+}

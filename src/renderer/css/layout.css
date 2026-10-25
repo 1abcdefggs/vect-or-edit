@@ -37,12 +37,12 @@ body {
 }
 
 /* Master AI Active Window Frame Glow */
-body.master-ai-active .header-full-border-line {
+body.ai-active .header-full-border-line {
   background-color: var(--accent-color, #66f) !important;
   box-shadow: 0 1px 12px rgba(56, 189, 248, 0.35) !important;
 }
 
-body.master-ai-standby .header-full-border-line {
+body.ai-standby .header-full-border-line {
   background-color: var(--border-color) !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
 }
@@ -148,8 +148,9 @@ body.master-ai-standby .header-full-border-line {
   display: none !important;
 }
 
+/* Top padding 5px puts the row's centre on the editor toolbar's centre (both rows are 30px tall) */
 .sidebar-header {
-  padding: 10px 14px 10px;
+  padding: 5px var(--sidebar-inset, 14px) 10px;
   border-bottom: var(--border-width) solid var(--border-color);
   background: var(--header-bg, var(--bg-secondary));
   flex-shrink: 0;
@@ -212,3 +213,26 @@ body.master-ai-standby .header-full-border-line {
 .system-log-body::-webkit-scrollbar-thumb:hover {
   background: rgba(129, 140, 248, 0.6);
 }
+/* Drag handle on the top edge of the log panel and the chat dock (ui/layout/panelResizer.ts) */
+.panel-resizer {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 7px;
+  cursor: ns-resize;
+  z-index: 30;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+.panel-resizer:hover,
+.panel-resizer.is-dragging {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 55%, transparent);
+}
+body.resizing-panel { cursor: ns-resize; user-select: none; }
+body.resizing-panel .system-log-panel,
+body.resizing-panel .editor-llm-chat-dock { transition: none; }
+
+/* The same handle on the left edge of the settings guide: it changes the width */
+.panel-resizer--x { top: 0; bottom: 0; left: -3px; right: auto; width: 7px; height: auto; cursor: ew-resize; }
+body.resizing-panel .settings-help-pane { user-select: none; }

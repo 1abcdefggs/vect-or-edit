@@ -7,18 +7,18 @@
   <div class="sidebar-header">
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; width: 100%;">
       <!-- Sidebar Toggle / Collapse Button on the Top-Left of Sidebar -->
-      <button id="btnHeaderToggleSidebar" class="toolbar-btn" data-i18n-title="btn_toggle_sidebar"
-        style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 4px; flex-shrink: 0;">
-        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xf705;</span>
+      <button id="btnHeaderToggleSidebar" class="toolbar-btn icon-btn" data-i18n-title="btn_toggle_sidebar"
+        style="color: var(--text-muted);">
+        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8);">&#xf705;</span>
       </button>
 
       <!-- Right-Aligned Action Group: [ Embedding Toggle Pill | Gear Icon ] -->
       <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
         <!-- Embedding ON/OFF Status Pill (Shared UI/UX with Editor LLM Button) -->
         <button id="btnSidebarEmbeddingModel" class="ai-chip-pill" data-ui="sbr:embedding-toggle" data-i18n-title="tip_embed_toggle">
-          <span id="activeAiModelStatusDot" style="color: #ef4444; font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
           <span id="iconNeuroContainer" class="material-symbols-outlined vector-activity-icon" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8); flex-shrink: 0;">neurology</span>
           <span id="sidebarEmbeddingModelName" data-i18n="sidebar_ai_off">EMBED OFF</span>
+          <span id="activeAiModelStatusDot" style="color: var(--text-muted, #94a3b8); font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
         </button>
 
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
@@ -39,58 +39,27 @@
     </div>
 
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
-      <style>
-        .semantic-module-card { transition: max-height 0.2s ease; }
-        .semantic-module-card.collapsed .semantic-module-body { display: none !important; }
-        .semantic-module-card .collapse-icon { transition: transform 0.2s ease; }
-        .semantic-module-card.collapsed .collapse-icon { transform: rotate(-90deg); }
-        /* Shared card frame: both modules use the same radius, border, header height and button rhythm */
-        .semantic-module-card { border: var(--border-width) solid var(--border-color); border-radius: 8px; background: rgba(255,255,255,0.02); overflow: hidden; }
-        .semantic-module-header { cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; padding: 6px 10px; }
-        .semantic-module-header:hover { background: rgba(255,255,255,0.03); }
-        .semantic-module-title { min-width: 0; overflow: hidden; }
-        .semantic-module-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-        .semantic-module-card .semantic-btn-add,
-        .semantic-module-card .semantic-btn-clear,
-        .semantic-module-card #btnInsertTemplate { height: 24px; padding: 0 8px; border-radius: 4px; }
-        .semantic-module-card .semantic-btn-add { width: 78px; justify-content: center; }
-        .semantic-module-card .semantic-btn-add .plus { font-size: var(--fs-14); line-height: 1; }
-        /* Leading icons share one fixed column so the title separators line up across both cards */
-        .semantic-module-title > .material-symbols-outlined,
-        .semantic-module-title > #profileIcon { width: 20px; display: inline-flex; justify-content: center; flex-shrink: 0; }
-        .semantic-module-title > .collapse-icon { width: 16px; }
-        /* Hide the Knowledge body (and its empty padding) until at least one slot exists */
-        #knowledgeModuleCard .semantic-module-body:not(:has(#knowledgeSlotsList:not(:empty))) { display: none; }
-        /* Narrow sidebar: keep only the "+" icon on the add buttons (title tooltip still shows the full action).
-           With the label the header content needs about 250px, which a 280px container still holds */
-        .semantic-control-container { container: semantic-controls / inline-size; }
-        @container semantic-controls (max-width: 280px) {
-          .semantic-control-container .semantic-btn-add .btn-label { display: none; }
-          .semantic-control-container .semantic-btn-add { width: 24px; }
-        }
-      </style>
-      <!-- 1. Guidelines & Presets Section (Active) -->
+      <!-- 1. Guidelines & Presets Section (Active) (card rules: module-cards.css) -->
       <div id="guidelineModuleCard" data-ui="sbr:guideline-card" class="profile-control-card semantic-module-card">
         <div class="semantic-module-header" data-i18n-title="tip_section_guideline">
-          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
-            <span class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
+          <span class="semantic-module-title">
+            <span class="material-symbols-outlined collapse-icon">expand_more</span>
             <span id="profileIcon" style="display: flex; align-items: center; color: var(--accent-color, #38bdf8);">
-              <span class="material-symbols-outlined" style="font-size: var(--fs-19); flex-shrink: 0;">&#xf1c9;</span>
+              <span class="material-symbols-outlined semantic-module-icon">&#xf1c9;</span>
             </span>
-            <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
-            <span id="profileHeaderLabel" style="font-weight: 600; font-size: var(--fs-16);" data-i18n="active_guideline_preset_label">Guideline</span>
+            <span class="module-title-separator semantic-module-sep">|</span>
+            <span id="profileHeaderLabel" data-i18n="active_guideline_preset_label">Guideline</span>
           </span>
           <div class="semantic-module-actions">
-            <button id="btnInsertTemplate" class="toolbar-btn"
-              style="padding: 2px 7px; font-size: var(--fs-11);  border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-main); border: var(--border-width) solid var(--border-color);"
+            <button id="btnInsertTemplate" class="toolbar-btn btn-phi semantic-btn-template"
               data-i18n-title="btn_insert_template">
               <span data-i18n="btn_insert_template">Template</span>
             </button>
-            <button id="btnImportDictionary" data-ui="sbr:import-dictionary" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_import_preset">
+            <button id="btnImportDictionary" data-ui="sbr:import-dictionary" class="toolbar-btn semantic-btn-add btn-phi" data-i18n-title="btn_import_preset">
               <span class="plus">＋</span>
               <span class="btn-label" data-i18n="btn_import_preset_short">Add files</span>
             </button>
-            <button id="btnResetGoal" class="toolbar-btn semantic-btn-clear" style="display: none;"
+            <button id="btnResetGoal" class="toolbar-btn semantic-btn-clear btn-phi" style="display: none;"
               data-i18n-title="btn_reset_profile">
               <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">&#xe419;</span>
               <span data-i18n="btn_unload_profile">Unload</span>
@@ -100,29 +69,29 @@
       </div>
 
       <!-- 2. Knowledge Section -->
-      <div id="knowledgeModuleCard" data-ui="sbr:knowledge-card" class="slots-control-card semantic-module-card">
+      <div id="knowledgeModuleCard" data-ui="sbr:knowledge-card" class="slots-control-card semantic-module-card has-body">
         <div class="semantic-module-header" data-i18n-title="tip_section_slots">
-          <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
-            <span class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
-            <span class="material-symbols-outlined" style="font-size: var(--fs-19); color: var(--accent-color, #38bdf8); flex-shrink: 0;">&#xea19;</span>
-            <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
-            <span style="font-weight: 600; font-size: var(--fs-16);" data-i18n="knowledge_slots_label">Knowledge</span>
+          <span class="semantic-module-title">
+            <span class="material-symbols-outlined collapse-icon">expand_more</span>
+            <span class="material-symbols-outlined semantic-module-icon">&#xea19;</span>
+            <span class="module-title-separator semantic-module-sep">|</span>
+            <span data-i18n="knowledge_slots_label">Knowledge</span>
             <span id="knowledgeSlotsCountBadge" style="display: none;" data-i18n-title="tip_slots_count">0 Slots</span>
           </span>
           <div class="semantic-module-actions">
-            <button id="btnClearAllSlots" class="toolbar-btn semantic-btn-clear" style="display: none;"
+            <button id="btnClearAllSlots" class="toolbar-btn semantic-btn-clear btn-phi" style="display: none;"
               data-i18n-title="btn_clear_all_slots">
               <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">&#xe419;</span>
               <span data-i18n="btn_clear_slots">Unload</span>
             </button>
-            <button id="btnAddSlot" data-ui="sbr:add-slot" class="toolbar-btn semantic-btn-add" data-i18n-title="btn_add_slot">
+            <button id="btnAddSlot" data-ui="sbr:add-slot" class="toolbar-btn semantic-btn-add btn-phi" data-i18n-title="btn_add_slot">
               <span class="plus">＋</span>
               <span class="btn-label" data-i18n="btn_add_slot_short">Add files</span>
             </button>
           </div>
         </div>
 
-        <div class="semantic-module-body" style="display: flex; flex-direction: column; gap: 4px; padding-top: 4px;">
+        <div class="semantic-module-body">
           <!-- Dynamic Slots List (SLOT 1, SLOT 2, ...) -->
           <div id="knowledgeSlotsList"
             style="display: flex; flex-direction: column; gap: 4px; max-height: 140px; overflow-y: auto;" data-i18n-title="tip_slots_list"></div>
@@ -161,22 +130,22 @@
   </div>
   <!-- Editor Options: every Monaco option, shown live in the main editor. Outside the header so it can use the height below it (collapsed until opened) -->
   <div id="monacoOptionsCard" data-ui="sbr:editor-options-card" class="monaco-options-card semantic-module-card collapsed">
-    <div class="semantic-module-header" data-i18n-title="tip_section_editor_options">
+    <div class="semantic-module-header" role="button" tabindex="0" aria-expanded="false" aria-controls="monacoOptionsBody" data-i18n-title="tip_section_editor_options">
       <span class="semantic-module-title" style="display: flex; align-items: center; gap: 7px;">
-        <span class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
+        <span aria-hidden="true" class="material-symbols-outlined collapse-icon" style="font-size: var(--fs-17); color: var(--text-muted);">expand_more</span>
         <span class="material-symbols-outlined" style="font-size: var(--fs-19); color: var(--accent-color, #38bdf8); flex-shrink: 0;">tune</span>
         <span class="module-title-separator" style="opacity: 0.4; font-weight: 300;">|</span>
         <span style="font-weight: 600; font-size: var(--fs-16);" data-i18n="monaco_opts_title">Editor Options</span>
       </span>
       <div class="semantic-module-actions">
-        <button id="btnMonacoOptionsResetAll" class="toolbar-btn semantic-btn-clear" type="button" style="display: none;" data-i18n-title="tip_monaco_opts_reset_all">
+        <button id="btnMonacoOptionsResetAll" class="toolbar-btn semantic-btn-clear btn-phi" type="button" style="display: none;" data-i18n-title="tip_monaco_opts_reset_all">
           <span class="material-symbols-outlined" style="font-size: var(--fs-14);">restart_alt</span>
         </button>
       </div>
     </div>
-    <div class="semantic-module-body monaco-options-body">
+    <div id="monacoOptionsBody" class="semantic-module-body monaco-options-body">
       <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
-      <div id="monacoOptionsCount" class="monaco-options-count"></div>
+      <div id="monacoOptionsCount" class="monaco-options-count" role="status" aria-live="polite"></div>
       <div id="monacoOptionsList" class="monaco-options-list"></div>
     </div>
   </div>

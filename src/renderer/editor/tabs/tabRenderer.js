@@ -1,4 +1,6 @@
-import { tabs, activeTabId, switchTab, closeTab, createNewTab, duplicateTab } from './tabState.js';
+import { tabs, activeTabId, switchTab, closeTab, createBlankTab, duplicateTab, setTabFormat, getTabFormat } from './tabState.js';
+import { formatOfName } from '../../../shared/documentFormat';
+import { showConfirmModal } from '../../ui/notifications/confirmModal.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { t } from '../../core/i18n.js';
@@ -141,9 +143,19 @@ export function renderTabs() {
           if (isHandled) return;
           isHandled = true;
           const newName = input.value.trim();
-          if (newName && newName !== tab.title) {
+          // A typed extension sets the format; a change of format asks first, as Windows does when an extension changes
+          const nextFormat = /\.(md|markdown|txt)$/i.test(newName) ? formatOfName(newName) : null;
+          const formatChanges = nextFormat !== null && nextFormat !== getTabFormat(tab);
+          const confirmed = !formatChanges || await showConfirmModal({
+            title: t('rename_format_title'),
+            message: t('rename_format_confirm'),
+            type: 'warning',
+            confirmText: t('rename_format_btn')
+          });
+          if (newName && newName !== tab.title && confirmed) {
             tab.title = newName;
             tab.isDirty = true;
+            if (formatChanges) setTabFormat(tab, nextFormat, { notify: false });
             editorEvents.emit('onStatusBarUpdateNeeded', tab.title);
 
             // Auto-persist new name to local autosave cache
@@ -187,47 +199,34 @@ export function renderTabs() {
 
   // Duplicate Tab Button directly next to tabs
   const btnInlineDuplicateTab = document.createElement('button');
-  btnInlineDuplicateTab.className = 'toolbar-btn';
+  btnInlineDuplicateTab.className = 'toolbar-btn icon-btn';
   btnInlineDuplicateTab.id = 'btnDuplicateTabInline';
   btnInlineDuplicateTab.title = t('tip_tab_duplicate');
-  btnInlineDuplicateTab.style.height = '28px';
-  btnInlineDuplicateTab.style.width = '28px';
-  btnInlineDuplicateTab.style.padding = '0';
-  btnInlineDuplicateTab.style.display = 'flex';
-  btnInlineDuplicateTab.style.alignItems = 'center';
-  btnInlineDuplicateTab.style.justifyContent = 'center';
-  btnInlineDuplicateTab.style.border = 'none';
-  btnInlineDuplicateTab.style.background = 'transparent';
   btnInlineDuplicateTab.style.color = 'var(--text-muted)';
-  btnInlineDuplicateTab.style.cursor = 'pointer';
-  btnInlineDuplicateTab.style.flexShrink = '0';
-  btnInlineDuplicateTab.style.marginLeft = '4px';
+  btnInlineDuplicateTab.style.marginLeft = '2px';
   btnInlineDuplicateTab.innerHTML = icons.duplicate;
   btnInlineDuplicateTab.addEventListener('click', () => duplicateTab());
   tabsContainer.appendChild(btnInlineDuplicateTab);
 
   // Inline New Tab Button directly next to Duplicate button
   const btnInlineNewTab = document.createElement('button');
-  btnInlineNewTab.className = 'toolbar-btn';
+  btnInlineNewTab.className = 'toolbar-btn icon-btn';
   btnInlineNewTab.id = 'btnNewTabInline';
   btnInlineNewTab.title = t('tip_tab_new');
-  btnInlineNewTab.style.height = '28px';
-  btnInlineNewTab.style.width = '28px';
-  btnInlineNewTab.style.padding = '0';
-  btnInlineNewTab.style.display = 'flex';
-  btnInlineNewTab.style.alignItems = 'center';
-  btnInlineNewTab.style.justifyContent = 'center';
-  btnInlineNewTab.style.border = 'none';
-  btnInlineNewTab.style.background = 'transparent';
   btnInlineNewTab.style.color = 'var(--text-muted)';
-  btnInlineNewTab.style.cursor = 'pointer';
-  btnInlineNewTab.style.flexShrink = '0';
   btnInlineNewTab.style.marginLeft = '2px';
-  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined" style="font-size: var(--fs-19);">&#xf741;</span>`;
-  btnInlineNewTab.addEventListener('click', () => createNewTab());
+  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">&#xf741;</span>`;
+  btnInlineNewTab.addEventListener('click', () => createBlankTab());
   tabsContainer.appendChild(btnInlineNewTab);
 
   updateSaveAllButtonState();
+  updateCloseAllMenuItem();
+}
+
+// "Close All Tabs" is shown only when there are two or more tabs; with one tab it would equal "Close Tab"
+function updateCloseAllMenuItem() {
+  const item = document.getElementById('menuItemCloseAllTabs');
+  if (item) item.style.display = tabs.length >= 2 ? '' : 'none';
 }
 
 // Bind event bus listeners

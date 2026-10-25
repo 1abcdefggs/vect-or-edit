@@ -20,6 +20,7 @@
 
 import { STORAGE_KEYS, DEFAULTS, TIMINGS } from '../core/constants.js';
 import { getVectorFromWorker, isLocalAiReadyState } from './searchLocalAi.js';
+import { canUseLlm, canUseEmbedding } from '../core/aiAccess.js';
 
 // ─────────────────────────────────────────────
 // 1. LocalEmbeddingAdapter  (Vectorizer)
@@ -36,6 +37,7 @@ export class LocalEmbeddingAdapter {
    * @returns {Promise<number[]>}
    */
   async encode(text) {
+    if (!canUseEmbedding()) throw new Error('Embedding is OFF');
     if (!isLocalAiReadyState()) {
       throw new Error(
         'Local AI model is not ready. Please initialise it from settings first.'
@@ -80,6 +82,7 @@ export class LLMEmbeddingAdapter {
    * @returns {Promise<number[]>}
    */
   async encode(text) {
+    if (!canUseLlm()) throw new Error('LLM is OFF');
     if (!window.engineAPI?.llmEmbedding) {
       throw new Error('IPC channel "llm-embedding" is not available.');
     }
@@ -122,6 +125,7 @@ export class GeminiLLMAdapter {
    * @returns {Promise<string>}
    */
   async generate(prompt) {
+    if (!canUseLlm()) throw new Error('LLM is OFF');
     const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
     if (!window.engineAPI?.geminiSemanticSuggest) {
       throw new Error('IPC channel "geminiSemanticSuggest" is not available.');
@@ -146,6 +150,7 @@ export class ClaudeLLMAdapter {
    * @returns {Promise<string>}
    */
   async generate(prompt) {
+    if (!canUseLlm()) throw new Error('LLM is OFF');
     const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
     if (!window.engineAPI?.claudeSemanticSuggest) {
       throw new Error('IPC channel "claudeSemanticSuggest" is not available.');
@@ -170,6 +175,7 @@ export class OpenAILLMAdapter {
    * @returns {Promise<string>}
    */
   async generate(prompt) {
+    if (!canUseLlm()) throw new Error('LLM is OFF');
     const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
     if (!window.engineAPI?.openaiSemanticSuggest) {
       throw new Error('IPC channel "openaiSemanticSuggest" is not available.');

@@ -62,7 +62,7 @@
 }
 
 .app-header__title {
-  font-family: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
+  font-family: var(--font-brand);
   font-size: var(--fs-14);
   font-weight: 600;
   letter-spacing: 0.6px;
@@ -115,13 +115,13 @@
   font-size: var(--fs-16);
   line-height: 1.5;
   white-space: pre-wrap;
-  z-index: 99999;
+  z-index: 100020; /* above the first-run setup overlay (100000) */
   pointer-events: none;
   border: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   min-width: 200px;
-  /* 75em: about 75 full-width (CJK) characters per line; em follows this tooltip's font size. */
-  max-width: min(75em, calc(100vw - 16px));
+  /* --wrap-width: 75 half-width characters per line (ADR-11); the text wraps and stays left-aligned */
+  max-width: min(var(--wrap-width, 75ch), calc(100vw - 16px));
   text-align: left;
 }
 
@@ -148,19 +148,30 @@
 
 .menu-bar-btn {
   background: transparent;
-  border: none;
+  border: var(--border-width) solid transparent;
   color: var(--header-fg, var(--text-main));
   font-size: var(--fs-12);
   font-family: inherit;
   font-weight: 500;
-  padding: 4px 8px;
+  /* padding and line-height come from class btn-phi (buttons.css) */
   border-radius: 4px;
   cursor: pointer;
-  line-height: 1.2;
   white-space: nowrap;
   transition: background-color 0.15s ease, color 0.15s ease;
   -webkit-app-region: no-drag !important;
   outline: none;
+}
+
+/* The look stays at the font-size rule; the clickable area grows to --hit-min (24px) with a transparent strip above and below. */
+.menu-bar-btn { position: relative; }
+.menu-bar-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: max(100%, var(--hit-min));
+  transform: translateY(-50%);
 }
 
 .menu-bar-btn:hover,
@@ -172,6 +183,55 @@
 .menu-bar-item.active .menu-bar-btn {
   background-color: var(--accent-color, #38bdf8);
   color: #ffffff;
+}
+
+/* Overflow menu: menus that do not fit are listed here, one group per menu (menuBarController.ts fitMenuBar) */
+.menu-bar-item[data-menu="overflow"]:not(.menu-overflow-needed) {
+  display: none;
+}
+
+#menuDropdownOverflow {
+  left: auto;
+  right: 0;
+  min-width: 220px;
+  padding: 4px 0;
+}
+
+#menuDropdownOverflow .menu-overflow-entry.menu-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#menuDropdownOverflow .menu-overflow-entry > .menu-bar-btn {
+  padding: 6px 12px 2px;
+  color: var(--text-muted, #94a3b8);
+  background: none;
+  pointer-events: none;
+}
+
+#menuDropdownOverflow .menu-overflow-entry > .menu-dropdown {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  animation: none;
+}
+
+/* The open overflow item is .active, so .menu-bar-item.active .menu-bar-btn would paint this row blue; reset it here */
+#menuDropdownOverflow .menu-overflow-entry.menu-bar-btn {
+  display: flex;
+  width: 100%;
+  padding: 6px 12px;
+  text-align: left;
+  background-color: transparent;
+  color: var(--text-main, #f8fafc);
 }
 
 /* Dropdown Container */
@@ -210,20 +270,9 @@
 }
 
 /* Dropdown Items */
+/* Shared item and separator base: dropdown-menu.css. Here only what the menu bar adds */
 .menu-dropdown-item {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
-  color: var(--text-main, #f1f5f9);
-  font-size: var(--fs-12);
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  outline: none;
   transition: background-color 0.12s ease, color 0.12s ease;
   white-space: nowrap;
   gap: 16px;
@@ -256,9 +305,6 @@
 
 /* Dividers */
 .menu-divider {
-  height: 1px;
-  background-color: var(--border-color, rgba(148, 163, 184, 0.15));
-  margin: 4px 0;
   pointer-events: none;
 }
 

@@ -7,6 +7,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.41] - 2026-10-25
+
+### Added
+- The guide beside the settings is also shown in English (it follows the UI language)
+- Log clear asks for confirmation when the log has entries; the log action buttons and close controls show a tint at rest
+- The LOGS panel opens with a short slide and fade (off for reduced motion)
+- Renaming a tab with an extension that changes the format asks first and then switches the format
+- Zoom slider in the zoom hint
+- Downloaded embedding model: EMBED turns on by itself after the first-run download; the settings page no longer offers to download it again
+
+### Changed
+- Header: colour mode, theme and zoom form one frame; the settings button sits at the right end; the language switch is in the settings page only
+- Sidebar module cards share one definition; Knowledge opens after files are added; card padding is 4px
+- Toolbar selects use the free space before they shorten the text; the sidebar header top padding aligns with the editor toolbar
+- The menu bar and Save menu items come from one definition; the settings card headings and row text come from shared markup
+- A new tab is empty; only the first document of a session shows the welcome text
+
+### Fixed
+- Toolbar overflow at narrow widths (the right group no longer pushes past the edge)
+- Header and log controls no longer carry outlines
+
+## [0.3.40] - 2026-10-25
+
+### Changed
+- Button padding uses the exact golden-ratio values (sqrt 5 forms); the unused --phi token is removed
+- The toolbar shrinks by width: selects cut their text, the LLM label and the BG/FG word hide at narrow widths
+
+## [0.3.39] - 2026-10-25
+
+### Changed
+- Help for the log time and Editor Options settings is regenerated
+
+## [0.3.38] - 2026-10-25
+
+### Changed
+- Editor Options opens from the toolbar, stays open in that mode, and its label shrinks with the toolbar width
+
+## [0.3.37] - 2026-10-25
+
+### Changed
+- Bottom bar LOGS and PIPELINE are tinted buttons without an outline; the log actions are tinted too
+
+## [0.3.36] - 2026-10-25
+
+### Added
+- Log time format (24 hours, 12 hours, follow OS, ISO 8601) and time zone (local, UTC) settings; stored times are ISO 8601 (UTC)
+- Column header in the log panel (Time, Level, Source, Message), with the log actions at its right end
+
+### Changed
+- Log buttons are ghost buttons with accent icons; labels hide when the header is narrow
+- Log badges have no border and do not set the row height; the row gap is 2px
+- Bottom bar LOGS and PIPELINE are tinted buttons without an outline; the closed LOGS state is a tint too
+- Editor Options opens the right panel's card; the card is hidden by default and stays open while the mode is on
+- The toolbar button shows a pressed state (accent frame, accent icon)
+- The Editor Options label shrinks in steps with the toolbar width: full name, short name, last word, icon only
+- The right panel's inner inset is one token (--sidebar-inset); the options card lines up with the other cards
+- Corner radius and spacing steps are defined once in design-tokens.css
+
+## [0.3.35] - 2026-10-24
+
+### Changed
+- Button size follows the font size: height and padding from one rule, compact buttons for the menu bar, log panel and sidebar card
+- Buttons under 24px get a transparent hit area
+
+### Added
+- Editor Options button sits in the editor style group, with its label
+
+### Fixed
+- Long titles in the confirm dialog wrap instead of overflowing
+
+## [0.3.34] - 2026-10-24
+
+### Changed
+- Editor bars, lamps and borders follow the style rules: one font for labels, no forced uppercase, the lamp color and border rules
+- The editor status bar and the style group keep the agreed order and widths
+- Editor Options card styles follow the same rules
+- Japanese and English text for the window and settings changes
+
+## [0.3.33] - 2026-10-24
+
+### Changed
+- Save is a split button: the left part saves at once, and the arrow opens AutoSave, Save As and Save All
+- Save As and Save All run the same commands as the File menu
+- The workspace root is read in one place, so Save, Open, AutoSave and the settings page agree
+- Closing the settings, the tabs and the app asks first; Exit and Close Window ask the same way
+- The window RAM figure sits on the left of the bottom bar, next to LOGS
+
+## [0.3.32] - 2026-10-24
+
+### Changed
+- The settings page is grouped by window area (Header, Editor, Sidebar, System), with a map of the window at the top
+- The guide beside the settings lists the parts of the window and their settings in the order they sit in the window
+- Choice buttons mark the default option with (Default)
+- Panel sizes and the Editor Options mode are remembered between starts
+
+## [0.3.31] - 2026-10-24
+
+### Changed
+- The LLM and Embedding switches are independent: turning one on does not turn the other on
+- Status lamps: an off switch shows a grey lamp while its label and button stay usable
+- Dictionary search keeps working with both switches off; the LLM and Gemini help only when they are on
+- The cloud LLM provider is stored apart from the search generator, and Gemini is no longer shown when it is not selected
+
 ## [0.3.30] - 2026-10-22
 
 ### Added

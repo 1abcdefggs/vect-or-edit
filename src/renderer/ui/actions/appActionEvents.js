@@ -1,9 +1,9 @@
-import { setEditorContent, getCurrentContent, getActiveTab, markActiveTabSaved, focusEditor, tabs } from '../../editor/editorManager.js';
+import { setEditorContent, focusEditor } from '../../editor/editorManager.js';
 import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledgeSlot, clearAllKnowledgeSlots } from '../../search/dictionary.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
+import { showConfirmModal } from '../notifications/confirmModal.js';
 import { t } from '../../core/i18n.js';
-import { commitTabToFile } from '../../editor/io/tabCommit.js';
 import { commandManager } from '../../core/commandManager';
 
 export function bindAppActionEvents() {
@@ -120,6 +120,8 @@ export function bindAppActionEvents() {
     const handleAddSlot = async () => {
       const res = await addKnowledgeSlot();
       if (res?.success) {
+        // Show what was just set: open the Knowledge card (search collapses it to make room for results)
+        document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
         setLedStatus('kb', true, `7. HNSW: Indexed (${res.totalCount?.toLocaleString()} items)`);
       }
@@ -129,6 +131,16 @@ export function bindAppActionEvents() {
 
   if (btnClearAllSlots) {
     btnClearAllSlots.addEventListener('click', async () => {
+      // Unload All always asks, whatever the close-confirmation setting says (ADR-11, review item R6)
+      const count = Number(document.getElementById('knowledgeSlotsCountBadge')?.textContent?.match(/\d+/)?.[0] || 0);
+      const confirmed = await showConfirmModal({
+        title: t('confirm_unload_all_title'),
+        message: t('confirm_unload_all_message', { count: String(count) }),
+        confirmText: t('btn_unload_all_confirm'),
+        cancelText: t('btn_keep_open'),
+        type: 'warning'
+      });
+      if (!confirmed) return;
       await clearAllKnowledgeSlots();
       showToast(t('toast_all_slots_unloaded'), 'info');
       setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
@@ -160,12 +172,18 @@ export function bindAppActionEvents() {
       saveDropdownMenu.style.top = `${rect.bottom + 4}px`;
       saveDropdownMenu.style.left = `${rect.left}px`;
     }
-    saveDropdown?.classList.toggle('is-open', isOpen);
-    btnSave?.setAttribute('aria-expanded', String(isOpen));
+    saveDropdown?.classList.toggle('open', isOpen);
+    document.getElementById('btnSaveMenu')?.setAttribute('aria-expanded', String(isOpen));
   };
-  btnSave?.addEventListener('click', (e) => {
+  // Left part saves at once; while AutoSave is pending (no file yet) it asks for a location instead
+  btnSave?.addEventListener('click', async () => {
+    setSaveMenuOpen(false);
+    await commandManager.executeCommand(btnSave.dataset.autosaveState === 'pending' ? 'file.saveAs' : 'file.save');
+    setTimeout(() => focusEditor(), 50);
+  });
+  document.getElementById('btnSaveMenu')?.addEventListener('click', (e) => {
     e.stopPropagation();
-    setSaveMenuOpen(!saveDropdown?.classList.contains('is-open'));
+    setSaveMenuOpen(!saveDropdown?.classList.contains('open'));
   });
   // The AutoSave switch keeps the menu open so the state can be read and changed in one go
   saveDropdown?.querySelectorAll('.save-dropdown-item:not(.autosave-menu-item)').forEach((item) => {
@@ -178,51 +196,16 @@ export function bindAppActionEvents() {
     if (e.key === 'Escape') setSaveMenuOpen(false);
   });
 
-  // Save: the same command as Ctrl+S and File > Save (a document without a location still asks for one)
-  const btnSaveOverwrite = document.getElementById('btnSaveOverwrite');
-  if (btnSaveOverwrite) {
-    btnSaveOverwrite.addEventListener('click', async () => {
-      await commandManager.executeCommand('file.save');
-      setTimeout(() => focusEditor(), 50);
-    });
-  }
+  // Save As and Save All run the same commands as File > Save As / Save All (menuBarController.ts)
+  btnSaveAs?.addEventListener('click', async () => {
+    await commandManager.executeCommand('file.saveAs');
+    setTimeout(() => focusEditor(), 50);
+  });
 
-  // Save As (always force save dialog)
-  if (btnSaveAs) {
-    btnSaveAs.addEventListener('click', async () => {
-      const currentTab = getActiveTab();
-      if (!currentTab) return;
-      const content = getCurrentContent();
-      const defaultName = currentTab.title || 'untitled.md';
-
-      if (window.engineAPI?.saveFile) {
-        const res = await window.engineAPI.saveFile(content, defaultName, true);
-        if (res?.success && res.filePath) {
-          markActiveTabSaved(res.filePath);
-          showToast(t('alert_file_saved', { path: res.filePath }) || `Saved as: ${res.filePath}`, 'success');
-        }
-        setTimeout(() => focusEditor(), 50);
-      }
-    });
-  }
-
-  // Save All
-  if (btnSaveAll) {
-    btnSaveAll.addEventListener('click', async () => {
-      // Disabled below two tabs; the item stays hoverable so its tooltip can say why
-      if (btnSaveAll.classList.contains('disabled')) return;
-      const currentTabs = tabs || [];
-      let savedCount = 0;
-      let failedCount = 0;
-      for (const tab of currentTabs) {
-        if (!tab.model) continue;
-        const result = await commitTabToFile(tab);
-        if (result.ok) savedCount++;
-        else if (!result.canceled) failedCount++;
-      }
-      if (failedCount) showToast(t('save_failed'), 'error');
-      showToast(`Saved ${savedCount} document(s)`, 'success');
-      setTimeout(() => focusEditor(), 50);
-    });
-  }
+  btnSaveAll?.addEventListener('click', async () => {
+    // Disabled below two tabs; the item stays hoverable so its tooltip can say why
+    if (btnSaveAll.classList.contains('disabled')) return;
+    await commandManager.executeCommand('file.saveAll');
+    setTimeout(() => focusEditor(), 50);
+  });
 }

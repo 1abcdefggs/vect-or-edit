@@ -22,6 +22,9 @@
           <span data-i18n="settings_title">Application Settings</span>
         </h3>
       </div>
+      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
+        <span class="material-symbols-outlined">help</span><span data-i18n="btn_settings_guide">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
+      </button>
       <button id="btnCloseSettingsModal" class="log-panel-btn settings-close-btn" data-i18n-title="tip_close_settings">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
@@ -30,6 +33,26 @@
         </svg>
       </button>
     </div>
+
+    <!-- Window map: the four areas of the settings laid out as in the window. A press selects the tab (settingsAreaMap.js) -->
+    <nav class="settings-area-map" aria-label="Settings areas">
+      <button type="button" class="settings-area" data-area-tab="tabAppearance" data-i18n-title="tip_tab_appearance" style="grid-area: hdr;">
+        <span class="settings-area-name" data-i18n="tab_appearance">Header</span>
+        <span class="settings-area-desc" data-i18n="tab_appearance_desc">The top of the window: title bar and menus</span>
+      </button>
+      <button type="button" class="settings-area" data-area-tab="tabEditor" data-i18n-title="tip_tab_editor" style="grid-area: edt;">
+        <span class="settings-area-name" data-i18n="tab_editor">Editor</span>
+        <span class="settings-area-desc" data-i18n="tab_editor_desc">The writing area: fonts, documents, AutoSave, LLM chat</span>
+      </button>
+      <button type="button" class="settings-area" data-area-tab="tabAiSearch" data-i18n-title="tip_tab_ai" style="grid-area: sbr;">
+        <span class="settings-area-name" data-i18n="tab_ai_search">Sidebar</span>
+        <span class="settings-area-desc" data-i18n="tab_ai_search_desc">The right panel: Embedding, knowledge search, validation</span>
+      </button>
+      <button type="button" class="settings-area" data-area-tab="tabSystem" data-i18n-title="tip_tab_system" style="grid-area: sys;">
+        <span class="settings-area-name" data-i18n="tab_system">System</span>
+        <span class="settings-area-desc" data-i18n="tab_system_desc">The bottom of the window: closing, log, window parts, maintenance</span>
+      </button>
+    </nav>
 
     <div class="settings-modal-tabs">
       <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance" data-i18n-title="tip_tab_appearance">Header</button>
@@ -44,42 +67,34 @@
       <!-- Tab 1: Header (hdr) - what the title bar and its menus control -->
       <div id="tabAppearance" class="settings-tab-content active">
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">palette</span><span data-i18n="grp_theme">Theme</span></h4>
+          <h4 data-card-heading data-icon="palette" data-key="grp_theme" data-text="Theme"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="color_mode_label">Appearance</div>
-              <div class="setting-desc" data-i18n="color_mode_desc">Light, dark, or follow the system. The theme shows its light or dark face.</div>
-            </div>
+            <div data-setting-text data-label-key="color_mode_label" data-label-text="Appearance" data-desc-key="color_mode_desc" data-desc-text="Light, dark, or follow the system. The theme shows its light or dark face."></div>
             <select id="modalColorModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_color_mode"></select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="theme_label">Color Theme</div>
-              <div class="setting-desc" data-i18n="setting_theme_desc">Switch color palette and titlebar theme.</div>
-            </div>
+            <div data-setting-text data-label-key="theme_label" data-label-text="Color Theme" data-desc-key="setting_theme_desc" data-desc-text="Switch color palette and titlebar theme."></div>
             <select id="modalThemeSelect" class="toolbar-select" data-i18n-title="tip_set_theme"></select>
           </div>
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">language</span><span data-i18n="grp_display">Language & display</span></h4>
+          <h4 data-card-heading data-icon="translate" data-key="grp_language" data-text="Language"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="language_label">UI Language</div>
-              <div class="setting-desc" data-i18n="setting_language_desc">Switch application locale.</div>
-            </div>
+            <div data-setting-text data-label-key="language_label" data-label-text="UI Language" data-desc-key="setting_language_desc" data-desc-text="Switch application locale."></div>
             <select id="modalLangSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_language">
               <option value="en" data-i18n="lang_en">English (EN)</option>
               <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
             </select>
           </div>
+        </div>
+
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="zoom_in" data-key="grp_display_view" data-text="Display"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_ui_scaling">UI Scaling (Zoom)</div>
-              <div class="setting-desc" data-i18n="setting_ui_scaling_desc">Adjust the overall size of the application UI.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_ui_scaling" data-label-text="UI Scaling (Zoom)" data-desc-key="setting_ui_scaling_desc" data-desc-text="Adjust the overall size of the application UI."></div>
             <select id="modalZoomSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_zoom">
-              <option value="1.0" data-i18n="zoom_100">100% (Default)</option>
+              <option value="1.0" selected data-i18n="zoom_100">100%</option>
               <option value="1.1" data-i18n="zoom_110">110%</option>
               <option value="1.25" data-i18n="zoom_125">125%</option>
               <option value="1.4" data-i18n="zoom_140">140%</option>
@@ -89,7 +104,7 @@
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">folder</span><span data-i18n="grp_workspace_files">Workspace & files</span></h4>
+          <h4 data-card-heading data-icon="folder" data-key="grp_workspace_files" data-text="Workspace &amp; files"></h4>
           <div class="setting-item">
             <div class="setting-text--shrink">
               <div class="setting-label" data-i18n="setting_save_location">Save location</div>
@@ -112,10 +127,7 @@
             </div>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_workspace_bundle">Workspace Session (.vectorspace)</div>
-              <div class="setting-desc" data-i18n="setting_workspace_bundle_desc">Save or restore all active documents, tabs, and layout state in a single bundle.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_workspace_bundle" data-label-text="Workspace Session (.vectorspace)" data-desc-key="setting_workspace_bundle_desc" data-desc-text="Save or restore all active documents, tabs, and layout state in a single bundle."></div>
             <div class="setting-actions">
               <button id="btnExportWorkspace" class="settings-btn" type="button" data-i18n-title="tip_workspace_save">
                 <span data-i18n="btn_export_workspace">Save Workspace</span>
@@ -131,23 +143,17 @@
       <!-- Tab 2: Editor (edt) - text, toolbar, documents and the LLM chat -->
       <div id="tabEditor" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">text_fields</span><span data-i18n="grp_editor_text">Editor text</span></h4>
+          <h4 data-card-heading data-icon="text_fields" data-key="grp_editor_text" data-text="Editor text"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="font_family_label">Font Family</div>
-              <div class="setting-desc" data-i18n="setting_font_family_desc">Select typeface for text rendering.</div>
-            </div>
+            <div data-setting-text data-label-key="font_family_label" data-label-text="Font Family" data-desc-key="setting_font_family_desc" data-desc-text="Select typeface for text rendering."></div>
             <select id="modalFontFamilySelect" class="toolbar-select" data-i18n-title="tip_editor_font_family">
-              <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">Source Serif 4 (Serif)</option>
+              <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">Source Serif 4</option>
               <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
               <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">Source Code Pro (Monospace)</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="font_size_label">Font Size</div>
-              <div class="setting-desc" data-i18n="setting_font_size_desc">Adjust editor font scaling.</div>
-            </div>
+            <div data-setting-text data-label-key="font_size_label" data-label-text="Font Size" data-desc-key="setting_font_size_desc" data-desc-text="Adjust editor font scaling."></div>
             <select id="modalFontSizeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_editor_font_size">
               <option value="14" data-i18n="font_small">14px</option>
               <option value="16" data-i18n="font_normal">16px</option>
@@ -156,10 +162,7 @@
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_line_height">Line Height</div>
-              <div class="setting-desc" data-i18n="setting_line_height_desc">Adjust vertical pitch between lines.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_line_height" data-label-text="Line Height" data-desc-key="setting_line_height_desc" data-desc-text="Adjust vertical pitch between lines."></div>
             <select id="modalLineHeightSelect" class="toolbar-select" data-i18n-title="tip_set_line_height">
               <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
               <option value="26" selected data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
@@ -168,10 +171,7 @@
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_editor_bg">Editor Canvas BG/FG Theme (Dark & Light Variations)</div>
-              <div class="setting-desc" data-i18n="setting_editor_bg_desc">Customize background and foreground text color inside Monaco editor independently.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_editor_bg" data-label-text="Editor Canvas BG/FG Theme (Dark &amp; Light Variations)" data-desc-key="setting_editor_bg_desc" data-desc-text="Customize background and foreground text color inside Monaco editor independently."></div>
             <select id="modalEditorBgSelect" class="toolbar-select" data-i18n-title="tip_editor_bg_theme">
               <option value="default" selected data-i18n="opt_bg_default">Theme Match (Default)</option>
               <optgroup label="Dark Variations">
@@ -184,10 +184,7 @@
             </select>
           </div>
           <div id="modalCustomColorSettings" class="setting-item settings-subpanel" style="display: none;">
-            <div>
-              <div class="setting-label" data-i18n="setting_custom_colors">Custom Background & Text Color</div>
-              <div class="setting-desc" data-i18n="setting_custom_colors_desc">Pick any custom HEX color for the Monaco canvas background and font text.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_custom_colors" data-label-text="Custom Background &amp; Text Color" data-desc-key="setting_custom_colors_desc" data-desc-text="Pick any custom HEX color for the Monaco canvas background and font text."></div>
             <div class="setting-actions">
               <label class="color-pick">
                 <span data-i18n="label_bg">Background:</span>
@@ -202,42 +199,30 @@
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">edit_note</span><span data-i18n="grp_editor_display">Writing view</span></h4>
+          <h4 data-card-heading data-icon="edit_note" data-key="grp_editor_display" data-text="Writing view"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_word_wrap">Word Wrap</div>
-              <div class="setting-desc" data-i18n="setting_word_wrap_desc">Toggle automatic text wrapping.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_word_wrap" data-label-text="Word Wrap" data-desc-key="setting_word_wrap_desc" data-desc-text="Toggle automatic text wrapping."></div>
             <select id="modalWordWrapSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_word_wrap">
               <option value="on" selected data-i18n="opt_wrap_on">On (Wrap at view)</option>
               <option value="off" data-i18n="opt_wrap_off">Off (Horizontal scroll)</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_line_numbers">Line Numbers</div>
-              <div class="setting-desc" data-i18n="setting_line_numbers_desc">Configure visibility of line numbers.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_line_numbers" data-label-text="Line Numbers" data-desc-key="setting_line_numbers_desc" data-desc-text="Configure visibility of line numbers."></div>
             <select id="modalLineNumbersSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_line_numbers">
               <option value="on" selected data-i18n="opt_numbers_on">On (Visible)</option>
               <option value="off" data-i18n="opt_numbers_off">Off (Minimalist)</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_sticky_scroll">Sticky Scroll</div>
-              <div class="setting-desc" data-i18n="setting_sticky_scroll_desc">Keep parent headings visible at top.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_sticky_scroll" data-label-text="Sticky Scroll" data-desc-key="setting_sticky_scroll_desc" data-desc-text="Keep parent headings visible at top."></div>
             <select id="modalStickyScrollSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_sticky_scroll">
               <option value="on" selected data-i18n="opt_sticky_on">On (Enabled)</option>
               <option value="off" data-i18n="opt_sticky_off">Off (Disabled)</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_line_highlight">Current Line Highlight</div>
-              <div class="setting-desc" data-i18n="setting_line_highlight_desc">Configure cursor highlight style.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_line_highlight" data-label-text="Current Line Highlight" data-desc-key="setting_line_highlight_desc" data-desc-text="Configure cursor highlight style."></div>
             <select id="modalLineHighlightSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_line_highlight">
               <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
               <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
@@ -245,10 +230,7 @@
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_whitespace">Render Whitespace</div>
-              <div class="setting-desc" data-i18n="setting_whitespace_desc">Show visible marks for spaces and tabs.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_whitespace" data-label-text="Render Whitespace" data-desc-key="setting_whitespace_desc" data-desc-text="Show visible marks for spaces and tabs."></div>
             <select id="modalWhitespaceSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_whitespace">
               <option value="none" selected data-i18n="opt_ws_none">None (Hidden)</option>
               <option value="boundary" data-i18n="opt_ws_boundary">Boundary (Leading/Trailing)</option>
@@ -258,12 +240,9 @@
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">description</span><span data-i18n="grp_documents">New documents</span></h4>
+          <h4 data-card-heading data-icon="description" data-key="grp_documents" data-text="New documents"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_document_format">Format of new documents</div>
-              <div class="setting-desc" data-i18n="setting_document_format_desc">Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_document_format" data-label-text="Format of new documents" data-desc-key="setting_document_format_desc" data-desc-text="Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar."></div>
             <select id="modalDocumentFormatSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_document_format">
               <option value="markdown" data-i18n="format_option_markdown">Markdown (.md)</option>
               <option value="text" data-i18n="format_option_text">Text (.txt)</option>
@@ -272,63 +251,45 @@
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">save</span><span data-i18n="autosave_group_title">Autosave</span></h4>
+          <h4 data-card-heading data-icon="save" data-key="autosave_group_title" data-text="Autosave"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_autosave">Autosave</div>
-              <div class="setting-desc" data-i18n="setting_autosave_desc">Save the document automatically while you write.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_autosave" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write."></div>
             <select id="modalAutoSaveSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_autosave">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_autosave_idle">Save when typing pauses</div>
-              <div class="setting-desc" data-i18n="setting_autosave_idle_desc">Saves after the pause set below.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_autosave_idle" data-label-text="Save when typing pauses" data-desc-key="setting_autosave_idle_desc" data-desc-text="Saves after the pause set below."></div>
             <select id="modalAutoSaveIdleSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_autosave_idle">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_autosave_newline">Save at each new line</div>
-              <div class="setting-desc" data-i18n="setting_autosave_newline_desc">Saves every time you start a new line.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_autosave_newline" data-label-text="Save at each new line" data-desc-key="setting_autosave_newline_desc" data-desc-text="Saves every time you start a new line."></div>
             <select id="modalAutoSaveNewlineSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_autosave_newline">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_autosave_delay">Pause before saving (seconds)</div>
-              <div class="setting-desc" data-i18n="setting_autosave_delay_desc">How long to wait after you stop typing, from 0.5 to 10 seconds.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_autosave_delay" data-label-text="Pause before saving (seconds)" data-desc-key="setting_autosave_delay_desc" data-desc-text="How long to wait after you stop typing, from 0.5 to 10 seconds."></div>
             <input type="number" id="modalAutoSaveDelayInput" class="toolbar-select input-num" min="0.5" max="10" step="0.5" value="1.5" data-i18n-title="tip_set_autosave_delay">
           </div>
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">smart_toy</span><span data-i18n="grp_llm_assistant">LLM assistant</span></h4>
+          <h4 data-card-heading data-icon="cloud" data-key="grp_llm_assistant" data-text="LLM assistant"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_master_ai">AI assistant (master switch)</div>
-              <div class="setting-desc" data-i18n="setting_master_ai_desc">Turns the cloud LLM assistant and the suggestion sidebar on or off. A model must be set up first.</div>
-            </div>
-            <select id="modalMasterAiSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
+            <div data-setting-text data-label-key="setting_master_ai" data-label-text="LLM (cloud AI)" data-desc-key="setting_master_ai_desc" data-desc-text="Turns the cloud LLM assistant and the suggestion sidebar on or off. A model must be set up first."></div>
+            <select id="modalLlmSwitchSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_ai_scope">AI Role / Inference Scope</div>
-              <div class="setting-desc" data-i18n="setting_ai_scope_desc">Fine-tune the scope of AI assistance during writing (prioritizing human input when necessary).</div>
-            </div>
+            <div data-setting-text data-label-key="setting_ai_scope" data-label-text="AI Role / Inference Scope" data-desc-key="setting_ai_scope_desc" data-desc-text="Fine-tune the scope of AI assistance during writing (prioritizing human input when necessary)."></div>
             <select id="modalAiScopeSelect" class="toolbar-select select-scope" data-i18n-title="tip_set_ai_scope">
               <option value="suggestion_only" selected data-i18n="opt_scope_suggestion_only">Suggestions Only (Human Writes Text)</option>
               <option value="lint_assist" data-i18n="opt_scope_lint_assist">Suggestions + Lint Rule Assistance</option>
@@ -345,7 +306,7 @@
             </h4>
             <div class="setting-desc" data-i18n="llm_card_desc">Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.</div>
 
-            <input type="hidden" id="modalAiProviderSelect" value="gemini">
+            <input type="hidden" id="modalAiProviderSelect" value="none">
             <div class="provider-cards-grid" role="group">
               <div class="provider-card" data-provider="gemini" role="button" data-tip-exempt="the provider name on the card names it">
                 <div class="provider-name">Google Gemini</div>
@@ -365,10 +326,7 @@
             <div id="geminiSettingsBlock" class="provider-block">
               <div class="setting-item setting-item--stack">
                 <div class="setting-item-head">
-                  <div>
-                    <div class="setting-label" data-i18n="setting_gemini_key">Gemini API Key</div>
-                    <div class="setting-desc" data-i18n="setting_gemini_key_desc">Will be saved securely to your local device.</div>
-                  </div>
+                  <div data-setting-text data-label-key="setting_gemini_key" data-label-text="Gemini API Key" data-desc-key="setting_gemini_key_desc" data-desc-text="Will be saved securely to your local device."></div>
                   <a class="settings-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" data-i18n-title="tip_get_api_key">
                     <span data-i18n="btn_get_key">Get Key</span><span class="material-symbols-outlined">open_in_new</span>
                   </a>
@@ -402,10 +360,7 @@
             <div id="openaiSettingsBlock" class="provider-block">
               <div class="setting-item setting-item--stack">
                 <div class="setting-item-head">
-                  <div>
-                    <div class="setting-label" data-i18n="setting_openai_key">OpenAI API Key</div>
-                    <div class="setting-desc" data-i18n="setting_openai_key_desc">Will be saved securely to your local device.</div>
-                  </div>
+                  <div data-setting-text data-label-key="setting_openai_key" data-label-text="OpenAI API Key" data-desc-key="setting_openai_key_desc" data-desc-text="Will be saved securely to your local device."></div>
                   <a class="settings-link" href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" data-i18n-title="tip_get_api_key">
                     <span data-i18n="btn_get_key">Get Key</span><span class="material-symbols-outlined">open_in_new</span>
                   </a>
@@ -419,10 +374,7 @@
                 </div>
               </div>
               <div class="setting-item">
-                <div>
-                  <div class="setting-label" data-i18n="setting_openai_model">OpenAI Model</div>
-                  <div class="setting-desc" data-i18n="setting_openai_model_desc">Model used for OpenAI chat and rewriting.</div>
-                </div>
+                <div data-setting-text data-label-key="setting_openai_model" data-label-text="OpenAI Model" data-desc-key="setting_openai_model_desc" data-desc-text="Model used for OpenAI chat and rewriting."></div>
                 <select id="modalOpenAiModelSelect" class="toolbar-select select-model" data-i18n-title="tip_set_openai_model">
                   <option value="gpt-4o-mini" selected>GPT-4o Mini (Recommended)</option>
                   <option value="gpt-4o">GPT-4o</option>
@@ -434,10 +386,7 @@
             <div id="claudeSettingsBlock" class="provider-block">
               <div class="setting-item setting-item--stack">
                 <div class="setting-item-head">
-                  <div>
-                    <div class="setting-label" data-i18n="setting_claude_key">Anthropic API Key</div>
-                    <div class="setting-desc" data-i18n="setting_claude_key_desc">Will be saved securely to your local device.</div>
-                  </div>
+                  <div data-setting-text data-label-key="setting_claude_key" data-label-text="Anthropic API Key" data-desc-key="setting_claude_key_desc" data-desc-text="Will be saved securely to your local device."></div>
                   <a class="settings-link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" data-i18n-title="tip_get_api_key">
                     <span data-i18n="btn_get_key">Get Key</span><span class="material-symbols-outlined">open_in_new</span>
                   </a>
@@ -451,10 +400,7 @@
                 </div>
               </div>
               <div class="setting-item">
-                <div>
-                  <div class="setting-label" data-i18n="setting_claude_model">Claude Model</div>
-                  <div class="setting-desc" data-i18n="setting_claude_model_desc">Model used for Claude chat and rewriting.</div>
-                </div>
+                <div data-setting-text data-label-key="setting_claude_model" data-label-text="Claude Model" data-desc-key="setting_claude_model_desc" data-desc-text="Model used for Claude chat and rewriting."></div>
                 <select id="modalClaudeModelSelect" class="toolbar-select select-model" data-i18n-title="tip_set_claude_model">
                   <option value="claude-opus-5-5" selected>Claude Opus 5.5</option>
                   <option value="claude-sonnet-5-5">Claude Sonnet 5.5</option>
@@ -464,10 +410,7 @@
             </div>
 
             <div class="setting-item">
-              <div>
-                <div class="setting-label" data-i18n="api_keys_clear_label">Clear Stored API Keys</div>
-                <div class="setting-desc" data-i18n="api_keys_clear_desc">Remove locally cached Gemini, OpenAI and Claude API keys from this device. Keys are encrypted with Electron safeStorage.</div>
-              </div>
+              <div data-setting-text data-label-key="api_keys_clear_label" data-label-text="Clear Stored API Keys" data-desc-key="api_keys_clear_desc" data-desc-text="Remove locally cached Gemini, OpenAI and Claude API keys from this device. Keys are encrypted with Electron safeStorage."></div>
               <button id="btnEditorClearApiKey" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n-title="tip_clear_api_keys">
                 <span class="material-symbols-outlined">delete_forever</span><span data-i18n="api_keys_clear_btn">Clear API Key</span>
               </button>
@@ -478,12 +421,9 @@
       <!-- Tab 3: Sidebar (sbr) - embedding, knowledge search and validation -->
       <div id="tabAiSearch" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">memory</span><span data-i18n="grp_embedding_assistant">Embedding assistant</span></h4>
+          <h4 data-card-heading data-icon="neurology" data-key="grp_embedding_assistant" data-text="Embedding assistant"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_embedding_assistant">Embedding assistant</div>
-              <div class="setting-desc" data-i18n="setting_embedding_assistant_desc">Real-time semantic suggestions in the sidebar. Works while the AI assistant is on.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_embedding_assistant" data-label-text="Embedding assistant" data-desc-key="setting_embedding_assistant_desc" data-desc-text="Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."></div>
             <select id="modalEmbeddingAssistantSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_embedding_assistant">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
@@ -493,10 +433,7 @@
 
 <section class="ai-control-overview" aria-label="AI system status">
           <div class="ai-overview-heading">
-            <div>
-              <div class="setting-label" data-i18n="ai_overview_title">AI Control Center</div>
-              <div class="setting-desc" data-i18n="ai_overview_desc">Live status for verification before configuring.</div>
-            </div>
+            <div data-setting-text data-label-key="ai_overview_title" data-label-text="AI Control Center" data-desc-key="ai_overview_desc" data-desc-text="Live status for verification before configuring."></div>
             <span class="ai-overview-note" data-i18n="ai_overview_badge">Local-first</span>
           </div>
           <div class="ai-status-grid ai-status-grid--3">
@@ -597,12 +534,9 @@
         </div>
 
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">search</span><span data-i18n="vector_search_ui_title">Vector Search & Knowledge UI</span></h4>
+          <h4 data-card-heading data-icon="search" data-key="vector_search_ui_title" data-text="Vector Search &amp; Knowledge UI"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_suggest_trigger">Suggestion Trigger Mode</div>
-              <div class="setting-desc" data-i18n="setting_suggest_trigger_desc">Control how vector suggestions are invoked.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_suggest_trigger" data-label-text="Suggestion Trigger Mode" data-desc-key="setting_suggest_trigger_desc" data-desc-text="Control how vector suggestions are invoked."></div>
             <select id="modalSuggestTriggerSelect" class="toolbar-select" data-i18n-title="tip_set_suggest_trigger">
               <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse Release)</option>
               <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
@@ -610,17 +544,11 @@
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_min_score">Minimum Similarity Score (%)</div>
-              <div class="setting-desc" data-i18n="setting_min_score_desc">Ignore results below this similarity threshold.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_min_score" data-label-text="Minimum Similarity Score (%)" data-desc-key="setting_min_score_desc" data-desc-text="Ignore results below this similarity threshold."></div>
             <input type="number" id="modalMinScoreInput" min="50" max="99" value="70" class="toolbar-select input-num" data-i18n-title="tip_min_score">
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_limit">Search Results Limit</div>
-              <div class="setting-desc" data-i18n="setting_limit_desc">Maximum number of suggestions returned.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_limit" data-label-text="Search Results Limit" data-desc-key="setting_limit_desc" data-desc-text="Maximum number of suggestions returned."></div>
             <select id="modalLimitSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_suggestion_limit">
               <option value="5" selected data-i18n="opt_limit_5">5 results</option>
               <option value="10" data-i18n="opt_limit_10">10 results</option>
@@ -628,27 +556,18 @@
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="opt_show_full_metadata">Show Full Metadata / Attributes</div>
-              <div class="setting-desc" data-i18n="setting_full_meta_desc">Auto-expand key-value attributes in suggestion cards.</div>
-            </div>
+            <div data-setting-text data-label-key="opt_show_full_metadata" data-label-text="Show Full Metadata / Attributes" data-desc-key="setting_full_meta_desc" data-desc-text="Auto-expand key-value attributes in suggestion cards."></div>
             <input type="checkbox" id="modalShowFullMetadataChk" data-i18n-title="tip_show_full_metadata">
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_linter_enabled">Real-time Validation (Linter)</div>
-              <div class="setting-desc" data-i18n="setting_linter_enabled_desc">Enable background document validation.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_linter_enabled" data-label-text="Real-time Validation (Linter)" data-desc-key="setting_linter_enabled_desc" data-desc-text="Enable background document validation."></div>
             <select id="modalLinterSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_linter">
               <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
               <option value="off" data-i18n="opt_linter_off">Disabled</option>
             </select>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="btn_import_dict">Import Dictionary / Knowledge (.json)</div>
-              <div class="setting-desc" data-i18n="import_dict_desc">Load custom domain terms, schema rules, or vector definitions into HNSW index.</div>
-            </div>
+            <div data-setting-text data-label-key="btn_import_dict" data-label-text="Import Dictionary / Knowledge (.json)" data-desc-key="import_dict_desc" data-desc-text="Load custom domain terms, schema rules, or vector definitions into HNSW index."></div>
             <button id="btnModalImportDict" class="settings-btn" type="button" data-i18n-title="tip_import_dictionary">
               <span data-i18n="btn_import_dict">Import Dictionary</span>
             </button>
@@ -722,12 +641,9 @@
       <!-- Tab 4: System (sys) - closing, log, parts of the window and maintenance -->
       <div id="tabSystem" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">close</span><span data-i18n="settings_group_closing">Closing</span></h4>
+          <h4 data-card-heading data-icon="close" data-key="settings_group_closing" data-text="Closing"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_confirm_close">Confirm before closing</div>
-              <div class="setting-desc" data-i18n="setting_confirm_close_desc">Ask first when you close something with ×, so a stray click cannot close it. Tabs with unsaved changes are always asked about.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_confirm_close" data-label-text="Confirm before closing" data-desc-key="setting_confirm_close_desc" data-desc-text="Ask first when you close something with ×, so a stray click cannot close it. Tabs with unsaved changes are always asked about."></div>
             <select id="modalConfirmCloseSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_confirm_close">
               <option value="on" selected data-i18n="opt_confirm_close_on">Ask first (recommended)</option>
               <option value="off" data-i18n="opt_confirm_close_off">Close at once</option>
@@ -740,65 +656,78 @@
             <span class="material-symbols-outlined">terminal</span>
             <span data-i18n="settings_group_logs">System log</span>
             <span class="setting-actions">
-              <button type="button" class="log-panel-btn settings-log-btn" data-log-action="clear" data-i18n-title="tip_logs_clear">
+              <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="clear" data-i18n-title="tip_logs_clear">
                 <span class="material-symbols-outlined">&#xe419;</span><span data-i18n="btn_clear_logs">CLEAR</span>
               </button>
-              <button type="button" class="log-panel-btn settings-log-btn" data-log-action="copy" data-i18n-title="tip_logs_copy">
+              <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="copy" data-i18n-title="tip_logs_copy">
                 <span class="material-symbols-outlined">&#xe2ec;</span><span data-i18n="btn_copy_logs">Copy Logs</span>
               </button>
-              <button type="button" class="log-panel-btn settings-log-btn" data-log-action="download" data-i18n-title="tip_logs_save">
+              <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="download" data-i18n-title="tip_logs_save">
                 <span class="material-symbols-outlined">download</span><span data-i18n="btn_download_logs">Save Logs</span>
               </button>
             </span>
           </h4>
+          <div class="log-head" aria-hidden="true"><span data-i18n="log_head_time">Time</span><span data-i18n="log_head_level">Level</span><span data-i18n="log_head_source">Source</span><span data-i18n="log_head_message">Message</span></div>
           <div class="log-entries-container" data-log-mirror></div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="setting_logs_on_start">Log panel at startup</div>
-              <div class="setting-desc" data-i18n="setting_logs_on_start_desc">Whether the log panel is open when the app starts.</div>
-            </div>
+            <div data-setting-text data-label-key="setting_logs_on_start" data-label-text="Log panel at startup" data-desc-key="setting_logs_on_start_desc" data-desc-text="Whether the log panel is open when the app starts."></div>
             <select id="modalLogsOnStartSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_logs_on_start">
               <option value="open" selected data-i18n="opt_logs_open">Open</option>
               <option value="closed" data-i18n="opt_logs_closed">Closed</option>
             </select>
           </div>
+          <div class="setting-item">
+            <div data-setting-text data-label-key="setting_log_time_format" data-label-text="Log time format" data-desc-key="setting_log_time_format_desc" data-desc-text="How the time of each log line is shown. The stored time is always the same; only the display changes."></div>
+            <select id="modalLogTimeFormatSelect" class="toolbar-select" data-i18n-title="tip_set_log_time_format">
+              <option value="h24" selected data-i18n="opt_time_h24">24 hours</option>
+              <option value="h12" data-i18n="opt_time_h12">12 hours</option>
+              <option value="os" data-i18n="opt_time_os">Follow OS</option>
+              <option value="iso" data-i18n="opt_time_iso">ISO 8601</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div data-setting-text data-label-key="setting_log_time_zone" data-label-text="Log time zone" data-desc-key="setting_log_time_zone_desc" data-desc-text="Show the time in this computer's time zone, or in UTC. ISO 8601 is always UTC."></div>
+            <select id="modalLogTimeZoneSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_log_time_zone">
+              <option value="local" selected data-i18n="opt_time_local">Local</option>
+              <option value="utc" data-i18n="opt_time_utc">UTC</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div data-setting-text data-label-key="setting_remember_layout" data-label-text="Remember layout" data-desc-key="setting_remember_layout_desc" data-desc-text="Remembers the height of the log panel and the chat dock and the width of the sidebar, and restores them at the next start. Turning it off forgets them."></div>
+            <select id="modalRememberLayoutSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_remember_layout">
+              <option value="on" selected data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
         </div>
 
 <div class="settings-section-card">
-          <h4><span class="material-symbols-outlined">visibility</span><span data-i18n="vis_group_title">Parts of the window</span></h4>
+          <h4 data-card-heading data-icon="visibility" data-key="vis_group_title" data-text="Parts of the window"></h4>
           <div class="setting-desc" data-i18n="vis_group_desc">Show or hide each part of the window with its eye button. Essential parts cannot be hidden.</div>
           <div id="visibilityList"></div>
         </div>
 
 <div class="settings-section-card settings-maintenance-card">
-          <h4><span class="material-symbols-outlined">build</span><span data-i18n="maint_title">Application Maintenance</span></h4>
+          <h4 data-card-heading data-icon="build" data-key="maint_title" data-text="Application Maintenance"></h4>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="maint_reload_label">Reload Editor Window</div>
-              <div class="setting-desc" data-i18n="maint_reload_desc">Redraws the editor window only; the app keeps running. Nothing is deleted.</div>
-            </div>
+            <div data-setting-text data-label-key="maint_reload_label" data-label-text="Reload Editor Window" data-desc-key="maint_reload_desc" data-desc-text="Redraws the editor window only; the app keeps running. Nothing is deleted."></div>
             <button id="btnReloadEditor" class="settings-btn" type="button" data-i18n="maint_reload_btn" data-i18n-title="tip_reload_editor">Reload</button>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="maint_restart_label">Restart Application</div>
-              <div class="setting-desc" data-i18n="maint_restart_desc">Closes the whole app and starts it again, including the engine and background processes.</div>
-            </div>
+            <div data-setting-text data-label-key="maint_restart_label" data-label-text="Restart Application" data-desc-key="maint_restart_desc" data-desc-text="Closes the whole app and starts it again, including the engine and background processes."></div>
             <button id="btnRestartApplication" class="settings-btn" type="button" data-i18n="maint_restart_btn" data-i18n-title="tip_restart_app">Restart</button>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="maint_cache_label">Clear Application Cache</div>
-              <div class="setting-desc" data-i18n="maint_cache_desc">Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys.</div>
-            </div>
+            <div data-setting-text data-label-key="maint_cache_label" data-label-text="Clear Application Cache" data-desc-key="maint_cache_desc" data-desc-text="Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys."></div>
             <button id="btnClearAppCache" class="settings-btn" type="button" data-i18n="maint_cache_btn" data-i18n-title="tip_clear_cache">Clear Cache</button>
           </div>
           <div class="setting-item">
-            <div>
-              <div class="setting-label" data-i18n="maint_reset_label">Restore Default Settings</div>
-              <div class="setting-desc" data-i18n="maint_reset_desc">Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor.</div>
-            </div>
+            <div data-setting-text data-label-key="maint_reset_label" data-label-text="Restore Default Settings" data-desc-key="maint_reset_desc" data-desc-text="Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor."></div>
             <button id="btnResetSettings" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_btn" data-i18n-title="tip_reset_settings">Restore Defaults</button>
+          </div>
+          <div class="setting-item">
+            <div data-setting-text data-label-key="maint_reset_dev_label" data-label-text="Dev reset" data-desc-key="maint_reset_dev_desc" data-desc-text="Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again."></div>
+            <button id="btnResetSettingsDev" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_dev_btn" data-i18n-title="tip_reset_settings_dev">Dev reset</button>
           </div>
         </div>
       </div>

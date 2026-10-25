@@ -1,4 +1,5 @@
 import { icons } from '../../core/icons.js';
+import { getWorkspaceRoot } from '../../core/workspaceRoot';
 import { setEditorContent } from '../../editor/editorManager.js';
 import { setDocumentFormat, announceOpenedEncoding } from '../../editor/ui/statusBarManager.js';
 import appLogoUrl from '../../assets/icon.png';
@@ -56,9 +57,7 @@ export function bindTopLevelUIEvents() {
   if (btnCreateWorkspace) {
     btnCreateWorkspace.addEventListener('click', async () => {
       if (workspaceSetupModal) workspaceSetupModal.style.display = 'none';
-      if (window.engineAPI && window.engineAPI.getDefaultWorkspace) {
-        await window.engineAPI.getDefaultWorkspace(true);
-      }
+      await getWorkspaceRoot({ create: true });
       if (modalActionContext.mode === 'save' && modalActionContext.saveCallback) {
         await modalActionContext.saveCallback();
       } else {

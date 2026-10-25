@@ -1,7 +1,8 @@
 /* Editor Options card (right sidebar): every Monaco option as a row, applied live to the main editor.
    It sits below the sidebar header: closed it is one bar, open it shares the height with the results list. */
+/* Same inset as the other cards in the right panel (--sidebar-inset) */
 .monaco-options-card {
-  margin: 6px 8px 0;
+  margin: 0 var(--sidebar-inset, 14px);
   flex-shrink: 0;
 }
 
@@ -27,6 +28,17 @@
   flex-direction: column;
   gap: 6px;
   padding: 6px 8px 8px;
+}
+
+.monaco-options-card .semantic-module-header:focus-visible,
+.mo-group-title:focus-visible,
+.mo-reset:focus-visible,
+.mo-select:focus-visible,
+.mo-input:focus-visible,
+.mo-switch:focus-visible,
+.monaco-options-search:focus-visible {
+  outline: 2px solid var(--accent-color, #38bdf8);
+  outline-offset: 1px;
 }
 
 .monaco-options-search {
@@ -189,4 +201,35 @@
 
 .mo-reset:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* Editor Options mode (ui/layout/editorOptionsMode.js): the dictionary side steps back, the options card takes the panel */
+body.sidebar-options-mode #guidelineModuleCard,
+body.sidebar-options-mode #knowledgeModuleCard,
+body.sidebar-options-mode #vectorResultsList {
+  display: none !important;
+}
+body.sidebar-options-mode .monaco-options-card {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* Options mode (the toolbar button turns the right panel over): the card is the whole panel, so it stays open
+   and its own collapse arrow and click are not needed. Its groups (Display, Editing, ...) still open and close. */
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-header {
+  pointer-events: none;
+}
+
+body.sidebar-options-mode #monacoOptionsCard .collapse-icon {
+  display: none;
+}
+
+/* The line under the header separates it from the results list; in this mode there is no list below it */
+body.sidebar-options-mode .sidebar-header {
+  border-bottom: none;
+}
+
+/* The header is no longer a control in this mode, so it takes no focus frame (the groups keep theirs) */
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visible {
+  outline: none;
 }

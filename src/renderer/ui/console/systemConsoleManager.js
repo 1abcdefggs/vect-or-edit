@@ -1,6 +1,9 @@
 import { createDisclosure } from '../components/disclosureToggle.js';
 import { saveTextToFile } from '../../editor/io/fileIO.js';
 import { settingsStore } from '../../core/settingsStore.js';
+import { formatLogTime } from '../../core/logTime.js';
+import { showConfirmModal } from '../notifications/confirmModal.js';
+import { t } from '../../core/i18n.js';
 
 export function initSystemConsole() {
   const logEntriesContainer = document.getElementById('logEntriesContainer');
@@ -35,7 +38,7 @@ export function initSystemConsole() {
     const badgeClass = entry.level === 'ERROR' ? 'badge-error' : (entry.level === 'WARN' ? 'badge-warn' : 'badge-info');
     // Built with textContent: messages carry raw console text (renderer HTML, file paths) that must not be parsed as markup
     const cells = [
-      ['log-time', `[${entry.time}]`],
+      ['log-time', `[${formatLogTime(entry.time, settingsStore.getPreference('system.logTimeFormat'), settingsStore.getPreference('system.logTimeZone'))}]`],
       [`log-badge ${badgeClass}`, entry.level],
       ['log-source', `[${entry.source}]`],
       ['log-msg', entry.message]
@@ -82,7 +85,7 @@ export function initSystemConsole() {
   const SYSTEM_LOG_LEVELS = { success: 'INFO', info: 'INFO', warn: 'WARN', error: 'ERROR' };
   window.appendSystemLog = function appendSystemLog(msg, type = 'info') {
     appendLogEntry({
-      time: new Date().toLocaleTimeString(),
+      time: new Date().toISOString(),
       source: 'Pipeline',
       level: SYSTEM_LOG_LEVELS[type] ?? 'INFO',
       message: String(msg),
@@ -91,7 +94,7 @@ export function initSystemConsole() {
   };
 
   appendLogEntry({
-    time: new Date().toLocaleTimeString(),
+    time: new Date().toISOString(),
     source: 'App:Init',
     level: 'INFO',
     message: 'VectOrEdit core system online. Ready.'
@@ -129,9 +132,12 @@ export function initSystemConsole() {
     ? createDisclosure({
         button: btnToggleConsole,
         panel: systemLogPanel,
+        animate: true,
         onChange: (open) => {
           btnToggleConsole.classList.toggle('btn-logs-closed', !open);
           btnToggleConsole.classList.toggle('toolbar-btn-active', open);
+          const closeLogs = document.getElementById('btnCloseLogs');
+          if (closeLogs) { closeLogs.hidden = !open; closeLogs.style.display = open ? 'inline-flex' : 'none'; }
           if (open && logEntriesContainer) {
             logEntriesContainer.scrollTop = logEntriesContainer.scrollHeight;
           }
@@ -140,8 +146,19 @@ export function initSystemConsole() {
     : null;
 
   logsDisclosure?.set(!settingsStore.getPreference('system.collapseLogsOnStartup'));
+  document.getElementById('btnCloseLogs')?.addEventListener('click', () => logsDisclosure?.set(false));
 
-  const clearLogs = () => {
+  // Clearing cannot be undone, so it asks first, but only when there is something to lose
+  const clearLogs = async () => {
+    if (logBuffer.length > 0) {
+      const confirmed = await showConfirmModal({
+        title: t('log_clear_title'),
+        message: t('log_clear_confirm'),
+        type: 'warning',
+        confirmText: t('log_clear_btn')
+      });
+      if (!confirmed) return;
+    }
     logBuffer.length = 0;
     if (logEntriesContainer) logEntriesContainer.innerHTML = '';
     liveMirrors().forEach((view) => view.replaceChildren());
