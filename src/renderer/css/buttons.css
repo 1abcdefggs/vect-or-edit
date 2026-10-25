@@ -513,3 +513,36 @@ button.btn-phi {
 @container editor-toolbar (max-width: 639px) {
   .editor-opt-label--min { display: none; }
 }
+
+/* Toolbar shrinking (owner: shorten text before removing icons; lower priority goes first).
+   Selects cut their text with an ellipsis instead of pushing the toolbar past its edge.
+   Steps by toolbar width (container editor-toolbar):
+   below 760px the LLM label becomes icon only; below 700px the BG/FG word goes; the font and size stay.
+   Thresholds are provisional. */
+.font-control-integrated-group {
+  min-width: 0;
+}
+
+.editor-toolbar select.editor-toolbar-select {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editor-toolbar .editor-header-right {
+  flex-shrink: 0;
+}
+
+@container editor-toolbar (max-width: 759px) {
+  #editorAiLabel {
+    display: none;
+  }
+}
+
+@container editor-toolbar (max-width: 699px) {
+  .style-label--bg {
+    display: none;
+  }
+}

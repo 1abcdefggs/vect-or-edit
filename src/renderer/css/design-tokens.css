@@ -23,12 +23,12 @@
   --icon-btn-size: 28px;
   --icon-size: 20px;
   /* Button padding from the font size alone (golden ratio, em based): vertical 1/phi^3, horizontal 1/phi.
+     Exact forms: phi = (1 + sqrt 5) / 2, 1/phi = (sqrt 5 - 1) / 2, 1/phi^3 = sqrt 5 - 2.
      Used with class btn-phi. Basis: layout-core docs/control-sizing-evidence.md sections 8 and 10. */
-  --phi: 1.618;
   /* Smallest clickable height (WCAG 2.2 target size, level AA). A control that looks smaller gets a transparent hit strip. */
   --hit-min: 24px;
-  --btn-pad-y: calc(1em / var(--phi) / var(--phi) / var(--phi));
-  --btn-pad-x: calc(1em / var(--phi));
+  --btn-pad-y: calc(1em * (sqrt(5) - 2));
+  --btn-pad-x: calc(1em * (sqrt(5) - 1) / 2);
   /* The brand face for the product name (the header logo wordmark and the About title). */
   --font-brand: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
   /* Monospace for versions, paths and codes. Cascadia Code is loaded in index.html. */

@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The guide beside the settings is also shown in English (it follows the UI language)
 
+## [0.3.40] - 2026-10-25
+
+### Changed
+- Button padding uses the exact golden-ratio values (sqrt 5 forms); the unused --phi token is removed
+- The toolbar shrinks by width: selects cut their text, the LLM label and the BG/FG word hide at narrow widths
+
 ## [0.3.39] - 2026-10-25
 
 ### Changed
