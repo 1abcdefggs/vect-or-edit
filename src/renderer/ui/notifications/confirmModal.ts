@@ -61,9 +61,9 @@ export function showChoiceModal(options: ChoiceModalOptions): Promise<string | n
     modalOverlay.innerHTML = `
       <div class="settings-modal-dialog elevated-modal-card" style="width: 480px; max-width: 92vw; height: auto; padding: 0; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-secondary, #0f172a); box-shadow: 0 24px 60px -12px rgba(0,0,0,0.85), 0 0 24px rgba(56, 189, 248, 0.15);">
         <div class="modal-header" style="padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: var(--hover-bg);">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="confirmIcon" class="material-symbols-outlined" style="font-size: var(--fs-22); color: ${iconColor};"></span>
-            <span id="confirmTitle" style="font-size: var(--fs-15); font-weight: 700; color: var(--text-main);"></span>
+          <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+            <span id="confirmIcon" class="material-symbols-outlined" style="font-size: var(--fs-22); color: ${iconColor}; flex-shrink: 0;"></span>
+            <span id="confirmTitle" style="font-size: var(--fs-15); font-weight: 700; color: var(--text-main); min-width: 0; overflow-wrap: anywhere;"></span>
           </div>
           <button id="btnConfirmClose" class="toolbar-btn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center;">
             <span class="material-symbols-outlined" style="font-size: var(--fs-19);">close</span>
