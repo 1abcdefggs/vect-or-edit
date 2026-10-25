@@ -92,6 +92,7 @@ function makeControl(path, def, topName) {
     kind,
     choices,
     type: def.type,
+    kinds: def.kinds || [],
     doc: def.doc || '',
     defaultText: def.defaultText || null,
     lock,
@@ -122,13 +123,28 @@ export function indexControls(controls) {
   return new Map(controls.map((c) => [c.path, c]));
 }
 
+/** Value checks per Monaco kind; a json control accepts a value that fits one of the kinds its option declares. */
+const JSON_KIND_CHECKS = {
+  array: Array.isArray,
+  object: (v) => v !== null && typeof v === 'object' && !Array.isArray(v),
+  string: (v) => typeof v === 'string',
+  number: (v) => typeof v === 'number' && Number.isFinite(v),
+  boolean: (v) => typeof v === 'boolean'
+};
+
+function fitsJson(control, value) {
+  if (value === undefined) return false;
+  const checks = (control.kinds || []).map((k) => JSON_KIND_CHECKS[k]).filter(Boolean);
+  return checks.length === 0 || checks.some((check) => check(value));
+}
+
 function matchesKind(control, value) {
   switch (control.kind) {
     case 'boolean': return typeof value === 'boolean';
     case 'number': return typeof value === 'number' && Number.isFinite(value);
     case 'text': return typeof value === 'string' || typeof value === 'number';
     case 'enum': return control.choices.some((c) => c === value);
-    case 'json': return value !== undefined;
+    case 'json': return fitsJson(control, value);
     default: return false;
   }
 }
@@ -215,7 +231,9 @@ export function parseTyped(control, text) {
   }
   if (control.kind === 'text') return { ok: true, value: String(text) };
   if (control.kind === 'json') {
-    try { return { ok: true, value: JSON.parse(s) }; } catch { return { ok: false }; }
+    let value;
+    try { value = JSON.parse(s); } catch { return { ok: false }; }
+    return fitsJson(control, value) ? { ok: true, value } : { ok: false };
   }
   return { ok: false };
 }
