@@ -284,16 +284,71 @@
   line-height: 1.45;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   user-select: text;
   cursor: text;
 }
 
+/* Fixed columns (time, level, source, message) so the message starts at the same x in every row.
+   The widths follow the longest value of each column; a longer source is cut with an ellipsis. */
+/* The header and every row share one column grid, so the labels sit over their values */
+.log-row,
+.log-head {
+  display: grid;
+  grid-template-columns: 13ch 6ch 14ch minmax(0, 1fr);
+  align-items: start;
+  column-gap: 8px;
+}
+
 .log-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
   word-break: break-all;
+}
+
+/* Same font size as the rows: ch widths follow the element's own font size, so the header must match */
+.log-head {
+  padding: 2px 12px;
+  font-family: 'Cascadia Code', Consolas, Monaco, monospace;
+  font-size: var(--fs-12);
+  color: var(--log-time);
+  border-bottom: var(--border-width) solid var(--border-color);
+  user-select: none;
+  /* The header also holds the log actions in a fifth, auto-sized column. Its labels hide when the header is narrow
+     (icons stay, with their tooltips). The header is the container, so the rule follows the panel width. */
+  grid-template-columns: 13ch 6ch 14ch minmax(0, 1fr) auto;
+  align-items: center;
+  container-type: inline-size;
+}
+
+.log-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Icons match the text size (12px); the icon font defaults to 24px and would make the header taller */
+.log-head-actions .material-symbols-outlined {
+  font-size: var(--fs-12);
+}
+
+/* Ghost button: no outline (the band already has one rule), the icon in the accent colour, a fill on hover */
+.log-head-actions .log-panel-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+}
+
+.log-head-actions .log-panel-btn .material-symbols-outlined {
+  color: var(--accent-color);
+}
+
+.log-head-actions .log-panel-btn:hover {
+  background: var(--hover-bg);
+}
+
+@container (max-width: 520px) {
+  .log-btn-label {
+    display: none;
+  }
 }
 
 .log-time {
@@ -301,36 +356,35 @@
   flex-shrink: 0;
 }
 
+/* No vertical padding and a line height of 1: the badge must not be taller than the 12px text line, or it sets the height of every row */
 .log-badge {
-  padding: 1px 4px;
+  padding: 0 4px;
   border-radius: 4px;
   font-size: var(--fs-10);
-  
-  flex-shrink: 0;
+  line-height: 1;
+  justify-self: start;
 }
 
 .log-badge.badge-info {
   background: rgba(56, 189, 248, 0.15);
   color: color-mix(in srgb, #66f 55%, var(--text-main));
-  border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
 .log-badge.badge-warn {
   background: rgba(245, 158, 11, 0.15);
   color: color-mix(in srgb, #f59e0b 55%, var(--text-main));
-  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .log-badge.badge-error {
   background: rgba(239, 68, 68, 0.15);
   color: color-mix(in srgb, #ef4444 55%, var(--text-main));
-  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .log-source {
   color: var(--log-source);
-  
-  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .log-msg {
