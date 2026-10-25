@@ -77,6 +77,14 @@
             <option value="20" data-i18n="font_xlarge">20px</option>
           </select>
         </div>
+
+        <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
+
+        <!-- Turns the right panel over: the dictionary side steps back and only the Editor Options card shows (editorOptionsMode.js) -->
+        <button id="btnEditorOptionsToggle" class="gear-btn gear-btn--lg" type="button" aria-pressed="false" data-i18n-title="tip_editor_options_toggle" style="display: flex; align-items: center; gap: 4px; width: auto; padding: 0 4px;">
+          <span class="material-symbols-outlined">tune</span>
+          <span class="style-label" style="font-size: var(--fs-12); font-weight: 700; color: var(--text-main);" data-i18n="monaco_opts_title">Editor Options</span>
+        </button>
       </div>
 
       <div id="quickCustomColorGroup" style="display: none; align-items: center; gap: 4px;">
@@ -99,10 +107,6 @@
 
       <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
 
-      <!-- Turns the right panel over: the dictionary side steps back and only the Editor Options card shows (editorOptionsMode.js) -->
-      <button id="btnEditorOptionsToggle" class="gear-btn gear-btn--lg" type="button" aria-pressed="false" data-i18n-title="tip_editor_options_toggle">
-        <span class="material-symbols-outlined">tune</span>
-      </button>
       <button id="btnEditorQuickSettings" class="gear-btn gear-btn--lg" data-ui="edt:quick-settings" data-tab-target="tabEditor" data-i18n-title="tip_editor_quick_settings">
         <span class="material-symbols-outlined">settings</span>
       </button>
