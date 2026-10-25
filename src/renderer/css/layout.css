@@ -36,6 +36,16 @@ body {
   overflow: visible;
 }
 
+/* Minimized header: only the settings gear and the minimize toggle stay visible */
+.app-header--minimized {
+  height: 30px;
+}
+
+.app-header--minimized .app-header__left,
+.app-header--minimized .header-frame {
+  display: none;
+}
+
 /* Master AI Active Window Frame Glow */
 body.ai-active .header-full-border-line {
   background-color: var(--accent-color, #66f) !important;

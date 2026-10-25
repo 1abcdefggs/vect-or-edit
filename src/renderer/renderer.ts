@@ -32,6 +32,7 @@ import { initSelectMenus } from './ui/components/selectMenu';
 import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
 import { initDocumentFormatControl } from './editor/ui/documentFormatControl.js';
 import { initMonacoOptionsPanel } from './editor/options/monacoOptionsPanel.js';
+import { initHeaderMinimize } from './ui/layout/headerMinimize.js';
 
 export { setLedStatus };
 
@@ -137,6 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const editorPromise = initEditor();
   const initModulesPromise = (async () => {
     initSettings(updateEditorOptions);
+    initHeaderMinimize();
   })();
 
   Promise.all([editorPromise, initModulesPromise])
