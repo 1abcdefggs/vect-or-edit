@@ -366,19 +366,20 @@
   height: 16px;
 }
 
-.ai-switch-pill .toggle-switch[aria-checked="true"] .toggle-switch__knob {
+/* The state lives on the pill (role="switch", aria-checked), so the whole button is the switch; the inner track only draws it. */
+.ai-switch-pill[aria-checked="true"] .toggle-switch__knob {
   left: 20px;
+  background: #ffffff;
 }
 
 /* One outline per control: the pill's border is the only frame, so the switch inside has no border of its own.
    The track shows the state; the pill itself stays an active control in both states (OFF reads as a switch, not a dead button). */
-.ai-switch-pill .toggle-switch,
-.ai-switch-pill .toggle-switch[aria-checked="true"] {
+.ai-switch-pill .toggle-switch {
   border: none;
   background: var(--border-color, #334155);
 }
 
-.ai-switch-pill .toggle-switch[aria-checked="true"] {
+.ai-switch-pill[aria-checked="true"] .toggle-switch {
   background: var(--accent-color, #38bdf8);
 }
 

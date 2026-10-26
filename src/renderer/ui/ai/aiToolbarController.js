@@ -13,11 +13,10 @@ import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editor
 
 const KEY_PLACEHOLDERS = { openai: 'sk-proj-...', claude: 'sk-ant-api03-...', gemini: 'AIzaSy... (Gemini)' };
 
-/** Draws an ON/OFF switch pill: the pressed state, the knob side and the lit word all follow `on`. */
+/** Draws an ON/OFF switch pill: the switch state (aria-checked on the whole button), the knob side and the lit word all follow `on`. */
 function drawAiSwitch(button, on) {
   if (!button) return;
-  button.setAttribute('aria-pressed', String(on));
-  button.querySelector('.toggle-switch')?.setAttribute('aria-checked', String(on));
+  button.setAttribute('aria-checked', String(on));
   button.querySelector('[data-side="on"]')?.classList.toggle('is-lit', on);
   button.querySelector('[data-side="off"]')?.classList.toggle('is-lit', !on);
 }

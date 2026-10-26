@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.50] - 2026-10-26
+
+### Changed
+
+- The LLM and Embedding header switches are role="switch" buttons: aria-checked sits on the whole button, not on the inner track, and the redundant state on the track is removed. The look is unchanged.
+- The header button (.editor-header-btn) is defined once in editor.css. The duplicate rule in buttons.css is removed, and the one hover rule is merged; the rendered values do not change.
+
 ## [0.3.49] - 2026-10-26
 
 ### Removed
