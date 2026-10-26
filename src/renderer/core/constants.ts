@@ -44,6 +44,8 @@ export const STORAGE_KEYS = {
   DOCUMENT_FORMAT: 'vect_document_format',
   /** 'on' | 'off': ask before closing with × (off closes at once; unsaved tabs are always asked about) */
   CONFIRM_BEFORE_CLOSE: 'vect_confirm_before_close',
+  /** 'off' once the "Don't show again" checkbox is ticked on a clean tab; the global switch above sets it back to 'on' */
+  CONFIRM_TAB_CLOSE: 'vect_confirm_tab_close',
   AI_SETUP_COMPLETED: 'vect_ai_setup_completed',
   LOCAL_EMBEDDING_MODEL: 'vect_local_embedding_model',
   /** JSON array of embedding model ids whose files were fetched on this device */
@@ -92,4 +94,5 @@ export const DEFAULTS = {
   AUTO_SAVE_NEWLINE: true,
   LOG_DISPLAY_POSITION: 'bottom',
   CONFIRM_BEFORE_CLOSE: 'on',
+  CONFIRM_TAB_CLOSE: 'on',
 } as const;

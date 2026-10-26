@@ -346,46 +346,112 @@
   gap: 8px;
 }
 
+/* The whole pill is the switch track, so its outline is a full capsule (beats the chip's fixed radius) */
+.ai-chip-pill.ai-switch-pill {
+  border-radius: 999px !important;
+}
+
 .ai-switch-pill .toggle-switch-group {
   gap: 6px;
 }
 
-.ai-switch-pill .toggle-switch-word {
-  font-size: var(--fs-10);
-}
-
 .ai-switch-pill .toggle-switch {
-  width: 40px;
+  width: 46px;
   height: 22px;
 }
 
+/* The knob is the current state: it carries its own word (OFF or ON) and slides across the track */
 .ai-switch-pill .toggle-switch__knob {
   top: 2px;
   left: 2px;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-main, #ffffff);
+  color: var(--bg-primary, #0f172a);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  user-select: none;
 }
 
-/* The state lives on the pill (role="switch", aria-checked), so the whole button is the switch; the inner track only draws it. */
+.ai-switch-pill .toggle-switch__knob::after {
+  content: 'OFF';
+}
+
 .ai-switch-pill[aria-checked="true"] .toggle-switch__knob {
   left: 20px;
-  background: #ffffff;
 }
 
-/* One outline per control: the pill's border is the only frame, so the switch inside has no border of its own.
-   The track shows the state; the pill itself stays an active control in both states (OFF reads as a switch, not a dead button). */
+.ai-switch-pill[aria-checked="true"] .toggle-switch__knob::after {
+  content: 'ON';
+}
+
+/* One outline per control: the pill's border is the only frame. The inner track has no fill or border of its own,
+   so the knob moves inside the pill and the pill reads as one switch. The state shows in the knob side and the lit word. */
 .ai-switch-pill .toggle-switch {
   border: none;
-  background: var(--border-color, #334155);
-}
-
-.ai-switch-pill[aria-checked="true"] .toggle-switch {
-  background: var(--accent-color, #38bdf8);
+  background: transparent;
 }
 
 .ai-switch-pill {
   border-color: var(--accent-color, #38bdf8) !important;
   color: var(--text-main, #ffffff) !important;
+}
+
+/* The other word stays readable at full strength, not dimmed. */
+.ai-switch-pill .toggle-switch-word {
+  opacity: 1;
+  color: var(--text-main);
+  padding: 1px 5px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+/* The selected state is on the knob, so its outside word is hidden; only the other word stays beside the track */
+.ai-switch-pill .toggle-switch-word.is-lit {
+  display: none;
+}
+
+/* ==========================================================================
+   Appearance switch (appHeader.html, #colorModeSwitch): Light | Auto | Dark in one capsule.
+   The lit position is reversed (filled chip, text in the background colour), like the LLM and Embedding switches.
+   ========================================================================== */
+.color-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: var(--border-width) solid var(--accent-color, #38bdf8);
+  border-radius: 999px;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.color-mode-switch__seg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.color-mode-switch__seg .material-symbols-outlined {
+  font-size: var(--fs-15);
+}
+
+/* The current mode shows in the accent colour only; no reversed chip */
+.color-mode-switch__seg.is-lit {
+  color: var(--accent-color, #38bdf8);
 }
 
 /* ==========================================================================

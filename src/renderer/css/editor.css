@@ -211,7 +211,7 @@
   transform: none;
 }
 
-/* Fixed so the toolbar row (overflow: hidden) cannot clip it; top/left are set when it opens. */
+/* Fixed, and moved to <body> on start (appActionEvents.js), so no toolbar can clip or offset it; top/left are set when it opens. */
 .save-dropdown-menu {
   display: none;
   position: fixed;
@@ -225,8 +225,8 @@
   padding: 4px 0;
 }
 
-/* The open state is the same class as the menu bar's (.open), so one rule set describes both */
-.save-dropdown-container.open .save-dropdown-menu {
+/* The open state is the same class as the menu bar's (.open), set on the menu itself */
+.save-dropdown-menu.open {
   display: flex;
 }
 

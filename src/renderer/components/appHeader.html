@@ -63,12 +63,18 @@
   <div class="app-header__toolbar header-toolbar">
     <!-- One frame for how the window looks: color mode, theme, zoom (thin dividers, no outlines; the tint shows they are buttons) -->
     <div class="header-frame">
-    <!-- Appearance mode: each click goes System, Light, Dark; the icon shows the current one (settingsFacade.js) -->
-    <button id="btnColorMode" class="app-header__lang-toggle lang-toggle-btn" type="button"
-      data-ui="hdr:color-mode" style="padding: 2px 6px;" data-i18n-title="tip_header_color_mode">
-      <span id="colorModeIcon" class="material-symbols-outlined"
-        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">brightness_auto</span>
-    </button>
+    <!-- Appearance mode: a three-position switch, Light | Auto | Dark. The lit position is the mode (settingsFacade.js) -->
+    <div id="colorModeSwitch" class="color-mode-switch" role="radiogroup" data-ui="hdr:color-mode" data-i18n-title="tip_header_color_mode">
+      <button type="button" class="color-mode-switch__seg" role="radio" data-mode="light" aria-checked="false" data-i18n-title="color_mode_light">
+        <span class="material-symbols-outlined">light_mode</span>
+      </button>
+      <button type="button" class="color-mode-switch__seg" role="radio" data-mode="system" aria-checked="false" data-i18n-title="color_mode_system">
+        <span class="material-symbols-outlined">brightness_auto</span>
+      </button>
+      <button type="button" class="color-mode-switch__seg" role="radio" data-mode="dark" aria-checked="false" data-i18n-title="color_mode_dark">
+        <span class="material-symbols-outlined">dark_mode</span>
+      </button>
+    </div>
 
     <span class="header-control-divider" aria-hidden="true"></span>
 
@@ -85,8 +91,6 @@
     <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select" data-i18n-title="tip_header_zoom">
       <span class="material-symbols-outlined header-zoom-icon">zoom_in</span>
       <span id="headerZoomPercent" class="header-zoom-text">100%</span>
-      <!-- Shows that the mouse wheel changes the zoom (zoomController.ts) -->
-      <span class="material-symbols-outlined header-zoom-wheel" aria-hidden="true">mouse</span>
       <!-- Hover hint: bold arrows say the wheel zooms in (up) and out (down). The label stays English (style_rules.csv zoom-label) -->
       <span class="header-zoom-hint" aria-hidden="true">
         <span class="material-symbols-outlined header-zoom-hint__arrow">arrow_upward</span>

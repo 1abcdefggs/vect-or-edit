@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.51] - 2026-10-26
+
+### Added
+
+- The tab close question has a "Don't show this again" checkbox. Ticking it and confirming skips the question for clean tabs only; unsaved tabs are still asked. Turning the global "Confirm before closing" switch back on brings the question back.
+- The save menu has a Save item, which does what the Save button does.
+- The Knowledge section shows a second line under each slot: the file name and the item count. When no slot is loaded, it shows a short hint on what Knowledge is for.
+
+### Changed
+
+- The LLM and Embedding switches show the state on the knob (OFF or ON), with the other word beside the track. The knob is a square with rounded corners.
+- The header appearance control is a three-position switch: Light, Auto (the middle, with the auto icon), and Dark. The settings page and the first-run setup keep their three-option selects.
+- The save menu is moved to the document body when the app starts, so the toolbar cannot clip or offset it.
+
+### Removed
+
+- The mouse icon in the header zoom display. The mouse wheel still zooms.
+
 ## [0.3.50] - 2026-10-26
 
 ### Changed

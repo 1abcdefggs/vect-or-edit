@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.50",
+  "version": "0.3.51",
   "description": "Next-Generation Vector-Native Semantic Knowledge Editor & Real-Time Linter. Organizes knowledge in a 10-layer DIKWP-based semantic model.",
   "keywords": [
     "electron",
