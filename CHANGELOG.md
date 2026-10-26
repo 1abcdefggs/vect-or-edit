@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.49] - 2026-10-26
+
+### Removed
+
+- Unused .tab-btn and .setting-tab-btn selectors from the cursor rule in utilities.css. The rule itself stays for the other selectors.
+
 ## [0.3.48] - 2026-10-26
 
 ### Changed
