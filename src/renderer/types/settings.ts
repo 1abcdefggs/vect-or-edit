@@ -52,7 +52,8 @@ export type HeaderUiKey =
   | 'hdr:theme-select'
   | 'hdr:color-mode'
   | 'hdr:zoom-select'
-  | 'hdr:settings-btn';
+  | 'hdr:settings-btn'
+  | 'hdr:minimize';
 
 export type EditorUiKey =
   | 'edt:toolbar'

@@ -526,17 +526,19 @@ button.btn-phi {
   display: none;
 }
 
-@container editor-toolbar (max-width: 859px) {
+/* The options name goes first, before the values (font, size) are cut: it is the lowest-meaning text in the row.
+   Thresholds are provisional; they follow the measured 1300px desktop case. */
+@container editor-toolbar (max-width: 1099px) {
   .editor-opt-label--full { display: none; }
   .editor-opt-label--short { display: inline; }
 }
 
-@container editor-toolbar (max-width: 699px) {
+@container editor-toolbar (max-width: 959px) {
   .editor-opt-label--short { display: none; }
   .editor-opt-label--min { display: inline; }
 }
 
-@container editor-toolbar (max-width: 639px) {
+@container editor-toolbar (max-width: 759px) {
   .editor-opt-label--min { display: none; }
 }
 
@@ -562,6 +564,12 @@ button.btn-phi {
   min-width: 0;
 }
 
+/* The size value (16px) keeps a readable width before the labels give way; the font name width stays with editorStyleGroupFit.ts */
+.editor-toolbar select.editor-toolbar-select#fontSizeSelect {
+  flex: 0 0 auto;
+  min-width: 4.5em;
+}
+
 .editor-toolbar select.editor-toolbar-select {
   flex: 1 1 auto;
   min-width: 0;
@@ -577,7 +585,7 @@ button.btn-phi {
 }
 
 @container editor-toolbar (max-width: 759px) {
-  #editorAiLabel {
+  #btnEditorAiToggle .ai-switch-pill__name {
     display: none;
   }
 }

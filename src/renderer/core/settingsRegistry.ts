@@ -48,6 +48,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'hdr:color-mode': true,
     'hdr:zoom-select': true,
     'hdr:settings-btn': true,
+    'hdr:minimize': true,
     'edt:toolbar': true,
     'edt:font-family': true,
     'edt:font-size': true,
@@ -215,6 +216,14 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     visibilityKey: 'hdr:settings-btn',
     controlType: 'none',
     isEssential: true
+  },
+  {
+    id: 'h_minimize_btn',
+    label: 'Header Minimize Button',
+    description: 'Collapses the header to a thin strip, keeping only the gear and this toggle. The state is remembered.',
+    category: 'header',
+    visibilityKey: 'hdr:minimize',
+    controlType: 'none'
   },
 
   // ── 2. EDITOR & GENERATIVE AI ──

@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.49] - 2026-10-26
+
+### Removed
+
+- Unused .tab-btn and .setting-tab-btn selectors from the cursor rule in utilities.css. The rule itself stays for the other selectors.
+
+## [0.3.48] - 2026-10-26
+
+### Changed
+
+- The settings row rule is defined once. The two definitions of .setting-item in modals.css are merged; the rendered values do not change.
+
+## [0.3.47] - 2026-10-26
+
+### Changed
+
+- Menu item hover and focus styles are defined once in dropdown-menu.css, shared by the menus and the save menu.
+- Search results, the menu renderer and the about dialog were tidied in the same pass.
+
+## [0.3.46] - 2026-10-26
+
+### Fixed
+
+- The header minimize button is registered as a window part, so the settings coverage check passes.
+- The toolbar keeps the font size readable (16px) before the labels give way. The editor options name shortens earlier.
+
+### Removed
+
+- Unused AI label strings (LLM and EMBED ON/OFF) from the locale files.
+
+## [0.3.45] - 2026-10-26
+
+### Changed
+
+- LLM and Embedding header buttons show an ON/OFF switch with the state in words. The button stays an active control in both states.
+
 ## [0.3.44] - 2026-10-25
 
 ### Changed

@@ -385,9 +385,7 @@ textarea {
 
 /* Global interactive cursor normalization */
 .toolbar-btn,
-.tab-btn,
 .sidebar-item,
-.setting-tab-btn,
 .pill-action-btn,
 [id^="btn"],
 button,

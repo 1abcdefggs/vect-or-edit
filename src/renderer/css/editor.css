@@ -239,10 +239,6 @@
   gap: 8px;
 }
 
-.save-dropdown-item:hover {
-  background: var(--hover-bg);
-}
-
 .save-dropdown-item.disabled {
   opacity: 0.5;
   cursor: not-allowed;

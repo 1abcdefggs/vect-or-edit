@@ -144,41 +144,37 @@ function renderSingleCard(r, index, isPreliminary = false) {
   const score = typeof r.score === 'number' ? r.score : 0;
   const scorePct = Math.round(score * 100);
   const metaObj = r.metadata || {};
-  const tooltipParts = [];
   let metadataHtml = '';
 
-  for (const [k, v] of Object.entries(metaObj)) {
-    if (v !== undefined && v !== null && v !== '') {
-      const valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
-      tooltipParts.push(`${k}: ${valStr}`);
-    }
-  }
-
   const reservedKeys = new Set(['id', 'code', 'key', '@id', 'name', 'title', 'label', 'prefLabel', 'term', 'text', 'score', 'vector', 'description', 'comment', 'summary', 'definition', 'metadata']);
-  for (const [k, v] of Object.entries(r)) {
-    if (!reservedKeys.has(k) && v !== undefined && v !== null && v !== '') {
-      const valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
-      tooltipParts.push(`${k}: ${valStr}`);
-    }
-  }
+  // Fields the user does not read on a card: engine bookkeeping
+  const hiddenFields = new Set(['inEditor', 'idx', 'layer', 'layerName']);
+  const visibleParts = [];
+  const pushField = (k, v) => {
+    if (hiddenFields.has(k) || v === undefined || v === null || v === '') return;
+    if (Array.isArray(v)) { if (v.length) visibleParts.push(`${k}: ${v.join(', ')}`); return; }
+    if (typeof v === 'object') { for (const [sk, sv] of Object.entries(v)) pushField(`${k}.${sk}`, sv); return; }
+    visibleParts.push(`${k}: ${v}`);
+  };
+  for (const [k, v] of Object.entries(metaObj)) pushField(k, v);
+  for (const [k, v] of Object.entries(r)) if (!reservedKeys.has(k)) pushField(k, v);
 
-  if (showFullMetadata && tooltipParts.length > 0) {
+  if (showFullMetadata && visibleParts.length > 0) {
     metadataHtml = `<div class="metadata-grid" style="margin-top: 6px; padding-top: 6px; border-top: var(--border-width) solid var(--border-color); display: flex; flex-direction: column; gap: 3px;">`;
-    for (const part of tooltipParts) {
+    for (const part of visibleParts) {
       metadataHtml += `<div class="item-subtitle" style="font-size: var(--fs-12); line-height: 1.35; color: var(--text-muted);">${escapeHtml(part)}</div>`;
     }
     metadataHtml += `</div>`;
   }
 
-  const tooltip = escapeHtml(tooltipParts.join('\n'));
   const isCodePresent = Boolean(code);
   // An AI suggestion inserts its answer; the name and id on the card are only labels (they must never reach the document)
   const insertPayload = typeof r.insertText === 'string' ? r.insertText : ((isCodePresent && !title.includes(code)) ? `${title} (${code})` : title);
   const btnInsertText = escapeHtml(t('btn_insert') || "Insert");
 
   return `
-    <div class="result-card vector-widget-card" data-result-index="${index}" data-insert-text="${escapeHtml(insertPayload)}" title="${tooltip}" style="padding: 6px 8px; margin-bottom: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color); cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s ease; ${isPreliminary ? 'opacity: 0.85; border-left: 3px solid #818cf8;' : ''}">
-      <div class="score-progress-bar" style="width: ${scorePct}%;"></div>
+    <div class="result-card vector-widget-card" data-result-index="${index}" data-insert-text="${escapeHtml(insertPayload)}" style="padding: 6px 8px; margin-bottom: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color); cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s ease; ${isPreliminary ? 'opacity: 0.85; border-left: 3px solid #818cf8;' : ''}">
+      <div class="score-progress-bar" style="position: absolute; left: 0; bottom: 0; height: 2px; width: ${scorePct}%; background: var(--success-color, #10b981);"></div>
       <!-- Line 1: Code + Score + Title (Left) and Action Buttons (Right) -->
       <div class="card-header" style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; min-width: 0; flex: 1;">
