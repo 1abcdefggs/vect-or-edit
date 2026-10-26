@@ -57,11 +57,10 @@ export function populateThemeDropdown(selectEl) {
   }
 }
 
-const COLOR_MODE_ICONS = { system: 'brightness_auto', light: 'light_mode', dark: 'dark_mode' };
 
 /**
  * Shows the stored appearance mode on every control that sets it: the settings select (System / Light / Dark),
- * the header button's icon and the first-run switch.
+ * the header switch and the first-run switch.
  */
 export function refreshColorModeControls() {
   const mode = getColorMode();
@@ -76,16 +75,13 @@ export function refreshColorModeControls() {
     });
     sel.value = mode;
   }
-  const icon = document.getElementById('colorModeIcon');
-  if (icon) icon.textContent = COLOR_MODE_ICONS[mode];
-  document.getElementById('btnColorMode')?.setAttribute('aria-label', `${i18n.color_mode_label || 'Appearance'}: ${i18n[`color_mode_${mode}`] || mode}`);
+  document.querySelectorAll('#colorModeSwitch [data-mode]').forEach((seg) => {
+    const lit = seg.dataset.mode === mode;
+    seg.setAttribute('aria-checked', String(lit));
+    seg.classList.toggle('is-lit', lit);
+  });
   const radio = document.querySelector(`input[name="setup_mode"][value="${mode}"]`);
   if (radio) radio.checked = true;
-}
-
-/** The mode after the current one, in the order the header button steps through: System, Light, Dark. */
-export function nextColorMode() {
-  return COLOR_MODES[(COLOR_MODES.indexOf(getColorMode()) + 1) % COLOR_MODES.length];
 }
 
 /**
@@ -166,7 +162,11 @@ export function initSettings(updateEditorCb) {
   const confirmCloseSelect = document.getElementById('modalConfirmCloseSelect');
   if (confirmCloseSelect) {
     confirmCloseSelect.value = localStorage.getItem(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE) === 'off' ? 'off' : DEFAULTS.CONFIRM_BEFORE_CLOSE;
-    confirmCloseSelect.addEventListener('change', () => setAndSync(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE, confirmCloseSelect.value));
+    confirmCloseSelect.addEventListener('change', () => {
+      // Turning the switch back on also brings back the clean-tab question that its checkbox turned off
+      if (confirmCloseSelect.value === 'on') localStorage.removeItem(STORAGE_KEYS.CONFIRM_TAB_CLOSE);
+      setAndSync(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE, confirmCloseSelect.value);
+    });
   }
 
   // Front UI Elements
@@ -225,7 +225,7 @@ export function initSettings(updateEditorCb) {
   }
   refreshColorModeControls();
   document.getElementById('modalColorModeSelect')?.addEventListener('change', (e) => applyColorMode(e.target.value));
-  document.getElementById('btnColorMode')?.addEventListener('click', () => applyColorMode(nextColorMode()));
+  document.querySelectorAll('#colorModeSwitch [data-mode]').forEach((seg) => seg.addEventListener('click', () => applyColorMode(seg.dataset.mode)));
 
   // Language toggle & 2-way sync. Any language change (header, settings, first-run setup) ends in app:languageChanged.
   const applyLanguage = (lang) => applyLanguageSetting(lang);
@@ -937,7 +937,14 @@ export function initSettings(updateEditorCb) {
   const btnClearAppCache = document.getElementById('btnClearAppCache');
   if (btnClearAppCache) {
     btnClearAppCache.addEventListener('click', async () => {
-      if (!window.confirm('Clear the application cache? Documents and API keys will be kept.')) return;
+      const confirmed = await showConfirmModal({
+        title: t('maint_cache_label'),
+        message: t('maint_cache_desc'),
+        confirmText: t('maint_cache_btn'),
+        cancelText: t('btn_cancel'),
+        type: 'warning'
+      });
+      if (!confirmed) return;
       const result = await window.engineAPI.clearCache();
       window.alert(result.success ? 'Application cache cleared.' : (result.error || 'Unable to clear cache.'));
     });
@@ -959,15 +966,29 @@ export function initSettings(updateEditorCb) {
 
   const btnReloadEditor = document.getElementById('btnReloadEditor');
   if (btnReloadEditor) {
-    btnReloadEditor.addEventListener('click', () => {
-      if (window.confirm(t('maint_reload_confirm'))) window.location.reload();
+    btnReloadEditor.addEventListener('click', async () => {
+      const confirmed = await showConfirmModal({
+        title: t('maint_reload_label'),
+        message: t('maint_reload_confirm'),
+        confirmText: t('maint_reload_btn'),
+        cancelText: t('btn_cancel'),
+        type: 'warning'
+      });
+      if (confirmed) window.location.reload();
     });
   }
 
   const btnRestartApplication = document.getElementById('btnRestartApplication');
   if (btnRestartApplication) {
-    btnRestartApplication.addEventListener('click', () => {
-      if (window.confirm(t('maint_restart_confirm'))) window.engineAPI.restartApp();
+    btnRestartApplication.addEventListener('click', async () => {
+      const confirmed = await showConfirmModal({
+        title: t('maint_restart_label'),
+        message: t('maint_restart_confirm'),
+        confirmText: t('maint_restart_btn'),
+        cancelText: t('btn_cancel'),
+        type: 'warning'
+      });
+      if (confirmed) window.engineAPI.restartApp();
     });
   }
 

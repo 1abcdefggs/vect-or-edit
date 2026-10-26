@@ -9,6 +9,7 @@ import { getActiveTab } from '../tabs/tabState.js';
 import { markSavedAsUtf8 } from './statusBarManager.js';
 import { commitTabToFile } from '../io/tabCommit.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
+import { showConfirmModal } from '../../ui/notifications/confirmModal.js';
 import { syncSettingsToBackend } from '../../ui/settings/settingsState.js';
 import { formatOfName, withFormatExtension } from '../../../shared/documentFormat';
 
@@ -46,6 +47,7 @@ function getDomElements() {
   if (!domCache.menuToggle) domCache.menuToggle = document.getElementById('btnAutoSaveToggle');
   if (!domCache.menuSwitch) domCache.menuSwitch = document.getElementById('autoSaveMenuSwitch');
   if (!domCache.labelEl) domCache.labelEl = document.getElementById('btnSaveLabel');
+  if (!domCache.pendingText) domCache.pendingText = document.getElementById('autoSavePendingText');
   if (!domCache.saveInd) domCache.saveInd = document.getElementById('statusSaveIndicator');
   if (!domCache.ledDot) domCache.ledDot = document.getElementById('autoSaveLedDot');
   if (!domCache.btnSave) domCache.btnSave = document.getElementById('btnSave');
@@ -119,7 +121,7 @@ export function updateAutoSaveUI() {
   // The settings page follows the toolbar switch
   window.dispatchEvent(new CustomEvent('app:autosaveChanged'));
   const enabled = isAutoSaveEnabled();
-  const { menuToggle, menuSwitch, ledDot, labelEl, btnSave } = getDomElements();
+  const { menuToggle, menuSwitch, ledDot, labelEl, btnSave, pendingText } = getDomElements();
   const activeTab = typeof getActiveTab === 'function' ? getActiveTab() : null;
   const filePath = activeTab?.filePath || '';
 
@@ -130,6 +132,11 @@ export function updateAutoSaveUI() {
     : t(`autosave_state_${state}`);
 
   if (labelEl) labelEl.textContent = state === 'on' ? t('btn_save_auto') : (state === 'pending' ? t('btn_save_as') : t('btn_save'));
+  // While no save location is set, say so in words too (not only by the LED colour)
+  if (pendingText) {
+    pendingText.textContent = state === 'pending' ? t('autosave_pending_label') : '';
+    pendingText.hidden = state !== 'pending';
+  }
   if (btnSave) btnSave.dataset.autosaveState = state;
   if (ledDot) {
     ledDot.className = `status-led-dot autosave-led is-${state}`;
@@ -208,7 +215,11 @@ async function ensureAutoSaveTarget(tab) {
 
     let useDefault = true;
     if (!firstRunDone) {
-      useDefault = window.confirm(t('autosave_location_confirm'));
+      useDefault = await showConfirmModal({
+        message: t('autosave_location_confirm'),
+        cancelText: t('btn_cancel'),
+        type: 'info'
+      });
       try { localStorage.setItem(LOCATION_CONFIRMED_KEY, 'true'); } catch { /* storage unavailable */ }
     }
 

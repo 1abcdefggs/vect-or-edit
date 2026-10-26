@@ -166,6 +166,8 @@ export function bindAppActionEvents() {
   // Save button: a press opens or closes the menu (AutoSave, Save As, Save All). It closes on any outside click, Esc, or item pick.
   const saveDropdown = document.querySelector('.save-dropdown-container');
   const saveDropdownMenu = saveDropdown?.querySelector('.save-dropdown-menu');
+  // The menu moves to <body>: inside the toolbar, a fixed position is measured from the toolbar (it is a container), not the window
+  if (saveDropdownMenu) document.body.appendChild(saveDropdownMenu);
   const setSaveMenuOpen = (isOpen) => {
     if (isOpen && saveDropdown && saveDropdownMenu) {
       const rect = saveDropdown.getBoundingClientRect();
@@ -173,6 +175,7 @@ export function bindAppActionEvents() {
       saveDropdownMenu.style.left = `${rect.left}px`;
     }
     saveDropdown?.classList.toggle('open', isOpen);
+    saveDropdownMenu?.classList.toggle('open', isOpen);
     document.getElementById('btnSaveMenu')?.setAttribute('aria-expanded', String(isOpen));
   };
   // Left part saves at once; while AutoSave is pending (no file yet) it asks for a location instead
@@ -186,14 +189,20 @@ export function bindAppActionEvents() {
     setSaveMenuOpen(!saveDropdown?.classList.contains('open'));
   });
   // The AutoSave switch keeps the menu open so the state can be read and changed in one go
-  saveDropdown?.querySelectorAll('.save-dropdown-item:not(.autosave-menu-item)').forEach((item) => {
+  saveDropdownMenu?.querySelectorAll('.save-dropdown-item:not(.autosave-menu-item)').forEach((item) => {
     item.addEventListener('click', () => setSaveMenuOpen(false));
   });
   document.addEventListener('click', (e) => {
-    if (saveDropdown && !saveDropdown.contains(e.target)) setSaveMenuOpen(false);
+    if (saveDropdown && !saveDropdown.contains(e.target) && !saveDropdownMenu?.contains(e.target)) setSaveMenuOpen(false);
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setSaveMenuOpen(false);
+  });
+
+  // The menu's Save item does what the Save button does: save now, or ask for a location while AutoSave is pending
+  document.getElementById('btnSaveFile')?.addEventListener('click', async () => {
+    await commandManager.executeCommand(btnSave?.dataset.autosaveState === 'pending' ? 'file.saveAs' : 'file.save');
+    setTimeout(() => focusEditor(), 50);
   });
 
   // Save As and Save All run the same commands as File > Save As / Save All (menuBarController.ts)

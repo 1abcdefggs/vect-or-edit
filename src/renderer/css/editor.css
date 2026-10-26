@@ -83,21 +83,23 @@
   --editor-fg: var(--text-main);
 }
 
+/* The one definition of the header button. Values are the ones that won the cascade before (buttons.css used to override the rest). */
 .editor-header-btn {
-  background: var(--bg-card, rgba(255, 255, 255, 0.05));
+  background: transparent;
   border: var(--border-width) solid var(--border-color);
   color: var(--text-main);
   width: auto;
   min-width: 28px;
   height: 28px;
-  padding: 0 8px;
-  border-radius: var(--radius-md, 6px);
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
 }
 
 .editor-header-btn svg {
@@ -108,7 +110,7 @@
 }
 
 .editor-header-btn:hover {
-  background: var(--hover-bg, rgba(56, 189, 248, 0.15));
+  background: var(--hover-bg);
   border-color: var(--accent-color, #66f);
   color: var(--accent-color, #66f);
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
@@ -176,12 +178,6 @@
   padding-right: 10px !important;
 }
 
-.editor-header-btn:hover {
-  background: var(--hover-bg);
-  border-color: var(--accent-color, #66f);
-  color: var(--accent-color, #66f);
-}
-
 .editor-header-btn svg {
   margin: 0 !important;
   display: block;
@@ -215,7 +211,7 @@
   transform: none;
 }
 
-/* Fixed so the toolbar row (overflow: hidden) cannot clip it; top/left are set when it opens. */
+/* Fixed, and moved to <body> on start (appActionEvents.js), so no toolbar can clip or offset it; top/left are set when it opens. */
 .save-dropdown-menu {
   display: none;
   position: fixed;
@@ -229,8 +225,8 @@
   padding: 4px 0;
 }
 
-/* The open state is the same class as the menu bar's (.open), so one rule set describes both */
-.save-dropdown-container.open .save-dropdown-menu {
+/* The open state is the same class as the menu bar's (.open), set on the menu itself */
+.save-dropdown-menu.open {
   display: flex;
 }
 

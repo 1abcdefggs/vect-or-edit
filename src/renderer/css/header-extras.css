@@ -141,11 +141,7 @@
   border-color: color-mix(in srgb, var(--accent-color, #38bdf8) 40%, transparent);
 }
 
-.header-zoom-icon,
-.header-zoom-wheel { flex: 0 0 auto; font-size: var(--fs-18); }
-.header-zoom-icon { color: var(--accent-color, #38bdf8); }
-.header-zoom-wheel { color: var(--text-muted); transition: color 0.15s ease; }
-.header-zoom-group:hover .header-zoom-wheel { color: var(--accent-color, #38bdf8); }
+.header-zoom-icon { flex: 0 0 auto; font-size: var(--fs-18); color: var(--accent-color, #38bdf8); }
 
 /* The hover hint sits under the badge: up arrow, magnifier with "Zoom", down arrow */
 .header-zoom-group { position: relative; }

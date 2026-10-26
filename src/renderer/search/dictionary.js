@@ -123,16 +123,22 @@ export async function updateSemanticStateDisplay() {
           infoSpan.textContent = slot.name;
           infoSpan.title = t('tip_slot_info', { n: idx + 1, path: slot.filePath, items: slot.itemCount.toLocaleString() });
 
+          // Second line, under the name: the file name (its last part) and the item count, in a quiet colour
+          const infoCol = document.createElement('div');
+          infoCol.style.cssText = 'display: flex; flex-direction: column; min-width: 0;';
+          const detailLine = document.createElement('span');
+          detailLine.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-muted); font-size: var(--fs-10);';
+          const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
+          const fileName = (slot.filePath || '').split(/[\\/]/).pop();
+          detailLine.textContent = `${fileName} · ${slot.itemCount.toLocaleString()} ${itemLabel}`;
+          infoCol.appendChild(infoSpan);
+          infoCol.appendChild(detailLine);
+
           leftContainer.appendChild(slotIndexBadge);
-          leftContainer.appendChild(infoSpan);
+          leftContainer.appendChild(infoCol);
 
           const rightContainer = document.createElement('div');
           rightContainer.style.cssText = 'display: flex; align-items: center; gap: 4px; flex-shrink: 0;';
-
-          const countBadge = document.createElement('span');
-          countBadge.style.cssText = 'font-size: var(--fs-10); color: var(--text-muted); ';
-          const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
-          countBadge.textContent = `${slot.itemCount.toLocaleString()} ${itemLabel}`;
 
           const btnDel = document.createElement('button');
           btnDel.className = 'toolbar-btn';
@@ -152,13 +158,19 @@ export async function updateSemanticStateDisplay() {
             if (await confirmClose('slot', { name: slot.name })) await removeKnowledgeSlot(slot.id);
           });
 
-          rightContainer.appendChild(countBadge);
           rightContainer.appendChild(btnDel);
 
           itemEl.appendChild(leftContainer);
           itemEl.appendChild(rightContainer);
           slotsListEl.appendChild(itemEl);
         });
+      } else {
+        // No slot loaded: the section says what it is for, so it is not an empty box
+        const hint = document.createElement('div');
+        hint.className = 'knowledge-empty-hint';
+        hint.style.cssText = 'font-size: var(--fs-11); line-height: 1.5; color: var(--text-muted); padding: 4px 6px;';
+        hint.textContent = t('knowledge_empty_hint');
+        slotsListEl.appendChild(hint);
       }
     }
   } catch (err) {

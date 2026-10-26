@@ -275,7 +275,7 @@
           </div>
           <div class="setting-item">
             <div data-setting-text data-label-key="setting_autosave_delay" data-label-text="Pause before saving (seconds)" data-desc-key="setting_autosave_delay_desc" data-desc-text="How long to wait after you stop typing, from 0.5 to 10 seconds."></div>
-            <input type="number" id="modalAutoSaveDelayInput" class="toolbar-select input-num" min="0.5" max="10" step="0.5" value="1.5" data-i18n-title="tip_set_autosave_delay">
+            <input type="number" id="modalAutoSaveDelayInput" data-stepper class="toolbar-select input-num" min="0.5" max="10" step="0.5" value="1.5" data-i18n-title="tip_set_autosave_delay">
           </div>
         </div>
 
@@ -545,7 +545,7 @@
           </div>
           <div class="setting-item">
             <div data-setting-text data-label-key="setting_min_score" data-label-text="Minimum Similarity Score (%)" data-desc-key="setting_min_score_desc" data-desc-text="Ignore results below this similarity threshold."></div>
-            <input type="number" id="modalMinScoreInput" min="50" max="99" value="70" class="toolbar-select input-num" data-i18n-title="tip_min_score">
+            <input type="number" id="modalMinScoreInput" data-stepper min="50" max="99" value="70" class="toolbar-select input-num" data-i18n-title="tip_min_score">
           </div>
           <div class="setting-item">
             <div data-setting-text data-label-key="setting_limit" data-label-text="Search Results Limit" data-desc-key="setting_limit_desc" data-desc-text="Maximum number of suggestions returned."></div>

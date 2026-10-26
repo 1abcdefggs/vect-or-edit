@@ -21,6 +21,13 @@ export interface ModalChoice {
 
 export interface ChoiceModalOptions extends Omit<ConfirmModalOptions, 'confirmText'> {
   choices: ModalChoice[];
+  /** When set, a checkbox with this label sits in the footer. Read it with showChoiceModalWithCheckbox. */
+  checkboxLabel?: string;
+}
+
+export interface ChoiceModalResult {
+  id: string | null;
+  checked: boolean;
 }
 
 /**
@@ -29,6 +36,11 @@ export interface ChoiceModalOptions extends Omit<ConfirmModalOptions, 'confirmTe
  * so file names and other user data are safe to pass.
  */
 export function showChoiceModal(options: ChoiceModalOptions): Promise<string | null> {
+  return showChoiceModalWithCheckbox(options).then((result) => result.id);
+}
+
+/** Like showChoiceModal, and also reports whether the checkbox was ticked when the modal closed. */
+export function showChoiceModalWithCheckbox(options: ChoiceModalOptions): Promise<ChoiceModalResult> {
   return new Promise((resolve) => {
     const existing = document.getElementById('globalConfirmModal');
     if (existing) existing.remove();
@@ -95,6 +107,16 @@ export function showChoiceModal(options: ChoiceModalOptions): Promise<string | n
     modalOverlay.querySelector('#btnConfirmClose')?.setAttribute('title', t('tip_close'));
 
     const footer = modalOverlay.querySelector<HTMLElement>('#confirmFooter')!;
+    let checkbox: HTMLInputElement | null = null;
+    if (options.checkboxLabel) {
+      const checkLabel = document.createElement('label');
+      checkLabel.style.cssText = 'display: flex; align-items: center; gap: 6px; margin-right: auto; font-size: var(--fs-13); color: var(--text-muted); cursor: pointer;';
+      checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = 'confirmDontShowAgain';
+      checkLabel.append(checkbox, document.createTextNode(options.checkboxLabel));
+      footer.appendChild(checkLabel);
+    }
     const baseStyle = 'padding: 7px 16px; font-size: var(--fs-13); border-radius: 6px; cursor: pointer;';
     const makeButton = (id: string, text: string, style: string) => {
       const btn = document.createElement('button');
@@ -111,7 +133,7 @@ export function showChoiceModal(options: ChoiceModalOptions): Promise<string | n
       window.removeEventListener('keydown', handleKeyDown);
       modalOverlay.classList.add('toast-fadeout');
       setTimeout(() => modalOverlay.remove(), 150);
-      resolve(result);
+      resolve({ id: result, checked: checkbox?.checked ?? false });
     };
 
     makeButton('btnConfirmCancel', cancelText, 'font-weight: 500; background: var(--hover-bg); color: var(--text-main); border: 1px solid var(--border-color);')

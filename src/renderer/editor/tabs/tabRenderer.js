@@ -4,6 +4,7 @@ import { showConfirmModal } from '../../ui/notifications/confirmModal.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { t } from '../../core/i18n.js';
+import { formatTipText } from '../../core/tipFormat';
 import { icons } from '../../core/icons.js';
 
 export function triggerRpgSavedExpFloat(tabId = activeTabId) {
@@ -34,7 +35,7 @@ function updateSaveAllButtonState() {
   const tipKey = enabled ? 'btn_save_all_title' : 'tip_save_all_needs_tabs';
   btnSaveAll.classList.toggle('disabled', !enabled);
   btnSaveAll.setAttribute('data-i18n-title', tipKey);
-  btnSaveAll.title = t(tipKey);
+  btnSaveAll.title = formatTipText(tipKey, t(tipKey));
 }
 
 // The right-click menu of a tab. It closes on a press outside it or on Escape.
@@ -226,7 +227,7 @@ export function renderTabs() {
 // "Close All Tabs" is shown only when there are two or more tabs; with one tab it would equal "Close Tab"
 function updateCloseAllMenuItem() {
   const item = document.getElementById('menuItemCloseAllTabs');
-  if (item) item.style.display = tabs.length >= 2 ? '' : 'none';
+  if (item) item.hidden = tabs.length < 2;
 }
 
 // Bind event bus listeners

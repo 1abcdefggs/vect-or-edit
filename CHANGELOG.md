@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.53] - 2026-10-26
+
+### Added
+
+- The minimum score and the auto-save delay fields have − and + buttons, in Settings and in the first-run setup. The field keeps its value and its limits; the buttons stop at the limits.
+- Fifteen tooltips that list several items are shown one item per line. The wording is unchanged.
+
+### Changed
+
+- Reloading the editor, restarting the app, clearing the cache, installing an update and the auto-save location question all use the same confirmation dialog as the other actions.
+- The cache-clear confirmation uses the locale files; before, its text was in English in the code.
+
+## [0.3.52] - 2026-10-26
+
+### Added
+
+- The Save dialog opens in the folder of the last save; before the first save it opens in the save folder from Settings. The last folder is kept in userData (last-save-dir.json) and survives a restart.
+- While no save location is set, the Save button shows a short word beside the LED, not only the LED colour (autosave_pending_label).
+
+### Changed
+
+- 17 English tooltips are reworded: three or more parallel items are split into lines, the rest stay on one line. The Japanese tooltips follow, mostly as noun phrases (operation sentences keep the dictionary form).
+- The Japanese labels of the two add buttons in the sidebar (Guidelines and Knowledge) are "追加" instead of the English "Add files". The unload confirmation text refers to the same label.
+
+## [0.3.51] - 2026-10-26
+
+### Added
+
+- The tab close question has a "Don't show this again" checkbox. Ticking it and confirming skips the question for clean tabs only; unsaved tabs are still asked. Turning the global "Confirm before closing" switch back on brings the question back.
+- The save menu has a Save item, which does what the Save button does.
+- The Knowledge section shows a second line under each slot: the file name and the item count. When no slot is loaded, it shows a short hint on what Knowledge is for.
+
+### Changed
+
+- The LLM and Embedding switches show the state on the knob (OFF or ON), with the other word beside the track. The knob is a square with rounded corners.
+- The header appearance control is a three-position switch: Light, Auto (the middle, with the auto icon), and Dark. The settings page and the first-run setup keep their three-option selects.
+- The save menu is moved to the document body when the app starts, so the toolbar cannot clip or offset it.
+
+### Removed
+
+- The mouse icon in the header zoom display. The mouse wheel still zooms.
+
+## [0.3.50] - 2026-10-26
+
+### Changed
+
+- The LLM and Embedding header switches are role="switch" buttons: aria-checked sits on the whole button, not on the inner track, and the redundant state on the track is removed. The look is unchanged.
+- The header button (.editor-header-btn) is defined once in editor.css. The duplicate rule in buttons.css is removed, and the one hover rule is merged; the rendered values do not change.
+
 ## [0.3.49] - 2026-10-26
 
 ### Removed

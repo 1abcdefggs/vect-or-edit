@@ -358,21 +358,6 @@ button.btn-phi {
   color: var(--accent-color, #66f) !important;
 }
 
-/* Clean Open Folder Button without excess margin */
-.editor-header-btn {
-  background: transparent;
-  border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-main);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  transition: all 0.2s ease;
-}
-
 .font-control-integrated-group select {
   outline: none !important;
   cursor: pointer;
