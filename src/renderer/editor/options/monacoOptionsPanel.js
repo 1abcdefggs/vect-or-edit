@@ -82,7 +82,7 @@ function updateSummary() {
   const count = document.getElementById('monacoOptionsCount');
   if (count) count.textContent = shown ? t('monaco_opts_count', { shown, total, changed }) : t('monaco_opts_empty');
   const resetAll = document.getElementById('btnMonacoOptionsResetAll');
-  if (resetAll) resetAll.style.display = changed ? '' : 'none';
+  if (resetAll) resetAll.hidden = !changed;
 }
 
 /** Builds the control for one option and returns {node, setValue}. */
@@ -305,7 +305,7 @@ export function initMonacoOptionsPanel() {
     updateSummary();
   });
   // Overrides from an earlier session: show the reset button without loading the whole catalog
-  if (resetAll && localStorage.getItem(STORAGE_KEYS.MONACO_OPTIONS)) resetAll.style.display = '';
+  if (resetAll && localStorage.getItem(STORAGE_KEYS.MONACO_OPTIONS)) resetAll.hidden = false;
 
   // The language changed or the editor was rebuilt: draw the list again from the current state
   window.addEventListener('app:languageChanged', () => {
