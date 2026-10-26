@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.46] - 2026-10-26
+
+### Fixed
+
+- The header minimize button is registered as a window part, so the settings coverage check passes.
+- The toolbar keeps the font size readable (16px) before the labels give way. The editor options name shortens earlier.
+
+### Removed
+
+- Unused AI label strings (LLM and EMBED ON/OFF) from the locale files.
+
 ## [0.3.45] - 2026-10-26
 
 ### Changed
