@@ -279,12 +279,6 @@
   -webkit-app-region: no-drag !important;
 }
 
-.menu-dropdown-item:hover,
-.menu-dropdown-item:focus {
-  background-color: var(--hover-bg, rgba(56, 189, 248, 0.15));
-  color: var(--accent-color, #38bdf8);
-}
-
 .menu-item-label {
   flex: 1;
   pointer-events: none;

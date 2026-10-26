@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.47] - 2026-10-26
+
+### Changed
+
+- Menu item hover and focus styles are defined once in dropdown-menu.css, shared by the menus and the save menu.
+- Search results, the menu renderer and the about dialog were tidied in the same pass.
+
 ## [0.3.46] - 2026-10-26
 
 ### Fixed

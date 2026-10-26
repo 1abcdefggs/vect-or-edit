@@ -10,9 +10,9 @@ const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (ch) => ({ '&': '
 /** One item as the markup the menu bar controller expects (role, type, command and the tooltip key). */
 export function menuItemMarkup(item, translate = t) {
   if (item.separator) return '<div class="menu-divider" role="separator"></div>';
-  const style = item.hidden ? ' style="display: none;"' : '';
+  const hidden = item.hidden ? ' hidden' : '';
   const accelerator = item.accelerator ? `<span class="menu-accelerator">${escapeHtml(item.accelerator)}</span>` : '';
-  return `<button class="menu-dropdown-item" id="${item.id}" role="menuitem" type="button"${style} data-command="${item.command}" data-i18n-title="${item.tip}">`
+  return `<button class="menu-dropdown-item" id="${item.id}" role="menuitem" type="button"${hidden} data-command="${item.command}" data-i18n-title="${item.tip}">`
     + `<span class="menu-item-label" data-i18n="${item.label}">${escapeHtml(translate(item.label) || item.text)}</span>`
     + `${accelerator}</button>`;
 }

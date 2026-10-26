@@ -1,5 +1,5 @@
 /* Dropdown menus (menu bar and Save): one item base and one separator definition.
-   Markup: components/appHeader.html and components/mainEditor.html. Hover and gap stay in header.css and editor.css. */
+   Markup: components/appHeader.html and components/mainEditor.html. Hover is shared here; gap stays in header.css and editor.css. */
 
 .menu-dropdown-item,
 .save-dropdown-item {
@@ -15,6 +15,14 @@
   text-align: left;
   cursor: pointer;
   outline: none;
+}
+
+.menu-dropdown-item:hover,
+.menu-dropdown-item:focus,
+.save-dropdown-item:hover,
+.save-dropdown-item:focus {
+  background-color: var(--hover-bg, rgba(56, 189, 248, 0.15));
+  color: var(--accent-color, #38bdf8);
 }
 
 .menu-divider,

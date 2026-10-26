@@ -188,7 +188,7 @@ function createAboutModalElement(): HTMLElement {
             <span style="color: var(--text-muted);">Third-party licenses</span>
             <a id="btnAboutToggleNotices" href="#" style="color: var(--accent-text); text-decoration: none; font-weight: 500;">Show ↓</a>
           </div>
-          <pre id="aboutNoticesText" style="display: none; margin: 4px 0 0; max-height: 220px; overflow: auto; padding: 8px 10px; background: var(--bg-secondary); border: var(--border-width) solid var(--border-color); border-radius: 6px; font-size: var(--fs-11); line-height: 1.5; white-space: pre-wrap; word-break: break-word; user-select: text;"></pre>
+          <pre id="aboutNoticesText" hidden style="margin: 4px 0 0; max-height: 220px; overflow: auto; padding: 8px 10px; background: var(--bg-secondary); border: var(--border-width) solid var(--border-color); border-radius: 6px; font-size: var(--fs-11); line-height: 1.5; white-space: pre-wrap; word-break: break-word; user-select: text;"></pre>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--text-muted);">Repository</span>
             <a id="btnAboutOpenRepo" href="#" style="color: var(--accent-text); text-decoration: none; font-weight: 500;">${GITHUB_MARK}${REPOSITORY_URL.replace('https://github.com/', '')}</a>
@@ -216,8 +216,8 @@ function createAboutModalElement(): HTMLElement {
   const toggleNotices = async (e: Event) => {
     e.preventDefault();
     if (!noticesText) return;
-    const opening = noticesText.style.display === 'none';
-    noticesText.style.display = opening ? 'block' : 'none';
+    const opening = noticesText.hidden;
+    noticesText.hidden = !opening;
     if (noticesToggle) noticesToggle.textContent = opening ? 'Hide ↑' : 'Show ↓';
     if (opening && !noticesLoaded) {
       noticesLoaded = true;
