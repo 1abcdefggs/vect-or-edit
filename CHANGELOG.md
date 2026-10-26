@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.53] - 2026-10-26
+
+### Added
+
+- The minimum score and the auto-save delay fields have − and + buttons, in Settings and in the first-run setup. The field keeps its value and its limits; the buttons stop at the limits.
+- Fifteen tooltips that list several items are shown one item per line. The wording is unchanged.
+
+### Changed
+
+- Reloading the editor, restarting the app, clearing the cache, installing an update and the auto-save location question all use the same confirmation dialog as the other actions.
+- The cache-clear confirmation uses the locale files; before, its text was in English in the code.
+
 ## [0.3.52] - 2026-10-26
 
 ### Added

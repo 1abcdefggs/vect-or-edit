@@ -2,6 +2,7 @@ import { SETTINGS_REGISTRY } from '../../core/settingsRegistry';
 import { settingsStore } from '../../core/settingsStore';
 import { SettingItemDef, UiKey } from '../../types/settings';
 import { t } from '../../core/i18n';
+import { formatTipText } from '../../core/tipFormat';
 import { showToast } from '../notifications/toastManager.js';
 
 export function enhanceSettingsModalVisibilityControls(): void {
@@ -41,7 +42,7 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
     const lock = document.createElement('span');
     lock.className = 'vis-lock-icon';
     lock.innerHTML = '&#xe897;'; // material-symbols lock
-    lock.title = t('tip_vis_locked');
+    lock.title = formatTipText('tip_vis_locked', t('tip_vis_locked'));
     lock.style.cssText = 'font-family: "Material Symbols Outlined"; font-size: var(--fs-17); color: var(--text-muted); opacity: 0.6; cursor: not-allowed;';
     wrapper.appendChild(lock);
   } else {

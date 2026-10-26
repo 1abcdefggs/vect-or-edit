@@ -1,4 +1,5 @@
 import { t } from '../core/i18n';
+import { showConfirmModal } from './notifications/confirmModal';
 
 export function initUpdateChecker(): void {
   if (window.updaterAPI && (window.updaterAPI as any).onStatus) {
@@ -33,7 +34,12 @@ export function initUpdateChecker(): void {
           }
           textEl.textContent = t('update_available', { version: data.version });
           container.onclick = async () => {
-            if (confirm(t('update_confirm', { version: data.version }))) {
+            const confirmed = await showConfirmModal({
+              message: t('update_confirm', { version: data.version }),
+              cancelText: t('btn_cancel'),
+              type: 'info'
+            });
+            if (confirmed) {
               textEl.textContent = t('update_preparing');
               container.onclick = null;
               try {
@@ -58,8 +64,14 @@ export function initUpdateChecker(): void {
           iconEl.style.color = '#2ecc71'; // green
           iconEl.innerHTML = '&#xe8d3;'; // system_update
           container.style.background = 'rgba(46, 204, 113, 0.2)';
-          container.onclick = () => {
-            if (confirm(t('update_restart_confirm'))) {
+          container.onclick = async () => {
+            const confirmed = await showConfirmModal({
+              message: t('update_restart_confirm'),
+              confirmText: t('maint_restart_btn'),
+              cancelText: t('btn_cancel'),
+              type: 'warning'
+            });
+            if (confirmed) {
               (window.updaterAPI as any).quitAndInstall?.();
             }
           };

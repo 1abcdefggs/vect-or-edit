@@ -9,6 +9,7 @@ import { getActiveTab } from '../tabs/tabState.js';
 import { markSavedAsUtf8 } from './statusBarManager.js';
 import { commitTabToFile } from '../io/tabCommit.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
+import { showConfirmModal } from '../../ui/notifications/confirmModal.js';
 import { syncSettingsToBackend } from '../../ui/settings/settingsState.js';
 import { formatOfName, withFormatExtension } from '../../../shared/documentFormat';
 
@@ -134,7 +135,7 @@ export function updateAutoSaveUI() {
   // While no save location is set, say so in words too (not only by the LED colour)
   if (pendingText) {
     pendingText.textContent = state === 'pending' ? t('autosave_pending_label') : '';
-    pendingText.style.display = state === 'pending' ? '' : 'none';
+    pendingText.hidden = state !== 'pending';
   }
   if (btnSave) btnSave.dataset.autosaveState = state;
   if (ledDot) {
@@ -214,7 +215,11 @@ async function ensureAutoSaveTarget(tab) {
 
     let useDefault = true;
     if (!firstRunDone) {
-      useDefault = window.confirm(t('autosave_location_confirm'));
+      useDefault = await showConfirmModal({
+        message: t('autosave_location_confirm'),
+        cancelText: t('btn_cancel'),
+        type: 'info'
+      });
       try { localStorage.setItem(LOCATION_CONFIRMED_KEY, 'true'); } catch { /* storage unavailable */ }
     }
 

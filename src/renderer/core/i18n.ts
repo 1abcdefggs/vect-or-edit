@@ -1,5 +1,6 @@
 import { setLedStatus } from './statusManager';
 import { STORAGE_KEYS, DEFAULTS } from './constants';
+import { formatTipText } from './tipFormat';
 import jaLocale from '../locales/ja.json';
 import enLocale from '../locales/en.json';
 
@@ -95,7 +96,7 @@ export function applyI18n(): void {
     try {
       const key = el.getAttribute('data-i18n-title');
       if (key && i18n[key]) {
-        el.title = i18n[key];
+        el.title = formatTipText(key, i18n[key]);
       }
     } catch (e) {
       console.warn('Failed to apply i18n-title to element:', el, e);

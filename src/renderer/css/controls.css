@@ -535,3 +535,40 @@
     transition: none;
   }
 }
+
+/* Number stepper: − and ＋ around a number input (ui/components/numberStepper.ts) */
+.num-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.num-stepper__btn {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  font: inherit;
+  color: var(--text-main);
+  background: var(--bg-secondary);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.num-stepper__btn:hover:not(:disabled) {
+  border-color: var(--accent-color, #38bdf8);
+}
+
+.num-stepper__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* The field is a number, not a choice: drop the dropdown arrow that .toolbar-select draws */
+.num-stepper > input {
+  background-image: none;
+  appearance: textfield;
+  text-align: center;
+}
