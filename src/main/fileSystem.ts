@@ -6,6 +6,28 @@ import { getMainWindow } from './windowManager';
 import { checkFolderName, type FolderNameProblem } from '../shared/folderName';
 import { formatOfName } from '../shared/documentFormat';
 
+// The folder of the last successful save. Kept in userData so it survives a restart.
+function lastSaveDirFile(): string {
+  return path.join(app.getPath('userData'), 'last-save-dir.json');
+}
+
+async function getLastSaveDir(): Promise<string | null> {
+  try {
+    const data = JSON.parse(await fsPromises.readFile(lastSaveDirFile(), 'utf-8'));
+    return typeof data?.dir === 'string' && fs.existsSync(data.dir) ? data.dir : null;
+  } catch {
+    return null;
+  }
+}
+
+async function setLastSaveDir(dir: string): Promise<void> {
+  try {
+    await fsPromises.writeFile(lastSaveDirFile(), JSON.stringify({ dir }), 'utf-8');
+  } catch (err) {
+    console.warn('[Save] Could not remember the save folder:', err);
+  }
+}
+
 export async function saveFile(content: string, defaultName?: string, forceDialog = false) {
   const mainWindow = getMainWindow();
   if (!mainWindow) return { success: false, error: 'No main window' };
@@ -24,9 +46,11 @@ export async function saveFile(content: string, defaultName?: string, forceDialo
     const textFirst = formatOfName(defaultPath) === 'text';
     const markdownFilter = { name: 'Markdown', extensions: ['md', 'markdown'] };
     const textFilter = { name: 'Text', extensions: ['txt'] };
+    // The dialog opens in the folder of the last save, else in the save folder (Settings > Save location)
+    const startDir = await getLastSaveDir() ?? (await getDefaultWorkspace(false)).path;
     const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
       title: 'Save File',
-      defaultPath,
+      defaultPath: startDir ? path.join(startDir, defaultPath) : defaultPath,
       filters: [...(textFirst ? [textFilter, markdownFilter] : [markdownFilter, textFilter]), { name: 'All Files', extensions: ['*'] }]
     });
 
@@ -35,6 +59,7 @@ export async function saveFile(content: string, defaultName?: string, forceDialo
     }
 
     await fsPromises.writeFile(filePath, content, 'utf-8');
+    await setLastSaveDir(path.dirname(filePath));
     return { success: true, filePath };
   } catch (err: any) {
     console.error('Failed to save file:', err);

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.52] - 2026-10-26
+
+### Added
+
+- The Save dialog opens in the folder of the last save; before the first save it opens in the save folder from Settings. The last folder is kept in userData (last-save-dir.json) and survives a restart.
+- While no save location is set, the Save button shows a short word beside the LED, not only the LED colour (autosave_pending_label).
+
+### Changed
+
+- 17 English tooltips are reworded: three or more parallel items are split into lines, the rest stay on one line. The Japanese tooltips follow, mostly as noun phrases (operation sentences keep the dictionary form).
+- The Japanese labels of the two add buttons in the sidebar (Guidelines and Knowledge) are "追加" instead of the English "Add files". The unload confirmation text refers to the same label.
+
 ## [0.3.51] - 2026-10-26
 
 ### Added
