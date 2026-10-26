@@ -1097,6 +1097,8 @@
   "monaco_opts_short": "オプション",
   "monaco_opts_min": "",
   "tip_monaco_opts_reset_all": "変更したオプションを、すべて既定値に戻します",
+  "stepper_decrease": "減らす",
+  "stepper_increase": "増やす",
   "tip_monaco_opts_search": "名前や説明でオプションを検索します",
   "monaco_opts_search_placeholder": "オプションを検索...",
   "monaco_opts_count": "{{shown}} / {{total}} 項目（変更 {{changed}}）",

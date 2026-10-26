@@ -981,6 +981,8 @@
   "monaco_opts_short": "Editor opt",
   "monaco_opts_min": "opt",
   "tip_monaco_opts_reset_all": "Reset every changed option to its default",
+  "stepper_decrease": "Decrease",
+  "stepper_increase": "Increase",
   "tip_monaco_opts_search": "Search options by name or description",
   "monaco_opts_search_placeholder": "Search options...",
   "monaco_opts_count": "{{shown}} / {{total}} options, {{changed}} changed",

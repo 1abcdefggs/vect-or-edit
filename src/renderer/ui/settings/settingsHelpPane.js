@@ -13,6 +13,7 @@
 import helpJa from '../../generated/ui_help.ja.json';
 import helpEn from '../../generated/ui_help.en.json';
 import { currentLang, t } from '../../core/i18n.js';
+import { formatTipText } from '../../core/tipFormat';
 import { LAYOUT_KEYS, loadLayoutSize, saveLayoutSize } from '../layout/layoutMemory.js';
 import { attachPanelResizer } from '../layout/panelResizer.js';
 
@@ -96,7 +97,7 @@ function syncInfoButtons(body, pane) {
       button = document.createElement('button');
       button.type = 'button';
       button.className = 'setting-info-btn';
-      button.title = t('tip_open_guide_item');
+      button.title = formatTipText('tip_open_guide_item', t('tip_open_guide_item'));
       button.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">info</span>';
       label.appendChild(button);
     }

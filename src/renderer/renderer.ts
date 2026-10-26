@@ -25,6 +25,7 @@ import { initMenuBar } from './ui/layout/menuBarController';
 import { renderMenuDropdowns } from './ui/layout/menuRenderer';
 import { renderStaticSettingsText } from './ui/settings/settingsStaticMarkup';
 import { renderToggleSwitches } from './ui/components/toggleSwitchMarkup';
+import { enhanceNumberSteppers } from './ui/components/numberStepper';
 import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderStaticSettingsText();
   renderToggleSwitches();
   await loadLocales();
+  enhanceNumberSteppers();
 
   // 0.5. Initialize LED tooltips consistently
   initAllLedTooltips();

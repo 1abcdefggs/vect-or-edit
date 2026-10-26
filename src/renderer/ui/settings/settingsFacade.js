@@ -937,7 +937,14 @@ export function initSettings(updateEditorCb) {
   const btnClearAppCache = document.getElementById('btnClearAppCache');
   if (btnClearAppCache) {
     btnClearAppCache.addEventListener('click', async () => {
-      if (!window.confirm('Clear the application cache? Documents and API keys will be kept.')) return;
+      const confirmed = await showConfirmModal({
+        title: t('maint_cache_label'),
+        message: t('maint_cache_desc'),
+        confirmText: t('maint_cache_btn'),
+        cancelText: t('btn_cancel'),
+        type: 'warning'
+      });
+      if (!confirmed) return;
       const result = await window.engineAPI.clearCache();
       window.alert(result.success ? 'Application cache cleared.' : (result.error || 'Unable to clear cache.'));
     });
@@ -959,15 +966,29 @@ export function initSettings(updateEditorCb) {
 
   const btnReloadEditor = document.getElementById('btnReloadEditor');
   if (btnReloadEditor) {
-    btnReloadEditor.addEventListener('click', () => {
-      if (window.confirm(t('maint_reload_confirm'))) window.location.reload();
+    btnReloadEditor.addEventListener('click', async () => {
+      const confirmed = await showConfirmModal({
+        title: t('maint_reload_label'),
+        message: t('maint_reload_confirm'),
+        confirmText: t('maint_reload_btn'),
+        cancelText: t('btn_cancel'),
+        type: 'warning'
+      });
+      if (confirmed) window.location.reload();
     });
   }
 
   const btnRestartApplication = document.getElementById('btnRestartApplication');
   if (btnRestartApplication) {
-    btnRestartApplication.addEventListener('click', () => {
-      if (window.confirm(t('maint_restart_confirm'))) window.engineAPI.restartApp();
+    btnRestartApplication.addEventListener('click', async () => {
+      const confirmed = await showConfirmModal({
+        title: t('maint_restart_label'),
+        message: t('maint_restart_confirm'),
+        confirmText: t('maint_restart_btn'),
+        cancelText: t('btn_cancel'),
+        type: 'warning'
+      });
+      if (confirmed) window.engineAPI.restartApp();
     });
   }
 
