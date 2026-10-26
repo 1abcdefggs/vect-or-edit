@@ -15,9 +15,15 @@
       <!-- Right-Aligned Action Group: [ Embedding Toggle Pill | Gear Icon ] -->
       <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
         <!-- Embedding ON/OFF Status Pill (Shared UI/UX with Editor LLM Button) -->
-        <button id="btnSidebarEmbeddingModel" class="ai-chip-pill" data-ui="sbr:embedding-toggle" data-i18n-title="tip_embed_toggle">
+        <button id="btnSidebarEmbeddingModel" class="ai-chip-pill ai-switch-pill" data-ui="sbr:embedding-toggle"
+          aria-pressed="false" data-i18n-title="tip_embed_toggle">
           <span id="iconNeuroContainer" class="material-symbols-outlined vector-activity-icon" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8); flex-shrink: 0;">neurology</span>
-          <span id="sidebarEmbeddingModelName" data-i18n="sidebar_ai_off">EMBED OFF</span>
+          <span class="ai-switch-pill__name">EMBED</span>
+          <span class="toggle-switch-group" aria-hidden="true">
+            <span class="toggle-switch-word" data-side="off">OFF</span>
+            <span class="toggle-switch" aria-checked="false"><span class="toggle-switch__knob"></span></span>
+            <span class="toggle-switch-word" data-side="on">ON</span>
+          </span>
           <span id="activeAiModelStatusDot" style="color: var(--text-muted, #94a3b8); font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
         </button>
 

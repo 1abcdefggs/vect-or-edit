@@ -341,6 +341,52 @@
   background: #ffffff;
 }
 
+/* The LLM and Embedding header pills: the name, then the ON/OFF switch. Same parts, sized for the pill height */
+.ai-switch-pill {
+  gap: 8px;
+}
+
+.ai-switch-pill .toggle-switch-group {
+  gap: 6px;
+}
+
+.ai-switch-pill .toggle-switch-word {
+  font-size: var(--fs-10);
+}
+
+.ai-switch-pill .toggle-switch {
+  width: 40px;
+  height: 22px;
+}
+
+.ai-switch-pill .toggle-switch__knob {
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+}
+
+.ai-switch-pill .toggle-switch[aria-checked="true"] .toggle-switch__knob {
+  left: 20px;
+}
+
+/* One outline per control: the pill's border is the only frame, so the switch inside has no border of its own.
+   The track shows the state; the pill itself stays an active control in both states (OFF reads as a switch, not a dead button). */
+.ai-switch-pill .toggle-switch,
+.ai-switch-pill .toggle-switch[aria-checked="true"] {
+  border: none;
+  background: var(--border-color, #334155);
+}
+
+.ai-switch-pill .toggle-switch[aria-checked="true"] {
+  background: var(--accent-color, #38bdf8);
+}
+
+.ai-switch-pill {
+  border-color: var(--accent-color, #38bdf8) !important;
+  color: var(--text-main, #ffffff) !important;
+}
+
 /* ==========================================================================
    Info tip (ui/components/infoTip.js): an (i) icon that explains its heading on hover or focus
    ========================================================================== */

@@ -13,12 +13,20 @@ import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editor
 
 const KEY_PLACEHOLDERS = { openai: 'sk-proj-...', claude: 'sk-ant-api03-...', gemini: 'AIzaSy... (Gemini)' };
 
+/** Draws an ON/OFF switch pill: the pressed state, the knob side and the lit word all follow `on`. */
+function drawAiSwitch(button, on) {
+  if (!button) return;
+  button.setAttribute('aria-pressed', String(on));
+  button.querySelector('.toggle-switch')?.setAttribute('aria-checked', String(on));
+  button.querySelector('[data-side="on"]')?.classList.toggle('is-lit', on);
+  button.querySelector('[data-side="off"]')?.classList.toggle('is-lit', !on);
+}
+
 export function initAiControls() {
   aiManager.init({ llm: isLlmConfigured(), embed: isEmbedConfigured() });
 
   const btnEditorAiToggle = document.getElementById('btnEditorAiToggle');
   const editorAiStatusDot = document.getElementById('editorAiStatusDot');
-  const editorAiLabel = document.getElementById('editorAiLabel');
   const activeAiModelStatusDot = document.getElementById('activeAiModelStatusDot');
 
   function updateSettingsOverview(state = aiManager.getState()) {
@@ -69,9 +77,7 @@ export function initAiControls() {
       btnEditorAiToggle.style.background = '';
       btnEditorAiToggle.style.borderColor = '';
       btnEditorAiToggle.style.color = '';
-      if (editorAiLabel) {
-        editorAiLabel.textContent = state.llm ? (t('editor_ai_on') || 'LLM ON') : (t('editor_ai_off') || 'LLM OFF');
-      }
+      drawAiSwitch(btnEditorAiToggle, state.llm);
     }
     // Lamp colours follow status_lamps.csv: green = on, grey = switched off on purpose (red is for errors only)
     if (editorAiStatusDot) editorAiStatusDot.style.opacity = state.llmConfigured ? '1' : '0.45';
@@ -82,7 +88,6 @@ export function initAiControls() {
     }
 
     const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
-    const sidebarEmbeddingNameEl = document.getElementById('sidebarEmbeddingModelName');
     if (btnSidebarEmbeddingModel) {
       btnSidebarEmbeddingModel.style.opacity = '';
       if (state.embed) {
@@ -93,9 +98,7 @@ export function initAiControls() {
       btnSidebarEmbeddingModel.style.background = '';
       btnSidebarEmbeddingModel.style.borderColor = '';
       btnSidebarEmbeddingModel.style.color = '';
-      if (sidebarEmbeddingNameEl) {
-        sidebarEmbeddingNameEl.textContent = state.embed ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
-      }
+      drawAiSwitch(btnSidebarEmbeddingModel, state.embed);
     }
     if (activeAiModelStatusDot) {
       activeAiModelStatusDot.style.opacity = state.embedConfigured ? '1' : '0.45';
@@ -118,15 +121,10 @@ export function initAiControls() {
   });
 
   function updateSidebarEmbeddingLabel() {
-    const sidebarEmbeddingNameEl = document.getElementById('sidebarEmbeddingModelName');
     const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
-    if (sidebarEmbeddingNameEl) {
+    if (btnSidebarEmbeddingModel) {
       const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
-      const state = aiManager.getState();
-      sidebarEmbeddingNameEl.textContent = state.embed ? (t('sidebar_ai_on') || 'EMBED ON') : (t('sidebar_ai_off') || 'EMBED OFF');
-      if (btnSidebarEmbeddingModel) {
-        btnSidebarEmbeddingModel.title = t('tip_embed_model_status', { model: window.__isLocalAiModelReady ? localModel : 'Ready' });
-      }
+      btnSidebarEmbeddingModel.title = t('tip_embed_model_status', { model: window.__isLocalAiModelReady ? localModel : 'Ready' });
     }
   }
 
@@ -135,6 +133,8 @@ export function initAiControls() {
   }
 
   updateSidebarEmbeddingLabel();
+  drawAiSwitch(btnEditorAiToggle, aiManager.getState().llm);
+  drawAiSwitch(document.getElementById('btnSidebarEmbeddingModel'), aiManager.getState().embed);
   updateSettingsOverview();
   window.addEventListener('app:settingsChanged', () => {
     aiManager.setConfigured({ llm: isLlmConfigured(), embed: isEmbedConfigured() });

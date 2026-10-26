@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.45] - 2026-10-26
+
+### Changed
+
+- LLM and Embedding header buttons show an ON/OFF switch with the state in words. The button stays an active control in both states.
+
 ## [0.3.44] - 2026-10-25
 
 ### Changed

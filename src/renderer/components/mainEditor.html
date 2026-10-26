@@ -101,10 +101,15 @@
     <!-- Right: Editor Header Actions (LLM Toggle on the right, Sidebar Toggle & Quick Settings) -->
     <div class="editor-header-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
       <!-- Far Right: LLM Toggle Chip Button -->
-      <button id="btnEditorAiToggle" class="ai-chip-pill" data-ui="edt:ai-toggle"
-        data-i18n-title="tip_editor_ai_toggle">
+      <button id="btnEditorAiToggle" class="ai-chip-pill ai-switch-pill" data-ui="edt:ai-toggle"
+        aria-pressed="false" data-i18n-title="tip_editor_ai_toggle">
         <span class="material-symbols-outlined" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8); flex-shrink: 0;">cloud</span>
-        <span id="editorAiLabel" data-i18n="editor_ai_off">LLM OFF</span>
+        <span class="ai-switch-pill__name">LLM</span>
+        <span class="toggle-switch-group" aria-hidden="true">
+          <span class="toggle-switch-word" data-side="off">OFF</span>
+          <span class="toggle-switch" aria-checked="false"><span class="toggle-switch__knob"></span></span>
+          <span class="toggle-switch-word" data-side="on">ON</span>
+        </span>
         <span id="editorAiStatusDot" style="color: var(--text-muted, #94a3b8); font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
       </button>
 
