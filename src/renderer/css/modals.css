@@ -153,8 +153,7 @@
 }
 
 .settings-modal-body .setting-row,
-.settings-modal-body .settings-row,
-.setting-item {
+.settings-modal-body .settings-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -231,6 +230,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  min-height: 54px;
   padding: 10px 0;
   border-bottom: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.08));
 }

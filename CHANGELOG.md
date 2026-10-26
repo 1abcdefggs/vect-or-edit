@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.48] - 2026-10-26
+
+### Changed
+
+- The settings row rule is defined once. The two definitions of .setting-item in modals.css are merged; the rendered values do not change.
+
 ## [0.3.47] - 2026-10-26
 
 ### Changed
