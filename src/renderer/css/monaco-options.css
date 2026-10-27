@@ -1,0 +1,235 @@
+/* Editor Options card (right sidebar): every Monaco option as a row, applied live to the main editor.
+   It sits below the sidebar header: closed it is one bar, open it shares the height with the results list. */
+/* Same inset as the other cards in the right panel (--sidebar-inset) */
+.monaco-options-card {
+  margin: 0 var(--sidebar-inset, 14px);
+  flex-shrink: 0;
+}
+
+.monaco-options-card:not(.collapsed) {
+  /* Opened, the options matter more than the suggestions below: they get most of the free height */
+  flex: 4 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.monaco-options-card:not(.collapsed) .monaco-options-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.suggestion-sidebar.collapsed .monaco-options-card {
+  display: none !important;
+}
+
+.monaco-options-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 8px 8px;
+}
+
+.monaco-options-card .semantic-module-header:focus-visible,
+.mo-group-title:focus-visible,
+.mo-reset:focus-visible,
+.mo-select:focus-visible,
+.mo-input:focus-visible,
+.mo-switch:focus-visible,
+.monaco-options-search:focus-visible {
+  outline: 2px solid var(--accent-color, #38bdf8);
+  outline-offset: 1px;
+}
+
+.monaco-options-search {
+  width: 100%;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 8px;
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  font-size: var(--fs-12);
+}
+
+.monaco-options-count {
+  font-size: var(--fs-11);
+  color: var(--text-muted);
+}
+
+.monaco-options-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mo-group[hidden],
+.mo-row[hidden],
+.mo-reset[hidden] {
+  display: none !important;
+}
+
+.mo-group {
+  /* The list scrolls; a group must keep its height instead of shrinking into the free space */
+  flex-shrink: 0;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mo-group-title {
+  cursor: pointer;
+  padding: 5px 8px;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--text-main);
+  user-select: none;
+}
+
+.mo-group-title:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mo-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-top: var(--border-width) solid var(--border-color);
+}
+
+.mo-row[data-overridden="true"] {
+  box-shadow: inset 2px 0 0 var(--accent-color, #38bdf8);
+}
+
+.mo-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-12);
+  color: var(--text-main);
+}
+
+.mo-side {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: end;
+}
+
+.mo-control {
+  display: flex;
+  align-items: center;
+}
+
+.mo-desc {
+  grid-column: 1 / -1;
+  font-size: var(--fs-11);
+  line-height: 1.4;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.mo-lock {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 5px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 3px;
+  font-size: var(--fs-10);
+  color: var(--text-main);
+}
+
+.mo-default {
+  margin-left: 6px;
+  opacity: 0.8;
+}
+
+.mo-select,
+.mo-input {
+  max-width: 130px;
+  height: 24px;
+  box-sizing: border-box;
+  padding: 0 6px;
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  font-size: var(--fs-12);
+}
+
+.mo-input.invalid {
+  border-color: #ef4444;
+}
+
+.mo-input[type="number"] {
+  width: 72px;
+}
+
+.mo-switch {
+  accent-color: var(--accent-color, #38bdf8);
+  cursor: pointer;
+}
+
+.mo-select:disabled,
+.mo-input:disabled,
+.mo-switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mo-reset {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--accent-text, var(--text-main));
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.mo-reset:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Editor Options mode (ui/layout/editorOptionsMode.js): the dictionary side steps back, the options card takes the panel */
+body.sidebar-options-mode #guidelineModuleCard,
+body.sidebar-options-mode #knowledgeModuleCard,
+body.sidebar-options-mode #vectorResultsList {
+  display: none !important;
+}
+body.sidebar-options-mode .monaco-options-card {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* Options mode (the toolbar button turns the right panel over): the card is the whole panel, so it stays open
+   and its own collapse arrow and click are not needed. Its groups (Display, Editing, ...) still open and close. */
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-header {
+  pointer-events: none;
+}
+
+body.sidebar-options-mode #monacoOptionsCard .collapse-icon {
+  display: none;
+}
+
+/* The line under the header separates it from the results list; in this mode there is no list below it */
+body.sidebar-options-mode .sidebar-header {
+  border-bottom: none;
+}
+
+/* The header is no longer a control in this mode, so it takes no focus frame (the groups keep theirs) */
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visible {
+  outline: none;
+}

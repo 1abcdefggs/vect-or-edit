@@ -16,6 +16,8 @@ let tip: HTMLDivElement | null = null;
 let activeTarget: HTMLElement | null = null;
 let activeText = '';
 let restoreTitle: (() => void) | null = null;
+let pointer: { x: number; y: number } | null = null;
+let placeFrame = 0;
 
 function ensureTip(): HTMLDivElement {
   if (!tip) {
@@ -78,6 +80,17 @@ function place(x: number, y: number): void {
 
 function findTarget(node: EventTarget | null): HTMLElement | null {
   if (!(node instanceof Element)) return null;
+  const found = node.closest<HTMLElement>(TOOLTIP_SOURCE);
+  if (!activeTarget) return found;
+
+  // The active target's own `title` (and its ancestors') was moved away, so closest() can no longer see it.
+  // While the pointer stays inside it, keep it; otherwise it would be dropped and re-adopted on every move (flicker).
+  if (activeTarget.contains(node)) {
+    // A titled descendant still carries its title: it takes over from the active target
+    return found && found !== activeTarget && activeTarget.contains(found) ? found : activeTarget;
+  }
+  // Left the target: put its titles back first so the new element's ancestors can be found again
+  releaseTitle();
   return node.closest<HTMLElement>(TOOLTIP_SOURCE);
 }
 
@@ -116,10 +129,21 @@ export function initInstantTooltips(): void {
       return;
     }
 
+    // Text and visibility are written only when they change; the position follows at most once per frame
     const el = ensureTip();
-    el.textContent = activeText;
-    el.style.display = 'block';
-    place(e.clientX, e.clientY);
+    const changed = el.textContent !== activeText || el.style.display !== 'block';
+    if (el.textContent !== activeText) el.textContent = activeText;
+    if (el.style.display !== 'block') el.style.display = 'block';
+    pointer = { x: e.clientX, y: e.clientY };
+    if (changed) {
+      // Newly shown or re-worded: place it now, so it never appears for a frame at its previous position
+      place(e.clientX, e.clientY);
+    } else if (!placeFrame) {
+      placeFrame = requestAnimationFrame(() => {
+        placeFrame = 0;
+        if (activeTarget && pointer) place(pointer.x, pointer.y);
+      });
+    }
   }, { passive: true });
 
   document.documentElement.addEventListener('mouseleave', hide);

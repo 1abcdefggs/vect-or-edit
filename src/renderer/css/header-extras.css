@@ -5,6 +5,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  /* Never squeezed: when the window narrows, the menu bar gives way and the controls keep their place */
+  flex: 0 0 auto;
   -webkit-app-region: no-drag !important;
 }
 
@@ -100,43 +102,7 @@
   line-height: 1;
 }
 
-/* Zoom group styling */
-.header-zoom-group {
-  display: inline-flex;
-  align-items: center;
-  height: 26px;
-  background: transparent;
-  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
-  border-radius: var(--radius-sm, 4px);
-  overflow: hidden;
-  -webkit-app-region: no-drag !important;
-}
 
-/* Zoom buttons */
-.header-zoom-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-size: var(--fs-14);
-  border: none;
-  background: transparent;
-  color: var(--header-fg, var(--text-main));
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-  padding: 0;
-  outline: none;
-}
-
-.header-zoom-btn:hover {
-  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
-  color: var(--text-main, #ffffff);
-}
-
-.header-zoom-btn .material-symbols-outlined {
-  font-size: var(--fs-14);
-}
 
 /* Theme toggle icon */
 .theme-toggle-icon {
@@ -147,4 +113,116 @@
 #settingsModal:not([style*='display: none']) ~ * .settings-icon,
 .modal-backdrop:not([style*='display: none']) ~ * .settings-icon {
   color: #fbbf24 !important;
+}
+
+/* Zoom badge: the mouse wheel changes the zoom, a click resets it to 100%.
+   Its width is fixed, so the controls beside it do not move when the value changes (100% to 150%). */
+.header-zoom-group {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 104px;
+  height: 26px;
+  padding: 0 8px;
+  gap: 4px;
+  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
+  border-radius: var(--radius-sm, 4px);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: ns-resize; /* up and down arrows: the wheel adjusts the value */
+  user-select: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  -webkit-app-region: no-drag !important;
+}
+
+.header-zoom-group:hover {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent-color, #38bdf8) 40%, transparent);
+}
+
+.header-zoom-icon { flex: 0 0 auto; font-size: var(--fs-18); color: var(--accent-color, #38bdf8); }
+
+/* The hover hint sits under the badge: up arrow, magnifier with "Zoom", down arrow */
+.header-zoom-group { position: relative; }
+.header-zoom-hint {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 2px 10px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--bg-card);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  color: var(--accent-color, #38bdf8);
+  z-index: 60;
+  pointer-events: none;
+}
+.header-zoom-group:hover .header-zoom-hint,
+.header-zoom-group.is-zooming .header-zoom-hint { display: flex; }
+.header-zoom-group.is-zooming {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent-color, #38bdf8) 40%, transparent);
+}
+.header-zoom-hint__arrow {
+  font-size: var(--fs-18);
+  font-variation-settings: 'wght' 700;
+  line-height: 1;
+}
+.header-zoom-hint__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-13);
+  font-weight: 700;
+  color: var(--text-main);
+}
+.header-zoom-hint__label .material-symbols-outlined {
+  font-size: var(--fs-18);
+  color: var(--accent-color, #38bdf8);
+}
+
+.header-zoom-text {
+  flex: 0 0 auto;
+  min-width: 36px;
+  text-align: center;
+  font-size: var(--fs-12);
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+}
+
+/* Header frame: color mode, theme and zoom form one group. No outlines; a thin tint at rest shows they are buttons, hover is stronger */
+.header-frame {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-frame .app-header__lang-toggle,
+.header-frame .app-header__theme-select-wrapper,
+.header-frame .header-zoom-group {
+  border: none;
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 12%, transparent);
+}
+
+.header-frame .app-header__lang-toggle:hover,
+.header-frame .app-header__theme-select-wrapper:hover,
+.header-frame .header-zoom-group:hover {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 24%, transparent);
+}
+
+/* Zoom slider in the zoom hint: the hint itself ignores the pointer, the slider takes it (drag to set the scale) */
+.header-zoom-slider {
+  pointer-events: auto;
+  width: 120px;
+  margin: 2px 0;
+  cursor: pointer;
+  accent-color: var(--accent-color, #38bdf8);
 }

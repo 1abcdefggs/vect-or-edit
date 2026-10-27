@@ -12,6 +12,13 @@
   cursor: pointer;
 }
 
+/* A Text document has no rendered view: the button turns invisible but keeps its place (setPreviewAvailable) */
+.markdown-preview-toggle.is-unavailable,
+.status-bar-separator.is-unavailable {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .markdown-preview-toggle[aria-pressed="true"] {
   color: var(--accent-color, #38bdf8);
 }

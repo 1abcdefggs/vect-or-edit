@@ -120,36 +120,3 @@ export async function semanticQuery(text, context) {
 
   return { normalized, matches: ranked, alerts, vectorHits };
 }
-
-// ------- debounced selection handler -------
-let _debounce = null;
-
-/**
- * Attach to Monaco editor selection change.
- * @param {Function} onResult  callback(InferenceResult)
- * @param {number} delay  ms debounce (default 400)
- */
-export function attachSelectionHandler(editor, onResult, delay = 400) {
-  editor.onDidChangeCursorSelection((e) => {
-    const selection = editor.getSelection();
-    if (!selection || selection.isEmpty()) return;
-    const selectedText = editor.getModel()?.getValueInRange(selection) ?? '';
-    if (!selectedText.trim()) return;
-
-    // Wider context: ±3 lines around selection
-    const model = editor.getModel();
-    const contextRange = {
-      startLineNumber: Math.max(1, selection.startLineNumber - 3),
-      startColumn: 1,
-      endLineNumber: Math.min(model.getLineCount(), selection.endLineNumber + 3),
-      endColumn: model.getLineMaxColumn(Math.min(model.getLineCount(), selection.endLineNumber + 3))
-    };
-    const context = model.getValueInRange(contextRange);
-
-    clearTimeout(_debounce);
-    _debounce = setTimeout(async () => {
-      const result = await semanticQuery(selectedText, context);
-      onResult(result);
-    }, delay);
-  });
-}

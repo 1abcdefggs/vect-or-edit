@@ -6,6 +6,7 @@ export {
   activeTabId,
   getActiveTab,
   createNewTab,
+  createBlankTab,
   switchTab,
   closeTab,
   markActiveTabSaved

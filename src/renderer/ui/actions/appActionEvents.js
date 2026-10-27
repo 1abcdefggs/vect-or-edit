@@ -1,10 +1,10 @@
-import { setEditorContent, getCurrentContent, getActiveTab, markActiveTabSaved, focusEditor, tabs } from '../../editor/editorManager.js';
+import { setEditorContent, focusEditor } from '../../editor/editorManager.js';
 import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledgeSlot, clearAllKnowledgeSlots } from '../../search/dictionary.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
+import { showConfirmModal } from '../notifications/confirmModal.js';
 import { t } from '../../core/i18n.js';
-import { showWorkspaceModal } from '../layout/topBarRenderer.js';
-import { commitTabToFile } from '../../editor/io/tabCommit.js';
+import { commandManager } from '../../core/commandManager';
 
 export function bindAppActionEvents() {
   const btnSave = document.getElementById('btnSave');
@@ -29,6 +29,14 @@ export function bindAppActionEvents() {
       const text = await file.text();
       setEditorContent(text, file.name);
     }
+  });
+
+  // Sidebar section headers (Guidelines, Knowledge) collapse on click; their action buttons do not
+  document.querySelectorAll('.semantic-module-header').forEach((header) => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.semantic-module-actions')) return;
+      header.parentElement.classList.toggle('collapsed');
+    });
   });
 
   // Focus tracking
@@ -112,6 +120,8 @@ export function bindAppActionEvents() {
     const handleAddSlot = async () => {
       const res = await addKnowledgeSlot();
       if (res?.success) {
+        // Show what was just set: open the Knowledge card (search collapses it to make room for results)
+        document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
         setLedStatus('kb', true, `7. HNSW: Indexed (${res.totalCount?.toLocaleString()} items)`);
       }
@@ -121,6 +131,16 @@ export function bindAppActionEvents() {
 
   if (btnClearAllSlots) {
     btnClearAllSlots.addEventListener('click', async () => {
+      // Unload All always asks, whatever the close-confirmation setting says (ADR-11, review item R6)
+      const count = Number(document.getElementById('knowledgeSlotsCountBadge')?.textContent?.match(/\d+/)?.[0] || 0);
+      const confirmed = await showConfirmModal({
+        title: t('confirm_unload_all_title'),
+        message: t('confirm_unload_all_message', { count: String(count) }),
+        confirmText: t('btn_unload_all_confirm'),
+        cancelText: t('btn_keep_open'),
+        type: 'warning'
+      });
+      if (!confirmed) return;
       await clearAllKnowledgeSlots();
       showToast(t('toast_all_slots_unloaded'), 'info');
       setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
@@ -143,110 +163,58 @@ export function bindAppActionEvents() {
   const btnSaveAs = document.getElementById('btnSaveAs');
   const btnSaveAll = document.getElementById('btnSaveAll');
 
-  // Save button split: the arrow toggles Save As / Save All; it closes on any outside click, Esc, or item pick.
-  const saveMenuToggle = document.getElementById('btnSaveMenuToggle');
+  // Save button: a press opens or closes the menu (AutoSave, Save As, Save All). It closes on any outside click, Esc, or item pick.
   const saveDropdown = document.querySelector('.save-dropdown-container');
   const saveDropdownMenu = saveDropdown?.querySelector('.save-dropdown-menu');
+  // The menu moves to <body>: inside the toolbar, a fixed position is measured from the toolbar (it is a container), not the window
+  if (saveDropdownMenu) document.body.appendChild(saveDropdownMenu);
   const setSaveMenuOpen = (isOpen) => {
     if (isOpen && saveDropdown && saveDropdownMenu) {
       const rect = saveDropdown.getBoundingClientRect();
       saveDropdownMenu.style.top = `${rect.bottom + 4}px`;
       saveDropdownMenu.style.left = `${rect.left}px`;
     }
-    saveDropdown?.classList.toggle('is-open', isOpen);
-    saveMenuToggle?.setAttribute('aria-expanded', String(isOpen));
+    saveDropdown?.classList.toggle('open', isOpen);
+    saveDropdownMenu?.classList.toggle('open', isOpen);
+    document.getElementById('btnSaveMenu')?.setAttribute('aria-expanded', String(isOpen));
   };
-  saveMenuToggle?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    setSaveMenuOpen(!saveDropdown?.classList.contains('is-open'));
+  // Left part saves at once; while AutoSave is pending (no file yet) it asks for a location instead
+  btnSave?.addEventListener('click', async () => {
+    setSaveMenuOpen(false);
+    await commandManager.executeCommand(btnSave.dataset.autosaveState === 'pending' ? 'file.saveAs' : 'file.save');
+    setTimeout(() => focusEditor(), 50);
   });
-  saveDropdown?.querySelectorAll('.save-dropdown-item').forEach((item) => {
+  document.getElementById('btnSaveMenu')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setSaveMenuOpen(!saveDropdown?.classList.contains('open'));
+  });
+  // The AutoSave switch keeps the menu open so the state can be read and changed in one go
+  saveDropdownMenu?.querySelectorAll('.save-dropdown-item:not(.autosave-menu-item)').forEach((item) => {
     item.addEventListener('click', () => setSaveMenuOpen(false));
   });
   document.addEventListener('click', (e) => {
-    if (saveDropdown && !saveDropdown.contains(e.target)) setSaveMenuOpen(false);
+    if (saveDropdown && !saveDropdown.contains(e.target) && !saveDropdownMenu?.contains(e.target)) setSaveMenuOpen(false);
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setSaveMenuOpen(false);
   });
 
-  // Save current active tab
-  if (btnSave) {
-    btnSave.addEventListener('click', async (e) => {
-      // If click originated from the inner autosave checkbox or LED dot, don't trigger manual save
-      if (e.target && (e.target.id === 'chkAutoSaveToggle' || e.target.id === 'autoSaveLedDot')) return;
+  // The menu's Save item does what the Save button does: save now, or ask for a location while AutoSave is pending
+  document.getElementById('btnSaveFile')?.addEventListener('click', async () => {
+    await commandManager.executeCommand(btnSave?.dataset.autosaveState === 'pending' ? 'file.saveAs' : 'file.save');
+    setTimeout(() => focusEditor(), 50);
+  });
 
-      const currentTab = getActiveTab();
-      if (!currentTab) return;
-      const content = getCurrentContent();
-      const defaultName = currentTab.filePath || currentTab.title || 'untitled.md';
+  // Save As and Save All run the same commands as File > Save As / Save All (menuBarController.ts)
+  btnSaveAs?.addEventListener('click', async () => {
+    await commandManager.executeCommand('file.saveAs');
+    setTimeout(() => focusEditor(), 50);
+  });
 
-      const executeSave = async (forceDialog = false) => {
-        if (window.engineAPI?.saveFile) {
-          const res = await window.engineAPI.saveFile(content, defaultName, forceDialog);
-          if (res?.success && res.filePath) {
-            markActiveTabSaved(res.filePath);
-            showToast(t('alert_file_saved', { path: res.filePath }) || `Saved: ${res.filePath}`, 'success');
-          }
-          setTimeout(() => focusEditor(), 50);
-        }
-      };
-
-      // Check if this is the first save (no file path)
-      if (!currentTab.filePath) {
-        let hasWorkspace = false;
-        if (window.engineAPI?.getDefaultWorkspace) {
-          const wsRes = await window.engineAPI.getDefaultWorkspace(false);
-          hasWorkspace = Boolean(wsRes?.success && wsRes?.exists);
-        }
-
-        if (!hasWorkspace) {
-          showWorkspaceModal('save', () => executeSave(true));
-          return;
-        }
-        // If workspace exists, show save dialog for initial save
-        await executeSave(true);
-      } else {
-        // Overwrite directly without dialog
-        await executeSave(false);
-      }
-    });
-  }
-
-  // Save As (always force save dialog)
-  if (btnSaveAs) {
-    btnSaveAs.addEventListener('click', async () => {
-      const currentTab = getActiveTab();
-      if (!currentTab) return;
-      const content = getCurrentContent();
-      const defaultName = currentTab.title || 'untitled.md';
-
-      if (window.engineAPI?.saveFile) {
-        const res = await window.engineAPI.saveFile(content, defaultName, true);
-        if (res?.success && res.filePath) {
-          markActiveTabSaved(res.filePath);
-          showToast(t('alert_file_saved', { path: res.filePath }) || `Saved as: ${res.filePath}`, 'success');
-        }
-        setTimeout(() => focusEditor(), 50);
-      }
-    });
-  }
-
-  // Save All
-  if (btnSaveAll) {
-    btnSaveAll.addEventListener('click', async () => {
-      const currentTabs = tabs || [];
-      let savedCount = 0;
-      let failedCount = 0;
-      for (const tab of currentTabs) {
-        if (!tab.model) continue;
-        const result = await commitTabToFile(tab);
-        if (result.ok) savedCount++;
-        else if (!result.canceled) failedCount++;
-      }
-      if (failedCount) showToast(t('save_failed'), 'error');
-      showToast(`Saved ${savedCount} document(s)`, 'success');
-      setTimeout(() => focusEditor(), 50);
-    });
-  }
+  btnSaveAll?.addEventListener('click', async () => {
+    // Disabled below two tabs; the item stays hoverable so its tooltip can say why
+    if (btnSaveAll.classList.contains('disabled')) return;
+    await commandManager.executeCommand('file.saveAll');
+    setTimeout(() => focusEditor(), 50);
+  });
 }

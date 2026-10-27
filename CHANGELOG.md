@@ -5,6 +5,373 @@ All notable changes to the **VectOrEdit** (`vect-or-edit`) desktop application w
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.3.55] - 2026-10-27
+
+### Added
+
+- Each knowledge slot has an Info button. It shows the dictionary header (domain, version, dimension, metric, items, fidelity, sanitized). An encrypted slot shows its header only while its password is loaded.
+- A loaded dictionary shows its domain as the slot title.
+
+### Changed
+
+- With EMBED off, the results say they are text matches only.
+- The guideline card's empty-state text is inside the card body, so it collapses with the card.
+
+## [0.3.54] - 2026-10-27
+
+### Added
+
+- Closing the window with the × button asks first, the same confirmation as File > Exit.
+- Empty search results say why: the dictionary-search model is off or not ready (with an Open Settings button), or nothing matched.
+- The guideline and knowledge cards explain what they are for, as a short list, while nothing is loaded.
+
+### Changed
+
+- The toolbar font name fills the free width (70 to 115 px) instead of a fixed number.
+- Icon-only buttons share one box (28 px) and one icon size (24 px). Icons beside text share one size (18 px).
+- The "Save As" button label is in English (SAVE AS). The "pending save" text beside it is removed; the LED and the tooltip show the state.
+- The search wait shows a spinner instead of the word "Computing".
+- The welcome text of a new document is revised.
+
+### Removed
+
+- Outlines around the sidebar collapse button and the duplicate and new tab buttons.
+
+## [0.3.53] - 2026-10-26
+
+### Added
+
+- The minimum score and the auto-save delay fields have − and + buttons, in Settings and in the first-run setup. The field keeps its value and its limits; the buttons stop at the limits.
+- Fifteen tooltips that list several items are shown one item per line. The wording is unchanged.
+
+### Changed
+
+- Reloading the editor, restarting the app, clearing the cache, installing an update and the auto-save location question all use the same confirmation dialog as the other actions.
+- The cache-clear confirmation uses the locale files; before, its text was in English in the code.
+
+## [0.3.52] - 2026-10-26
+
+### Added
+
+- The Save dialog opens in the folder of the last save; before the first save it opens in the save folder from Settings. The last folder is kept in userData (last-save-dir.json) and survives a restart.
+- While no save location is set, the Save button shows a short word beside the LED, not only the LED colour (autosave_pending_label).
+
+### Changed
+
+- 17 English tooltips are reworded: three or more parallel items are split into lines, the rest stay on one line. The Japanese tooltips follow, mostly as noun phrases (operation sentences keep the dictionary form).
+- The Japanese labels of the two add buttons in the sidebar (Guidelines and Knowledge) are "追加" instead of the English "Add files". The unload confirmation text refers to the same label.
+
+## [0.3.51] - 2026-10-26
+
+### Added
+
+- The tab close question has a "Don't show this again" checkbox. Ticking it and confirming skips the question for clean tabs only; unsaved tabs are still asked. Turning the global "Confirm before closing" switch back on brings the question back.
+- The save menu has a Save item, which does what the Save button does.
+- The Knowledge section shows a second line under each slot: the file name and the item count. When no slot is loaded, it shows a short hint on what Knowledge is for.
+
+### Changed
+
+- The LLM and Embedding switches show the state on the knob (OFF or ON), with the other word beside the track. The knob is a square with rounded corners.
+- The header appearance control is a three-position switch: Light, Auto (the middle, with the auto icon), and Dark. The settings page and the first-run setup keep their three-option selects.
+- The save menu is moved to the document body when the app starts, so the toolbar cannot clip or offset it.
+
+### Removed
+
+- The mouse icon in the header zoom display. The mouse wheel still zooms.
+
+## [0.3.50] - 2026-10-26
+
+### Changed
+
+- The LLM and Embedding header switches are role="switch" buttons: aria-checked sits on the whole button, not on the inner track, and the redundant state on the track is removed. The look is unchanged.
+- The header button (.editor-header-btn) is defined once in editor.css. The duplicate rule in buttons.css is removed, and the one hover rule is merged; the rendered values do not change.
+
+## [0.3.49] - 2026-10-26
+
+### Removed
+
+- Unused .tab-btn and .setting-tab-btn selectors from the cursor rule in utilities.css. The rule itself stays for the other selectors.
+
+## [0.3.48] - 2026-10-26
+
+### Changed
+
+- The settings row rule is defined once. The two definitions of .setting-item in modals.css are merged; the rendered values do not change.
+
+## [0.3.47] - 2026-10-26
+
+### Changed
+
+- Menu item hover and focus styles are defined once in dropdown-menu.css, shared by the menus and the save menu.
+- Search results, the menu renderer and the about dialog were tidied in the same pass.
+
+## [0.3.46] - 2026-10-26
+
+### Fixed
+
+- The header minimize button is registered as a window part, so the settings coverage check passes.
+- The toolbar keeps the font size readable (16px) before the labels give way. The editor options name shortens earlier.
+
+### Removed
+
+- Unused AI label strings (LLM and EMBED ON/OFF) from the locale files.
+
+## [0.3.45] - 2026-10-26
+
+### Changed
+
+- LLM and Embedding header buttons show an ON/OFF switch with the state in words. The button stays an active control in both states.
+
+## [0.3.44] - 2026-10-25
+
+### Changed
+- Sidebar module cards: the title size rules live in the card stylesheet; the Editor Options header uses the shared classes
+- Bottom bar close controls and LOGS action buttons: the resting tint comes from the shared log tokens
+- LOGS chip labels use the title colour in the closed and open states (contrast 4.5:1 or more on each face)
+
+### Fixed
+- A downloaded embedding model loads at startup, so the Embedding shows as configured after a restart
+
+## [0.3.43] - 2026-10-25
+
+### Changed
+- Pipeline status LEDs have one base and one rule per state; the error LED is lit and static (no blinking)
+
+## [0.3.42] - 2026-10-25
+
+### Changed
+- Toggle switches in the first-run setup are built from one shared markup function
+
+## [0.3.41] - 2026-10-25
+
+### Added
+- The guide beside the settings is also shown in English (it follows the UI language)
+- Log clear asks for confirmation when the log has entries; the log action buttons and close controls show a tint at rest
+- The LOGS panel opens with a short slide and fade (off for reduced motion)
+- Renaming a tab with an extension that changes the format asks first and then switches the format
+- Zoom slider in the zoom hint
+- Downloaded embedding model: EMBED turns on by itself after the first-run download; the settings page no longer offers to download it again
+
+### Changed
+- Header: colour mode, theme and zoom form one frame; the settings button sits at the right end; the language switch is in the settings page only
+- Sidebar module cards share one definition; Knowledge opens after files are added; card padding is 4px
+- Toolbar selects use the free space before they shorten the text; the sidebar header top padding aligns with the editor toolbar
+- The menu bar and Save menu items come from one definition; the settings card headings and row text come from shared markup
+- A new tab is empty; only the first document of a session shows the welcome text
+
+### Fixed
+- Toolbar overflow at narrow widths (the right group no longer pushes past the edge)
+- Header and log controls no longer carry outlines
+
+## [0.3.40] - 2026-10-25
+
+### Changed
+- Button padding uses the exact golden-ratio values (sqrt 5 forms); the unused --phi token is removed
+- The toolbar shrinks by width: selects cut their text, the LLM label and the BG/FG word hide at narrow widths
+
+## [0.3.39] - 2026-10-25
+
+### Changed
+- Help for the log time and Editor Options settings is regenerated
+
+## [0.3.38] - 2026-10-25
+
+### Changed
+- Editor Options opens from the toolbar, stays open in that mode, and its label shrinks with the toolbar width
+
+## [0.3.37] - 2026-10-25
+
+### Changed
+- Bottom bar LOGS and PIPELINE are tinted buttons without an outline; the log actions are tinted too
+
+## [0.3.36] - 2026-10-25
+
+### Added
+- Log time format (24 hours, 12 hours, follow OS, ISO 8601) and time zone (local, UTC) settings; stored times are ISO 8601 (UTC)
+- Column header in the log panel (Time, Level, Source, Message), with the log actions at its right end
+
+### Changed
+- Log buttons are ghost buttons with accent icons; labels hide when the header is narrow
+- Log badges have no border and do not set the row height; the row gap is 2px
+- Bottom bar LOGS and PIPELINE are tinted buttons without an outline; the closed LOGS state is a tint too
+- Editor Options opens the right panel's card; the card is hidden by default and stays open while the mode is on
+- The toolbar button shows a pressed state (accent frame, accent icon)
+- The Editor Options label shrinks in steps with the toolbar width: full name, short name, last word, icon only
+- The right panel's inner inset is one token (--sidebar-inset); the options card lines up with the other cards
+- Corner radius and spacing steps are defined once in design-tokens.css
+
+## [0.3.35] - 2026-10-24
+
+### Changed
+- Button size follows the font size: height and padding from one rule, compact buttons for the menu bar, log panel and sidebar card
+- Buttons under 24px get a transparent hit area
+
+### Added
+- Editor Options button sits in the editor style group, with its label
+
+### Fixed
+- Long titles in the confirm dialog wrap instead of overflowing
+
+## [0.3.34] - 2026-10-24
+
+### Changed
+- Editor bars, lamps and borders follow the style rules: one font for labels, no forced uppercase, the lamp color and border rules
+- The editor status bar and the style group keep the agreed order and widths
+- Editor Options card styles follow the same rules
+- Japanese and English text for the window and settings changes
+
+## [0.3.33] - 2026-10-24
+
+### Changed
+- Save is a split button: the left part saves at once, and the arrow opens AutoSave, Save As and Save All
+- Save As and Save All run the same commands as the File menu
+- The workspace root is read in one place, so Save, Open, AutoSave and the settings page agree
+- Closing the settings, the tabs and the app asks first; Exit and Close Window ask the same way
+- The window RAM figure sits on the left of the bottom bar, next to LOGS
+
+## [0.3.32] - 2026-10-24
+
+### Changed
+- The settings page is grouped by window area (Header, Editor, Sidebar, System), with a map of the window at the top
+- The guide beside the settings lists the parts of the window and their settings in the order they sit in the window
+- Choice buttons mark the default option with (Default)
+- Panel sizes and the Editor Options mode are remembered between starts
+
+## [0.3.31] - 2026-10-24
+
+### Changed
+- The LLM and Embedding switches are independent: turning one on does not turn the other on
+- Status lamps: an off switch shows a grey lamp while its label and button stay usable
+- Dictionary search keeps working with both switches off; the LLM and Gemini help only when they are on
+- The cloud LLM provider is stored apart from the search generator, and Gemini is no longer shown when it is not selected
+
+## [0.3.30] - 2026-10-22
+
+### Added
+- Editor Options card in the right sidebar: every Monaco editor option (306 values; object options such as the minimap are expanded into their members) as a switch, choice list, number or text field. A change shows in the main editor at once and is kept for the next start. The card has a search box, groups, a reset button per option and one for all of them
+- Options the settings page already owns (font, size, line height, word wrap, line numbers, line highlight, whitespace, sticky scroll), and options the app depends on, are shown read-only. Six scrollbar options that Monaco reads only when the editor is created are stored and apply at the next start
+- Japanese and English texts for every option, a generated option catalog (`scripts/extract-monaco-options.mjs`, from the installed Monaco typings) and a test that fails when the catalog is older than the installed Monaco
+- The card can be shown or hidden like every other part of the window (Settings > System)
+
+## [0.3.29] - 2026-10-22
+
+### Added
+- The settings page is split in two: the settings on the left, and a guide for the open tab on the right (1000 px and wider, Japanese UI). The guide follows the setting that has focus, and a click on a guide row brings that setting into view
+- Every part of the window can be shown or hidden from Settings > System: the editor toolbar parts, the chat dock and its buttons, the document tabs, the status bars, the sidebar cards and rail, the log buttons and more. Hiding a part other features lean on says what stops being available and how to get it back
+- Settings that choose between a few options show the current choice as segmented buttons, and on/off settings as switches
+- The header zoom badge shows a mouse-wheel icon
+
+### Changed
+- The settings tabs follow the four areas of the window: Header, Editor, Sidebar, System. The LLM provider and keys moved to the Editor tab; the embedding settings stay in the Sidebar tab
+- Settings rows show the eye button and the heading on one line, with the description below as bullets
+- Tooltips show the opposite of the mode: dark in light mode, light in dark mode
+- The header zoom badge has a fixed width, and when the window narrows the menu bar gives way instead of the controls on the right
+- Several settings labels and tooltips that were still English in the Japanese UI are translated
+
+### Fixed
+- Text on selected buttons and accent-coloured text on the settings page now reach a 4.5:1 contrast in light and dark modes
+- Hiding the sidebar also hides its resize handle
+- The tooltip of the editor AI button described the embedding model; it now describes the LLM button
+
+### Removed
+- Styles of the old master-AI pill and six unused strings
+
+## [0.3.28] - 2026-10-22
+
+### Added
+- The SAVE button opens a menu when pressed, with AutoSave, Overwrite (Save), Save As and Save All
+- AutoSave in the menu shows its state as an ON / OFF switch and stays open when pressed, so it can be switched in one go
+- Save All is disabled with fewer than two tabs open, and its hover text says that two or more tabs are needed
+
+### Changed
+- The SAVE button no longer saves by itself and no longer has a split arrow; Ctrl+S and File > Save save the document, and the SAVE button opens the menu
+- Save All and Save As keep their behaviour and move into the menu
+
+## [0.3.27] - 2026-10-22
+
+### Added
+- The PIPELINE button carries a lamp for the worst subsystem state (error, warning, loading, standby, ready), so a problem is visible while the strip is closed
+- A right-click menu on editor tabs with "Duplicate tab"
+- The About dialog names the parts in use: the app, engine, Monaco and Electron versions, the chosen theme with its license and source, and every downloaded embedding model with a link to its Hugging Face page. Project links live in one file (`src/shared/projectLinks.ts`)
+- Themes Solarized and Tomorrow, each with a light and a dark face. Theme credits (origin, license, source) are kept in one list (`src/shared/themeAttribution.json`) that About and the third-party notices both read
+- First-run AI step shows how the editor, the dictionary and the embedding model work together, and says when the model is already installed
+
+### Changed
+- Header: About is a plain button beside Help (it was inside the Help menu), and the appearance-mode toggle sits before the theme selector
+- First-run AI step is redesigned around the purpose of the embedding model; the cloud AI heading is gone
+- One UI font stack (`--font-ui`) is set once on `body` and everything inherits it; form controls follow it, section headings no longer use Inter, and the status bar and welcome text use the same face as the rest
+- Warning and error text colors are darker on light backgrounds
+- The tab duplicate button uses the shared icon set
+- Ctrl+S in the editor runs File > Save, the same command as the menu, instead of clicking the SAVE button (which follows the AutoSave split); the stray Ctrl+S binding on the Save as Text action is gone
+- Internal cleanup: removed the duplicate `sidebarResizer.js` and functions with no callers, and stopped loading the unused Inter web font
+
+### Fixed
+- Ctrl+S in the editor runs the same command as File > Save, instead of clicking the SAVE button (which follows the AutoSave split); the duplicate Ctrl+S binding on "Save as Text File" is removed
+
+## [0.3.26] - 2026-10-22
+
+### Added
+- Appearance modes System, Light and Dark in the header, in Settings and in first-run setup; every theme has a light and a dark face; the Tukune theme
+- Confirmation before closing tabs, toasts, modals and slots (a setting); a tab with unsaved changes always offers a choice dialog
+- Log panel: the backlog and live lines merge by id, a Save Logs button, and a mirrored log view in Settings > System
+- About shows the bundled license and third-party notices; embedding model licenses are verified before a download
+- A version badge on the startup loader and a Windows app icon
+- Settings for window features, including collapsing the logs
+
+### Changed
+- The Settings modal is restructured; tooltips across the UI are translatable
+- The Windows package is smaller: other-OS onnxruntime binaries and superseded engine builds are left out, and the packaging guard checks a built `app.asar` for them
+- 32 strings that were still English in the Japanese dictionary are translated
+
+## [0.3.25] - 2026-10-21
+
+### Added
+- First-run setup in three steps (language and theme, save location, AI), with the tool name and version in the window's top-left corner, one typeface (Source Serif 4) throughout, and an (i) tip beside each heading that explains it on hover or focus
+- Shared parts: step tabs with an arrow connector and a progress line (`stepTabs.js`), a toggle switch with OFF on the left and ON on the right (`toggleSwitch.js`), and an info tip (`infoTip.js`)
+- Language switch (English left, Japanese right) and theme cards that draw a small editor sample from each theme file
+- File format choice, Markdown (.md) or Text (.txt), in first-run setup and in Settings. The Markdown card shows its title as "## heading" and a Preview button shows the rendered view (the same renderer as the editor preview). The status bar shows the format of the current document and a click switches it; the Preview button is hidden for Text documents
+- Save folder can be changed, renamed in place or reset; settings follow the folder. A folder name with a problem is explained beside the field and blocks "Next"
+- First-run AI step names the vector inference model, its purpose, source and install location, and warns that search cannot run without it
+- Gemini, OpenAI and Claude API keys are encrypted with the OS key store in the main process
+- AutoSave has two triggers, a pause in typing (0.5 to 10 seconds, 1.5 by default) and each new line, with one master switch; the two triggers are folded under "Adjust each" and set in first-run setup
+- A "Custom" theme card in first-run setup: it overrides the editor background and text color, and choosing a theme returns them to the theme's own
+- Embedding model picker in Settings: 50 models with language fit, license, dimension, language-count and task filters, five sort orders and search. The model data lives in one registry (`src/shared/embeddingRegistry.json`) and the rules in `src/shared/embeddingCatalog.ts`. Only models with verified query/passage prefixes can be downloaded or used; the others are listed for comparison. A chosen model whose files are not on the device is shown as "Selected, not installed" with a Download button
+
+### Changed
+- The default Gemini model is `gemini-3.1-flash-lite`, the chat model badge follows the chosen model, and the retired Claude models are replaced; only text blocks of a Claude reply are read
+- The header app title uses a serif face
+- The built-in save folder is now `Documents/VectOrEdit` (was `VectOrFoldEr`); the old folder is not looked at or moved
+- "Change location" now picks the place for the save folder and keeps its name; the name is changed in its own field
+- The embedding model starts switched on in first-run setup and is installed in the background after the last button is pressed. The setup installs the default model only (e5-small); Settings still lists the others. With the model off the last button reads "Start without the model"
+- New documents, their file names, the save dialog and AutoSave file names follow the chosen format
+- The step bar's Back and Next buttons name the step they lead to (a small caption over the step name)
+- The setup dialog keeps one height on every step and in every language and sits clear of the title bar
+- The Markdown format sample shows a heading 1 and a heading 2 above the list, so the preview shows what headings look like
+- The welcome text now explains how to try the editor, what the first-run setup set, what the areas of the window do, the difference between the LLM and the embedding model, and what to do when something fails
+- Renderer runs sandboxed; IPC accepts calls only from the app's own page; permissions other than clipboard are denied
+- CSP no longer allows `unsafe-eval` or inline scripts
+- Renderer console output appears in the log panel with its own source and level
+- The "setup completed" flag is kept per installation and is no longer restored from `.settings.json`
+
+### Fixed
+- The AUTO button works again; AutoSave is switched from the save menu
+- Plain-text API keys from older versions are moved into the encrypted store and removed from `.settings.json`
+- Swapping the welcome text for another language no longer marks the tab dirty
+- The worker build resolves `.js` imports of `.ts` files, so `worker.js` can import `embeddingModels.js` and the app builds again
+- A language change swaps the welcome text only while it is an unedited copy, so text the user typed (or saved and reopened) is never replaced
+- The welcome text describes the save button, the AutoSave menu, the menu bar and the pipeline lights as they work
+- The page background and the log panel follow the light theme
+- Settings, AI MODEL: the Embedding, LLM and Capability scope tabs are back, so the LLM keys and the capability table can be reached and left again
+- Settings: the Claude model choice, the real-time validation switch, the minimum score and the result limit are saved and applied
+- Model size is no longer written into labels (it said 45 MB; the file is about 118 MB)
+
+### Removed
+- The AI Direct command bar of the log panel
+- The "Skip setup" button of first-run setup (every step already has defaults, so Next all the way is a valid setup)
+- Gemini-specific key IPC channels (replaced by the provider-generic `saveApiKey`, `hasApiKey` and `clearApiKey`)
+
 ## [0.3.24] - 2026-10-19
 
 ### Added

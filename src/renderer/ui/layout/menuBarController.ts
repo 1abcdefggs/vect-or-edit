@@ -1,4 +1,5 @@
 import { showAboutModal } from '../modals/aboutModalController.js';
+import { showHelpPage } from '../help/helpPage.js';
 /**
  * Menu Bar Controller (VS Code Style Inline Menu Bar)
  * Handles dropdown open/close, hover switching, click-outside dismissal,
@@ -6,6 +7,7 @@ import { showAboutModal } from '../modals/aboutModalController.js';
  */
 
 import {
+  createBlankTab,
   createNewTab,
   closeTab,
   getActiveTab,
@@ -23,10 +25,51 @@ import { showToast } from '../notifications/toastManager.js';
 import { setDocumentFormat, announceOpenedEncoding, markSavedAsUtf8 } from '../../editor/ui/statusBarManager.js';
 import { commitTabToFile } from '../../editor/io/tabCommit.js';
 import { t } from '../../core/i18n.js';
+import { confirmClose } from '../notifications/closeGuard.js';
+import { getWorkspaceRoot } from '../../core/workspaceRoot';
 import { commandManager, type CommandDefinition } from '../../core/commandManager';
 
 let isMenuOpen = false;
 let activeMenuItem: HTMLElement | null = null;
+
+const OVERFLOW_ENTRY_CLASS = 'menu-overflow-entry';
+const OVERFLOW_NEEDED_CLASS = 'menu-overflow-needed';
+/** Menus moved into the overflow panel, in their original order (always the last ones of the bar). */
+const overflowedEntries: HTMLElement[] = [];
+
+/**
+ * Keeps the header menus inside the window width. The menus that do not fit move, from the right,
+ * into the » overflow panel; they return to the bar when there is room again.
+ */
+function fitMenuBar(menuBar: HTMLElement): void {
+  const overflowItem = menuBar.querySelector<HTMLElement>('[data-menu="overflow"]');
+  const overflowPanel = menuBar.querySelector<HTMLElement>('#menuDropdownOverflow');
+  const header = menuBar.parentElement;
+  if (!overflowItem || !overflowPanel || !header) return;
+
+  overflowedEntries.splice(0).forEach((entry) => {
+    entry.classList.remove(OVERFLOW_ENTRY_CLASS);
+    menuBar.insertBefore(entry, overflowItem);
+  });
+  overflowItem.classList.remove(OVERFLOW_NEEDED_CLASS);
+
+  const barEntries = (): HTMLElement[] =>
+    Array.from(menuBar.children).filter((el): el is HTMLElement => el !== overflowItem && el instanceof HTMLElement);
+  const limit = header.getBoundingClientRect().right;
+  const edgeOf = (entries: HTMLElement[]): number => entries.at(-1)?.getBoundingClientRect().right ?? 0;
+
+  if (edgeOf(barEntries()) <= limit) return;
+
+  overflowItem.classList.add(OVERFLOW_NEEDED_CLASS);
+  const reserve = overflowItem.getBoundingClientRect().width;
+  while (edgeOf(barEntries()) > limit - reserve) {
+    const entry = barEntries().at(-1);
+    if (!entry) break;
+    entry.classList.add(OVERFLOW_ENTRY_CLASS);
+    overflowedEntries.unshift(entry);
+    overflowPanel.insertBefore(entry, overflowPanel.firstChild);
+  }
+}
 
 /**
  * Register all application commands to CommandManager (Deep Interface Seam).
@@ -52,12 +95,8 @@ export function registerAppCommands(): void {
     };
 
     if (!currentTab.filePath && !forceDialog) {
-      let hasWorkspace = false;
-      if (window.engineAPI?.getDefaultWorkspace) {
-        const wsRes = await window.engineAPI.getDefaultWorkspace(false);
-        hasWorkspace = Boolean(wsRes?.success && wsRes?.exists);
-      }
-      if (!hasWorkspace) {
+      const root = await getWorkspaceRoot();
+      if (!root?.exists) {
         (showWorkspaceModal as any)('save', () => doSave(true));
         return;
       }
@@ -68,12 +107,10 @@ export function registerAppCommands(): void {
   };
 
   const executeOpenFile = async () => {
-    if (window.engineAPI?.getDefaultWorkspace) {
-      const wsRes = await window.engineAPI.getDefaultWorkspace(false);
-      if (wsRes && wsRes.success && !wsRes.exists) {
-        showWorkspaceModal('open');
-        return;
-      }
+    const root = await getWorkspaceRoot();
+    if (root && !root.exists) {
+      showWorkspaceModal('open');
+      return;
     }
     if (window.engineAPI?.openFile) {
       const res = await window.engineAPI.openFile();
@@ -100,6 +137,21 @@ export function registerAppCommands(): void {
     showToast(`Saved ${savedCount} document(s)`, 'success');
   };
 
+  // Exit and Close Window end the same single window, so both ask first (the close-confirmation setting applies)
+  const exitApplication = async () => {
+    if (!(await confirmClose('app'))) return;
+    window.engineAPI?.closeWindow?.();
+  };
+
+  // The × button of the window: the main process holds the close until the user confirms here.
+  // A second × press while the question is open does not ask again.
+  let closeQuestionOpen = false;
+  window.engineAPI?.onCloseRequested?.(() => {
+    if (closeQuestionOpen) return;
+    closeQuestionOpen = true;
+    void exitApplication().finally(() => { closeQuestionOpen = false; });
+  });
+
   // Register commands centrally
   const commandDefs: CommandDefinition[] = [
     // File Commands
@@ -108,7 +160,7 @@ export function registerAppCommands(): void {
       title: 'New File',
       category: 'File',
       shortcut: 'Ctrl+N',
-      handler: () => createNewTab()
+      handler: () => createBlankTab()
     },
     {
       id: 'file.open',
@@ -152,14 +204,22 @@ export function registerAppCommands(): void {
       }
     },
     {
+      id: 'file.closeAllTabs',
+      title: 'Close All Tabs',
+      category: 'File',
+      handler: async () => {
+        for (const id of tabs.map((t) => t.id)) {
+          await closeTab(id);
+          // A cancelled save keeps its tab open, so the rest stay open too
+          if (tabs.some((t) => t.id === id)) break;
+        }
+      }
+    },
+    {
       id: 'file.exit',
       title: 'Exit Application',
       category: 'File',
-      handler: () => {
-        if (window.engineAPI?.closeWindow) {
-          window.engineAPI.closeWindow();
-        }
-      }
+      handler: exitApplication
     },
 
     // Edit Commands
@@ -338,8 +398,11 @@ export function registerAppCommands(): void {
       title: 'Toggle Language',
       category: 'View',
       handler: () => {
-        const btnLang = document.getElementById('btnLangToggle');
-        if (btnLang) btnLang.click();
+        // The language lives in the settings page now (no header button): flip its select, which applies the language
+        const langSelect = document.getElementById('modalLangSelect') as HTMLSelectElement | null;
+        if (!langSelect) return;
+        langSelect.value = langSelect.value === 'en' ? 'ja' : 'en';
+        langSelect.dispatchEvent(new Event('change'));
       }
     },
     {
@@ -376,15 +439,13 @@ export function registerAppCommands(): void {
       id: 'window.close',
       title: 'Close Window',
       category: 'Window',
-      handler: () => {
-        if (window.engineAPI?.closeWindow) window.engineAPI.closeWindow();
-      }
+      handler: exitApplication
     },
 
     // Help Commands
     {
       id: 'help.aiSetup',
-      title: 'AI Engine Setup',
+      title: 'First-run Setup',
       category: 'Help',
       handler: () => showAiSetupModal()
     },
@@ -403,14 +464,7 @@ export function registerAppCommands(): void {
       id: 'help.docs',
       title: 'Documentation',
       category: 'Help',
-      handler: () => {
-        const url = 'https://github.com/vect-organization/vect-or-edit';
-        if (window.engineAPI?.openExternal) {
-          window.engineAPI.openExternal(url);
-        } else {
-          window.open(url, '_blank');
-        }
-      }
+      handler: () => showHelpPage()
     },
     {
       id: 'help.about',
@@ -483,6 +537,7 @@ export function initMenuBar(): void {
 
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (item.classList.contains(OVERFLOW_ENTRY_CLASS)) return;
       if (item.classList.contains('open')) {
         closeAllMenus();
       } else {
@@ -492,11 +547,16 @@ export function initMenuBar(): void {
 
     // Hover-switch when another menu is already open (VS Code style)
     item.addEventListener('mouseenter', () => {
+      if (item.classList.contains(OVERFLOW_ENTRY_CLASS)) return;
       if (isMenuOpen && activeMenuItem !== item) {
         openMenu(item);
       }
     });
   });
+
+  fitMenuBar(menuBar);
+  new ResizeObserver(() => fitMenuBar(menuBar)).observe(menuBar.parentElement ?? menuBar);
+  document.fonts?.ready.then(() => fitMenuBar(menuBar));
 
   // Close menus when clicking outside
   document.addEventListener('click', (e) => {

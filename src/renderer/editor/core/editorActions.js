@@ -70,9 +70,6 @@ export function registerMonacoSuggestAction(editor, monacoRef) {
   editor.addAction({
     id: 'action-save-as-txt',
     label: i18n.action_save_txt || 'Save as Text File (.txt)',
-    keybindings: [
-      monacoRef.KeyMod.CtrlCmd | monacoRef.KeyCode.KeyS
-    ],
     contextMenuGroupId: 'save_group',
     contextMenuOrder: 3.1,
     run: function (ed) {

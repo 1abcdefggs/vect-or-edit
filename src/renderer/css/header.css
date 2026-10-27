@@ -46,6 +46,10 @@
   flex: 1 1 auto;
   min-width: 0;
   height: 100%;
+  /* Menus that do not fit are cut off here instead of being drawn over the controls on the right.
+     Only the sideways overflow is clipped, so the drop-down menus still open downwards. */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .app-header__window-controls {
@@ -58,9 +62,10 @@
 }
 
 .app-header__title {
-  font-size: var(--fs-13);
+  font-family: var(--font-brand);
+  font-size: var(--fs-14);
   font-weight: 600;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.6px;
   color: var(--header-fg, var(--text-main));
   white-space: nowrap;
 }
@@ -103,92 +108,21 @@
 .instant-tooltip {
   position: fixed;
   display: none;
-  background: var(--bg-card, rgba(0, 0, 0, 0.95));
-  color: var(--text-main, #f8fafc);
-  padding: 8px 12px;
+  background: var(--tooltip-bg, #f1f5f9);
+  color: var(--tooltip-fg, #0f172a);
+  padding: 10px 14px;
   border-radius: 6px;
-  font-size: var(--fs-12);
-  line-height: 1.4;
+  font-size: var(--fs-16);
+  line-height: 1.5;
   white-space: pre-wrap;
-  z-index: 99999;
+  z-index: 100020; /* above the first-run setup overlay (100000) */
   pointer-events: none;
-  border: 1px solid var(--accent-color, rgba(56, 189, 248, 0.4));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   min-width: 200px;
-  max-width: min(420px, calc(100vw - 16px));
+  /* --wrap-width: 75 half-width characters per line (ADR-11); the text wraps and stays left-aligned */
+  max-width: min(var(--wrap-width, 75ch), calc(100vw - 16px));
   text-align: left;
-}
-
-/* Master AI Toggle Pill (Compact Modern) */
-.master-ai-pill {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  width: 50px;
-  height: 20px;
-  cursor: pointer;
-  border: var(--border-width) solid var(--border-color, rgba(148, 163, 184, 0.25));
-  overflow: hidden;
-  user-select: none;
-  margin: 0;
-  padding: 0;
-}
-
-.master-ai-pill .pill-slider {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 23px;
-  height: 16px;
-  background: #64748b;
-  border-radius: 8px;
-  transition: transform 0.25s cubic-bezier(0.4, 0.0, 0.2, 1), background-color 0.25s ease;
-  z-index: 1;
-}
-
-.master-ai-pill.active .pill-slider {
-  transform: translateX(24px);
-  background: var(--success-color, #10b981);
-}
-
-.master-ai-pill .pill-label {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  text-align: center;
-  font-size: var(--fs-9);
-  font-weight: 700;
-  color: var(--text-muted);
-  transition: color 0.3s ease;
-}
-
-.master-ai-pill.active .pill-on {
-  color: #fff;
-}
-
-.master-ai-pill:not(.active) .pill-off {
-  color: #fff;
-}
-
-.master-ai-pill.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.master-ai-pill.disabled .pill-slider {
-  background: #64748b;
-}
-
-.master-ai-divider,
-.editor-ai-divider {
-  width: 1px;
-  height: 16px;
-  flex: 0 0 1px;
-  margin: 0 4px;
-  background: var(--border-color, rgba(148, 163, 184, 0.4));
-  opacity: 0.9;
 }
 
 /* ==========================================================================
@@ -198,11 +132,13 @@
   display: flex;
   align-items: center;
   gap: 2px;
+  flex-wrap: nowrap;
   -webkit-app-region: no-drag !important;
   user-select: none;
 }
 
 .menu-bar-item {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   position: relative;
@@ -212,18 +148,30 @@
 
 .menu-bar-btn {
   background: transparent;
-  border: none;
+  border: var(--border-width) solid transparent;
   color: var(--header-fg, var(--text-main));
   font-size: var(--fs-12);
   font-family: inherit;
   font-weight: 500;
-  padding: 4px 8px;
+  /* padding and line-height come from class btn-phi (buttons.css) */
   border-radius: 4px;
   cursor: pointer;
-  line-height: 1.2;
+  white-space: nowrap;
   transition: background-color 0.15s ease, color 0.15s ease;
   -webkit-app-region: no-drag !important;
   outline: none;
+}
+
+/* The look stays at the font-size rule; the clickable area grows to --hit-min (24px) with a transparent strip above and below. */
+.menu-bar-btn { position: relative; }
+.menu-bar-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: max(100%, var(--hit-min));
+  transform: translateY(-50%);
 }
 
 .menu-bar-btn:hover,
@@ -235,6 +183,55 @@
 .menu-bar-item.active .menu-bar-btn {
   background-color: var(--accent-color, #38bdf8);
   color: #ffffff;
+}
+
+/* Overflow menu: menus that do not fit are listed here, one group per menu (menuBarController.ts fitMenuBar) */
+.menu-bar-item[data-menu="overflow"]:not(.menu-overflow-needed) {
+  display: none;
+}
+
+#menuDropdownOverflow {
+  left: auto;
+  right: 0;
+  min-width: 220px;
+  padding: 4px 0;
+}
+
+#menuDropdownOverflow .menu-overflow-entry.menu-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#menuDropdownOverflow .menu-overflow-entry > .menu-bar-btn {
+  padding: 6px 12px 2px;
+  color: var(--text-muted, #94a3b8);
+  background: none;
+  pointer-events: none;
+}
+
+#menuDropdownOverflow .menu-overflow-entry > .menu-dropdown {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  animation: none;
+}
+
+/* The open overflow item is .active, so .menu-bar-item.active .menu-bar-btn would paint this row blue; reset it here */
+#menuDropdownOverflow .menu-overflow-entry.menu-bar-btn {
+  display: flex;
+  width: 100%;
+  padding: 6px 12px;
+  text-align: left;
+  background-color: transparent;
+  color: var(--text-main, #f8fafc);
 }
 
 /* Dropdown Container */
@@ -273,30 +270,13 @@
 }
 
 /* Dropdown Items */
+/* Shared item and separator base: dropdown-menu.css. Here only what the menu bar adds */
 .menu-dropdown-item {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
-  color: var(--text-main, #f1f5f9);
-  font-size: var(--fs-12);
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  outline: none;
   transition: background-color 0.12s ease, color 0.12s ease;
   white-space: nowrap;
   gap: 16px;
   -webkit-app-region: no-drag !important;
-}
-
-.menu-dropdown-item:hover,
-.menu-dropdown-item:focus {
-  background-color: var(--hover-bg, rgba(56, 189, 248, 0.15));
-  color: var(--accent-color, #38bdf8);
 }
 
 .menu-item-label {
@@ -319,9 +299,6 @@
 
 /* Dividers */
 .menu-divider {
-  height: 1px;
-  background-color: var(--border-color, rgba(148, 163, 184, 0.15));
-  margin: 4px 0;
   pointer-events: none;
 }
 
@@ -406,42 +383,6 @@
   opacity: 0.8;
 }
 
-/* Header Zoom Badge (Mouse Wheel Scrollable, Click Reset) */
-.header-zoom-group {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 6px;
-  height: 24px;
-  border-radius: var(--radius-sm, 4px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  cursor: ns-resize; /* Indicates scroll wheel vertical adjustment */
-  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-  user-select: none;
-}
-
-.header-zoom-group:hover {
-  background: rgba(56, 189, 248, 0.08);
-  border-color: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 0 6px rgba(56, 189, 248, 0.15);
-}
-
-.header-zoom-btn {
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
-  user-select: none;
-  cursor: pointer;
-}
-
-.header-zoom-btn:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: var(--accent-color, #38bdf8) !important;
-}
-
-.header-zoom-btn:active {
-  transform: scale(0.92);
-}
-
 
 #theme-select,
 .theme-select,
@@ -462,4 +403,10 @@ select option {
 :root.light-theme select option {
   background-color: #ffffff;
   color: #0f172a;
+}
+
+/* First-run setup: the header shows only its brand until setup is finished (menus and toolbar come after it) */
+:root.setup-active .app-header__menu,
+:root.setup-active .app-header__toolbar {
+  display: none;
 }

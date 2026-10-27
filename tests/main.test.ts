@@ -34,9 +34,14 @@ describe('VectOrEdit (vect-or-edit) Core Validation Tests', () => {
   it('should strictly define UI guideline tokens in style.css', () => {
     const stylePath = path.resolve(__dirname, '../src/renderer/style.css');
     const variablesPath = path.resolve(__dirname, '../src/renderer/css/variables.css');
+    const tokensPath = path.resolve(__dirname, '../src/renderer/css/design-tokens.css');
     expect(fs.existsSync(stylePath)).toBe(true);
 
-    const cssContent = fs.readFileSync(stylePath, 'utf8') + '\n' + (fs.existsSync(variablesPath) ? fs.readFileSync(variablesPath, 'utf8') : '');
+    // The radius values live in design-tokens.css (the one place); the other files are still read
+    const cssContent = [stylePath, variablesPath, tokensPath]
+      .filter((p) => fs.existsSync(p))
+      .map((p) => fs.readFileSync(p, 'utf8'))
+      .join('\n');
 
     // Verify adherence to vect-or-ui-guidelines
     expect(cssContent).toContain('--radius-md: 8px');
