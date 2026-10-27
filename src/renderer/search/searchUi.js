@@ -269,7 +269,11 @@ export function renderResults(results, isPreliminary = false) {
     </div>`;
   }
 
-  resultsList.innerHTML = html;
+  // With EMBED off the results are text matches only; say so, so the scores are not read as meaning
+  const embedOffNote = aiManager.getState().embed
+    ? ''
+    : `<div class="embed-off-note" style="color: var(--text-muted); font-size: var(--fs-11); line-height: 1.5; padding: 2px 6px 6px;">${escapeHtml(t('embed_text_match_note'))}</div>`;
+  resultsList.innerHTML = embedOffNote + html;
 
   const btnCopyAll = document.getElementById('btnCopyAllResults');
   if (btnCopyAll) {

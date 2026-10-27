@@ -167,6 +167,41 @@ if (!gotTheLock) {
 
 
     // --- Multi-Slot Knowledge & Goal Profile IPC Handlers ---
+    // Header only (domain, version, dimension, ...): the entries are never sent to the sidebar.
+    // An encrypted (.venc) slot shows its header only while its password is held in memory.
+    handleTrusted('engine:getSlotInfo', async (_event, slotId: string) => {
+      const slot = knowledgeSlots.find((s) => s.id === slotId);
+      if (!slot) return { success: false, error: 'Slot not found' };
+      const isVenc = slot.filePath.endsWith('.venc');
+      if (isVenc && !slot.vencPassword) {
+        return { success: true, encrypted: true, itemCount: slot.itemCount };
+      }
+      try {
+        const raw = await fsPromises.readFile(slot.filePath);
+        const vault = getVault();
+        const payload = isVenc && vault
+          ? await vault.decryptKnowledgeBase(raw, slot.vencPassword as string)
+          : JSON.parse(raw.toString('utf-8'));
+        const pick = (key: string) => (payload && payload[key] !== undefined ? payload[key] : null);
+        return {
+          success: true,
+          encrypted: isVenc,
+          itemCount: slot.itemCount,
+          header: {
+            domain: pick('domain'),
+            version: pick('version'),
+            dimension: pick('dimension'),
+            metric: pick('metric'),
+            fidelity_score: pick('fidelity_score'),
+            is_sanitized: pick('is_sanitized'),
+            schemaVersion: pick('schemaVersion'),
+          },
+        };
+      } catch (err: any) {
+        return { success: false, error: err?.message || 'Could not read the file' };
+      }
+    });
+
     handleTrusted('engine:getSemanticState', () => {
       return {
         activeGoal: getActiveProfile(),

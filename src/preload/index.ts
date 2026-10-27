@@ -69,6 +69,7 @@ const engineAPI: EngineAPI = {
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window:toggleMaximize'),
   closeWindow: () => ipcRenderer.invoke('window:close'),
+  getSlotInfo: (slotId: string) => ipcRenderer.invoke('engine:getSlotInfo', slotId),
   isWindowMaximized: () => ipcRenderer.invoke('window:isMaximized'),
   setZoomFactor: (factor: number) => webFrame.setZoomFactor(factor),
   getZoomFactor: () => webFrame.getZoomFactor(),

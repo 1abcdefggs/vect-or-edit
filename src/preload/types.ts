@@ -158,6 +158,13 @@ export interface EngineAPI {
   minimizeWindow: () => Promise<boolean>;
   maximizeWindow: () => Promise<boolean>;
   closeWindow: () => Promise<boolean>;
+  getSlotInfo: (slotId: string) => Promise<{
+    success: boolean;
+    encrypted?: boolean;
+    itemCount?: number;
+    header?: Record<string, unknown>;
+    error?: string;
+  }>;
   isWindowMaximized: () => Promise<boolean>;
   setZoomFactor: (factor: number) => void;
   getZoomFactor: () => number;
