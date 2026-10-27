@@ -79,8 +79,8 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
 
 function updateEyeButtonState(btn: HTMLButtonElement, isVisible: boolean): void {
   btn.innerHTML = isVisible
-    ? '<span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-text, #38bdf8);">visibility</span>'
-    : '<span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--text-muted); opacity: 0.5;">visibility_off</span>';
+    ? '<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-text, #38bdf8);">visibility</span>'
+    : '<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--text-muted); opacity: 0.5;">visibility_off</span>';
   btn.style.cssText = `background: transparent; border: 1px solid ${isVisible ? 'rgba(56, 189, 248, 0.3)' : 'var(--border-color)'}; border-radius: 4px; padding: 2px 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;`;
 }
 

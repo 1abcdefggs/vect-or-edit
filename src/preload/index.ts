@@ -30,6 +30,14 @@ const engineAPI: EngineAPI = {
       ipcRenderer.removeListener('engine:status', handler);
     };
   },
+  // The main process asks before the window closes (the × button); the renderer answers with closeWindow
+  onCloseRequested: (callback: () => void) => {
+    const handler = () => callback();
+    ipcRenderer.on('app:closeRequested', handler);
+    return () => {
+      ipcRenderer.removeListener('app:closeRequested', handler);
+    };
+  },
   onSystemLog: (callback: (log: SystemLogEntry) => void) => {
     const handler = (_event: any, log: SystemLogEntry) => callback(log);
     ipcRenderer.on('app:systemLog', handler);

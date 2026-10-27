@@ -130,6 +130,7 @@ export interface EngineAPI {
   getEngineStatus: () => Promise<EngineStatus>;
   onEngineStatus: (callback: (status: EngineStatus) => void) => () => void;
   onSystemLog: (callback: (log: SystemLogEntry) => void) => () => void;
+  onCloseRequested: (callback: () => void) => () => void;
   /** Everything the main process has logged so far; call after onSystemLog is registered. */
   requestLogBacklog: () => Promise<SystemLogEntry[]>;
   claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;

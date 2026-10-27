@@ -401,7 +401,7 @@ function initLlmChatDock() {
     btnClear.addEventListener('click', () => {
       chatMessages.innerHTML = `
         <div class="llm-msg llm-msg-system">
-          <span class="material-symbols-outlined" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8);">&#xe88e;</span>
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">&#xe88e;</span>
           <span>Conversation cleared. Type a prompt, question, or select text in Monaco Editor and right-click "LLM Chat" to converse or rewrite here.</span>
         </div>
       `;

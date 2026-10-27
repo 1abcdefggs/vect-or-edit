@@ -1,6 +1,6 @@
 /**
- * Shared markup of the settings page: card headings and the text of a row (label and description).
- * settingsModal.html keeps one placeholder per heading or row text; renderStaticSettingsText fills them at startup.
+ * Shared markup of the settings page: card headings, the frame of a row and the text of a row (label and description).
+ * settingsModal.html keeps one placeholder per heading or row; renderStaticSettingsText fills them at startup.
  * The string builders are pure (no DOM), so they can be checked without a window.
  */
 
@@ -28,8 +28,21 @@ export function settingTextAttributes({ labelKey, labelText, descKey, descText }
     + ` data-desc-key="${escapeAttr(descKey)}" data-desc-text="${escapeAttr(descText)}"`;
 }
 
+/** The classes of a row frame. variant "stack" puts the control under the heading. */
+export function settingRowClasses(variant) {
+  return variant === 'stack' ? ['setting-item', 'setting-item--stack'] : ['setting-item'];
+}
+
+/** Gives every row placeholder its frame classes. Existing classes (e.g. settings-subpanel) stay. */
+export function renderSettingRows(root = document) {
+  root.querySelectorAll('[data-setting-row]').forEach((el) => {
+    el.classList.add(...settingRowClasses(el.dataset.settingRow));
+  });
+}
+
 /** Fills every placeholder under root. Runs at startup, after the locale is loaded. */
 export function renderStaticSettingsText(root = document) {
+  renderSettingRows(root);
   root.querySelectorAll('[data-card-heading]').forEach((el) => {
     el.innerHTML = cardHeadingMarkup({ icon: el.dataset.icon, key: el.dataset.key, text: el.dataset.text });
   });

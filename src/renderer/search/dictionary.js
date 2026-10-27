@@ -84,6 +84,23 @@ export async function updateSemanticStateDisplay() {
       if (btnInsertTemplate) btnInsertTemplate.style.display = 'none';
     }
 
+    // Guideline card: say what it is for while no guideline is loaded, so it is not an empty box
+    const guidelineCard = document.getElementById('guidelineModuleCard');
+    if (guidelineCard) {
+      guidelineCard.querySelector('.guideline-empty-hint')?.remove();
+      if (!state?.activeGoal) {
+        const hint = document.createElement('ul');
+        hint.className = 'guideline-empty-hint';
+        hint.style.cssText = 'margin: 0; padding: 4px 10px 8px 26px; font-size: var(--fs-11); line-height: 1.6; color: var(--text-muted);';
+        ['guideline_hint_1', 'guideline_hint_2', 'guideline_hint_3'].forEach((key) => {
+          const item = document.createElement('li');
+          item.textContent = t(key);
+          hint.appendChild(item);
+        });
+        guidelineCard.appendChild(hint);
+      }
+    }
+
     // Toggle Clear All Slots button & Search Filters Container
     const btnClearAllSlots = document.getElementById('btnClearAllSlots');
     const searchFiltersContainer = document.getElementById('searchFiltersContainer');
@@ -166,10 +183,14 @@ export async function updateSemanticStateDisplay() {
         });
       } else {
         // No slot loaded: the section says what it is for, so it is not an empty box
-        const hint = document.createElement('div');
+        const hint = document.createElement('ul');
         hint.className = 'knowledge-empty-hint';
-        hint.style.cssText = 'font-size: var(--fs-11); line-height: 1.5; color: var(--text-muted); padding: 4px 6px;';
-        hint.textContent = t('knowledge_empty_hint');
+        hint.style.cssText = 'margin: 0; padding: 4px 6px 4px 20px; font-size: var(--fs-11); line-height: 1.6; color: var(--text-muted);';
+        ['knowledge_hint_1', 'knowledge_hint_2', 'knowledge_hint_3'].forEach((key) => {
+          const item = document.createElement('li');
+          item.textContent = t(key);
+          hint.appendChild(item);
+        });
         slotsListEl.appendChild(hint);
       }
     }

@@ -2,19 +2,19 @@
   
   <div class="bottom-bar-left" style="display: flex; align-items: center; gap: 8px;">
     <button id="btnToggleConsole" class="toolbar-btn semantic-btn-add bottom-bar-chip" data-i18n-title="tip_console_toggle" data-ui="sys:log-console" style="height: 20px; padding: 0 6px; display: flex; align-items: center; gap: 4px;">
-      <span class="material-symbols-outlined" style="font-size: var(--fs-18); flex-shrink: 0;">&#xeb8e;</span>
+      <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); flex-shrink: 0;">&#xeb8e;</span>
       <span class="bottom-bar-text" data-i18n="btn_console">LOGS</span>
       <span id="logCountBadge" style="background: rgba(255,255,255,0.15); padding: 0 4px; border-radius: 4px; font-size: var(--fs-10); height: 14px; line-height: 14px; display: flex; align-items: center;">0</span>
-      <span data-disclosure-icon class="material-symbols-outlined actionable-icon" style="font-size: var(--fs-16); flex-shrink: 0;">&#xe5cf;</span>
+      <span data-disclosure-icon class="material-symbols-outlined actionable-icon" style="font-size: var(--icon-text-size); flex-shrink: 0;">&#xe5cf;</span>
     </button>
     <!-- System information sits with the LOGS button on the left; the right side keeps settings and notices -->
     <span class="status-bar-item" data-ui="sys:status-meta" style="color: var(--text-main); display: flex; align-items: center; gap: 4px;">
-      <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--text-muted); flex-shrink: 0;">&#xe322;</span>
+      <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--text-muted); flex-shrink: 0;">&#xe322;</span>
       <span id="statusMemoryUsage" class="bottom-bar-text" data-i18n="label_ram">RAM: ~45 MB</span>
     </span>
     <!-- Looks like a button, and its LED shows the worst state of the pipeline while the strip is closed (statusManager.ts) -->
     <button id="btnPipelineToggle" class="toolbar-btn bottom-bar-chip" style="display: none; height: 20px; padding: 0 8px; align-items: center; gap: 6px; border-radius: 4px;" data-i18n-title="tip_pipeline_show">
-      <span class="material-symbols-outlined actionable-icon" style="font-size: var(--fs-16);">monitor_heart</span>
+      <span class="material-symbols-outlined actionable-icon" style="font-size: var(--icon-text-size);">monitor_heart</span>
       <span class="bottom-bar-text" data-i18n="btn_pipeline">PIPELINE</span>
       <span id="pipelineToggleLed" class="status-led-dot status-loading" aria-hidden="true"></span>
     </button>
@@ -71,7 +71,7 @@
       <span class="material-symbols-outlined">settings</span>
     </button>
     <div id="updateLedContainer" data-ui="sys:update-status" style="display: none; align-items: center; gap: 4px; color: var(--text-main); cursor: pointer; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2);">
-      <span id="updateLedIcon" class="material-symbols-outlined" style="font-size: var(--fs-15); line-height: 1;">&#xe86a;</span>
+      <span id="updateLedIcon" class="material-symbols-outlined" style="font-size: var(--icon-text-size); line-height: 1;">&#xe86a;</span>
       <span id="updateLedText" class="bottom-bar-text" data-i18n="update_check_label" style="font-size: var(--fs-10);">Check Updates</span>
     </div>
 

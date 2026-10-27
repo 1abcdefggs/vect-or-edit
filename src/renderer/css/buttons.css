@@ -48,16 +48,43 @@
   font-size: var(--icon-size);
 }
 
-/* Editor style group: the font name gives way as the top bar narrows. The width comes from the
-   --font-name-width property set in ui/layout/editorStyleGroupFit.ts. !important: the viewport-width
-   rules further down (#fontFamilySelect, min-width 90px) would otherwise win. */
+/* Icon-only buttons without an outline; only their hover tint shows that they are buttons:
+   the sidebar collapse button in the header, and the duplicate and new tab buttons beside the tabs */
+#btnHeaderToggleSidebar,
+#btnDuplicateTabInline,
+#btnNewTabInline {
+  border: none;
+  background: transparent;
+}
+
+/* Editor style group: the font name takes the width that the other parts of the bar leave free.
+   The browser measures that space at each resize, so no bar width is typed in. It stays within 70px to 115px. */
 .font-control-integrated-group #fontFamilySelect {
-  min-width: 0 !important;
-  max-width: var(--font-name-width, 115px) !important;
+  flex: 1 1 auto !important;
+  min-width: 70px !important;
+  max-width: 115px !important;
 }
 
 .toolbar-btn:active {
   background: var(--active-bg);
+}
+
+/* The one-click fix under an empty search list (e.g. "Open Settings") */
+.empty-state__action {
+  display: block;
+  margin: 8px auto 0;
+  padding: 4px 12px;
+  border: var(--border-width) solid var(--accent-color);
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--accent-color);
+  font: inherit;
+  font-size: var(--fs-12);
+  cursor: pointer;
+}
+
+.empty-state__action:hover {
+  background: var(--hover-bg);
 }
 
 /* Dynamic Drag-to-Resize Splitter Bar */
@@ -384,12 +411,6 @@ button.btn-phi {
   gap: 6px !important;
 }
 
-#fontFamilySelect {
-  flex-shrink: 1 !important;
-  min-width: 90px !important;
-  max-width: 140px !important;
-}
-
 #quickEditorToneSelect {
   flex-shrink: 2 !important;
   min-width: 60px !important;
@@ -398,9 +419,6 @@ button.btn-phi {
 
 /* Medium viewport width: Compact labels */
 @media (max-width: 1050px) {
-  #fontFamilySelect {
-    max-width: 110px !important;
-  }
   #quickEditorToneSelect {
     max-width: 80px !important;
   }
@@ -412,9 +430,6 @@ button.btn-phi {
 
 /* Narrow viewport width: Minimalist badge mode */
 @media (max-width: 880px) {
-  #fontFamilySelect {
-    max-width: 95px !important;
-  }
   #fontSizeSelect {
     max-width: 65px !important;
   }
@@ -549,7 +564,7 @@ button.btn-phi {
   min-width: 0;
 }
 
-/* The size value (16px) keeps a readable width before the labels give way; the font name width stays with editorStyleGroupFit.ts */
+/* The size value (16px) keeps a readable width before the labels give way; the font name takes the free width (see the group rule above) */
 .editor-toolbar select.editor-toolbar-select#fontSizeSelect {
   flex: 0 0 auto;
   min-width: 4.5em;

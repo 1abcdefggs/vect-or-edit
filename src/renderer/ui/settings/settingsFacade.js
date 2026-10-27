@@ -946,7 +946,7 @@ export function initSettings(updateEditorCb) {
       });
       if (!confirmed) return;
       const result = await window.engineAPI.clearCache();
-      window.alert(result.success ? 'Application cache cleared.' : (result.error || 'Unable to clear cache.'));
+      window.alert(result.success ? t('maint_cache_done') : (result.error || t('maint_cache_failed')));
     });
   }
 

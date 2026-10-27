@@ -10,7 +10,6 @@ import { setLedStatus, initAllLedTooltips } from './core/statusManager';
 import { initVectorSearch } from './search/vectorSearch.js';
 import { initUpdateChecker } from './ui/updateChecker.js';
 import { initSidebarResizer } from './ui/layout/sidebarResizer.js';
-import { initEditorStyleGroupFit } from './ui/layout/editorStyleGroupFit.js';
 import { migrateLlmProvider } from './core/llmProviderMigration.js';
 import { initPanelResizers } from './ui/layout/panelResizer.js';
 import { initEditorOptionsMode } from './ui/layout/editorOptionsMode.js';
@@ -96,7 +95,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderMenuDropdowns();
   initMenuBar();
   initSidebarResizer();
-  initEditorStyleGroupFit();
   initPanelResizers();
   initEditorOptionsMode();
   initLampNavigation();

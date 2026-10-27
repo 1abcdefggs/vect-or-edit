@@ -143,6 +143,15 @@ export function registerAppCommands(): void {
     window.engineAPI?.closeWindow?.();
   };
 
+  // The × button of the window: the main process holds the close until the user confirms here.
+  // A second × press while the question is open does not ask again.
+  let closeQuestionOpen = false;
+  window.engineAPI?.onCloseRequested?.(() => {
+    if (closeQuestionOpen) return;
+    closeQuestionOpen = true;
+    void exitApplication().finally(() => { closeQuestionOpen = false; });
+  });
+
   // Register commands centrally
   const commandDefs: CommandDefinition[] = [
     // File Commands

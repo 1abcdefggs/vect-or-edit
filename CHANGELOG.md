@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.54] - 2026-10-27
+
+### Added
+
+- Closing the window with the × button asks first, the same confirmation as File > Exit.
+- Empty search results say why: the dictionary-search model is off or not ready (with an Open Settings button), or nothing matched.
+- The guideline and knowledge cards explain what they are for, as a short list, while nothing is loaded.
+
+### Changed
+
+- The toolbar font name fills the free width (70 to 115 px) instead of a fixed number.
+- Icon-only buttons share one box (28 px) and one icon size (24 px). Icons beside text share one size (18 px).
+- The "Save As" button label is in English (SAVE AS). The "pending save" text beside it is removed; the LED and the tooltip show the state.
+- The search wait shows a spinner instead of the word "Computing".
+- The welcome text of a new document is revised.
+
+### Removed
+
+- Outlines around the sidebar collapse button and the duplicate and new tab buttons.
+
 ## [0.3.53] - 2026-10-26
 
 ### Added
