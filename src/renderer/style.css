@@ -11,7 +11,12 @@
 @import './css/popups.css';
 @import './css/toasts.css';
 @import './css/modals.css';
+@import './css/settings-ui.css';
+@import './css/monaco-options.css';
 @import './css/buttons.css';
 @import './css/controls.css';
+@import './css/embedding-picker.css';
 @import './css/ticker.css';
 @import './css/utilities.css';
+@import './css/module-cards.css';
+@import './css/dropdown-menu.css';

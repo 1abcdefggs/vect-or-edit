@@ -1,6 +1,7 @@
 import electronUpdater from 'electron-updater';
 const { autoUpdater } = electronUpdater;
-import { ipcMain, BrowserWindow } from 'electron';
+import { BrowserWindow } from 'electron';
+import { handleTrusted } from './ipcSecurity';
 
 // Fake update events for UI testing. Enabled only when explicitly requested.
 const SIMULATE_UPDATER = process.env.VECTOR_UPDATER_SIMULATE === '1';
@@ -43,11 +44,11 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
     mainWindow.webContents.send('updater:status', { status: 'downloaded', version: info.version });
   });
 
-  ipcMain.handle('updater:check', () => {
+  handleTrusted('updater:check', () => {
     autoUpdater.checkForUpdates();
   });
 
-  ipcMain.handle('updater:download', async () => {
+  handleTrusted('updater:download', async () => {
     if (IS_PORTABLE && !SIMULATE_UPDATER) {
       throw new Error('Portable build cannot self-update. Download the new version from the release page.');
     }
@@ -61,7 +62,7 @@ export function setupAutoUpdater(mainWindow: BrowserWindow) {
     return await autoUpdater.downloadUpdate();
   });
 
-  ipcMain.handle('updater:quitAndInstall', () => {
+  handleTrusted('updater:quitAndInstall', () => {
     autoUpdater.quitAndInstall();
   });
 

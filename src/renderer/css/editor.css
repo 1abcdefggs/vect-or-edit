@@ -14,13 +14,6 @@
   border-color: var(--accent-color, #66f);
 }
 
-/* Monaco Editor text: the global `* { font-family }` reset would override the font family that
-   Monaco sets on .view-lines, so the selected Font Family never reached the glyphs. Inherit it. */
-.monaco-editor .view-line,
-.monaco-editor .view-line span {
-  font-family: inherit;
-}
-
 /* Monaco Editor: Keep current line subtle without overflowing onto scrollbar */
 .monaco-editor .view-overlays .current-line {
   border-top: 0 !important;
@@ -90,21 +83,23 @@
   --editor-fg: var(--text-main);
 }
 
+/* The one definition of the header button. Values are the ones that won the cascade before (buttons.css used to override the rest). */
 .editor-header-btn {
-  background: var(--bg-card, rgba(255, 255, 255, 0.05));
+  background: transparent;
   border: var(--border-width) solid var(--border-color);
   color: var(--text-main);
   width: auto;
   min-width: 28px;
   height: 28px;
-  padding: 0 8px;
-  border-radius: var(--radius-md, 6px);
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
 }
 
 .editor-header-btn svg {
@@ -115,7 +110,7 @@
 }
 
 .editor-header-btn:hover {
-  background: var(--hover-bg, rgba(56, 189, 248, 0.15));
+  background: var(--hover-bg);
   border-color: var(--accent-color, #66f);
   color: var(--accent-color, #66f);
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
@@ -183,12 +178,6 @@
   padding-right: 10px !important;
 }
 
-.editor-header-btn:hover {
-  background: var(--hover-bg);
-  border-color: var(--accent-color, #66f);
-  color: var(--accent-color, #66f);
-}
-
 .editor-header-btn svg {
   margin: 0 !important;
   display: block;
@@ -203,7 +192,26 @@
   position: relative;
 }
 
-/* Fixed so the toolbar row (overflow: hidden) cannot clip it; top/left are set when it opens. */
+/* Both parts of the split button sit inside the group frame: no frame or glow of their own (the group frame shows the hover),
+   the hover only tints the background. Without this the arrow button drew a second border inside the group. */
+.save-dropdown-container > #btnSave,
+.save-dropdown-container > #btnSaveMenu {
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: none;
+  transform: none;
+}
+
+.save-dropdown-container > #btnSave:hover,
+.save-dropdown-container > #btnSaveMenu:hover {
+  background: var(--hover-bg);
+  border: none;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Fixed, and moved to <body> on start (appActionEvents.js), so no toolbar can clip or offset it; top/left are set when it opens. */
 .save-dropdown-menu {
   display: none;
   position: fixed;
@@ -217,59 +225,76 @@
   padding: 4px 0;
 }
 
-.save-dropdown-container.is-open .save-dropdown-menu {
+/* The open state is the same class as the menu bar's (.open), set on the menu itself */
+.save-dropdown-menu.open {
   display: flex;
 }
 
-/* Split part of the save button (opens the menu; the main part saves) */
-.save-menu-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 22px;
-  height: calc(var(--control-h-lg) - 2px);
-  padding: 0;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.save-menu-toggle:hover,
-.save-dropdown-container.is-open .save-menu-toggle {
-  background: var(--hover-bg);
-  color: var(--text-main);
-}
-
-.save-menu-toggle .material-symbols-outlined {
-  font-size: var(--fs-19);
-  line-height: 1;
-}
-
+/* Shared item base: dropdown-menu.css. Here only the gap of the Save menu */
 .save-dropdown-item {
-  display: flex;
-  align-items: center;
   gap: 8px;
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
-  color: var(--text-main);
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  font-size: var(--fs-12);
-}
-
-.save-dropdown-item:hover {
-  background: var(--hover-bg);
 }
 
 .save-dropdown-item.disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  pointer-events: none;
+}
+
+/* Monaco vector suggestion widget (searchWidget.js); hover lives here because the CSP allows no inline handlers */
+.vector-widget-item:hover {
+  background: var(--hover-bg);
+}
+
+#btnWidgetLoadMore {
+  background: var(--hover-bg);
+}
+
+#btnWidgetLoadMore:hover {
+  background: var(--active-bg);
+}
+
+
+/* AutoSave menu item: a small switch at the right edge shows the state (drawn from aria-checked, set in autoSaveManager.js).
+   The selectors are nested under the item so they win over the shared .toggle-switch size. */
+.save-dropdown-item.autosave-menu-item {
+  justify-content: space-between;
+}
+
+.save-dropdown-item .autosave-menu-switch {
+  display: inline-block;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+}
+
+.save-dropdown-item .autosave-menu-switch .toggle-switch__knob {
+  top: 2px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+}
+
+.save-dropdown-item .autosave-menu-switch[aria-checked="true"] .toggle-switch__knob {
+  left: 15px;
+}
+
+/* AutoSave LED on the save button (state set by autoSaveManager.js) */
+.status-led-dot.autosave-led.is-on {
+  background: var(--success-color);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--success-color) 70%, transparent);
+}
+
+.status-led-dot.autosave-led.is-pending {
+  background: var(--warn-color, #f59e0b);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--warn-color, #f59e0b) 60%, transparent);
+}
+
+.status-led-dot.autosave-led.is-off {
+  background: var(--text-muted);
+  box-shadow: none;
+  opacity: 0.6;
 }
 
 /* ==========================================================================
@@ -281,9 +306,9 @@
   background: var(--bg-card, #0f172a);
   border-top: var(--border-width) solid var(--border-color);
   border-bottom: var(--border-width) solid var(--border-color);
-  height: 220px;
+  height: var(--llm-dock-height, 220px);
   min-height: 140px;
-  max-height: 380px;
+  max-height: 70vh;
   overflow: hidden;
   position: relative;
   z-index: 10;
@@ -323,9 +348,10 @@
 }
 
 .llm-model-badge {
-  font-size: var(--fs-10);
+  /* About the size of the heading text next to it (style_rules.csv model-badge) */
+  font-size: var(--fs-13);
   font-family: var(--font-mono, monospace);
-  padding: 1px 6px;
+  padding: 1px 8px;
   background: rgba(56, 189, 248, 0.15);
   color: var(--accent-color, #38bdf8);
   border: 1px solid rgba(56, 189, 248, 0.3);
@@ -510,7 +536,9 @@
   font-size: var(--fs-12);
   font-weight: 700;
   background: var(--accent-color, #38bdf8);
-  color: #0f172a;
+  /* 4.5:1 or more on the accent, in dark and light (style_rules.csv primary-button-text) */
+  color: var(--text-on-accent, #ffffff);
+  font-family: inherit;
   border: none;
   border-radius: 6px;
   cursor: pointer;

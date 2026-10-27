@@ -32,10 +32,18 @@ function loadRenderer() {
   return rendererPromise;
 }
 
-async function renderPreview(preview) {
+/**
+ * Renders Markdown text into an element with the same renderer and the same sanitizing as the preview.
+ * The first-run format sample uses it too, so the sample shows exactly what the preview will show.
+ */
+export async function renderMarkdownInto(target, markdown) {
   const { marked, purify } = await loadRenderer();
-  const rawHtml = marked.parse(getCurrentContent() || '', { gfm: true, async: false });
-  preview.innerHTML = purify.sanitize(rawHtml, SANITIZE_CONFIG);
+  const rawHtml = marked.parse(markdown || '', { gfm: true, async: false });
+  target.innerHTML = purify.sanitize(rawHtml, SANITIZE_CONFIG);
+}
+
+async function renderPreview(preview) {
+  await renderMarkdownInto(preview, getCurrentContent() || '');
 }
 
 function updateButtonLabel() {
@@ -69,6 +77,22 @@ export async function toggleMarkdownPreview() {
   updateButtonLabel();
 
   if (!isPreviewVisible) focusEditor();
+}
+
+/**
+ * Shows or hides the Preview button: only a Markdown document has a rendered view.
+ * When the active document becomes Text while the preview is open, the preview closes and the editor comes back.
+ */
+export function setPreviewAvailable(available) {
+  const button = document.getElementById('btnMarkdownPreview');
+  if (!button) return;
+  // It stays in the layout (invisible), so the format button beside it does not shift when the format changes
+  button.classList.toggle('is-unavailable', !available);
+  button.tabIndex = available ? 0 : -1;
+  button.setAttribute('aria-hidden', String(!available));
+  const separator = document.querySelector('[data-preview-separator]');
+  if (separator) separator.classList.toggle('is-unavailable', !available);
+  if (!available && isPreviewVisible) toggleMarkdownPreview();
 }
 
 export function initMarkdownPreview() {

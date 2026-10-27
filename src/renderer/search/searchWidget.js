@@ -1,6 +1,6 @@
 import { icons } from '../core/icons.js';
 import { i18n, t } from '../core/i18n.js';
-import { resolveItemCode, resolveItemTitle } from './searchUtils.js';
+import { resolveItemCode, resolveItemTitle, escapeHtml } from './searchUtils.js';
 
 let monacoContentWidget = null;
 
@@ -43,15 +43,15 @@ export function showMonacoWidget(results, range, targetEditor, monacoInstance) {
           tooltipParts.push(`${k}: ${typeof r[k] === 'object' ? JSON.stringify(r[k]) : r[k]}`);
         }
       }
-      const tooltip = tooltipParts.join('\n').replace(/"/g, '&quot;');
+      const tooltip = escapeHtml(tooltipParts.join('\n'));
 
       html += `
-        <div class="vector-widget-item" data-index="${index}" title="${tooltip}" style="position: relative; padding: 10px 12px; border-bottom: var(--border-width) solid var(--border-color); cursor: pointer; display: flex; flex-direction: column; gap: 4px; overflow: hidden; flex-shrink: 0; transition: background 0.2s;" onmouseover="this.style.background='var(--hover-bg)'" onmouseout="this.style.background='transparent'">
+        <div class="vector-widget-item" data-index="${index}" title="${tooltip}" style="position: relative; padding: 10px 12px; border-bottom: var(--border-width) solid var(--border-color); cursor: pointer; display: flex; flex-direction: column; gap: 4px; overflow: hidden; flex-shrink: 0; transition: background 0.2s;">
           <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${scorePct}%; background: var(--accent-color); opacity: 0.12; z-index: 0; pointer-events: none;"></div>
           <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
             <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
-              ${code ? `<span style="background: var(--item-code-bg); color: var(--item-code-text); padding: 2px 6px; border-radius: 4px; font-size: var(--fs-12);  flex-shrink: 0;">${code}</span>` : ''}
-              <span style=" font-size: var(--fs-15); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${title}</span>
+              ${code ? `<span style="background: var(--item-code-bg); color: var(--item-code-text); padding: 2px 6px; border-radius: 4px; font-size: var(--fs-12);  flex-shrink: 0;">${escapeHtml(code)}</span>` : ''}
+              <span style=" font-size: var(--fs-15); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(title)}</span>
               ${tooltipParts.length > 0 ? `<span style="color: var(--text-muted); font-size: var(--fs-11); margin-left: 4px;">(i)</span>` : ''}
             </div>
             <span style="color: var(--success-color); font-size: var(--fs-12);  flex-shrink: 0;">${scorePct}%</span>
@@ -64,7 +64,7 @@ export function showMonacoWidget(results, range, targetEditor, monacoInstance) {
 
     if (!isExpanded && hiddenCount > 0) {
       html += `
-        <div id="btnWidgetLoadMore" style="padding: 8px; text-align: center; font-size: var(--fs-13);  color: var(--accent-color); cursor: pointer; background: var(--hover-bg);" onmouseover="this.style.background='var(--active-bg)'" onmouseout="this.style.background='var(--hover-bg)'">
+        <div id="btnWidgetLoadMore" style="padding: 8px; text-align: center; font-size: var(--fs-13);  color: var(--accent-color); cursor: pointer;">
           ${t('loadMoreLabel', { hiddenCount })}
         </div>
       `;

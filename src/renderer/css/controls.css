@@ -12,9 +12,9 @@
   --control-h-lg: 30px;
 }
 
-/* Gear button: square, sized by the row it sits in (.gear-btn--sm / --md / --lg) */
+/* Gear button: square, the shared icon-button box (--icon-btn-size) */
 .gear-btn {
-  --gear-size: var(--control-h-md);
+  --gear-size: var(--icon-btn-size);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -32,12 +32,27 @@
   -webkit-app-region: no-drag;
 }
 
-.gear-btn--sm { --gear-size: var(--control-h-sm); }
-.gear-btn--md { --gear-size: var(--control-h-md); }
-.gear-btn--lg { --gear-size: var(--control-h-lg); }
+/* Pressed (the mode is on): an accent frame, accent icon and a tint, so the button reads as active.
+   Hover only tints, so the two states stay different. */
+.gear-btn[aria-pressed="true"],
+.gear-btn.active {
+  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+  border: var(--border-width) solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.gear-btn[aria-pressed="true"] .material-symbols-outlined,
+.gear-btn.active .material-symbols-outlined {
+  color: var(--accent-color);
+}
+
+/* One size for every gear button: the shared icon-button box, so sm / md / lg all match */
+.gear-btn--sm,
+.gear-btn--md,
+.gear-btn--lg { --gear-size: var(--icon-btn-size); }
 
 .gear-btn .material-symbols-outlined {
-  font-size: var(--fs-18);
+  font-size: var(--icon-size);
   line-height: 1;
   color: inherit;
   transition: color 0.2s ease, transform 0.2s ease;
@@ -60,7 +75,8 @@
 /* Themed drop-down list for <select> (ui/components/selectMenu.ts) */
 .ui-select-menu {
   position: fixed;
-  z-index: 10001;
+  /* Above the first-run setup overlay (z-index 100000), otherwise its drop-down lists open behind it and cannot be seen */
+  z-index: 100010;
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -111,4 +127,459 @@
 
 .ui-select-option.is-selected .ui-select-option__check {
   visibility: visible;
+}
+
+/* ==========================================================================
+   Step tabs (ui/components/stepTabs.js)
+   A slim bar: numbered steps joined by lines, the position on the right, a progress line on the bottom edge.
+   ========================================================================== */
+.step-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+  padding: 0 32px;
+  border-bottom: var(--border-width) solid var(--border-color);
+  /* A theme-tinted band: a black tint darkened the light face */
+  background: var(--active-bg);
+}
+
+.step-tabs__list {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step-tabs__item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-tabs__item:last-child {
+  flex: 0 0 auto;
+}
+
+.step-tabs__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--fs-13);
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.step-tabs__button.is-current {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.step-tabs__button.is-current .step-tabs__badge {
+  color: var(--item-code-text, var(--accent-color));
+}
+
+.step-tabs__button.is-done:not(.is-current) .step-tabs__badge {
+  color: var(--accent-color);
+}
+
+/* The step number is a serif italic numeral (old-style figures), not a circled digit; the current step is underlined */
+.step-tabs__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+  font-size: var(--fs-20);
+  font-style: italic;
+  font-weight: 600;
+  font-variant-numeric: oldstyle-nums;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.step-tabs__check {
+  width: 16px;
+  height: 16px;
+}
+
+.step-tabs__button.is-current .step-tabs__label {
+  text-decoration: underline;
+  text-decoration-color: var(--accent-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+
+/* The connector: a thin line that ends in an arrow; both take the accent color once the step before it is passed */
+.step-tabs__line {
+  flex: 1 1 auto;
+  min-width: 28px;
+  display: flex;
+  align-items: center;
+  color: var(--border-color);
+}
+
+.step-tabs__rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: currentColor;
+}
+
+.step-tabs__arrow {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-left: -7px;
+}
+
+.step-tabs__line.is-done {
+  color: var(--accent-color);
+}
+
+.step-tabs__line[hidden] {
+  display: none;
+}
+
+.step-tabs__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+}
+
+.step-tabs__fill {
+  height: 100%;
+  background: var(--accent-color);
+  transition: width 240ms ease;
+}
+
+.step-tabs__button:focus-visible,
+.toggle-switch:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-tabs__fill,
+  .toggle-switch,
+  .toggle-switch__knob {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Toggle switch (ui/components/toggleSwitch.js): OFF on the left, ON on the right
+   ========================================================================== */
+.toggle-switch-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.toggle-switch-word {
+  font-size: var(--fs-12);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  opacity: 0.55;
+  user-select: none;
+}
+
+.toggle-switch-word.is-lit {
+  color: var(--text-main);
+  opacity: 1;
+}
+
+.toggle-switch-word[data-side="on"].is-lit {
+  color: var(--item-code-text, var(--accent-color));
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  padding: 0;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.toggle-switch__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: left 160ms ease, background 160ms ease;
+}
+
+.toggle-switch[aria-checked="true"] {
+  border-color: var(--accent-color);
+  background: var(--accent-color);
+}
+
+.toggle-switch[aria-checked="true"] .toggle-switch__knob {
+  left: 23px;
+  background: #ffffff;
+}
+
+/* The LLM and Embedding header pills: the name, then the ON/OFF switch. Same parts, sized for the pill height */
+.ai-switch-pill {
+  gap: 8px;
+}
+
+/* The whole pill is the switch track, so its outline is a full capsule (beats the chip's fixed radius) */
+.ai-chip-pill.ai-switch-pill {
+  border-radius: 999px !important;
+}
+
+.ai-switch-pill .toggle-switch-group {
+  gap: 6px;
+}
+
+.ai-switch-pill .toggle-switch {
+  width: 46px;
+  height: 22px;
+}
+
+/* The knob is the current state: it carries its own word (OFF or ON) and slides across the track */
+.ai-switch-pill .toggle-switch__knob {
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-main, #ffffff);
+  color: var(--bg-primary, #0f172a);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.ai-switch-pill .toggle-switch__knob::after {
+  content: 'OFF';
+}
+
+.ai-switch-pill[aria-checked="true"] .toggle-switch__knob {
+  left: 20px;
+}
+
+.ai-switch-pill[aria-checked="true"] .toggle-switch__knob::after {
+  content: 'ON';
+}
+
+/* One outline per control: the pill's border is the only frame. The inner track has no fill or border of its own,
+   so the knob moves inside the pill and the pill reads as one switch. The state shows in the knob side and the lit word. */
+.ai-switch-pill .toggle-switch {
+  border: none;
+  background: transparent;
+}
+
+.ai-switch-pill {
+  border-color: var(--accent-color, #38bdf8) !important;
+  color: var(--text-main, #ffffff) !important;
+}
+
+/* The other word stays readable at full strength, not dimmed. */
+.ai-switch-pill .toggle-switch-word {
+  opacity: 1;
+  color: var(--text-main);
+  padding: 1px 5px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+/* The selected state is on the knob, so its outside word is hidden; only the other word stays beside the track */
+.ai-switch-pill .toggle-switch-word.is-lit {
+  display: none;
+}
+
+/* The track's empty side (under the knob's travel) is closed up: the other word tucks into it,
+   so the OFF and ON words sit about the same distance from the knob in both states. 24px = gap 6px + 18px travel. */
+.ai-switch-pill .toggle-switch-word[data-side="on"] {
+  margin-left: -24px;
+}
+
+.ai-switch-pill .toggle-switch-word[data-side="off"] {
+  margin-right: -24px;
+}
+
+/* ==========================================================================
+   Appearance switch (appHeader.html, #colorModeSwitch): Light | Auto | Dark in one capsule.
+   The lit position is reversed (filled chip, text in the background colour), like the LLM and Embedding switches.
+   ========================================================================== */
+.color-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: var(--border-width) solid var(--accent-color, #38bdf8);
+  border-radius: 999px;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.color-mode-switch__seg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.color-mode-switch__seg .material-symbols-outlined {
+  font-size: var(--fs-15);
+}
+
+/* The current mode shows in the accent colour only; no reversed chip */
+.color-mode-switch__seg.is-lit {
+  color: var(--accent-color, #38bdf8);
+}
+
+/* ==========================================================================
+   Info tip (ui/components/infoTip.js): an (i) icon that explains its heading on hover or focus
+   ========================================================================== */
+.info-tip {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+}
+
+.info-tip__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: help;
+  transition: color 120ms ease, background 120ms ease;
+}
+
+.info-tip__button:hover,
+.info-tip__button:focus-visible {
+  color: var(--item-code-text, var(--accent-color));
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+}
+
+.info-tip__button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+.info-tip__icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* One shared bubble, placed by the script; above the setup overlay (z-index 100000) */
+.info-tip__bubble {
+  position: fixed;
+  z-index: 100001;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 320px;
+  /* A line break in the text starts a new line, so a tip can list its points one under the other */
+  white-space: pre-line;
+  padding: 10px 14px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  font-size: var(--fs-13);
+  line-height: 1.65;
+  color: var(--text-main);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 120ms ease, transform 120ms ease, visibility 120ms;
+}
+
+.info-tip__bubble.is-measuring {
+  visibility: hidden;
+  transition: none;
+}
+
+.info-tip__bubble.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .info-tip__button,
+  .info-tip__bubble {
+    transition: none;
+  }
+}
+
+/* Number stepper: − and ＋ around a number input (ui/components/numberStepper.ts) */
+.num-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.num-stepper__btn {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  font: inherit;
+  color: var(--text-main);
+  background: var(--bg-secondary);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.num-stepper__btn:hover:not(:disabled) {
+  border-color: var(--accent-color, #38bdf8);
+}
+
+.num-stepper__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* The field is a number, not a choice: drop the dropdown arrow that .toolbar-select draws */
+.num-stepper > input {
+  background-image: none;
+  appearance: textfield;
+  text-align: center;
 }

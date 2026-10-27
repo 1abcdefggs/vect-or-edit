@@ -1,5 +1,5 @@
 import { STORAGE_KEYS } from '../../core/constants.js';
-import { loadTheme, safeSetMonacoTheme } from './themeLoader.js';
+import { loadTheme, safeSetMonacoTheme, getStoredThemeSetting } from './themeLoader.js';
 
 export const TONE_COLORS = {
   default: null,
@@ -8,6 +8,14 @@ export const TONE_COLORS = {
   snow: { bg: '#FFFFFF', fg: '#0f172a', gutter: '#f8fafc', lineNo: '#94a3b8', isDark: false },
   light_snow: { bg: '#FFFFFF', fg: '#0f172a', gutter: '#f8fafc', lineNo: '#94a3b8', isDark: false },
 };
+
+// loadTheme resets Monaco and the editor variables to the theme's own; a non-default canvas tone is applied again on top
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:themeApplied', () => {
+    const tone = localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
+    if (tone !== 'default') applyEditorCanvasTone(tone);
+  });
+}
 
 export function updateEditorOptions(options, editorInstances = []) {
   for (const ed of editorInstances) {
@@ -51,6 +59,11 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
         }
       });
       monaco.editor.setTheme('custom-user-colors');
+      if (typeof document !== 'undefined') {
+        document.documentElement.style.setProperty('--editor-bg', bg);
+        document.documentElement.style.setProperty('--editor-fg', fg);
+        window.dispatchEvent(new CustomEvent('app:editorToneChanged', { detail: { tone: 'custom', bg, fg, isDark } }));
+      }
     } catch (_) {
       safeSetMonacoTheme('vs-dark', isDark ? 'vs-dark' : 'vs');
     }
@@ -58,8 +71,7 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
   }
 
   if (currentTone === 'default' || !TONE_COLORS[currentTone]) {
-    const activeTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'auto';
-    loadTheme(activeTheme).catch(() => {});
+    loadTheme(getStoredThemeSetting()).catch(() => {});
     return;
   }
 

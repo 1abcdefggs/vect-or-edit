@@ -50,13 +50,15 @@ export function updateNativeTitleBarOverlay(theme) {
     return;
   }
 
-  lastTitleBarColor = headerColor;
-  lastSymbolColor = symbolColor;
-
-  // Non-blocking async dispatch
+  // Non-blocking async dispatch. The colors are remembered only once the main process accepted them,
+  // so a failed call (for example right at startup) is retried by the next update instead of being skipped.
   window.engineAPI.setTitleBarOverlay({
     color: headerColor,
     symbolColor: symbolColor,
     height: 38
+  }).then((res) => {
+    if (res && res.success === false) return;
+    lastTitleBarColor = headerColor;
+    lastSymbolColor = symbolColor;
   }).catch(() => {});
 }

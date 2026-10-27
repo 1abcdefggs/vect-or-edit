@@ -1,32 +1,38 @@
 <section class="editor-section" style="display: flex; flex-direction: column;">
-  <div class="section-title" data-ui="edt:toolbar"
+  <div class="section-title editor-toolbar" data-ui="edt:toolbar"
     style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px;">
     <!-- Center: Editor Header Actions (Save, AutoSave, Typography, Tone) -->
     <div style="display: flex; align-items: center; gap: 6px; flex: 1;">
       <!-- Integrated File Save Group -->
-      <div class="font-control-integrated-group save-dropdown-container" style="display: flex; align-items: center; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: var(--control-h-lg); position: relative;">
+      <div class="font-control-integrated-group save-dropdown-container" data-ui="edt:save" style="display: flex; align-items: center; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md); padding: 0 4px; height: var(--control-h-lg); position: relative;">
 
-        <!-- Combined Save & AutoSave Button -->
-        <button id="btnSave" class="editor-header-btn" style="height: 28px; background: transparent; border: none; padding: 0 4px 0 6px; display: flex; align-items: center; gap: 5px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" data-i18n-title="btn_save" title="Save File (Ctrl+S) - Click LED dot to toggle AutoSave">
-          <span class="material-symbols-outlined" style="font-size: var(--fs-18); flex-shrink: 0; color: var(--accent-color, #38bdf8);">&#xe161;</span>
-          <span id="autoSaveLedDot" class="status-led-dot status-ready" style="cursor: pointer;" title="AutoSave: ON (Click dot to toggle)"></span>
-          <span class="icon-label-text" id="btnSaveLabel" style="font-size: var(--fs-12); font-weight: 700; letter-spacing: 0.5px;">AUTO</span>
-          <input type="checkbox" id="chkAutoSaveToggle" style="display: none;" title="Toggle AutoSave">
+        <!-- Split save button: the left part saves at once (or asks for a location while AutoSave is pending); the arrow opens the menu below. The LED and label show the AutoSave state (autoSaveManager.js). -->
+        <button id="btnSave" class="editor-header-btn" type="button" style="height: 28px; background: transparent; border: none; padding: 0 4px 0 6px; display: flex; align-items: center; gap: 5px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" data-i18n-title="tip_save">
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); flex-shrink: 0; color: var(--accent-color, #38bdf8);">&#xe161;</span>
+          <span class="icon-label-text" id="btnSaveLabel" style="font-size: var(--fs-12); font-weight: 700; letter-spacing: 0.5px;">SAVE</span>
+          <span id="autoSaveLedDot" class="status-led-dot autosave-led is-pending" aria-hidden="true"></span>
+        </button>
+        <button id="btnSaveMenu" class="editor-header-btn save-menu-toggle" type="button" aria-haspopup="menu" aria-expanded="false" data-i18n-title="tip_save_menu">
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xe5cf;</span>
         </button>
 
-        <!-- Split part: opens Save As / Save All. Separate from the save button so it never saves. -->
-        <button id="btnSaveMenuToggle" class="save-menu-toggle" type="button" aria-haspopup="menu" aria-expanded="false" title="Save options">
-          <span class="material-symbols-outlined">arrow_drop_down</span>
-        </button>
-
-        <div class="save-dropdown-menu">
-          <button id="btnSaveAs" class="save-dropdown-item" data-i18n-title="btn_save_as" title="Save As... (Ctrl+Shift+S)">
-            <span class="material-symbols-outlined" style="font-size: var(--fs-18);">&#xeb60;</span>
+        <div class="save-dropdown-menu" role="menu">
+          <button id="btnAutoSaveToggle" class="save-dropdown-item autosave-menu-item" type="button" role="menuitemcheckbox" aria-checked="true" data-i18n-title="tip_autosave_toggle">
+            <span data-i18n="autosave_menu_item">AutoSave</span>
+            <span id="autoSaveMenuSwitch" class="toggle-switch autosave-menu-switch" aria-hidden="true" aria-checked="true" data-tip-dynamic><span class="toggle-switch__knob"></span></span>
+          </button>
+          <div class="save-dropdown-separator" role="separator"></div>
+          <button id="btnSaveFile" class="save-dropdown-item" data-i18n-title="tip_save">
+            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xe161;</span>
+            <span data-i18n="btn_save">Save</span>
+          </button>
+          <button id="btnSaveAs" class="save-dropdown-item" data-i18n-title="btn_save_as">
+            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xeb60;</span>
             <span data-i18n="btn_save_as">Save As</span>
           </button>
-          <button id="btnSaveAll" class="save-dropdown-item disabled" data-i18n-title="btn_save_all" title="Save All Open Files (Ctrl+K S)">
-            <span class="material-symbols-outlined" style="font-size: var(--fs-18);">&#xf774;</span>
-            <span data-i18n="btn_save_all">Saves</span>
+          <button id="btnSaveAll" class="save-dropdown-item disabled" data-i18n-title="btn_save_all_title">
+            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xf774;</span>
+            <span data-i18n="btn_save_all">Save All</span>
           </button>
         </div>
       </div>
@@ -34,12 +40,12 @@
       <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.7; margin: 0 4px;"></span>
 
       <!-- Unified Editor Style Group [BG/FG | Font Family | Font Size] -->
-      <div class="font-control-integrated-group" style="display: flex; align-items: center; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md); padding: 0 8px; height: var(--control-h-lg); gap: 4px;" title="Editor Appearance & Typography">
+      <div class="font-control-integrated-group" style="display: flex; align-items: center; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md); padding: 0 8px; height: var(--control-h-lg); gap: 4px;" data-i18n-title="tip_editor_appearance">
         <!-- BG/FG Theme -->
-        <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" title="Editor Background & Text Color Theme">&#xe41d;</span>
-        <span style="font-size: var(--fs-12); font-weight: 700; color: var(--text-main); margin-right: 2px;" title="Editor Background & Text Color">BG/FG</span>
-        <select id="quickEditorToneSelect" class="editor-toolbar-select" style="max-width: 110px; height: 28px; border: none; background: transparent;"
-          data-i18n-title="setting_editor_bg" title="Select Editor Background & Text Color Theme">
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_bg_theme">&#xe41d;</span>
+        <span class="style-label style-label--bg" style="font-size: var(--fs-12); color: var(--text-main); margin-right: 2px;" data-i18n-title="tip_editor_bg_colors">BG/FG</span>
+        <select id="quickEditorToneSelect" data-ui="edt:bg-tone" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 110px;"
+          data-i18n-title="setting_editor_bg">
           <option value="default" selected data-i18n="tone_default">Default</option>
           <option value="oled" data-i18n="tone_dark_oled">OLED Black</option>
           <option value="snow" data-i18n="tone_light_snow">Light: Pure Snow</option>
@@ -48,11 +54,10 @@
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
 
         <!-- FONT Family -->
-        <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" title="Editor Font Family">&#xe165;</span>
-        <div data-ui="edt:font-family" style="display: inline-flex; align-items: center;" title="Choose Font Family">
-          <select id="fontFamilySelect" class="editor-toolbar-select"
-            title="Editor Font Family"
-            style="border: none; background: transparent; height: 28px; padding: 0 16px 0 2px;">
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_family">&#xe165;</span>
+        <div data-ui="edt:font-family" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_family">
+          <select id="fontFamilySelect" class="editor-toolbar-select editor-toolbar-select--flat"
+            data-i18n-title="tip_editor_font_family">
             <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
               data-i18n="font_serif">Source Serif 4</option>
             <option
@@ -66,23 +71,33 @@
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
 
         <!-- Font Size -->
-        <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8); margin-right: 1px; flex-shrink: 0;" title="Editor Font Size">&#xe245;</span>
-        <div data-ui="edt:font-size" style="display: inline-flex; align-items: center;" title="Choose Font Size">
-          <select id="fontSizeSelect" class="editor-toolbar-select"
-            title="Editor Font Size"
-            style="border: none; background: transparent; height: 28px; max-width: 80px; padding: 0 16px 0 2px;">
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_size">&#xe245;</span>
+        <div data-ui="edt:font-size" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_size">
+          <select id="fontSizeSelect" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 80px;"
+            data-i18n-title="tip_editor_font_size">
             <option value="14" data-i18n="font_small">14px</option>
             <option value="16" selected data-i18n="font_normal">16px</option>
             <option value="18" data-i18n="font_large">18px</option>
             <option value="20" data-i18n="font_xlarge">20px</option>
           </select>
         </div>
+
+        <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
+
+        <!-- Turns the right panel over: the dictionary side steps back and only the Editor Options card shows (editorOptionsMode.js) -->
+        <button id="btnEditorOptionsToggle" class="gear-btn gear-btn--lg" type="button" aria-pressed="false" data-i18n-title="tip_editor_options_toggle" style="display: flex; align-items: center; gap: 4px; width: auto; padding: 0 4px;">
+          <span class="material-symbols-outlined">tune</span>
+          <!-- The label shrinks with the toolbar width (css/buttons.css, editor-opt-label): full name, short name, last word, icon only -->
+          <span class="style-label editor-opt-label editor-opt-label--full" style="font-size: var(--fs-12); color: var(--text-main);" data-i18n="monaco_opts_title">Editor Options</span>
+          <span class="style-label editor-opt-label editor-opt-label--short" style="font-size: var(--fs-12); color: var(--text-main);" data-i18n="monaco_opts_short">Editor opt</span>
+          <span class="style-label editor-opt-label editor-opt-label--min" style="font-size: var(--fs-12); color: var(--text-main);" data-i18n="monaco_opts_min">opt</span>
+        </button>
       </div>
 
       <div id="quickCustomColorGroup" style="display: none; align-items: center; gap: 4px;">
-        <input type="color" id="quickCustomBgPicker" value="#1e1e2e" data-i18n-title="label_bg" title="Custom Background Color"
+        <input type="color" id="quickCustomBgPicker" value="#1e1e2e" data-i18n-title="label_bg"
           style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
-        <input type="color" id="quickCustomFgPicker" value="#cdd6f4" data-i18n-title="label_text" title="Custom Text Color"
+        <input type="color" id="quickCustomFgPicker" value="#cdd6f4" data-i18n-title="label_text"
           style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
       </div>
     </div>
@@ -90,70 +105,81 @@
     <!-- Right: Editor Header Actions (LLM Toggle on the right, Sidebar Toggle & Quick Settings) -->
     <div class="editor-header-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
       <!-- Far Right: LLM Toggle Chip Button -->
-      <button id="btnEditorAiToggle" class="ai-chip-pill" data-ui="edt:ai-toggle"
-        data-i18n-title="ai_model_badge_tooltip" title="LLM Assistant: Click to toggle Cloud AI generation & chat (ON/OFF)">
-        <span id="editorAiStatusDot" style="color: #ef4444; font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
-        <span class="material-symbols-outlined" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8); flex-shrink: 0;">cloud</span>
-        <span id="editorAiLabel" data-i18n="editor_ai_off">LLM OFF</span>
+      <button id="btnEditorAiToggle" class="ai-chip-pill ai-switch-pill" data-ui="edt:ai-toggle"
+        role="switch" aria-checked="false" data-i18n-title="tip_editor_ai_toggle">
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); flex-shrink: 0;">cloud</span>
+        <span class="ai-switch-pill__name">LLM</span>
+        <span class="toggle-switch-group" aria-hidden="true">
+          <span class="toggle-switch-word" data-side="off">OFF</span>
+          <span class="toggle-switch"><span class="toggle-switch__knob"></span></span>
+          <span class="toggle-switch-word" data-side="on">ON</span>
+        </span>
+        <span id="editorAiStatusDot" style="color: var(--text-muted, #94a3b8); font-size: var(--fs-10); transition: color 0.3s ease;">●</span>
       </button>
 
       <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
 
-      <button id="btnEditorQuickSettings" class="gear-btn gear-btn--lg" data-ui="edt:quick-settings" data-tab-target="tabEditor"
-        title="Editor Preferences & Configuration (Click to open)">
+      <button id="btnEditorQuickSettings" class="gear-btn gear-btn--lg" data-ui="edt:quick-settings" data-tab-target="tabEditor" data-i18n-title="tip_editor_quick_settings">
         <span class="material-symbols-outlined">settings</span>
       </button>
     </div>
   </div>
   <!-- Chrome-style Multi-Document Tab Bar -->
-  <div class="editor-tab-bar" id="editorTabBar" style="display: flex; align-items: center; background: var(--bg-card); border-bottom: var(--border-width) solid var(--border-color);">
-    <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" title="Open document tabs (Double click to rename tab)"></div>
+  <div class="editor-tab-bar" id="editorTabBar" data-ui="edt:tab-bar" style="display: flex; align-items: center; background: var(--bg-card); border-bottom: var(--border-width) solid var(--border-color);">
+    <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" data-i18n-title="tip_editor_tabs"></div>
   </div>
   <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
   <div id="markdownPreview" class="markdown-preview" hidden></div>
 
   <!-- Editor Status Bar: Clean minimal design without redundant doc name / autosave -->
-  <div class="editor-status-bar" id="editorStatusBar">
+  <div class="editor-status-bar" id="editorStatusBar" data-ui="edt:status-bar">
     <div class="status-bar-left">
-      <span id="statusCharCount" class="status-bar-item" title="Total character count in active document">0 chars</span>
+      <span id="statusCharCount" class="status-bar-item" data-i18n-title="tip_status_chars">0 chars</span>
       <span class="status-bar-separator">|</span>
-      <span id="statusLineCount" class="status-bar-item" title="Total line count in active document">1 lines</span>
+      <span id="statusLineCount" class="status-bar-item" data-i18n-title="tip_status_lines">1 lines</span>
     </div>
     <div class="status-bar-right" style="display: flex; align-items: center; gap: 6px;">
-      <span id="statusEncoding" class="status-bar-item" title="File encoding">UTF-8</span>
+      <span id="statusEncoding" class="status-bar-item" data-i18n-title="tip_status_encoding">UTF-8</span>
       <span class="status-bar-separator">|</span>
-      <span class="status-bar-item" style="display: flex; align-items: center; gap: 4px;" title="Current document syntax: Markdown">
-        <span class="material-symbols-outlined" style="font-size: var(--fs-16); color: var(--accent-color, #38bdf8);">&#xf552;</span>
-        <span id="statusSyntaxLabel">Markdown</span>
+      <!-- The format of the current document. Pointing at it lists Markdown and Text; the current one is lit and either can be chosen (documentFormatControl.js) -->
+      <span class="format-switch">
+        <button type="button" id="btnDocumentFormat" data-ui="edt:document-format" class="status-bar-item status-bar-button" aria-haspopup="menu" data-i18n-title="format_switch_title">
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">&#xf552;</span>
+          <span id="statusSyntaxLabel">Markdown</span>
+        </button>
+        <span class="format-switch__menu" role="menu">
+          <button type="button" class="format-switch__item" role="menuitemradio" aria-checked="true" data-format="markdown" data-i18n="format_option_markdown" data-i18n-title="tip_format_markdown">Markdown (.md)</button>
+          <button type="button" class="format-switch__item" role="menuitemradio" aria-checked="false" data-format="text" data-i18n="format_option_text" data-i18n-title="tip_format_text">Text (.txt)</button>
+        </span>
       </span>
-      <span class="status-bar-separator">|</span>
-      <button type="button" id="btnMarkdownPreview" class="markdown-preview-toggle" aria-pressed="false" title="Toggle rendered Markdown preview">
-        <span class="material-symbols-outlined" style="font-size: var(--fs-16);">preview</span>
+      <span class="status-bar-separator" data-preview-separator>|</span>
+      <button type="button" id="btnMarkdownPreview" data-ui="edt:markdown-preview" class="markdown-preview-toggle" aria-pressed="false" data-i18n-title="tip_markdown_preview">
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">preview</span>
         <span class="markdown-preview-label">Preview</span>
       </button>
     </div>
   </div>
 
   <!-- Monaco Editor Bottom LLM Chat Dock (Intelligent Assistant & Text Generator) -->
-  <div id="editorLlmChatDock" class="editor-llm-chat-dock" style="display: flex;">
+  <div id="editorLlmChatDock" data-ui="edt:llm-dock" class="editor-llm-chat-dock" style="display: flex;">
     <div class="llm-dock-header">
-      <div class="llm-dock-title" title="LLM Chat Dock: Interactive assistant and writing companion">
+      <div class="llm-dock-title" data-i18n-title="tip_llm_dock">
         <span class="material-symbols-outlined llm-dock-icon" style="color: var(--accent-color, #38bdf8);">cloud</span>
         <span class="llm-dock-label" data-i18n="llm_chat_dock_title">LLM Chat & Assistant</span>
-        <span id="llmDockModelBadge" class="llm-model-badge" title="Active AI Generation Model">Gemini</span>
+        <span id="llmDockModelBadge" class="llm-model-badge" data-i18n-title="tip_llm_model_badge">Gemini</span>
       </div>
       <div class="llm-dock-actions">
-        <button id="btnLlmKeyConfig" class="toolbar-btn llm-dock-btn" title="Configure AI API Key (Gemini, OpenAI, Claude)" data-i18n-title="btn_llm_key_config_title" style="display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); padding: 2px 8px;">
-          <span class="material-symbols-outlined" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8);">key</span>
+        <button id="btnLlmKeyConfig" data-ui="edt:llm-key-config" class="toolbar-btn llm-dock-btn" data-i18n-title="btn_llm_key_config_title" style="display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); padding: 2px 8px;">
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">key</span>
           <span data-i18n="btnLlmKeyConfigLabel">API Key</span>
         </button>
-        <button id="btnLlmClearChat" class="toolbar-btn llm-dock-btn" title="Clear Chat History">
+        <button id="btnLlmClearChat" data-ui="edt:llm-clear-chat" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_clear_chat">
           <span class="material-symbols-outlined">&#xe419;</span>
         </button>
-        <button id="btnLlmToggleCollapse" class="toolbar-btn llm-dock-btn" title="Minimize / Expand Chat Dock">
+        <button id="btnLlmToggleCollapse" data-ui="edt:llm-collapse" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_toggle_dock">
           <span id="llmCollapseIcon" class="material-symbols-outlined">&#xe5cf;</span>
         </button>
-        <button id="btnLlmCloseChat" class="toolbar-btn llm-dock-btn" title="Close Chat Dock">
+        <button id="btnLlmCloseChat" data-ui="edt:llm-close" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_close_chat">
           <span class="material-symbols-outlined">&#xe5cd;</span>
         </button>
       </div>
@@ -163,9 +189,9 @@
     <div id="llmQuickApiKeyBanner" class="llm-quick-api-banner" style="display: none;">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;">
         <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <span class="material-symbols-outlined" style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);" title="API Key">vpn_key</span>
-          <span style="font-size: var(--fs-12); font-weight: 600; color: var(--text-main);">API Key Input:</span>
-          <select id="selLlmQuickProvider" class="toolbar-select" title="Choose AI Model Provider" style="font-size: var(--fs-12); height: 26px; padding: 0 4px;">
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);" data-i18n-title="tip_api_key_label">vpn_key</span>
+          <span style="font-size: var(--fs-12); font-weight: 600; color: var(--text-main);" data-i18n="llm_key_input_label">API Key:</span>
+          <select id="selLlmQuickProvider" class="toolbar-select" style="font-size: var(--fs-12); height: 26px; padding: 0 4px;" data-i18n-title="tip_llm_provider">
             <option value="gemini">Google Gemini</option>
             <option value="openai">OpenAI</option>
             <option value="claude">Anthropic Claude</option>
@@ -173,30 +199,27 @@
         </div>
         <div class="api-key-input-container" style="flex: 1; display: flex; align-items: center; background: rgba(0, 0, 0, 0.4); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 0 4px 0 8px; height: 28px;">
           <input type="password" id="llmQuickApiKeyInput" placeholder="Enter API Key (AIzaSy... / sk-...)" autocomplete="off" spellcheck="false"
-            title="Paste your API key here"
-            style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: var(--fs-12); letter-spacing: 0.5px; height: 100%;">
-          <button type="button" id="btnToggleQuickKeyVisibility" class="toolbar-btn" title="Toggle API Key Visibility" data-i18n="btnToggleQuickKeyVisibilityTitle"
-            style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); padding: 0;">
-            <span class="material-symbols-outlined" style="font-size: var(--fs-15);">visibility_off</span>
+            style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: var(--fs-12); letter-spacing: 0.5px; height: 100%;" data-i18n-title="tip_api_key_input">
+          <button type="button" id="btnToggleQuickKeyVisibility" class="toolbar-btn" data-i18n="btnToggleQuickKeyVisibilityTitle"
+            style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); padding: 0;" data-i18n-title="tip_toggle_key_visibility">
+            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">visibility_off</span>
           </button>
         </div>
-        <button id="btnSaveQuickApiKey" class="llm-action-btn" title="Save API Key to secure local storage" style="background: var(--accent-color, #38bdf8); color: #0f172a; border: none; height: 28px; padding: 0 12px; font-weight: 700; flex-shrink: 0; cursor: pointer;">
-          Save
-        </button>
+        <button id="btnSaveQuickApiKey" class="llm-action-btn" style="background: var(--accent-color, #38bdf8); color: var(--text-on-accent, #ffffff); border: none; height: 28px; padding: 0 12px; font-weight: 700; font-family: inherit; flex-shrink: 0; cursor: pointer;" data-i18n-title="tip_llm_save_key" data-i18n="btn_save_key">Save</button>
       </div>
     </div>
 
     <div id="llmChatMessages" class="llm-chat-messages" data-i18n="llm_chat_section">
       <div class="llm-msg llm-msg-system">
-        <span class="material-symbols-outlined" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8);">&#xe88e;</span>
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">&#xe88e;</span>
         <span data-i18n="llm_chat_welcome">You can chat or refine your text here in conjunction with the writing process at the top of the editor. You can also issue AI instructions directly from within the editor by pressing Ctrl+K.</span>
       </div>
     </div>
     <div class="llm-chat-input-bar">
-      <textarea id="llmChatInput" class="llm-chat-input" rows="1" placeholder="Ask LLM or command rewrite (Shift+Enter for newline, Enter to send)..." title="Type your prompt or question here (Shift+Enter for new line, Enter to send)" data-i18n-placeholder="llm_chat_placeholder"></textarea>
+      <textarea id="llmChatInput" class="llm-chat-input" rows="1" placeholder="Ask LLM or command rewrite (Shift+Enter for newline, Enter to send)..." data-i18n-placeholder="llm_chat_placeholder" data-i18n-title="tip_llm_chat_input"></textarea>
       <div class="llm-chat-controls">
-        <button id="btnLlmSend" class="llm-send-btn" title="Send message to LLM (Enter)">
-          <span class="material-symbols-outlined">&#xe163;</span>
+        <button id="btnLlmSend" class="llm-send-btn" data-i18n-title="tip_llm_send">
+          <span class="material-symbols-outlined">arrow_upward</span>
           <span data-i18n="btn_send">Send</span>
         </button>
       </div>

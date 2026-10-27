@@ -1,0 +1,166 @@
+/* Module cards: the Guideline, Knowledge and Editor Options cards share these rules (one definition).
+   Markup: components/suggestionSidebar.html. Loaded after utilities.css and ticker.css. */
+
+.semantic-module-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+  padding: 4px 10px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.semantic-module-card.collapsed .semantic-module-body {
+  display: none !important;
+}
+
+.semantic-module-card .collapse-icon {
+  font-size: var(--fs-17);
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.semantic-module-card.collapsed .collapse-icon {
+  transform: rotate(-90deg);
+}
+
+.semantic-module-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: var(--control-h-lg);
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.semantic-module-header:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.semantic-module-header > div:last-child {
+  margin-left: auto;
+}
+
+.semantic-module-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.2px;
+}
+
+/* Leading icons share one fixed column so the title separators line up across the cards */
+.semantic-module-title > .material-symbols-outlined,
+.semantic-module-title > #profileIcon {
+  width: 20px;
+  display: inline-flex;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent-color, #38bdf8);
+}
+
+/* Title size per window width (moved here from utilities.css; the card title is the only user) */
+@media (max-width: 700px) {
+  .semantic-module-title {
+    font-size: var(--fs-12) !important;
+  }
+  .semantic-module-title .material-symbols-outlined {
+    font-size: var(--fs-15) !important;
+  }
+}
+
+@media (min-width: 701px) {
+  .semantic-module-title {
+    font-size: var(--fs-17) !important;
+    font-weight: 600;
+  }
+  .semantic-module-title .material-symbols-outlined {
+    font-size: var(--fs-20) !important;
+  }
+}
+
+.semantic-module-title > .collapse-icon {
+  width: 16px;
+}
+
+.semantic-module-icon {
+  font-size: var(--fs-19);
+  color: var(--accent-color, #38bdf8);
+  flex-shrink: 0;
+}
+
+.semantic-module-sep {
+  opacity: 0.4;
+  font-weight: 300;
+}
+
+.semantic-module-actions {
+  display: flex;
+  align-items: stretch;
+  align-self: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Size comes from class btn-phi (buttons.css); the row stretches the buttons to one height */
+.semantic-module-card .semantic-btn-add,
+.semantic-module-card .semantic-btn-clear,
+.semantic-module-card .semantic-btn-template {
+  border-radius: 4px;
+}
+
+.semantic-module-card .semantic-btn-add {
+  width: 78px;
+  justify-content: center;
+}
+
+.semantic-module-card .semantic-btn-add .plus {
+  font-size: var(--fs-14);
+  line-height: 1;
+}
+
+.semantic-module-card .semantic-btn-template {
+  font-size: var(--fs-11);
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.06);
+  border: var(--border-width) solid var(--border-color);
+}
+
+/* A card with a body gets the body's spacing; a card without one has none */
+.semantic-module-card.has-body > .semantic-module-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+/* Hide the Knowledge body (and its empty padding) until at least one slot exists */
+#knowledgeModuleCard .semantic-module-body:not(:has(#knowledgeSlotsList:not(:empty))) {
+  display: none;
+}
+
+/* Narrow sidebar: keep only the "+" icon on the add buttons (title tooltip still shows the full action).
+   With the label the header content needs about 250px, which a 280px container still holds */
+.semantic-control-container {
+  container: semantic-controls / inline-size;
+}
+
+@container semantic-controls (max-width: 280px) {
+  .semantic-control-container .semantic-btn-add .btn-label {
+    display: none;
+  }
+
+  .semantic-control-container .semantic-btn-add {
+    width: 24px;
+  }
+}

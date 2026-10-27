@@ -3,47 +3,64 @@ import { GoogleGenAI } from '@google/genai';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const GEMINI_KEY_FILE = 'gemini-api-key.bin';
+// Cloud LLM API keys are encrypted with the OS key store (safeStorage) and kept in userData, one file per provider.
+// They never go to localStorage or .settings.json; requests read them here in the main process.
+export type ApiKeyProvider = 'gemini' | 'openai' | 'claude';
 
-async function loadStoredGeminiApiKey(): Promise<string | undefined> {
+const API_KEY_FILES: Record<ApiKeyProvider, string> = {
+  gemini: 'gemini-api-key.bin',
+  openai: 'openai-api-key.bin',
+  claude: 'claude-api-key.bin'
+};
+
+export function isApiKeyProvider(value: unknown): value is ApiKeyProvider {
+  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(API_KEY_FILES, value);
+}
+
+function apiKeyPath(provider: ApiKeyProvider): string {
+  return path.join(app.getPath('userData'), API_KEY_FILES[provider]);
+}
+
+async function loadStoredApiKey(provider: ApiKeyProvider): Promise<string | undefined> {
   if (!safeStorage.isEncryptionAvailable()) return undefined;
 
   try {
-    const encrypted = await fs.readFile(path.join(app.getPath('userData'), GEMINI_KEY_FILE));
+    const encrypted = await fs.readFile(apiKeyPath(provider));
     return safeStorage.decryptString(encrypted);
   } catch {
     return undefined;
   }
 }
 
-export async function hasStoredGeminiApiKey(): Promise<boolean> {
-  return Boolean(await loadStoredGeminiApiKey());
+export async function hasStoredApiKey(provider: ApiKeyProvider): Promise<boolean> {
+  return Boolean(await loadStoredApiKey(provider));
 }
 
-export async function saveGeminiApiKey(apiKey: string): Promise<{ success: boolean; error?: string }> {
-  const trimmedKey = apiKey.trim();
+export async function saveApiKey(provider: ApiKeyProvider, apiKey: string): Promise<{ success: boolean; error?: string }> {
+  const trimmedKey = (apiKey || '').trim();
   if (!trimmedKey) return { success: false, error: 'API key is required.' };
   if (!safeStorage.isEncryptionAvailable()) {
     return { success: false, error: 'OS secure storage is unavailable.' };
   }
 
   try {
-    const encrypted = safeStorage.encryptString(trimmedKey);
-    await fs.writeFile(path.join(app.getPath('userData'), GEMINI_KEY_FILE), encrypted);
+    await fs.writeFile(apiKeyPath(provider), safeStorage.encryptString(trimmedKey));
     return { success: true };
   } catch (error: any) {
-    return { success: false, error: error.message || 'Failed to save Gemini API key.' };
+    return { success: false, error: error.message || `Failed to save the ${provider} API key.` };
   }
 }
 
-export async function clearGeminiApiKey(): Promise<{ success: boolean; error?: string }> {
+export async function clearApiKey(provider: ApiKeyProvider): Promise<{ success: boolean; error?: string }> {
   try {
-    await fs.rm(path.join(app.getPath('userData'), GEMINI_KEY_FILE), { force: true });
+    await fs.rm(apiKeyPath(provider), { force: true });
     return { success: true };
   } catch (error: any) {
-    return { success: false, error: error.message || 'Failed to remove Gemini API key.' };
+    return { success: false, error: error.message || `Failed to remove the ${provider} API key.` };
   }
 }
+
+const loadStoredGeminiApiKey = () => loadStoredApiKey('gemini');
 
 export async function listGeminiModels(apiKey?: string) {
   const token = apiKey?.trim() || await loadStoredGeminiApiKey();
@@ -113,23 +130,27 @@ export async function listGeminiModels(apiKey?: string) {
 }
 
 export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string, model?: string) {
-  const token = apiKey || process.env.ANTHROPIC_API_KEY;
+  const token = apiKey || await loadStoredApiKey('claude') || process.env.ANTHROPIC_API_KEY;
   if (!token) {
     throw new Error('Anthropic API key is not set. Please provide it in settings or ANTHROPIC_API_KEY environment variable.');
   }
 
-  const modelName = model || 'claude-3-5-sonnet-20240620';
+  const modelName = model || 'claude-opus-5-5';
+  // On a safety decline the API reruns the request on a fallback model it picks by category (Opus and Sonnet 5.5 only)
+  const useFallback = modelName === 'claude-opus-5-5' || modelName === 'claude-sonnet-5-5';
   console.log(`[Main] Calling Claude API (${modelName})`);
 
   return new Promise<{ success: boolean; text?: string; error?: string }>((resolve) => {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'x-api-key': token,
+      'anthropic-version': '2023-06-01'
+    };
+    if (useFallback) headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
     const request = net.request({
       method: 'POST',
       url: 'https://api.anthropic.com/v1/messages',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': token,
-        'anthropic-version': '2023-06-01'
-      }
+      headers
     });
 
     request.on('response', (response) => {
@@ -139,7 +160,15 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
         if (response.statusCode === 200) {
           try {
             const parsed = JSON.parse(data);
-            const text = parsed.content?.[0]?.text || '';
+            if (parsed.stop_reason === 'refusal') {
+              resolve({ success: false, error: `Claude declined the request${parsed.stop_details?.category ? ` (${parsed.stop_details.category})` : ''}` });
+              return;
+            }
+            // Current models can return thinking blocks before the answer, so read the text blocks only
+            const text = (parsed.content || [])
+              .filter((block: { type?: string }) => block.type === 'text')
+              .map((block: { text?: string }) => block.text || '')
+              .join('');
             resolve({ success: true, text });
           } catch (e) {
             resolve({ success: false, error: 'Failed to parse Anthropic response' });
@@ -156,8 +185,10 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
 
     request.write(JSON.stringify({
       model: modelName,
-      max_tokens: 2048,
-      messages: [{ role: 'user', content: prompt }]
+      // Room for thinking as well as the answer; a low cap cuts the answer off
+      max_tokens: 16000,
+      messages: [{ role: 'user', content: prompt }],
+      ...(useFallback ? { fallbacks: 'default' } : {})
     }));
     request.end();
   });
@@ -169,7 +200,7 @@ export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string
     throw new Error('Gemini API key is not set. Please provide it in settings or GEMINI_API_KEY environment variable.');
   }
 
-  const modelName = model || 'gemini-2.5-flash';
+  const modelName = model || 'gemini-3.1-flash-lite';
   console.log(`[Main] Calling Gemini API (${modelName})`);
   try {
     const ai = new GoogleGenAI({ apiKey: token });
@@ -191,7 +222,7 @@ export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string
 }
 
 export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string, model?: string) {
-  const token = apiKey || process.env.OPENAI_API_KEY;
+  const token = apiKey || await loadStoredApiKey('openai') || process.env.OPENAI_API_KEY;
   if (!token) {
     throw new Error('OpenAI API key is not set. Please provide it in settings or OPENAI_API_KEY environment variable.');
   }

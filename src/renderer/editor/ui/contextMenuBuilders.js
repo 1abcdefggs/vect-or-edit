@@ -5,7 +5,7 @@ import { duplicateCurrentTab } from '../tabs/tabManager.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { triggerSearchAndRender } from '../../search/vectorSearch.js';
 import { getQuickMatches } from '../../search/dictionary.js';
-import { aiManager } from '../../core/aiStateManager.js';
+import { canUseEmbedding, canUseLlm } from '../../core/aiAccess.js';
 
 export function createMenuButton({ className, title, innerHTML, onClick }) {
   const btn = document.createElement('button');
@@ -30,7 +30,8 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   topRow.style.flexDirection = 'column';
   topRow.style.alignItems = 'stretch';
 
-  const modelReady = Boolean(aiManager?.getState?.().modelConfigured);
+  // AI Suggest has something to run with while either switch is on (the dictionary search itself always works)
+  const modelReady = canUseEmbedding() || canUseLlm();
 
   const btnSuggest = createMenuButton({
     className: 'pill-action-btn primary',
@@ -53,7 +54,7 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   const btnLlmChat = createMenuButton({
     className: 'pill-action-btn secondary',
     title: "Start LLM Chat or rewrite with selected text",
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-16); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
@@ -90,7 +91,7 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
       const desc = item.kana || item.description || item.subtitle || '';
       const chip = createMenuButton({
         className: 'pill-candidate-chip',
-        title: `${title} ${desc ? `(${desc})` : ''} - Click to insert`,
+        title: t('tip_insert_candidate', { label: `${title} ${desc ? `(${desc})` : ''}`.trim() }),
         innerHTML: `
           <span class="chip-title">${title}</span>
           ${desc ? `<span class="chip-desc">${desc}</span>` : ''}
@@ -128,7 +129,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
     const btnLlm = createMenuButton({
       className: 'custom-context-menu-item',
-      innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-17); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+      innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
       onClick: () => {
         onDismiss();
         window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
@@ -192,7 +193,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
   const btnResetLayout = createMenuButton({
     className: 'custom-context-menu-item',
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-17);">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:resetUIVisibility'));
