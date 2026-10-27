@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.55] - 2026-10-27
+
+### Added
+
+- Each knowledge slot has an Info button. It shows the dictionary header (domain, version, dimension, metric, items, fidelity, sanitized). An encrypted slot shows its header only while its password is loaded.
+- A loaded dictionary shows its domain as the slot title.
+
+### Changed
+
+- With EMBED off, the results say they are text matches only.
+- The guideline card's empty-state text is inside the card body, so it collapses with the card.
+
 ## [0.3.54] - 2026-10-27
 
 ### Added
