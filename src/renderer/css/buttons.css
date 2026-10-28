@@ -11,7 +11,7 @@
 
 .toolbar-btn {
   background: transparent;
-  border: 1px solid transparent;
+  border: var(--border-width) solid var(--control-border);
   color: var(--text-main);
   height: 32px;
   min-width: 32px;
@@ -32,8 +32,59 @@
   border-color: var(--border-color);
 }
 
+/* Icon-only button: the icon gets the space, the padding stays at zero. Placed after .toolbar-btn so it wins. */
+.icon-btn {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-width: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.icon-btn svg,
+.icon-btn .material-symbols-outlined {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  font-size: var(--icon-size);
+}
+
+/* Icon-only buttons without an outline; only their hover tint shows that they are buttons:
+   the sidebar collapse button in the header, and the duplicate and new tab buttons beside the tabs */
+#btnHeaderToggleSidebar,
+#btnDuplicateTabInline,
+#btnNewTabInline {
+  border: none;
+  background: transparent;
+}
+
+/* Editor style group: the font name takes the width that the other parts of the bar leave free.
+   The browser measures that space at each resize, so no bar width is typed in. It stays within 70px to 115px. */
+.font-control-integrated-group #fontFamilySelect {
+  flex: 1 1 auto !important;
+  min-width: 70px !important;
+  max-width: 115px !important;
+}
+
 .toolbar-btn:active {
   background: var(--active-bg);
+}
+
+/* The one-click fix under an empty search list (e.g. "Open Settings") */
+.empty-state__action {
+  display: block;
+  margin: 8px auto 0;
+  padding: 4px 12px;
+  border: var(--border-width) solid var(--accent-color);
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--accent-color);
+  font: inherit;
+  font-size: var(--fs-12);
+  cursor: pointer;
+}
+
+.empty-state__action:hover {
+  background: var(--hover-bg);
 }
 
 /* Dynamic Drag-to-Resize Splitter Bar */
@@ -167,13 +218,14 @@ body.resizing-sidebar * {
   animation: popIn 0.15s ease-out;
 }
 
+/* Log action buttons (CLEAR, COPY, DOWNLOAD): a light accent tint at rest, stronger on hover, no outline.
+   The tint shows they are buttons; the icon and label keep the panel's text color. */
 .log-panel-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #ffffff;
+  background: var(--log-btn-bg);
+  border: none;
+  color: var(--log-title);
   padding: 3px 8px;
   font-size: var(--fs-12);
-  
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
@@ -183,13 +235,24 @@ body.resizing-sidebar * {
 }
 
 .log-panel-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.35);
-  color: #ffffff;
+  background: var(--log-btn-hover);
+  color: var(--log-title);
 }
 
 .log-panel-btn:active {
   background: rgba(255, 255, 255, 0.3);
+}
+
+/* Compact button size: the padding follows the button's own font size (--btn-pad-y / --btn-pad-x), the height comes from
+   the content. The only place this rule is written; add class btn-phi to a button instead of copying it.
+   `button.btn-phi` is one element name more specific than a single class, so it wins over .toolbar-btn (height 32px),
+   .semantic-btn-add, .log-panel-btn and the others whatever the order of the style files. */
+button.btn-phi {
+  height: auto;
+  /* The font box (ascent + descent) is taller than the 1em line, so the glyphs sit low; 0.06em (about 0.75px at 12px) moves
+     the padding from the top to the bottom. The height does not change. Basis: control-sizing-evidence.md section 13. */
+  padding: calc(var(--btn-pad-y) - 0.06em) var(--btn-pad-x) calc(var(--btn-pad-y) + 0.06em);
+  line-height: 1;
 }
 
 /* Chrome-style Multi-Document Tab Bar */
@@ -265,40 +328,61 @@ body.resizing-sidebar * {
   user-select: none;
 }
 
-/* Header Logs Button Dynamic State (Blue when Bottom Panel is Closed) */
-.btn-logs-closed {
-  background: rgba(56, 189, 248, 0.16) !important;
-  border: 1px solid var(--accent-color, #66f) !important;
-  color: var(--accent-color, #66f) !important;
-  
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
-  transition: all 0.2s ease;
+/* LOGS chip states (one model): closed = the resting chip face with an accent tint, open = a neutral pressed face.
+   The label always uses the title colour (--log-title): the tinted faces are darker than the text-main colour allows
+   (measured: text-main reached 3.79:1 on the closed hover face). Only the icon takes the accent.
+   The open face needs !important to beat the generic .toolbar-btn-active used by other buttons. */
+.bottom-bar-left > .bottom-bar-chip.btn-logs-closed {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 14%, transparent);
+  box-shadow: none;
+  color: var(--log-title);
+  transition: background 0.2s ease;
 }
 
-.btn-logs-closed:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+.bottom-bar-left > .bottom-bar-chip.btn-logs-closed:hover {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
+}
+
+/* The open face is darker than the closed one, so its label uses the full-contrast title colour (LOG title token: 4.5:1 or more) */
+.bottom-bar-left > .bottom-bar-chip.toolbar-btn-active {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  color: var(--log-title) !important;
+}
+
+/* Bottom bar chips (LOGS, PIPELINE): a tinted fill shows they are buttons; no outline */
+.bottom-bar-left > .bottom-bar-chip {
+  border: none;
+  background: var(--log-btn-bg);
+}
+
+.bottom-bar-left > .bottom-bar-chip:hover {
+  background: var(--log-btn-hover);
+}
+
+/* Close controls of the bottom bar (LOGS, PIPELINE): the same tinted fill as the chips, no outline */
+.bottom-bar-close {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border: none;
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 14%, transparent);
+  color: var(--text-main);
+}
+
+.bottom-bar-close:hover {
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 26%, transparent);
+}
+
+.bottom-bar-close .material-symbols-outlined {
+  font-size: var(--fs-16);
 }
 
 .toolbar-btn-active {
   background: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: var(--accent-color, #66f) !important;
-}
-
-/* Clean Open Folder Button without excess margin */
-.editor-header-btn {
-  background: transparent;
-  border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-main);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  transition: all 0.2s ease;
 }
 
 .font-control-integrated-group select {
@@ -327,12 +411,6 @@ body.resizing-sidebar * {
   gap: 6px !important;
 }
 
-#fontFamilySelect {
-  flex-shrink: 1 !important;
-  min-width: 90px !important;
-  max-width: 140px !important;
-}
-
 #quickEditorToneSelect {
   flex-shrink: 2 !important;
   min-width: 60px !important;
@@ -341,9 +419,6 @@ body.resizing-sidebar * {
 
 /* Medium viewport width: Compact labels */
 @media (max-width: 1050px) {
-  #fontFamilySelect {
-    max-width: 110px !important;
-  }
   #quickEditorToneSelect {
     max-width: 80px !important;
   }
@@ -355,9 +430,6 @@ body.resizing-sidebar * {
 
 /* Narrow viewport width: Minimalist badge mode */
 @media (max-width: 880px) {
-  #fontFamilySelect {
-    max-width: 95px !important;
-  }
   #fontSizeSelect {
     max-width: 65px !important;
   }
@@ -441,4 +513,85 @@ body.resizing-sidebar * {
   background: rgba(56, 189, 248, 0.15) !important;
   border-color: rgba(56, 189, 248, 0.45) !important;
   color: var(--accent-color, #38bdf8) !important;
+}
+/* Editor Options label, shrinking step by step with the toolbar width (owner decision 2026-10-25):
+   full name -> short name -> last word -> icon only. The icon always stays. Thresholds are provisional. */
+.editor-toolbar {
+  container-type: inline-size;
+  container-name: editor-toolbar;
+}
+
+.editor-opt-label--short,
+.editor-opt-label--min {
+  display: none;
+}
+
+/* The options name goes first, before the values (font, size) are cut: it is the lowest-meaning text in the row.
+   Thresholds are provisional; they follow the measured 1300px desktop case. */
+@container editor-toolbar (max-width: 1099px) {
+  .editor-opt-label--full { display: none; }
+  .editor-opt-label--short { display: inline; }
+}
+
+@container editor-toolbar (max-width: 959px) {
+  .editor-opt-label--short { display: none; }
+  .editor-opt-label--min { display: inline; }
+}
+
+@container editor-toolbar (max-width: 759px) {
+  .editor-opt-label--min { display: none; }
+}
+
+/* Toolbar shrinking (owner: shorten text before removing icons; lower priority goes first).
+   Selects cut their text with an ellipsis instead of pushing the toolbar past its edge.
+   Steps by toolbar width (container editor-toolbar):
+   below 760px the LLM label becomes icon only; below 700px the BG/FG word goes; the font and size stay.
+   Thresholds are provisional. */
+.font-control-integrated-group {
+  min-width: 0;
+}
+
+/* Flat selects in the editor toolbar: no outline, no fill, the same 28px height as the toolbar's controls */
+.editor-toolbar-select--flat {
+  border: none;
+  background: transparent;
+  height: 28px;
+}
+
+/* The group's free space goes to the selects (not left empty at the right), so their names show more before the ellipsis */
+.editor-toolbar .font-control-integrated-group > [data-ui^="edt:"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The size value (16px) keeps a readable width before the labels give way; the font name takes the free width (see the group rule above) */
+.editor-toolbar select.editor-toolbar-select#fontSizeSelect {
+  flex: 0 0 auto;
+  min-width: 4.5em;
+}
+
+.editor-toolbar select.editor-toolbar-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The left part must be allowed to shrink below its content width; the right part (editor.css) never shrinks. */
+.editor-toolbar > :not(.editor-header-right) {
+  min-width: 0;
+}
+
+@container editor-toolbar (max-width: 759px) {
+  #btnEditorAiToggle .ai-switch-pill__name {
+    display: none;
+  }
+}
+
+@container editor-toolbar (max-width: 699px) {
+  .style-label--bg {
+    display: none;
+  }
 }

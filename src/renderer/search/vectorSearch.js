@@ -1,4 +1,4 @@
-import { showSelectionPopoverMenu, removeContextMenu } from '../editor/ui/contextMenuManager.js';
+import { removeContextMenu } from '../editor/ui/contextMenuManager.js';
 import { getQuickMatches } from './dictionary.js';
 import { STORAGE_KEYS, TIMINGS, DEFAULTS } from '../core/constants.js';
 
@@ -17,7 +17,7 @@ import {
 import { initLocalAiWorker, isLocalAiReadyState, getVectorFromWorker } from './searchLocalAi.js';
 import { fetchAiSuggestions } from './searchProviders.js';
 import { showMonacoWidget } from './searchWidget.js';
-import { aiManager } from '../core/aiStateManager.js';
+import { knowledgeSources, canUseEmbedding } from '../core/aiAccess.js';
 import { adapterRegistry } from './adapterRegistry.js';
 
 let debounceTimer = null;
@@ -40,63 +40,6 @@ export function initVectorSearch() {
     // context menu manager logic
     if (window.activeContextMenu && !window.activeContextMenu.contains(e.target)) {
       removeContextMenu();
-    }
-  });
-}
-
-export function initVectorSearchForBasicEditor(editorInput) {
-  editorInput.addEventListener('mouseup', (e) => {
-    const mode = localStorage.getItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
-    if (mode !== 'selection') return;
-
-    setTimeout(() => {
-      const start = editorInput.selectionStart;
-      const end = editorInput.selectionEnd;
-      if (start !== end) {
-        const selectedText = editorInput.value.substring(start, end).trim();
-        if (selectedText.length > 0) {
-          showSelectionPopoverMenu(e.pageX, e.pageY - 40, selectedText);
-        }
-      }
-    }, 50);
-  });
-
-  editorInput.addEventListener('contextmenu', (e) => {
-    removeContextMenu();
-    let start = editorInput.selectionStart;
-    let end = editorInput.selectionEnd;
-
-    if (start === end) {
-      const text = editorInput.value;
-      while (start > 0 && /[^\\s]/.test(text[start - 1])) start--;
-      while (end < text.length && /[^\\s]/.test(text[end])) end++;
-      if (start !== end) {
-        editorInput.setSelectionRange(start, end);
-      }
-    }
-
-    if (start !== end || editorInput.selectionStart !== editorInput.selectionEnd) {
-      start = editorInput.selectionStart;
-      end = editorInput.selectionEnd;
-      const selectedText = editorInput.value.substring(start, end).trim();
-      if (selectedText.length > 0) {
-        e.preventDefault();
-        showSelectionPopoverMenu(e.pageX, e.pageY, selectedText);
-      }
-    }
-  });
-
-  editorInput.addEventListener('keydown', (e) => {
-    if ((e.altKey && (e.key === 's' || e.key === 'S')) || (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S'))) {
-      const start = editorInput.selectionStart;
-      const end = editorInput.selectionEnd;
-      if (start !== end) {
-        const selectedText = editorInput.value.substring(start, end).trim();
-        if (selectedText.length > 0) {
-          e.preventDefault();
-          triggerSearchAndRender(selectedText);
-        }
-      }
     }
   });
 }
@@ -131,14 +74,19 @@ export function triggerSearchAndRender(query) {
         return;
       }
 
-      // Gate: AI feature is active when setup is completed
-      // Master AI gate removed in favor of direct model readiness
+      // Gate (ADR-11): the dictionary search above always runs; vector search needs Embedding ON,
+      // and cloud suggestions need LLM ON. With both off, the dictionary result is final.
+      const sources = knowledgeSources();
+      if (!sources.vector && !sources.llm) {
+        renderResults(quickResults, false);
+        return;
+      }
 
       const vectorizerId = adapterRegistry.getActiveVectorizerId();
       const generatorId  = adapterRegistry.getActiveGeneratorId();
 
       // --- LLM-as-Embedding path ---
-      if (vectorizerId.startsWith('llm-embed-')) {
+      if (vectorizerId.startsWith('llm-embed-') && sources.llm) {
         const vectorizer = adapterRegistry.getActiveVectorizer();
         try {
           const vector = await vectorizer.encode(query);
@@ -157,16 +105,14 @@ export function triggerSearchAndRender(query) {
       }
 
       // --- Cloud LLM suggestion path (gemini / claude / openai) ---
-      if (generatorId === 'gemini' || generatorId === 'openai' || generatorId === 'claude') {
-        const suggestion = await fetchAiSuggestions(query, generatorId);
-        if (suggestion) {
-          renderResults([suggestion, ...quickResults], false);
-          return;
-        }
+      // It stands in for the embedding model while that is off, and sits on top of the vector results while both are on
+      let suggestion = null;
+      if (sources.llm && (generatorId === 'gemini' || generatorId === 'openai' || generatorId === 'claude')) {
+        suggestion = await fetchAiSuggestions(query, generatorId);
       }
 
       // --- Local Embedding + Rust HNSW path ---
-      if (vectorizerId === 'local' && window.engineAPI?.searchVector && isLocalAiReadyState()) {
+      if (sources.vector && vectorizerId === 'local' && window.engineAPI?.searchVector && isLocalAiReadyState()) {
         const vectorizer = adapterRegistry.getActiveVectorizer();
         const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Timeout')), TIMINGS.WORKER_TIMEOUT_MS)
@@ -176,15 +122,13 @@ export function triggerSearchAndRender(query) {
         const response = await window.engineAPI.searchVector(vector, queryLimit);
         if (response?.success && Array.isArray(response.data) && response.data.length > 0) {
           const filtered = response.data.filter(r => (r.score || 0) >= minScore);
-          renderResults(
-            filtered.length >= 3 ? filtered : response.data.slice(0, Math.min(queryLimit, Math.max(3, filtered.length))),
-            false
-          );
+          const vectorResults = filtered.length >= 3 ? filtered : response.data.slice(0, Math.min(queryLimit, Math.max(3, filtered.length)));
+          renderResults(suggestion ? [suggestion, ...vectorResults] : vectorResults, false);
           return;
         }
       }
 
-      renderResults(quickResults, false);
+      renderResults(suggestion ? [suggestion, ...quickResults] : quickResults, false);
     } catch (err) {
       console.warn('AI suggestion fallback used:', err);
       renderResults(quickResults, false);
@@ -207,13 +151,11 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
       const isAiSetup = localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
       if (!isAiSetup) return;
 
-      // Gate: Monaco AI vector search only runs when Master AI is explicitly ON
-      if (typeof aiManager?.isMasterAiEnabled === 'function' && !aiManager.isMasterAiEnabled()) return;
+      // Gate (ADR-11): the widget's vector search follows the Embedding switch, not the LLM
+      if (!canUseEmbedding()) return;
 
-      const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
-
-      // Guard: Only proceed if local AI model is fully downloaded and ready
-      if (provider === 'local' && window.engineAPI && window.engineAPI.searchVector && isLocalAiReadyState()) {
+      // Guard: Only proceed if the local model is fully downloaded and ready
+      if (adapterRegistry.getActiveVectorizerId() === 'local' && window.engineAPI && window.engineAPI.searchVector && isLocalAiReadyState()) {
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500));
         const vector = await Promise.race([getVectorFromWorker(query), timeoutPromise]);
         const response = await window.engineAPI.searchVector(vector);
@@ -268,13 +210,4 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
       console.warn('Vector computation skipped/timed out, using fast results:', err);
     }
   }, 300);
-}
-
-if (typeof window !== 'undefined') {
-  window.addEventListener('app:directVectorSearch', (e) => {
-    const query = e.detail?.query;
-    if (query) {
-      triggerSearchAndRender(query);
-    }
-  });
 }

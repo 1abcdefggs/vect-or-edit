@@ -1,3 +1,13 @@
+/** Escapes text from knowledge items (imported files) before it is placed in HTML. */
+export function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Schema-Agnostic Title & Description Resolvers (International Standard)
 export function resolveItemTitle(r) {
   let title = r.title || r.name || r.label || r.prefLabel || r.term || r.text;

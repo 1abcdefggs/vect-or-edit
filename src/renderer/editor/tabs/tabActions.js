@@ -1,5 +1,6 @@
 import { getEditorInstance } from '../core/editorCore.js';
-import { getActiveTab, createNewTab } from './tabState.js';
+import { getActiveTab, createNewTab, getTabFormat, getDefaultDocumentFormat } from './tabState.js';
+import { withFormatExtension } from '../../../shared/documentFormat';
 import { editorEvents } from '../core/editorEvents.js';
 
 export function extractSelectionToNewTab(mode = 'copy') {
@@ -24,7 +25,8 @@ export function extractSelectionToNewTab(mode = 'copy') {
 
   const activeTab = getActiveTab();
   const sourceTitle = activeTab ? activeTab.title.replace(/\.[^/.]+$/, '') : 'Doc';
-  const newTitle = `${sourceTitle}_extracted.md`;
+  // The extracted text keeps the format of the document it came from
+  const newTitle = withFormatExtension(`${sourceTitle}_extracted`, activeTab ? getTabFormat(activeTab) : getDefaultDocumentFormat());
   createNewTab(newTitle, text);
 }
 

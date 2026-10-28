@@ -118,22 +118,43 @@
   color: #e2e8f0;
 }
 
-/* Micro LED Square Pixel Matrix Cell */
+/* Status LED (pipeline lamps): one base and one rule per state. The state is set by statusManager.ts (SEVERITY_LED) */
 .status-led-dot {
   position: relative;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #1a2333;
-  transition: all 0.2s ease;
+  display: inline-block;
   flex-shrink: 0;
+  background: #64748b;
+  transition: all 0.2s ease;
 }
 
-/* 1. Ready State: Emerald Success (#1b8) */
+/* Ready: emerald, lights once with the ignition */
 .status-led-dot.status-ready {
-  background: #1b8;
-  box-shadow: 0 0 4px #1b8, 0 0 8px #1b8;
+  background: #10b981;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
   animation: matrix-ignition 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Loading and warning: amber, pulses while the work runs */
+.status-led-dot.status-loading {
+  background: #f59e0b;
+  box-shadow: 0 0 5px rgba(251, 191, 36, 0.8), 0 0 8px rgba(251, 191, 36, 0.5);
+  animation: pulse-dot 1.2s infinite ease-in-out;
+}
+
+/* Standby: slate and dimmed, no motion */
+.status-led-dot.status-standby {
+  background: #64748b;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+/* Error: red and lit, no motion (a blinking alarm distracts; the colour and the hover text carry the message) */
+.status-led-dot.status-error {
+  background: #fa1;
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
 }
 
 .status-pill.pill-ready {
@@ -147,26 +168,12 @@
   background: rgba(17, 187, 136, 0.25) !important;
 }
 
-/* 2. Loading / Processing State: Amber Pulsing (#fbbf24) */
-.status-led-dot.status-loading,
-.status-led-dot.status-pending {
-  background: #fbbf24;
-  box-shadow: 0 0 5px rgba(251, 191, 36, 0.8), 0 0 8px rgba(251, 191, 36, 0.5);
-  animation: matrix-pulse-yellow 1.2s infinite alternate;
-}
-
+/* Loading pill colours (the LED is in the status block above) */
 .status-pill.pill-loading,
 .status-pill.pill-pending {
   color: #fbbf24 !important;
   background: rgba(251, 191, 36, 0.12) !important;
   border-color: rgba(251, 191, 36, 0.35) !important;
-}
-
-/* 3. Standby / Unloaded State: Calm Slate (#64748b) */
-.status-led-dot.status-standby {
-  background: #64748b;
-  box-shadow: none;
-  opacity: 0.8;
 }
 
 .status-pill.pill-standby {
@@ -177,13 +184,6 @@
 
 .status-pill.pill-standby:hover {
   color: #cbd5e1 !important;
-}
-
-/* 4. Error State: Alert Red Pulsing (#ef4444) */
-.status-led-dot.status-error {
-  background: #ef4444;
-  box-shadow: 0 0 5px rgba(239, 68, 68, 0.9), 0 0 9px #ef4444;
-  animation: matrix-pulse-red 0.8s infinite alternate;
 }
 
 .status-pill.pill-error {
@@ -227,30 +227,19 @@
   animation: pulse-glow 1.5s infinite alternate;
 }
 
-/* Unified Semantic Module Cards (Guideline & Knowledge Shared Components) */
-.semantic-module-card {
-  background: var(--bg-primary);
-  padding: 8px 10px;
-  border-radius: var(--radius-md, 6px);
-  border: var(--border-width) solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  box-sizing: border-box;
-}
 
 /* Slide-up System Logs Console Panel */
 .system-log-panel {
   position: relative;
   flex-shrink: 0;
-  height: 220px;
-  max-height: 40vh;
-  background: #111111;
-  border-top: var(--border-width) solid var(--border-color);
+  height: var(--log-panel-height, 220px);
+  max-height: 70vh;
+  background: var(--log-bg);
+  border-top: var(--border-width) solid var(--control-border);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
-  color: #f1f5f9;
+  color: var(--log-fg);
   z-index: 40;
   transition: height 0.2s ease;
 }
@@ -260,16 +249,16 @@
   align-items: center;
   justify-content: space-between;
   padding: 6px 12px;
-  background: #222;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: var(--log-header-bg);
+  border-bottom: 1px solid var(--log-btn-border);
+  color: var(--log-title);
 }
 
 .log-panel-title {
   
   font-size: var(--fs-12);
   letter-spacing: 0.5px;
-  color: #ffffff;
+  color: var(--log-title);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -284,57 +273,109 @@
   line-height: 1.45;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   user-select: text;
   cursor: text;
 }
 
+/* Fixed columns (time, level, source, message) so the message starts at the same x in every row.
+   The widths follow the longest value of each column; a longer source is cut with an ellipsis. */
+/* The header and every row share one column grid, so the labels sit over their values */
+.log-row,
+.log-head {
+  display: grid;
+  grid-template-columns: 13ch 6ch 14ch minmax(0, 1fr);
+  align-items: start;
+  column-gap: 8px;
+}
+
 .log-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
   word-break: break-all;
 }
 
+/* Same font size as the rows: ch widths follow the element's own font size, so the header must match */
+.log-head {
+  padding: 2px 12px;
+  font-family: 'Cascadia Code', Consolas, Monaco, monospace;
+  font-size: var(--fs-12);
+  color: var(--log-time);
+  border-bottom: var(--border-width) solid var(--border-color);
+  user-select: none;
+  /* The header also holds the log actions in a fifth, auto-sized column. Its labels hide when the header is narrow
+     (icons stay, with their tooltips). The header is the container, so the rule follows the panel width. */
+  grid-template-columns: 13ch 6ch 14ch minmax(0, 1fr) auto;
+  align-items: center;
+  container-type: inline-size;
+}
+
+.log-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Icons match the text size (12px); the icon font defaults to 24px and would make the header taller */
+.log-head-actions .material-symbols-outlined {
+  font-size: var(--fs-12);
+}
+
+/* The tinted face and hover come from .log-panel-btn (buttons.css); here only the text colours */
+.log-head-actions .log-panel-btn {
+  color: var(--text-main);
+}
+
+.log-head-actions .log-panel-btn .material-symbols-outlined {
+  color: var(--accent-color);
+}
+
+@container (max-width: 520px) {
+  .log-btn-label {
+    display: none;
+  }
+}
+
 .log-time {
-  color: #64748b;
+  color: var(--log-time);
   flex-shrink: 0;
 }
 
+/* No vertical padding and a line height of 1: the badge must not be taller than the 12px text line, or it sets the height of every row */
 .log-badge {
-  padding: 1px 4px;
+  padding: 0 4px;
   border-radius: 4px;
   font-size: var(--fs-10);
-  
-  flex-shrink: 0;
+  line-height: 1;
+  justify-self: start;
 }
 
 .log-badge.badge-info {
   background: rgba(56, 189, 248, 0.15);
-  color: #66f;
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: color-mix(in srgb, #66f 55%, var(--text-main));
 }
 
 .log-badge.badge-warn {
   background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: color-mix(in srgb, #f59e0b 55%, var(--text-main));
 }
 
 .log-badge.badge-error {
   background: rgba(239, 68, 68, 0.15);
-  color: #fa1;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: color-mix(in srgb, #ef4444 55%, var(--text-main));
 }
 
 .log-source {
-  color: #94a3b8;
-  
-  flex-shrink: 0;
+  color: var(--log-source);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .log-msg {
-  color: #e2e8f0;
+  color: var(--log-msg);
+}
+
+.log-row--success .log-msg {
+  color: var(--success-color, #10b981);
 }
 
 /* Editor Status Bar */
@@ -363,8 +404,62 @@
   color: rgba(255, 255, 255, 0.15);
 }
 
-.status-bar-item {
-  font-family: var(--font-family, sans-serif);
+
+/* A status item that can be clicked (the document format switch) */
+.status-bar-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.status-bar-button:hover {
+  background: var(--hover-bg);
+}
+
+.status-bar-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+.status-bar-separator[hidden] {
+  display: none;
+}
+
+/* Bottom bar compact steps. With the pipeline strip open the left group needs about 810px and the right 160px.
+   The right group never shrinks; text is dropped in steps and every item keeps its tooltip */
+#nativeBottomBar {
+  container: bottom-bar / inline-size;
+}
+
+#nativeBottomBar .bottom-bar-left {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#nativeBottomBar .bottom-bar-right {
+  flex-shrink: 0;
+}
+
+/* Step 1: pipeline stages show only their LEDs (saves about 370px) */
+@container bottom-bar (max-width: 1000px) {
+  #nativeBottomBar .status-pill-label,
+  #nativeBottomBar .pipeline-title {
+    display: none;
+  }
+}
+
+/* Step 2: LOGS, update and RAM show only their icons */
+@container bottom-bar (max-width: 640px) {
+  #nativeBottomBar .bottom-bar-text {
+    display: none;
+  }
 }
 
 /* Shown briefly after an autosave; the width is reserved so the bar does not shift when it appears */
@@ -430,28 +525,6 @@
   opacity: 1;
 }
 
-.status-led-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #64748b;
-  display: inline-block;
-}
-
-.status-led-dot.status-ready {
-  background: #10b981;
-  box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
-}
-
-.status-led-dot.status-loading {
-  background: #f59e0b;
-  animation: pulse-dot 1.2s infinite ease-in-out;
-}
-
-.status-led-dot.status-error {
-  background: #fa1;
-}
-
 /* Flow Arrow between pipeline stages */
 .flow-arrow {
   display: inline-flex;
@@ -473,3 +546,45 @@
   letter-spacing: 0.6px;
   opacity: 0.85;
 }
+/* Document format switch: pointing at the button lists both formats above it; the current one is lit */
+.format-switch { position: relative; display: inline-flex; align-items: center; }
+.format-switch__menu {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  min-width: 100%;
+  padding: 4px;
+  gap: 2px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.35);
+  z-index: 60;
+}
+/* A short bridge keeps the menu open while the pointer crosses the gap between the button and the list */
+.format-switch__menu::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 8px; }
+.format-switch:hover .format-switch__menu,
+.format-switch:focus-within .format-switch__menu { display: flex; }
+.format-switch__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+  white-space: nowrap;
+  text-align: left;
+  cursor: pointer;
+}
+.format-switch__item:hover { background: var(--hover-bg); }
+.format-switch__item::before { content: ''; width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--text-muted); }
+.format-switch__item[aria-checked="true"] { color: var(--accent-color, #38bdf8); font-weight: 700; }
+.format-switch__item[aria-checked="true"]::before { background: var(--accent-color, #38bdf8); border-color: var(--accent-color, #38bdf8); }
+
+/* A pipeline lamp that is not green jumps to where it is fixed (ui/layout/lampNavigation.js) */
+.status-pill:not(.pill-ready) { cursor: pointer; }

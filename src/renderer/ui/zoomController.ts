@@ -40,6 +40,9 @@ export function initZoomControls(): void {
       percentEl.textContent = `${Math.round(currentZoom * 100)}%`;
     }
 
+    const sliderEl = document.getElementById('headerZoomSlider') as HTMLInputElement | null;
+    if (sliderEl) sliderEl.value = currentZoom.toString();
+
     if (modalZoomSelect) {
       modalZoomSelect.value = currentZoom.toString();
       if (!modalZoomSelect.value) {
@@ -54,14 +57,29 @@ export function initZoomControls(): void {
 
   // Mouse wheel zoom support on header zoom group / badge
   const zoomBadge = (document.getElementById('headerZoomBadge') || document.querySelector('.header-zoom-group')) as HTMLElement | null;
+  // Zooming scales the whole window, so the badge moves under a pointer that stays where it is. A wheel gesture that
+  // started on the badge therefore keeps working for a moment after the pointer has slipped off it.
+  const SESSION_MS = 1200;
+  let sessionTimer: number | undefined;
+  const keepZoomSession = (): void => {
+    zoomBadge?.classList.add('is-zooming');
+    window.clearTimeout(sessionTimer);
+    sessionTimer = window.setTimeout(() => zoomBadge?.classList.remove('is-zooming'), SESSION_MS);
+  };
+  const stepByWheel = (e: WheelEvent): void => {
+    e.preventDefault();
+    keepZoomSession();
+    if (e.deltaY < 0) {
+      applyZoom(currentZoom + STEP);
+    } else if (e.deltaY > 0) {
+      applyZoom(currentZoom - STEP);
+    }
+  };
+
   if (zoomBadge) {
-    zoomBadge.addEventListener('wheel', (e: WheelEvent) => {
-      e.preventDefault();
-      if (e.deltaY < 0) {
-        applyZoom(currentZoom + STEP);
-      } else if (e.deltaY > 0) {
-        applyZoom(currentZoom - STEP);
-      }
+    zoomBadge.addEventListener('wheel', stepByWheel, { passive: false });
+    window.addEventListener('wheel', (e: WheelEvent) => {
+      if (!e.ctrlKey && zoomBadge.classList.contains('is-zooming')) stepByWheel(e);
     }, { passive: false });
 
     // Click on badge resets to 100%
@@ -70,6 +88,11 @@ export function initZoomControls(): void {
         applyZoom(1.0);
       }
     });
+
+    // The slider sits inside the badge: dragging it sets the value and must not count as a click (reset)
+    const zoomSlider = document.getElementById('headerZoomSlider') as HTMLInputElement | null;
+    zoomSlider?.addEventListener('click', (e) => e.stopPropagation());
+    zoomSlider?.addEventListener('input', () => applyZoom(parseFloat(zoomSlider.value), false));
   }
 
   // Ctrl + Mouse Wheel global zoom support

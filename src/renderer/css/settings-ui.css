@@ -1,0 +1,607 @@
+/* Settings page building blocks: cards, buttons, switch, segmented buttons (choiceControls.js) */
+
+.settings-modal-body .settings-section-card {
+  background: var(--bg-card, rgba(255, 255, 255, 0.02));
+  box-shadow: none;
+}
+
+.settings-section-card > h4 .card-badge,
+.card-badge {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--fs-11);
+  font-weight: 600;
+  color: var(--accent-text, #38bdf8);
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 12%, transparent);
+  white-space: nowrap;
+}
+
+.card-badge--ok { color: var(--success-color, #10b981); background: color-mix(in srgb, var(--success-color, #10b981) 12%, transparent); }
+.card-badge--warn { color: #c084fc; background: rgba(168, 85, 247, 0.12); }
+
+.settings-section-card > h4 .material-symbols-outlined {
+  font-size: var(--fs-18);
+  color: var(--accent-text, #38bdf8);
+}
+
+.settings-section-card > .setting-desc { margin-bottom: 10px; }
+
+.settings-section-card > .setting-item:last-child,
+.settings-section-card > .setting-item:last-of-type {
+  border-bottom: none;
+}
+
+.settings-subpanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--bg-card, rgba(255, 255, 255, 0.02));
+}
+
+.setting-item--stack {
+  flex-direction: column;
+  align-items: stretch;
+  border: none;
+  padding: 0;
+}
+
+.setting-item--stack > *:last-child { justify-content: flex-start; }
+
+.setting-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.setting-path {
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.setting-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+.settings-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-size: var(--fs-12);
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--text-main);
+  background: var(--bg-card, rgba(255, 255, 255, 0.08));
+  border: var(--border-width) solid var(--border-color);
+}
+
+.settings-btn:hover { border-color: var(--accent-color, #38bdf8); }
+.settings-btn[hidden] { display: none; }
+
+.settings-btn--primary {
+  color: var(--text-on-accent, #ffffff);
+  background: var(--accent-color, #38bdf8);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.settings-btn--danger {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.settings-btn .material-symbols-outlined { font-size: var(--fs-15); }
+
+.settings-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-12);
+  color: var(--accent-text, #38bdf8);
+  text-decoration: none;
+}
+
+.settings-link .material-symbols-outlined { font-size: var(--fs-13); }
+
+.api-key-field {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.25));
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 6px;
+  padding: 2px 4px 2px 10px;
+}
+
+.api-key-field:focus-within { border-color: var(--accent-color, #38bdf8); }
+.api-key-field > .material-symbols-outlined { font-size: var(--fs-18); color: var(--text-muted); margin-right: 6px; flex-shrink: 0; }
+
+.api-key-field input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 4px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-13);
+}
+
+.api-key-field button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.provider-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.provider-card { padding: 12px 8px; }
+.provider-card .provider-sub { font-size: var(--fs-10); color: var(--text-muted); }
+
+.provider-block {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 8px;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--bg-card, rgba(255, 255, 255, 0.02));
+}
+
+.provider-block .setting-item { border: none; padding: 0; }
+
+/* Switch (on/off) */
+.ui-control-source { display: none !important; }
+
+.ui-switch {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.1));
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ui-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.ui-switch.is-on { background: var(--accent-color, #38bdf8); border-color: transparent; }
+.ui-switch.is-on::after { transform: translateX(16px); background: #fff; }
+.ui-switch:focus-visible, .ui-segmented button:focus-visible { outline: 2px solid var(--accent-color, #38bdf8); outline-offset: 2px; }
+
+/* Segmented buttons: the active one is filled */
+.ui-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  padding: 2px;
+  gap: 2px;
+  border-radius: 8px;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.ui-segmented button {
+  padding: 5px 12px;
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ui-segmented button:hover { color: var(--text-main); }
+
+.ui-segmented button.active {
+  color: var(--text-on-accent, #ffffff);
+  background: var(--accent-color, #38bdf8);
+  font-weight: 600;
+}
+
+/* Help that stays closed until asked for */
+.settings-details > summary {
+  cursor: pointer;
+  font-size: var(--fs-12);
+  color: var(--accent-text, #38bdf8);
+  padding: 4px 0;
+}
+
+.settings-details[open] > summary { margin-bottom: 8px; }
+
+/* Selected provider: filled with a check so it reads without color */
+.provider-card { position: relative; }
+
+.provider-card.active {
+  border-color: var(--accent-color, #38bdf8);
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 12%, transparent);
+  box-shadow: inset 0 0 0 1px var(--accent-color, #38bdf8);
+}
+
+.provider-card.active::after {
+  content: '\2713';
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: var(--fs-12);
+  font-weight: 700;
+  color: var(--accent-text, #38bdf8);
+}
+
+.color-pick { display: flex; align-items: center; gap: 6px; font-size: var(--fs-12); min-height: 0; }
+
+.color-pick input[type="color"] {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.settings-log-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-12);
+  border-radius: 4px;
+}
+
+.settings-log-btn .material-symbols-outlined { font-size: var(--fs-14); flex-shrink: 0; color: inherit; }
+
+.settings-section-card > h4 .settings-log-btn .material-symbols-outlined { color: inherit; font-size: var(--fs-14); }
+
+/* Header of the settings page */
+.settings-header-left { display: flex; align-items: center; gap: 12px; }
+.settings-title { display: flex; align-items: center; gap: 8px; margin: 0; }
+
+.settings-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--accent-text, #38bdf8);
+  background: color-mix(in srgb, var(--accent-color, #38bdf8) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-color, #38bdf8) 30%, transparent);
+}
+
+.settings-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: var(--fs-14);
+  border-radius: 4px;
+}
+
+/* Sizes of controls and small parts */
+.setting-text--shrink { min-width: 0; }
+.input-num { width: 5.5rem; }
+.select-scope { max-width: 280px; }
+.select-model { min-width: 220px; }
+.select-full { width: 100%; font-family: var(--font-mono, monospace); font-size: var(--fs-12); }
+.setting-desc--accent { color: var(--accent-text, #38bdf8); }
+.status-ok { margin: 0; color: var(--success-color, #10b981); }
+.ai-status-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ai-model-subtab-btn .material-symbols-outlined { font-size: var(--fs-15); }
+.api-key-field button .material-symbols-outlined { font-size: var(--fs-18); }
+.embedding-model-list { display: flex; flex-direction: column; gap: 8px; }
+.provider-block ~ .setting-item { margin-top: 12px; }
+.settings-modal-body input[type="checkbox"] { accent-color: var(--accent-color, #38bdf8); width: 18px; height: 18px; cursor: pointer; }
+.settings-section-card .log-entries-container { height: 220px; flex: none; }
+.settings-section-card > h4 .setting-actions { margin-left: auto; }
+.progress-track { width: 100%; height: 6px; overflow: hidden; border-radius: 4px; background: var(--border-color); }
+.progress-fill { height: 100%; width: 0; background: var(--accent-color, #38bdf8); transition: width 0.3s ease; }
+.setting-item.settings-subpanel { flex-direction: row; align-items: center; }
+
+/* Badges: the colour of the text is mixed with the main text colour, and the rule is as specific as the one that sets the accent */
+.settings-section-card > h4 .card-badge { color: var(--accent-text); }
+.settings-section-card > h4 .card-badge--ok { color: color-mix(in srgb, var(--success-color, #10b981) 55%, var(--text-main)); }
+.settings-section-card > h4 .card-badge--warn { color: color-mix(in srgb, #a855f7 55%, var(--text-main)); }
+.status-ok { color: color-mix(in srgb, var(--success-color, #10b981) 55%, var(--text-main)); }
+
+/* A settings row: [eye | heading] on one line, the description below it as bullets, indented under the heading */
+.settings-modal-body .has-eye {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+}
+
+.settings-modal-body .has-eye > .vis-toggle-wrapper { grid-column: 1; grid-row: 1; }
+
+.settings-modal-body .has-eye > .setting-label {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 2px 0 2px 10px;
+  border-left: var(--border-width) solid var(--border-color);
+}
+
+.settings-modal-body .has-eye > :not(.vis-toggle-wrapper):not(.setting-label) { grid-column: 2; }
+
+.desc-list {
+  margin: 2px 0 0;
+  padding-left: 1.3em;
+  list-style: disc;
+}
+
+.desc-list li { margin: 1px 0; line-height: 1.45; }
+.desc-list li::marker { color: var(--text-muted); }
+
+/* Settings on the left; the generated guide opens on the right on request (the Guide button, ADR-11 / layout plan 2026-10-23).
+   The page is a container, so the layout follows the width of the page and not of the window.
+   Widths come from the layout solver: the guide is 40% of the page, never narrower than 22.85rem or wider than 33.6rem;
+   below 52.85rem (about 846px) there is no room for both, so the guide opens over the settings as a drawer. */
+.settings-split {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  container: settings-page / inline-size;
+}
+
+.settings-split > .settings-modal-body {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.settings-help-pane { display: none; }
+
+#settingsModal.guide-open .settings-help-pane {
+  display: block;
+  position: relative;
+  flex: 0 0 clamp(22.85rem, var(--settings-guide-width, 40cqi), 33.6rem);
+  overflow-y: auto;
+  padding: 0.875rem 1.25rem 1.75rem;
+  border-left: var(--border-width) solid var(--border-color);
+  background: var(--bg-secondary, transparent);
+  color: var(--text-main);
+  font-size: var(--fs-14);
+  line-height: 1.6;
+}
+
+/* Side by side: the description lives in the guide, so the rows on the left shrink to heading and control */
+@container settings-page (width >= 52.85rem) {
+  #settingsModal.guide-open .setting-item .setting-desc { display: none; }
+  #settingsModal.guide-open .setting-item { padding: 6px 0; min-height: 0; }
+  #settingsModal.guide-open .settings-modal-body .has-eye > .setting-label { padding-top: 0; padding-bottom: 0; }
+  #settingsModal.guide-open .settings-section-card { padding-top: 10px; padding-bottom: 10px; margin-bottom: 10px; }
+  #settingsModal.guide-open .settings-section-card > h4 { margin-bottom: 6px; padding-bottom: 6px; }
+}
+
+/* Narrow page: the guide is a drawer over the settings, with a scrim behind it */
+@container settings-page (width < 52.85rem) {
+  #settingsModal.guide-open .settings-help-pane {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    z-index: 6;
+    width: min(36rem, 100cqi);
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.35);
+  }
+  #settingsModal.guide-open .settings-split::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: color-mix(in srgb, var(--bg-primary) 55%, transparent);
+  }
+  .settings-help-pane .panel-resizer { display: none; }
+}
+
+/* The Guide button in the settings header */
+.settings-guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  margin-right: 8px;
+  font-size: var(--fs-13);
+  color: var(--text-main);
+  background: var(--log-btn-bg, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+.settings-guide-btn[aria-pressed="true"] {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+.settings-guide-btn .material-symbols-outlined { font-size: var(--fs-16); }
+#settingsModal:not(.has-help-pane) .settings-guide-btn { display: none; }
+/* The arrow shows that the guide opens on the right; it turns back while the guide is open */
+.settings-guide-btn .settings-guide-arrow { margin-left: -2px; transition: transform 0.15s ease; }
+.settings-guide-btn[aria-pressed="true"] .settings-guide-arrow { transform: rotate(180deg); }
+
+/* The window map: the four areas laid out as in the window (Header on top, Editor and Sidebar side by side, System at the bottom) */
+.settings-area-map {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "hdr hdr"
+    "edt sbr"
+    "sys sys";
+  gap: 4px;
+  padding: 6px 18px;
+  flex-shrink: 0;
+  background: var(--bg-primary, transparent);
+}
+.settings-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 2px 10px;
+  text-align: left;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+}
+.settings-area:hover { color: var(--text-main); }
+.settings-area.active {
+  color: var(--text-main);
+  border-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
+}
+.settings-area-name { font-size: var(--fs-13); font-weight: 600; }
+.settings-area.active .settings-area-name { color: var(--accent-text, var(--accent-color)); }
+/* Only the marked area shows its sentence, which keeps the map low; the others have it as a tooltip */
+.settings-area-desc { display: none; font-size: var(--fs-11); line-height: 1.3; }
+.settings-area.active .settings-area-desc { display: block; }
+@media (max-width: 640px) {
+  .settings-area.active .settings-area-desc { display: none; }
+}
+
+/* The info mark on a setting opens the guide at that item */
+.setting-info-btn {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--accent-color);
+  cursor: pointer;
+  vertical-align: middle;
+}
+.setting-info-btn[hidden] { display: none; }
+.setting-info-btn .material-symbols-outlined { font-size: var(--fs-16); }
+
+.help-title { margin: 0 0 10px; font-size: var(--fs-18); font-weight: 700; }
+:is(.settings-help-pane, .help-doc) h3 { margin: 18px 0 8px; font-size: var(--fs-15); color: var(--accent-text); }
+:is(.settings-help-pane, .help-doc) h4 { margin: 14px 0 6px; font-size: var(--fs-14); font-weight: 600; }
+:is(.settings-help-pane, .help-doc) p { margin: 6px 0; font-size: var(--fs-14); line-height: 1.6; color: var(--text-muted); max-width: 34.93em; }
+:is(.settings-help-pane, .help-doc) .help-note { padding: 6px 10px; border-left: 3px solid var(--border-color); }
+:is(.settings-help-pane, .help-doc) code { font-family: var(--font-mono, monospace); font-size: 0.92em; }
+
+.help-about { margin-bottom: 8px; font-size: var(--fs-13); }
+.help-about > summary { cursor: pointer; color: var(--accent-text); padding: 2px 0; }
+
+/* Each row of a guide table is a card: the first column is the heading, the rest follow with their column name.
+   (A table with five columns left each column far too narrow, and Japanese broke after every few characters.) */
+.help-table,
+.help-table tbody { display: block; width: 100%; }
+.help-table thead { display: none; }
+.help-table tr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  margin: 8px 0;
+  padding: 10px 12px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md, 8px);
+  background: var(--result-bg, transparent);
+  line-height: 1.55;
+}
+.help-table td { display: block; padding: 0; border: none; min-width: 0; overflow-wrap: anywhere; }
+.help-table td:empty { display: none; }
+.help-table td:first-child { font-size: var(--fs-14); font-weight: 700; color: var(--text-main); }
+.help-table td:nth-child(2) { font-size: var(--fs-12); color: var(--text-muted); }
+.help-table td:nth-child(n+4)::before { content: attr(data-label) ': '; color: var(--text-muted); }
+.help-table td:nth-child(n+3) { font-size: var(--fs-14); }
+.help-table tr[data-control],
+.help-table tr[data-part] { cursor: pointer; }
+.help-table tr[data-control]:hover,
+.help-table tr[data-part]:hover { background: var(--hover-bg); }
+
+.help-table tr.is-current {
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent-color);
+}
+
+/* The Help page (ui/help/helpPage.js): the guide as a document, with the areas on the left and a search box */
+.help-page__dialog {
+  width: min(70rem, 94vw);
+  height: 86vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.help-page__header { gap: 12px; }
+.help-page__header .modal-title { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
+.help-page__search {
+  flex: 1 1 auto;
+  min-width: 10rem;
+  max-width: 28rem;
+  margin-left: auto;
+  padding: 4px 10px;
+  color: var(--text-main);
+  background: var(--result-bg, transparent);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 6px;
+  font: inherit;
+}
+.help-page__repo, .help-page__close { padding: 2px 8px; color: var(--text-main); }
+.help-page__main { display: flex; flex: 1 1 auto; min-height: 0; }
+.help-page__nav {
+  flex: 0 0 11rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 8px;
+  border-right: var(--border-width) solid var(--border-color);
+  overflow-y: auto;
+}
+.help-page__nav-item {
+  text-align: left;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+  cursor: pointer;
+}
+.help-page__nav-item:hover { background: var(--hover-bg); }
+.help-page__content { flex: 1 1 auto; min-width: 0; overflow-y: auto; padding: 8px 24px 32px; }
+.help-page .help-doc { font-size: var(--fs-14); line-height: 1.6; color: var(--text-main); }
+.help-page__section h2 { margin: 24px 0 8px; font-size: var(--fs-18); font-weight: 700; }
+.help-page .help-table { max-width: 52rem; }
+.help-page__empty { color: var(--text-muted); }
+.help-page__section[hidden], .help-page tr[hidden] { display: none; }
+@media (max-width: 760px) { .help-page__nav { display: none; } }

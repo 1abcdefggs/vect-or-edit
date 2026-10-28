@@ -6,7 +6,18 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-ui);
+}
+
+/* Form controls do not inherit the family by default. Family only: `font: inherit` would also reset their sizes. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 /* Status Indicators */
@@ -81,9 +92,7 @@
 }
 
 .section-title {
-  font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: var(--fs-12);
-  text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-main);
   min-height: 40px;
@@ -96,29 +105,7 @@
   box-sizing: border-box;
 }
 
-/* Semantic Rule Actions */
-.semantic-module-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.semantic-module-header > div:last-child {
-  margin-left: auto;
-}
-
-.semantic-module-title {
-  font-size: var(--fs-16);
-  font-weight: 600;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  letter-spacing: 0.2px;
-}
-
+/* Semantic Rule Actions (module card header and title: module-cards.css) */
 .semantic-btn-add {
   padding: 2px 8px;
   font-size: var(--fs-12);
@@ -129,7 +116,7 @@
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
-  color: var(--accent-color, #66f);
+  color: var(--accent-text, #66f);
   background: var(--hover-bg, rgba(255, 255, 255, 0.05));
   border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.1));
   transition: all 0.18s ease;
@@ -301,12 +288,12 @@
 
 /* Startup loader (scan animation: light sweeps over the letters, then a thin line below)
    Fonts are set here only: --startup-logo-font / -weight / -size for the VectOrEdit letters, --startup-status-font for the status line.
-   Web fonts (Inter, Noto Sans JP, Cascadia Code, ...) load from Google Fonts and may not be ready on the first frame, so keep a system fallback at the end. */
+   Web fonts (Noto Sans JP, Cascadia Code, ...) load from Google Fonts and may not be ready on the first frame, so keep a system fallback at the end. */
 .app-startup-loader {
   --startup-logo-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --startup-logo-weight: 600;
   --startup-logo-size: 3rem;
-  --startup-status-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --startup-status-font: var(--font-ui);
   position: fixed;
   inset: 0;
   z-index: 99999;
@@ -316,6 +303,24 @@
   align-items: center;
   justify-content: center;
   transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+/* The logo stays centered; the version sits beside it without shifting it */
+.startup-logo-row {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.startup-loader-version {
+  position: absolute;
+  left: 100%;
+  bottom: 0.5em;
+  margin-left: 10px;
+  font-family: var(--startup-status-font);
+  font-size: var(--fs-12);
+  color: var(--text-muted, #94a3b8);
+  white-space: nowrap;
+  user-select: none;
 }
 
 .startup-loader-status {
@@ -380,14 +385,11 @@
 
 /* Global interactive cursor normalization */
 .toolbar-btn,
-.tab-btn,
 .sidebar-item,
-.setting-tab-btn,
 .pill-action-btn,
 [id^="btn"],
 button,
 .pill-label,
-.master-ai-pill,
 .toolbar-select {
   cursor: pointer;
 }
@@ -408,12 +410,6 @@ button,
    - Window Width > 700px: Prominent font size (1.0rem+)
    ========================================================================== */
 @media (max-width: 700px) {
-  .semantic-module-title {
-    font-size: var(--fs-12) !important;
-  }
-  .semantic-module-title .material-symbols-outlined {
-    font-size: var(--fs-15) !important;
-  }
   .system-status-panel span[data-i18n="log_panel_title"] {
     font-size: var(--fs-10) !important;
   }
@@ -423,13 +419,6 @@ button,
 }
 
 @media (min-width: 701px) {
-  .semantic-module-title {
-    font-size: var(--fs-17) !important;
-    font-weight: 600;
-  }
-  .semantic-module-title .material-symbols-outlined {
-    font-size: var(--fs-20) !important;
-  }
   .system-status-panel span[data-i18n="log_panel_title"] {
     font-size: var(--fs-13) !important;
   }
@@ -441,4 +430,9 @@ button,
 /* Master Settings UI Visibility rule: Ensure hidden elements are strictly eliminated even inside flex layouts */
 [hidden] {
   display: none !important;
+}
+
+/* An icon that opens, closes or jumps somewhere: the accent colour says "you can click this" (style_rules.csv actionable-icon) */
+.actionable-icon {
+  color: var(--accent-color, #38bdf8);
 }

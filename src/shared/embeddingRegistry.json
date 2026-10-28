@@ -1,0 +1,2574 @@
+{
+  "checkedAt": "2026-10-21",
+  "languageNames": {
+    "af": "Afrikaans",
+    "am": "Amharic",
+    "ar": "Arabic",
+    "as": "Assamese",
+    "az": "Azerbaijani",
+    "be": "Belarusian",
+    "bg": "Bulgarian",
+    "bn": "Bengali",
+    "bo": "Tibetan",
+    "br": "Breton",
+    "bs": "Bosnian",
+    "ca": "Catalan",
+    "ceb": "Cebuano",
+    "co": "Corsican",
+    "cs": "Czech",
+    "cy": "Welsh",
+    "da": "Danish",
+    "de": "German",
+    "el": "Greek",
+    "en": "English",
+    "eo": "Esperanto",
+    "es": "Spanish",
+    "et": "Estonian",
+    "eu": "Basque",
+    "fa": "Persian",
+    "fi": "Finnish",
+    "fr": "French",
+    "fy": "Frisian",
+    "ga": "Irish",
+    "gd": "Scottish Gaelic",
+    "gl": "Galician",
+    "gu": "Gujarati",
+    "ha": "Hausa",
+    "haw": "Hawaiian",
+    "he": "Hebrew",
+    "hi": "Hindi",
+    "hmn": "Hmong",
+    "hr": "Croatian",
+    "ht": "Haitian Creole",
+    "hu": "Hungarian",
+    "hy": "Armenian",
+    "id": "Indonesian",
+    "ig": "Igbo",
+    "is": "Icelandic",
+    "it": "Italian",
+    "ja": "Japanese",
+    "jv": "Javanese",
+    "ka": "Georgian",
+    "kk": "Kazakh",
+    "km": "Khmer",
+    "kn": "Kannada",
+    "ko": "Korean",
+    "ku": "Kurdish",
+    "ky": "Kyrgyz",
+    "la": "Latin",
+    "lb": "Luxembourgish",
+    "lo": "Lao",
+    "lt": "Lithuanian",
+    "lv": "Latvian",
+    "mg": "Malagasy",
+    "mi": "Maori",
+    "mk": "Macedonian",
+    "ml": "Malayalam",
+    "mn": "Mongolian",
+    "mr": "Marathi",
+    "ms": "Malay",
+    "mt": "Maltese",
+    "my": "Burmese",
+    "nb": "Norwegian Bokmål",
+    "ne": "Nepali",
+    "nl": "Dutch",
+    "no": "Norwegian",
+    "ny": "Chichewa",
+    "om": "Oromo",
+    "or": "Odia",
+    "pa": "Punjabi",
+    "pl": "Polish",
+    "ps": "Pashto",
+    "pt": "Portuguese",
+    "qu": "Quechua",
+    "ro": "Romanian",
+    "ru": "Russian",
+    "rw": "Kinyarwanda",
+    "sa": "Sanskrit",
+    "sd": "Sindhi",
+    "si": "Sinhala",
+    "sk": "Slovak",
+    "sl": "Slovenian",
+    "sm": "Samoan",
+    "sn": "Shona",
+    "so": "Somali",
+    "sq": "Albanian",
+    "sr": "Serbian",
+    "st": "Sesotho",
+    "su": "Sundanese",
+    "sv": "Swedish",
+    "sw": "Swahili",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "tg": "Tajik",
+    "th": "Thai",
+    "tk": "Turkmen",
+    "tl": "Tagalog",
+    "tr": "Turkish",
+    "tt": "Tatar",
+    "ug": "Uyghur",
+    "uk": "Ukrainian",
+    "ur": "Urdu",
+    "uz": "Uzbek",
+    "vi": "Vietnamese",
+    "wo": "Wolof",
+    "xh": "Xhosa",
+    "yi": "Yiddish",
+    "yo": "Yoruba",
+    "zh": "Chinese",
+    "zu": "Zulu"
+  },
+  "models": [
+    {
+      "id": "Xenova/multilingual-e5-small",
+      "dimensions": 384,
+      "sizeMB": 118,
+      "languages": [
+        "af",
+        "am",
+        "ar",
+        "as",
+        "az",
+        "be",
+        "bg",
+        "bn",
+        "br",
+        "bs",
+        "ca",
+        "cs",
+        "cy",
+        "da",
+        "de",
+        "el",
+        "en",
+        "eo",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "fy",
+        "ga",
+        "gd",
+        "gl",
+        "gu",
+        "ha",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "jv",
+        "ka",
+        "kk",
+        "km",
+        "kn",
+        "ko",
+        "ku",
+        "ky",
+        "la",
+        "lo",
+        "lt",
+        "lv",
+        "mg",
+        "mk",
+        "ml",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "ne",
+        "nl",
+        "no",
+        "om",
+        "or",
+        "pa",
+        "pl",
+        "ps",
+        "pt",
+        "ro",
+        "ru",
+        "sa",
+        "sd",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "sq",
+        "sr",
+        "su",
+        "sv",
+        "sw",
+        "ta",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "xh",
+        "yi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Covers 90+ languages including Japanese. Pick this if your notes are not English-only.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 485055,
+      "prefixes": {
+        "query": "query: ",
+        "passage": "passage: "
+      },
+      "maxTokens": 512,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/multilingual-e5-small"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/all-MiniLM-L6-v2",
+      "dimensions": 384,
+      "sizeMB": 23,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Smallest and fastest. English only. Good for a quick, light setup.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 4503147,
+      "prefixes": {
+        "query": "",
+        "passage": ""
+      },
+      "maxTokens": 256,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/all-MiniLM-L6-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/bge-small-en-v1.5",
+      "dimensions": 384,
+      "sizeMB": 34,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Finds relevant English text more accurately than MiniLM, at a slightly larger size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 631778,
+      "prefixes": {
+        "query": "Represent this sentence for searching relevant passages: ",
+        "passage": ""
+      },
+      "maxTokens": 512,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/bge-small-en-v1.5"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/multilingual-e5-base",
+      "dimensions": 768,
+      "sizeMB": 279,
+      "languages": [
+        "af",
+        "am",
+        "ar",
+        "as",
+        "az",
+        "be",
+        "bg",
+        "bn",
+        "br",
+        "bs",
+        "ca",
+        "cs",
+        "cy",
+        "da",
+        "de",
+        "el",
+        "en",
+        "eo",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "fy",
+        "ga",
+        "gd",
+        "gl",
+        "gu",
+        "ha",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "jv",
+        "ka",
+        "kk",
+        "km",
+        "kn",
+        "ko",
+        "ku",
+        "ky",
+        "la",
+        "lo",
+        "lt",
+        "lv",
+        "mg",
+        "mk",
+        "ml",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "ne",
+        "nl",
+        "no",
+        "om",
+        "or",
+        "pa",
+        "pl",
+        "ps",
+        "pt",
+        "ro",
+        "ru",
+        "sa",
+        "sd",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "sq",
+        "sr",
+        "su",
+        "sv",
+        "sw",
+        "ta",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "xh",
+        "yi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "A step up from e5-small: better accuracy across languages, but larger and slower.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 32221,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/multilingual-e5-base"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "onnx-community/gte-multilingual-base",
+      "dimensions": 768,
+      "sizeMB": 340,
+      "languages": [
+        "af",
+        "ar",
+        "az",
+        "be",
+        "bg",
+        "bn",
+        "ca",
+        "ceb",
+        "cs",
+        "cy",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "gl",
+        "gu",
+        "he",
+        "hi",
+        "hr",
+        "ht",
+        "hu",
+        "hy",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "jv",
+        "ka",
+        "kk",
+        "km",
+        "kn",
+        "ko",
+        "ky",
+        "lo",
+        "lt",
+        "lv",
+        "mk",
+        "ml",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "ne",
+        "nl",
+        "no",
+        "pa",
+        "pl",
+        "pt",
+        "qu",
+        "ro",
+        "ru",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "sq",
+        "sr",
+        "sv",
+        "sw",
+        "ta",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "uk",
+        "ur",
+        "vi",
+        "yo",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Newer model covering about 75 languages. Check the model card for size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 64897,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/gte-multilingual-base"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "sirasagi62/ruri-v3-30m-ONNX",
+      "dimensions": 256,
+      "sizeMB": 37,
+      "languages": [
+        "ja"
+      ],
+      "languageNote": null,
+      "blurb": "Japanese-focused and small. Community conversion, so check quality and license.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 20906,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/sirasagi62/ruri-v3-30m-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+      "dimensions": 384,
+      "sizeMB": 118,
+      "languages": [
+        "ar",
+        "bg",
+        "ca",
+        "cs",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "fa",
+        "fi",
+        "fr",
+        "gl",
+        "gu",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "it",
+        "ja",
+        "ka",
+        "ko",
+        "ku",
+        "lt",
+        "lv",
+        "mk",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "nb",
+        "nl",
+        "pl",
+        "pt",
+        "ro",
+        "ru",
+        "sk",
+        "sl",
+        "sq",
+        "sr",
+        "sv",
+        "th",
+        "tr",
+        "uk",
+        "ur",
+        "vi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Small model tuned for sentence similarity across about 50 languages. Weaker for long-document search.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 285618,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/paraphrase-multilingual-MiniLM-L12-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/bge-m3",
+      "dimensions": 1024,
+      "sizeMB": 570,
+      "languages": [],
+      "languageNote": "Says 100+ languages; no list published",
+      "blurb": "High-accuracy model that also handles cross-language search. Large and slow in a browser.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 50856,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/bge-m3"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/multilingual-e5-large",
+      "dimensions": 1024,
+      "sizeMB": 562,
+      "languages": [
+        "af",
+        "am",
+        "ar",
+        "as",
+        "az",
+        "be",
+        "bg",
+        "bn",
+        "br",
+        "bs",
+        "ca",
+        "cs",
+        "cy",
+        "da",
+        "de",
+        "el",
+        "en",
+        "eo",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "fy",
+        "ga",
+        "gd",
+        "gl",
+        "gu",
+        "ha",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "jv",
+        "ka",
+        "kk",
+        "km",
+        "kn",
+        "ko",
+        "ku",
+        "ky",
+        "la",
+        "lo",
+        "lt",
+        "lv",
+        "mg",
+        "mk",
+        "ml",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "ne",
+        "nl",
+        "no",
+        "om",
+        "or",
+        "pa",
+        "pl",
+        "ps",
+        "pt",
+        "ro",
+        "ru",
+        "sa",
+        "sd",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "sq",
+        "sr",
+        "su",
+        "sv",
+        "sw",
+        "ta",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "xh",
+        "yi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Most accurate of the e5 family, but the heaviest.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 5613,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/multilingual-e5-large"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "onnx-community/Qwen3-Embedding-0.6B-ONNX",
+      "dimensions": 1024,
+      "sizeMB": 614,
+      "languages": [],
+      "languageNote": "Says 100+ languages; no list published",
+      "blurb": "Newer, large-context model. Likely heavy for browser use.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity",
+          "code"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 24275,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/Qwen3-Embedding-0.6B-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/distiluse-base-multilingual-cased-v2",
+      "dimensions": 512,
+      "sizeMB": 135,
+      "languages": [
+        "ar",
+        "bg",
+        "ca",
+        "cs",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "fa",
+        "fi",
+        "fr",
+        "gl",
+        "gu",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "it",
+        "ja",
+        "ka",
+        "ko",
+        "ku",
+        "lt",
+        "lv",
+        "mk",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "nb",
+        "nl",
+        "pl",
+        "pt",
+        "ro",
+        "ru",
+        "sk",
+        "sl",
+        "sq",
+        "sr",
+        "sv",
+        "th",
+        "tr",
+        "uk",
+        "ur",
+        "vi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Older, compact model for sentence similarity across about 50 languages.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 8551,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/distiluse-base-multilingual-cased-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/LaBSE",
+      "dimensions": 768,
+      "sizeMB": 472,
+      "languages": [
+        "af",
+        "sq",
+        "am",
+        "ar",
+        "hy",
+        "as",
+        "az",
+        "eu",
+        "be",
+        "bn",
+        "bs",
+        "bg",
+        "my",
+        "ca",
+        "ceb",
+        "zh",
+        "co",
+        "hr",
+        "cs",
+        "da",
+        "nl",
+        "en",
+        "eo",
+        "et",
+        "fi",
+        "fr",
+        "fy",
+        "gl",
+        "ka",
+        "de",
+        "el",
+        "gu",
+        "ht",
+        "ha",
+        "haw",
+        "he",
+        "hi",
+        "hmn",
+        "hu",
+        "is",
+        "ig",
+        "id",
+        "ga",
+        "it",
+        "ja",
+        "jv",
+        "kn",
+        "kk",
+        "km",
+        "rw",
+        "ko",
+        "ku",
+        "ky",
+        "lo",
+        "la",
+        "lv",
+        "lt",
+        "lb",
+        "mk",
+        "mg",
+        "ms",
+        "ml",
+        "mt",
+        "mi",
+        "mr",
+        "mn",
+        "ne",
+        "no",
+        "ny",
+        "or",
+        "fa",
+        "pl",
+        "pt",
+        "pa",
+        "ro",
+        "ru",
+        "sm",
+        "gd",
+        "sr",
+        "st",
+        "sn",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "es",
+        "su",
+        "sw",
+        "sv",
+        "tl",
+        "tg",
+        "ta",
+        "tt",
+        "te",
+        "th",
+        "bo",
+        "tr",
+        "tk",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "cy",
+        "wo",
+        "xh",
+        "yi",
+        "yo",
+        "zu"
+      ],
+      "languageNote": null,
+      "blurb": "Built to match translations of the same sentence across 100+ languages. Less suited to general search.",
+      "tasks": {
+        "list": [
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 4929,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/LaBSE"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/all-mpnet-base-v2",
+      "dimensions": 768,
+      "sizeMB": 110,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Higher-quality English sentence model than MiniLM, at a larger size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 19687,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/all-mpnet-base-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/bge-base-en-v1.5",
+      "dimensions": 768,
+      "sizeMB": 110,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Larger sibling of bge-small. More accurate English search, but heavier.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 2359278,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/bge-base-en-v1.5"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/gte-small",
+      "dimensions": 384,
+      "sizeMB": 34,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Compact English model with solid search quality for its size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 55561,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/gte-small"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/nomic-embed-text-v1",
+      "dimensions": 768,
+      "sizeMB": 138,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "English model that handles long inputs. Expects search_query / search_document prefixes.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 16956,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/nomic-embed-text-v1"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "jinaai/jina-embeddings-v2-base-de",
+      "dimensions": 768,
+      "sizeMB": 162,
+      "languages": [
+        "de",
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "German and English bilingual model. Pick this for German-heavy notes.",
+      "tasks": {
+        "list": [
+          "retrieval"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 83970,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/jinaai/jina-embeddings-v2-base-de"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/bge-small-zh-v1.5",
+      "dimensions": 512,
+      "sizeMB": 24,
+      "languages": [
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Chinese-focused small model.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 57159,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/bge-small-zh-v1.5"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "mixedbread-ai/mxbai-embed-large-v1",
+      "dimensions": 1024,
+      "sizeMB": 337,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Popular high-accuracy English model. Large, so heavy for a browser.",
+      "tasks": {
+        "list": [
+          "retrieval"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 2081255,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "WhereIsAI/UAE-Large-V1",
+      "dimensions": 1024,
+      "sizeMB": 337,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Large English model with strong search quality. Heavy.",
+      "tasks": {
+        "list": [
+          "retrieval"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 832619,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/WhereIsAI/UAE-Large-V1"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "mixedbread-ai/mxbai-embed-2d-large-v1",
+      "dimensions": 1024,
+      "sizeMB": 337,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Large English model whose size can be trimmed after the fact, trading accuracy for speed.",
+      "tasks": {
+        "list": [],
+        "evidence": "unverified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 182337,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/mixedbread-ai/mxbai-embed-2d-large-v1"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/bge-large-en-v1.5",
+      "dimensions": 1024,
+      "sizeMB": 337,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Largest of the bge English family. Best accuracy, slowest.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 13303,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/bge-large-en-v1.5"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/gte-base",
+      "dimensions": 768,
+      "sizeMB": 110,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Mid-size English model. A step up from gte-small.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 2666,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/gte-base"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/e5-small-v2",
+      "dimensions": 384,
+      "sizeMB": 34,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Small English e5 model. Expects query / passage prefixes.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 29605,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/e5-small-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/all-MiniLM-L12-v2",
+      "dimensions": 384,
+      "sizeMB": 34,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Deeper sibling of all-MiniLM-L6. Slightly better, slightly slower.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 6793,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/all-MiniLM-L12-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/GIST-small-Embedding-v0",
+      "dimensions": 384,
+      "sizeMB": 34,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Small English model fine-tuned from bge-small for search.",
+      "tasks": {
+        "list": [
+          "retrieval"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 1502,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/GIST-small-Embedding-v0"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/jina-embeddings-v2-small-en",
+      "dimensions": 512,
+      "sizeMB": 33,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Small English model that accepts long inputs.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 64347,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/jina-embeddings-v2-small-en"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/jina-embeddings-v2-base-en",
+      "dimensions": 768,
+      "sizeMB": 138,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "English model that accepts long inputs. Mid-size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 4469,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/jina-embeddings-v2-base-en"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "jinaai/jina-embeddings-v2-base-code",
+      "dimensions": 768,
+      "sizeMB": 162,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Built for searching source code. Not for ordinary notes.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity",
+          "code"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 178638,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/jinaai/jina-embeddings-v2-base-code"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "jinaai/jina-embeddings-v2-base-zh",
+      "dimensions": 768,
+      "sizeMB": 162,
+      "languages": [
+        "zh",
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Chinese and English bilingual model that accepts long inputs.",
+      "tasks": {
+        "list": [
+          "retrieval"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 14916,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/jinaai/jina-embeddings-v2-base-zh"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/bge-base-zh-v1.5",
+      "dimensions": 768,
+      "sizeMB": 103,
+      "languages": [
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Mid-size Chinese-focused model.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 9031,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/bge-base-zh-v1.5"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "mixedbread-ai/deepset-mxbai-embed-de-large-v1",
+      "dimensions": 1024,
+      "sizeMB": 488,
+      "languages": [
+        "de",
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Large German and English model for German-heavy search.",
+      "tasks": {
+        "list": [
+          "retrieval"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 316266,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/mixedbread-ai/deepset-mxbai-embed-de-large-v1"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/paraphrase-multilingual-mpnet-base-v2",
+      "dimensions": 768,
+      "sizeMB": 279,
+      "languages": [
+        "ar",
+        "bg",
+        "ca",
+        "cs",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "fa",
+        "fi",
+        "fr",
+        "gl",
+        "gu",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "it",
+        "ja",
+        "ka",
+        "ko",
+        "ku",
+        "lt",
+        "lv",
+        "mk",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "nb",
+        "nl",
+        "pl",
+        "pt",
+        "ro",
+        "ru",
+        "sk",
+        "sl",
+        "sq",
+        "sr",
+        "sv",
+        "th",
+        "tr",
+        "uk",
+        "ur",
+        "vi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Larger sibling of the multilingual MiniLM. Better similarity, heavier.",
+      "tasks": {
+        "list": [
+          "similarity"
+        ],
+        "evidence": "inferred"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 23144,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/paraphrase-multilingual-mpnet-base-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "ruddls030/haru-e5-small-ja-int8",
+      "dimensions": 384,
+      "sizeMB": 118,
+      "languages": [
+        "ja"
+      ],
+      "languageNote": null,
+      "blurb": "Japanese-tuned small e5 variant, quantized. Personal upload, so check quality and license.",
+      "tasks": {
+        "list": [
+          "similarity"
+        ],
+        "evidence": "inferred"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 14,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/ruddls030/haru-e5-small-ja-int8"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "onnx-community/embeddinggemma-2-ONNX",
+      "dimensions": null,
+      "sizeMB": 314,
+      "languages": [],
+      "languageNote": "No language list published",
+      "blurb": "Gemma-based model from the ONNX community. Check the model card for size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity",
+          "code"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 212264,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/embeddinggemma-2-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "onnx-community/harrier-oss-v1-270m-ONNX",
+      "dimensions": null,
+      "sizeMB": 344,
+      "languages": [
+        "af",
+        "am",
+        "ar",
+        "as",
+        "az",
+        "be",
+        "bg",
+        "bn",
+        "br",
+        "bs",
+        "ca",
+        "cs",
+        "cy",
+        "da",
+        "de",
+        "el",
+        "en",
+        "eo",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "fy",
+        "ga",
+        "gd",
+        "gl",
+        "gu",
+        "ha",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "jv",
+        "ka",
+        "kk",
+        "km",
+        "kn",
+        "ko",
+        "ku",
+        "ky",
+        "la",
+        "lo",
+        "lt",
+        "lv",
+        "mg",
+        "mk",
+        "ml",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "ne",
+        "nl",
+        "no",
+        "om",
+        "or",
+        "pa",
+        "pl",
+        "ps",
+        "pt",
+        "ro",
+        "ru",
+        "sa",
+        "sd",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "sq",
+        "sr",
+        "su",
+        "sv",
+        "sw",
+        "ta",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "xh",
+        "yi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Small newer model. Check the model card for size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 1722,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/harrier-oss-v1-270m-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "onnx-community/harrier-oss-v1-0.6b-ONNX",
+      "dimensions": 1024,
+      "sizeMB": 707,
+      "languages": [
+        "af",
+        "am",
+        "ar",
+        "as",
+        "az",
+        "be",
+        "bg",
+        "bn",
+        "br",
+        "bs",
+        "ca",
+        "cs",
+        "cy",
+        "da",
+        "de",
+        "el",
+        "en",
+        "eo",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "fy",
+        "ga",
+        "gd",
+        "gl",
+        "gu",
+        "ha",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "jv",
+        "ka",
+        "kk",
+        "km",
+        "kn",
+        "ko",
+        "ku",
+        "ky",
+        "la",
+        "lo",
+        "lt",
+        "lv",
+        "mg",
+        "mk",
+        "ml",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "ne",
+        "nl",
+        "no",
+        "om",
+        "or",
+        "pa",
+        "pl",
+        "ps",
+        "pt",
+        "ro",
+        "ru",
+        "sa",
+        "sd",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "sq",
+        "sr",
+        "su",
+        "sv",
+        "sw",
+        "ta",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "xh",
+        "yi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Larger sibling of harrier 270m. Check the model card for size.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 1658,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/harrier-oss-v1-0.6b-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "MongoDB/mdbr-leaf-mt",
+      "dimensions": null,
+      "sizeMB": 23,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Compact English model from MongoDB. Check the model card for size.",
+      "tasks": {
+        "list": [
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 96070,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/MongoDB/mdbr-leaf-mt"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX",
+      "dimensions": 384,
+      "sizeMB": 98,
+      "languages": [
+        "ar",
+        "az",
+        "bg",
+        "bn",
+        "ca",
+        "cs",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "fa",
+        "fi",
+        "fr",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "ka",
+        "kk",
+        "km",
+        "ko",
+        "lt",
+        "lv",
+        "mr",
+        "ms",
+        "nl",
+        "no",
+        "pl",
+        "pt",
+        "ro",
+        "ru",
+        "sk",
+        "sl",
+        "sq",
+        "sr",
+        "sv",
+        "sw",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "IBM model, small, covering about 50 languages.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity",
+          "code"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 3317,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/granite-embedding-97m-multilingual-r2-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/e5-base-v2",
+      "dimensions": 768,
+      "sizeMB": 110,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Mid-size English e5 model. Expects query / passage prefixes.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 220,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/e5-base-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/e5-large-v2",
+      "dimensions": 1024,
+      "sizeMB": 337,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Large English e5 model. High accuracy, heavy.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 256,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/e5-large-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/msmarco-distilbert-base-v4",
+      "dimensions": 768,
+      "sizeMB": 67,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Older English model trained on web search queries.",
+      "tasks": {
+        "list": [
+          "retrieval"
+        ],
+        "evidence": "inferred"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 1360,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/msmarco-distilbert-base-v4"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/paraphrase-MiniLM-L3-v2",
+      "dimensions": 384,
+      "sizeMB": 17,
+      "languages": [
+        "en"
+      ],
+      "languageNote": null,
+      "blurb": "Tiny and very fast English model. Lowest accuracy of the set.",
+      "tasks": {
+        "list": [
+          "similarity"
+        ],
+        "evidence": "inferred"
+      },
+      "license": {
+        "repo": null,
+        "original": "Apache-2.0",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 842,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/paraphrase-MiniLM-L3-v2"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "Xenova/bge-large-zh-v1.5",
+      "dimensions": 1024,
+      "sizeMB": 327,
+      "languages": [
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Large Chinese-focused model.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": null,
+        "original": "MIT",
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 11736,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/Xenova/bge-large-zh-v1.5"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "lmo3/multilingual-e5-large-instruct",
+      "dimensions": 1024,
+      "sizeMB": 561,
+      "languages": [
+        "af",
+        "am",
+        "ar",
+        "as",
+        "az",
+        "be",
+        "bg",
+        "bn",
+        "br",
+        "bs",
+        "ca",
+        "cs",
+        "cy",
+        "da",
+        "de",
+        "el",
+        "en",
+        "eo",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "fy",
+        "ga",
+        "gd",
+        "gl",
+        "gu",
+        "ha",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "hy",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "jv",
+        "ka",
+        "kk",
+        "km",
+        "kn",
+        "ko",
+        "ku",
+        "ky",
+        "la",
+        "lo",
+        "lt",
+        "lv",
+        "mg",
+        "mk",
+        "ml",
+        "mn",
+        "mr",
+        "ms",
+        "my",
+        "ne",
+        "nl",
+        "no",
+        "om",
+        "or",
+        "pa",
+        "pl",
+        "ps",
+        "pt",
+        "ro",
+        "ru",
+        "sa",
+        "sd",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "sq",
+        "sr",
+        "su",
+        "sv",
+        "sw",
+        "ta",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "xh",
+        "yi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Instruction-following variant of the large e5. Community conversion, so check the license.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 40,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/lmo3/multilingual-e5-large-instruct"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "onnx-community/granite-embedding-311m-multilingual-r2-ONNX",
+      "dimensions": 768,
+      "sizeMB": 313,
+      "languages": [
+        "ar",
+        "az",
+        "bg",
+        "bn",
+        "ca",
+        "cs",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "fa",
+        "fi",
+        "fr",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "ka",
+        "kk",
+        "km",
+        "ko",
+        "lt",
+        "lv",
+        "mr",
+        "ms",
+        "nl",
+        "no",
+        "pl",
+        "pt",
+        "ro",
+        "ru",
+        "sk",
+        "sl",
+        "sq",
+        "sr",
+        "sv",
+        "sw",
+        "te",
+        "th",
+        "tl",
+        "tr",
+        "uk",
+        "ur",
+        "uz",
+        "vi",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "IBM model, mid-size, covering about 50 languages.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity",
+          "code"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 343,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/granite-embedding-311m-multilingual-r2-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "thomasht86/KaLM-embedding-multilingual-mini-instruct-v2.5-ONNX",
+      "dimensions": null,
+      "sizeMB": 562,
+      "languages": [
+        "en",
+        "zh"
+      ],
+      "languageNote": null,
+      "blurb": "Instruction-style model, community conversion. Check the model card.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 22,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/thomasht86/KaLM-embedding-multilingual-mini-instruct-v2.5-ONNX"
+      },
+      "checkedAt": "2026-10-21"
+    },
+    {
+      "id": "tss-deposium/pplx-embed-v1-0.6b-onnx-int8-standard",
+      "dimensions": null,
+      "sizeMB": 602,
+      "languages": [
+        "en",
+        "fr",
+        "de",
+        "es",
+        "it",
+        "pt",
+        "zh",
+        "ja",
+        "ko",
+        "ar",
+        "ru",
+        "hi",
+        "bn",
+        "id",
+        "vi",
+        "tr",
+        "fa",
+        "cs",
+        "sv",
+        "ro",
+        "nb",
+        "hu",
+        "da",
+        "uk",
+        "th",
+        "el",
+        "fi",
+        "pl",
+        "nl",
+        "ms",
+        "sw",
+        "te",
+        "yo"
+      ],
+      "languageNote": null,
+      "blurb": "Quantized community upload of a 0.6B model covering about 34 languages. Check the license.",
+      "tasks": {
+        "list": [
+          "similarity"
+        ],
+        "evidence": "inferred"
+      },
+      "license": {
+        "repo": "MIT",
+        "original": null,
+        "verifiedAt": "2026-10-21"
+      },
+      "downloadsMonthly": 806,
+      "prefixes": null,
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/tss-deposium/pplx-embed-v1-0.6b-onnx-int8-standard"
+      },
+      "checkedAt": "2026-10-21"
+    }
+  ]
+}

@@ -2,38 +2,28 @@ import { setLedStatus } from '../core/statusManager.js';
 import { i18n } from '../core/i18n.js';
 import { renderResults } from './searchUi.js';
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
+import { markModelDownloaded, getActiveModelId, getDownloadedModelIds } from './embeddingModels.js';
 
 let isLocalAiReady = false;
 let isLocalAiDownloading = false;
+// The model that last reported ready. transformers.js sends "done" once per downloaded file and "ready" more than once,
+// so the ready line (and the pipeline log) is written once per model, not once per message (ADR-11 section 2.10)
+let lastReadyModel = null;
 let embeddingWorker = null;
 let isWorkerInitialized = false;
 
 let nextRequestId = 1;
 const pendingRequests = new Map();
 
-export function updateActiveModelBadgeInTable(activeModel) {
-  const table = document.querySelector('#tabAiSearch table');
-  if (!table) return;
-  const targetId = activeModel || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
-  
-  // Clear existing Active badges
-  table.querySelectorAll('.model-active-badge').forEach(el => el.remove());
+/** Tell the model list (settings) to re-render its Download / Use / Active states. */
+export function notifyEmbeddingModelsChanged() {
+  window.dispatchEvent(new CustomEvent('app:embeddingModelsChanged'));
+}
 
-  // Find matching row and attach badge
-  const rows = table.querySelectorAll('tbody tr');
-  rows.forEach(tr => {
-    const textCell = tr.querySelector('td:first-child');
-    if (textCell && textCell.textContent.includes(targetId)) {
-      tr.style.background = 'rgba(56, 189, 248, 0.08)';
-      const badge = document.createElement('span');
-      badge.className = 'model-active-badge';
-      badge.style.cssText = 'background: rgba(16,185,129,0.2); color: #10b981; padding: 1px 4px; border-radius: 3px; font-size: var(--fs-10); margin-left: 6px;';
-      badge.textContent = 'Active';
-      textCell.appendChild(badge);
-    } else {
-      tr.style.background = '';
-    }
-  });
+/** Ask the worker to fetch a model's files without switching the active model. */
+export function requestEmbeddingModelDownload(modelId) {
+  if (!embeddingWorker) return;
+  embeddingWorker.postMessage({ type: 'download', model: modelId, requestId: `download_${Date.now()}` });
 }
 
 export function initLocalAiWorker(getCurrentResults) {
@@ -71,7 +61,23 @@ export function initLocalAiWorker(getCurrentResults) {
         }
       }
 
-      // 2. Global model download / lifecycle handling
+      // 2a. Background download (does not change the active model)
+      if (status && status.startsWith('download-') && data.model) {
+        if (status === 'download-complete') {
+          markModelDownloaded(data.model);
+          notifyEmbeddingModelsChanged();
+        }
+        window.dispatchEvent(new CustomEvent('app:embeddingModelDownload', {
+          detail: {
+            model: data.model,
+            status: status.replace('download-', ''),
+            pct: data.progress !== undefined ? Math.round(data.progress) : (status === 'download-complete' ? 100 : 0)
+          }
+        }));
+        return;
+      }
+
+      // 2b. Global model download / lifecycle handling
       const modalDownloadProgress = document.getElementById('modalAiDownloadProgress');
       const modalDownloadFile = document.getElementById('modalAiDownloadFile');
       const modalDownloadPct = document.getElementById('modalAiDownloadPct');
@@ -126,16 +132,22 @@ export function initLocalAiWorker(getCurrentResults) {
           `;
           logContainer.scrollTop = logContainer.scrollHeight;
         }
-      } else if (status === 'done' || status === 'ready') {
+      } else if (status === 'done') {
+        // One file finished downloading. The model is not ready until the worker reports "ready", so say nothing here
+        return;
+      } else if (status === 'ready') {
+        const loadedModel = data.model || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+        if (isLocalAiReady && lastReadyModel === loadedModel) return;
+        lastReadyModel = loadedModel;
         isLocalAiReady = true;
         window.__isLocalAiModelReady = true;
         isLocalAiDownloading = false;
-        const loadedModel = data.model || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
         const modelShortName = loadedModel.split('/').pop();
         setLedStatus('ai', true, `6. AI-MODEL: Ready (${modelShortName})`);
         window.dispatchEvent(new CustomEvent('app:settingsChanged'));
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct: 100, status: 'ready', model: loadedModel } }));
-        updateActiveModelBadgeInTable(loadedModel);
+        markModelDownloaded(loadedModel);
+        notifyEmbeddingModelsChanged();
         
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'none';
         const logProgressRow = document.getElementById('logDownloadProgressRow');
@@ -177,6 +189,11 @@ export function initLocalAiWorker(getCurrentResults) {
         }
       }
     });
+    // A model already on this device loads at startup. Until the worker reports ready, the Embedding counts as not configured
+    const activeModel = getActiveModelId();
+    if (getDownloadedModelIds().has(activeModel)) {
+      window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: activeModel } }));
+    }
   } catch (e) {
     console.error("Worker initialization failed", e);
   }

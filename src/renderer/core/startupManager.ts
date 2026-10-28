@@ -1,25 +1,38 @@
-import { initAiSetup, showAiSetupModal } from '../ui/ai/aiSetupController.js';
+import { initAiSetup, showAiSetupModal, markSetupEditorReady } from '../ui/ai/aiSetupController.js';
 import { STORAGE_KEYS } from './constants';
 
-let isStartupComplete = false;
+let isSetupShown = false;
+let isSetupDone = true;
+let isEditorReady = false;
 
+/**
+ * Shows first-run setup while the editor is still loading. Call after the backend settings and locale are loaded,
+ * so the setup opens with the restored choices (language, theme). The "done" flag itself is per installation and is
+ * never restored from .settings.json (see LOCAL_ONLY_KEYS in settingsState.js).
+ */
 export function initStartupFlow(): void {
-  if (isStartupComplete) return;
-  isStartupComplete = true;
+  if (isSetupShown) return;
+  isSetupShown = true;
 
-  const isAiSetup = localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
-  
-  if (!isAiSetup) {
-    initAiSetup(() => {
-      dismissStartupLoader();
-    });
-    showAiSetupModal();
-  } else {
-    dismissStartupLoader();
-  }
+  // The key keeps its historic name; it now marks the whole first-run setup as done.
+  if (localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true') return;
+
+  isSetupDone = false;
+  initAiSetup(() => {
+    isSetupDone = true;
+    if (isEditorReady) dismissStartupLoader();
+  });
+  showAiSetupModal();
 }
 
-/** Fades the loader out and removes it. Does not mark the startup flow complete, so it is safe as a fallback. */
+/** Called once the editor and settings have loaded. The loader stays until first-run setup is finished. */
+export function completeStartup(): void {
+  isEditorReady = true;
+  markSetupEditorReady();
+  if (isSetupDone) dismissStartupLoader();
+}
+
+/** Fades the loader out and removes it. Safe to call more than once and as a fallback. */
 export function hideStartupLoader(): void {
   const appLoader = document.getElementById('appStartupLoader');
   if (!appLoader) return;
@@ -30,5 +43,4 @@ export function hideStartupLoader(): void {
 
 export function dismissStartupLoader(): void {
   hideStartupLoader();
-  isStartupComplete = true;
 }

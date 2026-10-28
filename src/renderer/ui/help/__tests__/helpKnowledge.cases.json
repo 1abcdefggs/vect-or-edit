@@ -1,0 +1,7 @@
+{
+  "zoomQuestion": "全体のサイズを大きくできますか",
+  "zoomPattern": "ズーム|zoom",
+  "embeddingQuestion": "エンベディングってなんですか",
+  "embeddingPattern": "Embedding|エンベディング",
+  "rewriteRequest": "次の文章を丁寧な言い方に書き直してください: 明日の会議は中止です"
+}

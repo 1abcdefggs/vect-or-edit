@@ -1,4 +1,5 @@
 import { pipeline, env } from '@huggingface/transformers';
+import { getEmbeddingModel } from './embeddingModels.js';
 
 env.allowLocalModels = false;
 env.useBrowserCache = true;
@@ -50,6 +51,23 @@ self.addEventListener('message', async (event) => {
         return;
     }
 
+    if (type === 'download') {
+        // Fetch model files into the browser cache without switching the active model.
+        // The pipeline is dropped right after loading, so the singleton keeps its current model.
+        try {
+            await pipeline('feature-extraction', model, {
+                progress_callback: x => self.postMessage({ ...x, status: `download-${x.status}`, model, requestId }),
+                device: 'wasm',
+                quantized: true,
+                dtype: 'q8'
+            });
+            self.postMessage({ status: 'download-complete', model, requestId });
+        } catch (err) {
+            self.postMessage({ status: 'download-error', error: err.message, model, requestId });
+        }
+        return;
+    }
+
     // Guard: Prevent auto-downloading model when computing embeddings if model has not been initialized yet
     if (!PipelineSingleton.instance) {
         self.postMessage({
@@ -65,14 +83,9 @@ self.addEventListener('message', async (event) => {
             self.postMessage({ ...x, requestId });
         });
 
-        // Apply optimal query prefix per model family
-        let formattedText = text;
-        const currentModel = PipelineSingleton.model.toLowerCase();
-        if (currentModel.includes('e5')) {
-            formattedText = `query: ${text}`;
-        } else if (currentModel.includes('bge')) {
-            formattedText = `Represent this sentence for searching relevant passages: ${text}`;
-        }
+        // Query prefix comes from the model catalog (mirrors registry/facets.json)
+        const modelInfo = getEmbeddingModel(PipelineSingleton.model);
+        const formattedText = `${modelInfo?.queryPrefix ?? ''}${text}`;
 
         let output = await extractor(formattedText, { pooling: 'mean', normalize: true });
 

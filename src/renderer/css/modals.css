@@ -153,8 +153,7 @@
 }
 
 .settings-modal-body .setting-row,
-.settings-modal-body .settings-row,
-.setting-item {
+.settings-modal-body .settings-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -210,7 +209,7 @@
 }
 
 .settings-tab-btn.active {
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-text, #38bdf8);
   border-bottom-color: var(--accent-color, #38bdf8);
   background: rgba(56, 189, 248, 0.08);
   font-weight: 600;
@@ -231,6 +230,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  min-height: 54px;
   padding: 10px 0;
   border-bottom: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.08));
 }
@@ -314,7 +314,7 @@
   margin: 0 0 12px 0;
   font-size: var(--fs-13);
   font-weight: 600;
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-text, #38bdf8);
   border-bottom: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.06));
   padding-bottom: 8px;
   display: flex;
@@ -342,7 +342,7 @@
   padding: 4px 8px;
   border: var(--border-width) solid var(--border-color);
   border-radius: 999px;
-  color: var(--accent-color);
+  color: var(--accent-text);
   font-size: var(--fs-11);
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -439,7 +439,7 @@
 
 .ai-structure-connector {
   padding-bottom: 7px;
-  color: var(--accent-color);
+  color: var(--accent-text);
   font-size: var(--fs-16);
   font-weight: 700;
 }
@@ -461,7 +461,7 @@
   border: var(--border-width) solid var(--border-color);
   border-radius: 5px;
   background: transparent;
-  color: var(--accent-color);
+  color: var(--accent-text);
   cursor: pointer;
   font: inherit;
   white-space: nowrap;
@@ -522,12 +522,12 @@
 
 .capability-local {
   background: color-mix(in srgb, var(--accent-color) 14%, transparent);
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .capability-generation {
   background: color-mix(in srgb, var(--success-color, #10b981) 14%, transparent);
-  color: var(--success-color, #10b981);
+  color: color-mix(in srgb, var(--success-color, #10b981) 55%, var(--text-main));
 }
 
 .capability-yes {
@@ -660,6 +660,1433 @@
 }
 
 /* ==========================================================================
+   First-run Setup (aiSetupModal.html)
+   Step tabs and the toggle switch are shared parts in controls.css (stepTabs.js, toggleSwitch.js).
+   ========================================================================== */
+/* Above the startup loader (z-index 99999), which stays behind as the loading backdrop */
+.first-run-overlay {
+  z-index: 100000;
+  position: fixed;
+  inset: 0;
+  /* Starts below the app header so the header keeps its theme colors, as .modal-overlay does */
+  top: 38px;
+  background: var(--modal-overlay-bg);
+  backdrop-filter: blur(14px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+}
+
+/* One typeface for the whole setup: the editor's default body font. It is set on every text element (inputs, buttons,
+   paths and codes included) except the icon font, whose glyphs must keep their own family. */
+.first-run-overlay {
+  --first-run-font: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
+}
+
+.first-run-overlay,
+.first-run-overlay :is(span, p, h2, h3, dl, dt, dd, label, button, input, select, option, code, em, ol, li, ul, nav, pre, div):not(.material-symbols-outlined) {
+  font-family: var(--first-run-font);
+}
+
+.first-run-dialog {
+  width: 840px;
+  max-width: 94vw;
+  /* One height for every step and language, so the dialog never jumps; the body scrolls if a language needs more */
+  height: min(780px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-lg, 14px);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8);
+}
+
+/* Same letters and font as the startup loader and the editor body */
+/* The tool name in the window's top-left corner, on the line of the 38px title bar overlay (windowManager.ts) */
+.first-run-brandbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  height: 38px;
+  margin: 0;
+  padding: 0 18px;
+  align-items: center;
+  color: var(--text-main);
+}
+
+.first-run-brandbar .first-run-brand {
+  font-size: var(--fs-20);
+}
+
+.first-run-brand {
+  font-size: var(--fs-28);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.first-run-brand em {
+  font-style: italic;
+  color: var(--item-code-text, var(--accent-color));
+}
+
+.first-run-version {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-12);
+  font-weight: 500;
+  color: var(--text-muted, #94a3b8);
+  user-select: none;
+}
+
+.first-run-version:empty {
+  display: none;
+}
+
+.first-run-body {
+  flex: 1 1 auto;
+  padding: 20px 32px;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.first-run-step {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.first-run-step[hidden] {
+  display: none;
+}
+
+.first-run-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* A section whose heading and control share one line (the language switch). Both start at the top edge, so the
+   heading reads level with the control's top instead of floating at its middle */
+.first-run-section--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.first-run-section--row .first-run-heading {
+  margin: 0;
+}
+
+.first-run-section--row .first-run-segment {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.first-run-divider {
+  width: 100%;
+  margin: -4px 0;
+  border: 0;
+  border-top: var(--border-width) solid var(--border-color);
+  opacity: 0.6;
+}
+
+.first-run-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0;
+  font-size: var(--fs-28);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+
+/* The step's section marker, drawn before each heading. A solid square, not a triangle: the triangle means "expands" */
+.first-run-heading::before {
+  content: "■";
+  font-size: 0.5em;
+  color: var(--accent-text);
+  align-self: center;
+}
+
+/* Body under a heading sits one step in, so the heading reads as the head of its block.
+   Rows keep their control flush right and are not indented. */
+.first-run-section:not(.first-run-section--row) > :not(.first-run-heading) {
+  margin-left: 22px;
+}
+
+.first-run-heading-note {
+  font-size: var(--fs-14);
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.first-run-badge {
+  padding: 3px 10px;
+  border: var(--border-width) solid var(--accent-color);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--item-code-text, var(--text-main));
+}
+
+.first-run-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.first-run-label {
+  font-size: var(--fs-13);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.first-run-hint {
+  display: block;
+  margin: 0;
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.first-run-hint:empty {
+  display: none;
+}
+
+.first-run-hint.is-error {
+  color: var(--error-color);
+}
+
+.first-run-hint--icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.first-run-hint--icon .material-symbols-outlined {
+  font-size: var(--fs-16);
+}
+
+.first-run-hint-inline {
+  color: var(--text-muted);
+}
+
+/* Language: two large cards (native radio inside, so keyboard and screen readers work as usual) */
+.first-run-choice-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.first-run-choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary, transparent);
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.first-run-choice:hover {
+  border-color: color-mix(in srgb, var(--accent-color) 60%, var(--border-color));
+}
+
+.first-run-choice:has(input:checked) {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+}
+
+.first-run-choice:has(input:focus-visible) {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* The chosen card shows a filled check badge; the radio itself stays for the keyboard and screen readers */
+.first-run-choice-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-size: var(--fs-16);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.first-run-choice:has(input:checked) .first-run-choice-mark {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .first-run-choice-mark {
+    transition: none;
+  }
+}
+
+/* Language: a two-position switch. The thumb slides to the chosen side; the radios stay for keyboard and screen readers */
+.first-run-segment {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  max-width: 360px;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.first-run-segment-option {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 999px;
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.first-run-segment-option:hover {
+  color: var(--text-main);
+}
+
+.first-run-segment-option:has(input:checked) {
+  color: var(--text-on-accent);
+}
+
+.first-run-segment-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.first-run-segment-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: var(--accent-color);
+  transition: transform 200ms ease;
+}
+
+.first-run-segment:has(input[value="ja"]:checked) .first-run-segment-thumb {
+  transform: translateX(100%);
+}
+
+/* Appearance: the same switch with three positions (System, Light, Dark) */
+.first-run-segment--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Three labels need more room than the two-position row width; the longest ja label (the follow-system option) must stay on one line */
+.first-run-section--row .first-run-segment--three {
+  width: 400px;
+  max-width: 100%;
+}
+
+.first-run-segment--three .first-run-segment-option {
+  white-space: nowrap;
+}
+
+.first-run-segment--three .first-run-segment-thumb {
+  width: calc((100% - 8px) / 3);
+}
+
+.first-run-segment--three:has(input[value="light"]:checked) .first-run-segment-thumb {
+  transform: translateX(100%);
+}
+
+.first-run-segment--three:has(input[value="dark"]:checked) .first-run-segment-thumb {
+  transform: translateX(200%);
+}
+
+.first-run-segment:has(input:focus-visible) {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .first-run-segment-thumb,
+  .first-run-segment-option {
+    transition: none;
+  }
+}
+
+/* A choice card with a title and a hint (the file format) */
+.first-run-choice--detail {
+  align-items: flex-start;
+}
+
+.first-run-choice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.first-run-choice-title {
+  font-size: var(--fs-16);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The Markdown card's title is written as a heading ("## ..."); in the preview the marker goes and the title is a heading */
+.first-run-md-marker {
+  font-weight: 400;
+  color: var(--item-code-text, var(--accent-color));
+}
+
+.first-run-choice.is-previewing .first-run-md-marker {
+  display: none;
+}
+
+.first-run-choice.is-previewing .first-run-choice-title {
+  font-size: var(--fs-22);
+  line-height: 1.3;
+}
+
+/* A short sample under each format: the Markdown source (or its rendered view), or plain text */
+.first-run-sample {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+  font-size: var(--fs-13);
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.first-run-sample-source {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
+}
+
+.first-run-sample-view[hidden],
+.first-run-sample-source[hidden] {
+  display: none;
+}
+
+/* The rendered view reuses the editor preview's styles; here it only needs to sit inside the sample box */
+.first-run-sample .markdown-preview {
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  line-height: 1.6;
+}
+
+.first-run-sample .markdown-preview ul,
+.first-run-sample .markdown-preview ol {
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.first-run-sample .markdown-preview p {
+  margin: 0;
+}
+
+.first-run-choice--detail {
+  cursor: pointer;
+}
+
+.first-run-sample-toggle {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-card);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.first-run-sample-toggle:hover,
+.first-run-sample-toggle[aria-pressed="true"] {
+  border-color: var(--accent-color);
+  color: var(--item-code-text, var(--accent-color));
+}
+
+.first-run-sample-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.first-run-sample-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.first-run-choice-title .first-run-code {
+  margin-left: 4px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.first-run-choice input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Theme: a small sample of the editor in each theme's own colors */
+.first-run-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.first-run-theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary, transparent);
+  font-family: inherit;
+  font-size: var(--fs-12);
+  font-weight: 500;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+}
+
+.first-run-theme-card[aria-pressed="true"] {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+}
+
+.first-run-theme-card:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.first-run-theme-sample {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 8px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 5px;
+}
+
+.first-run-theme-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.first-run-theme-line i {
+  display: block;
+  height: 5px;
+  border-radius: 3px;
+}
+
+.first-run-theme-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Save location */
+.first-run-path {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-17);
+  color: var(--text-muted);
+}
+
+.first-run-path .material-symbols-outlined {
+  flex-shrink: 0;
+  font-size: var(--fs-28);
+  color: var(--accent-text);
+}
+
+.first-run-path-text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.save-path-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.first-run-path .first-run-path-btn {
+  height: 44px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  font-size: var(--fs-15);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* AutoSave sits in a frame under the file formats, the same frame as the save location above */
+.first-run-setting-box {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.first-run-setting-title {
+  margin: 0 0 2px;
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.first-run-setting-box .first-run-setting-title + .first-run-hint {
+  margin: 0;
+}
+
+/* Title and hint on the left; the open/close control and the master switch on the right */
+.first-run-setting-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.first-run-setting-head-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.first-run-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  font-size: var(--fs-14);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.first-run-disclosure:hover {
+  color: var(--text-main);
+}
+
+.first-run-disclosure .material-symbols-outlined {
+  font-size: var(--fs-20, 20px);
+  transition: transform 0.15s;
+}
+
+.first-run-disclosure[aria-expanded="true"] .material-symbols-outlined {
+  transform: rotate(180deg);
+}
+
+#setupAutoSaveDetails {
+  margin-top: 10px;
+}
+
+#setupAutoSaveDetails[hidden] {
+  display: none;
+}
+
+/* The pause in seconds: a sentence with a number field inside it */
+.first-run-delay-line {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.first-run-delay-input {
+  width: 76px;
+  min-height: 36px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-15);
+  color: var(--text-main);
+  text-align: right;
+}
+
+.first-run-delay-input:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+.first-run-delay-input.is-invalid {
+  border-color: var(--error-color);
+}
+
+/* Two triggers inside the frame: rows separated by lines instead of boxes of their own */
+.first-run-setting-box .first-run-setting {
+  padding: 12px 0;
+  border: 0;
+  border-top: var(--border-width) solid var(--border-color);
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Location and folder name are one row: the parent path, then the editable name, then the change button */
+.first-run-save-box {
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.first-run-save-box .first-run-path {
+  border: 0;
+  background: transparent;
+}
+
+.first-run-save-box .first-run-path-text {
+  /* The parent path gives way first, so the folder name stays readable */
+  flex: 0 100 auto;
+  min-width: 8ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.first-run-path .first-run-path-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.first-run-path-btn .material-symbols-outlined,
+.first-run-path .first-run-field-icon {
+  flex-shrink: 0;
+  font-size: var(--fs-20, 20px);
+  color: var(--accent-text);
+}
+
+/* The name sits in its own frame with the edit icon; the frame grows with the text, up to the row width */
+.first-run-name-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  height: 44px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.first-run-name-box {
+  cursor: text;
+}
+
+.first-run-name-box:focus-within {
+  border-color: var(--accent-color);
+}
+
+.first-run-name-box:has(.is-invalid) {
+  border-color: var(--error-color);
+}
+
+/* A saved name: the frame flashes once in the accent color, and the line below gets a check */
+@keyframes first-run-saved-flash {
+  from { border-color: var(--accent-color); }
+  to { border-color: var(--border-color); }
+}
+
+.first-run-name-box.is-saved {
+  animation: first-run-saved-flash 1s ease-out;
+}
+
+.first-run-hint.is-saved {
+  color: var(--accent-text);
+}
+
+.first-run-hint.is-saved::before {
+  content: 'check';
+  font-family: 'Material Symbols Outlined';
+  font-size: var(--fs-18, 18px);
+  line-height: 1;
+  vertical-align: -4px;
+  margin-right: 4px;
+}
+
+.first-run-name-box .first-run-field-icon {
+  font-size: var(--fs-18, 18px);
+}
+
+.first-run-save-box .first-run-input {
+  /* Chromium 126+ (Electron 31) sizes the input to its text; the frame then grows with it */
+  field-sizing: content;
+  flex: 0 1 auto;
+  min-width: 6ch;
+  max-width: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: var(--fs-16);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.first-run-save-box .first-run-input:focus-visible {
+  outline: none;
+}
+
+.first-run-save-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px 12px;
+}
+
+.first-run-save-foot .first-run-hint {
+  margin: 0;
+}
+
+.first-run-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Folder-name field in Settings (the first-run one is .first-run-field) */
+.save-name-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.first-run-path-btn[hidden],
+.setting-item .toolbar-btn[hidden],
+.first-run-btn-quiet[hidden],
+[data-save-name-field][hidden] {
+  display: none;
+}
+
+.first-run-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 0 16px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-16);
+  color: var(--text-main);
+}
+
+.first-run-input.is-invalid {
+  border-color: var(--error-color);
+}
+
+.first-run-input:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+/* A row with a title, a hint and a switch on the right */
+.first-run-setting {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 10px;
+}
+
+.first-run-setting-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.first-run-check-title {
+  display: block;
+  font-size: var(--fs-14);
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+/* Why the embedding model matters; turns into a warning when it is switched off */
+.first-run-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 12px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+  font-size: var(--fs-13);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.first-run-notice .material-symbols-outlined {
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: var(--fs-16);
+}
+
+.first-run-notice.is-warning {
+  border-color: color-mix(in srgb, var(--warn-color) 55%, transparent);
+  background: color-mix(in srgb, var(--warn-color) 14%, transparent);
+  color: var(--text-main);
+}
+
+.first-run-notice.is-warning .material-symbols-outlined {
+  color: var(--warn-color);
+}
+
+.first-run-facts {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 4px 16px;
+  margin: 2px 0 0;
+  font-size: var(--fs-13);
+  line-height: 1.5;
+}
+
+.first-run-facts dt {
+  color: var(--text-muted);
+}
+
+.first-run-facts dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-main);
+  overflow-wrap: anywhere;
+}
+
+.first-run-code {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-13);
+  color: var(--text-main);
+}
+
+.first-run-dialog select.ai-setup-select {
+  width: 100%;
+  max-width: none;
+}
+
+.first-run-facts dd .ai-setup-select {
+  margin-bottom: 4px;
+}
+
+.first-run-key-grid {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.first-run-key {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 6px 0 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.first-run-key > .material-symbols-outlined {
+  font-size: var(--fs-18);
+  color: var(--text-muted);
+}
+
+.first-run-key input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-15);
+  color: var(--text-main);
+}
+
+.first-run-key input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.first-run-key button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+/* Step 3's picture of the editor: the left pane is what the user writes (writing assist below it), the right pane is the
+   dictionary the embedding model reads inside it. The panes are drawn, not forms; the controls sit inside them */
+/* The picture, its caption and the notice run to the step's own left edge, level with the heading's marker */
+.first-run-section:not(.first-run-section--row) > .setup-ai-window,
+.first-run-section:not(.first-run-section--row) > .setup-ai-flow,
+.first-run-section:not(.first-run-section--row) > .first-run-notice {
+  margin-left: 0;
+}
+
+.setup-ai-window {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.setup-ai-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 32px;
+  padding: 0 14px;
+  background: var(--active-bg);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+
+.setup-ai-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.setup-ai-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border-color);
+}
+
+.setup-ai-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr);
+}
+
+.setup-ai-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.setup-ai-pane--dict {
+  background: color-mix(in srgb, var(--accent-color) 7%, transparent);
+}
+
+.setup-ai-pane-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.setup-ai-pane-title {
+  font-size: var(--fs-14);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.setup-ai-pane-role {
+  font-size: var(--fs-12);
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Drawn bars that stand in for words; they carry no text of their own */
+.setup-ai-page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.setup-ai-line {
+  display: block;
+  flex-shrink: 0;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+}
+
+.setup-ai-line.is-long {
+  width: 88%;
+}
+
+.setup-ai-line.is-mid {
+  width: 62%;
+}
+
+.setup-ai-line.is-short {
+  width: 36%;
+}
+
+.setup-ai-caret {
+  width: 2px;
+  height: 16px;
+  background: var(--accent-color);
+}
+
+/* The writing assist sits at the foot of the editor pane, where the text it helps with would be */
+.setup-ai-assist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.setup-ai-assist-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.setup-ai-assist-title {
+  font-size: var(--fs-13);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Inside a pane the provider and key fields stack, one above the other */
+.setup-ai-assist .first-run-key-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.setup-ai-assist .first-run-key {
+  height: 40px;
+}
+
+.setup-ai-assist .first-run-hint {
+  font-size: var(--fs-12);
+}
+
+/* The toggle row is a surface of its own on the dictionary tint: the editor's canvas color, without a border */
+.setup-ai-pane--dict .first-run-setting {
+  padding: 10px 12px;
+  border: 0;
+  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+.setup-ai-pane .first-run-facts {
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 2px 12px;
+  font-size: var(--fs-12);
+}
+
+.setup-ai-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.setup-ai-entries li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Each dictionary entry is a dot (its vector) and a bar (its text) */
+.setup-ai-entries i {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-color);
+}
+
+/* The arrow runs from the dictionary to the editor: the embedding results come back to the text.
+   No rule around it; the gutter is the editor's own background, so the two panes meet by color alone */
+.setup-ai-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-text);
+}
+
+.setup-ai-link .material-symbols-outlined {
+  font-size: var(--fs-20);
+}
+
+.setup-ai-flow {
+  margin: 0;
+  font-size: var(--fs-13);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.first-run-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 32px;
+  border-top: var(--border-width) solid var(--border-color);
+  background: var(--active-bg);
+}
+
+/* Left of the footer: the "change later" line and, only while loading, the editor status under it */
+.first-run-footer-info {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Running text with the gear inline, so a narrow footer wraps it like a sentence instead of splitting it into pieces */
+.first-run-later {
+  display: block;
+  margin: 0;
+  font-size: var(--fs-13);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.first-run-later .material-symbols-outlined {
+  display: inline-block;
+  vertical-align: -4px;
+  font-size: var(--fs-18);
+}
+
+.first-run-status {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+
+.first-run-status:empty {
+  display: none;
+}
+
+.first-run-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.first-run-btn,
+.first-run-btn-quiet,
+.first-run-btn-primary {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: var(--fs-14);
+  cursor: pointer;
+}
+
+.first-run-btn {
+  border: var(--border-width) solid var(--border-color);
+  background: transparent;
+  color: var(--text-main);
+}
+
+.first-run-btn-quiet {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.first-run-btn-quiet:hover {
+  color: var(--text-main);
+}
+
+.first-run-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  border: none;
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+/* Footer navigation: a small caption over the name of the step the button leads to, with the chevron centred on both lines */
+.first-run-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 20px;
+}
+
+/* The next button pushes its chevron to the right edge, away from the label */
+.first-run-btn-primary.first-run-nav-btn {
+  justify-content: space-between;
+  min-width: 176px;
+  padding: 0 16px 0 22px;
+}
+
+.first-run-nav-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.first-run-nav-caption {
+  font-size: var(--fs-11);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
+.first-run-nav-caption:empty {
+  display: none;
+}
+
+.first-run-nav-label {
+  font-size: var(--fs-15);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* A Material chevron at the size of the two text lines, so its centre sits on the middle of the label block */
+.first-run-nav-icon {
+  flex-shrink: 0;
+  display: block;
+  width: 22px;
+  height: 22px;
+  font-size: var(--fs-22);
+  line-height: 22px;
+  overflow: hidden;
+}
+
+.first-run-btn[hidden] {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .first-run-body,
+  .first-run-footer,
+  .step-tabs {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .first-run-theme-grid,
+  .first-run-key-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .first-run-key-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .first-run-footer {
+    flex-wrap: wrap;
+  }
+
+  /* Narrow: the dictionary goes under the editor, and the arrow points up at it */
+  .setup-ai-panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .setup-ai-link {
+    height: 32px;
+  }
+
+  .setup-ai-link .material-symbols-outlined {
+    transform: rotate(90deg);
+  }
+}
+
+/* ==========================================================================
    AI MODEL Master Page: Tabs & Subtabs
    ========================================================================== */
 
@@ -697,14 +2124,14 @@
 }
 
 .ai-model-tab-btn.active {
-  color: #fff;
+  color: var(--text-main, #f8fafc);
   background: rgba(56, 189, 248, 0.15);
   border-color: var(--accent-color, #38bdf8);
   box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);
 }
 
 .ai-model-tab-btn[data-aimodel-tab="llm"].active {
-  color: #fff;
+  color: var(--text-main, #f8fafc);
   background: rgba(168, 85, 247, 0.16);
   border-color: #c084fc;
   box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
@@ -738,7 +2165,7 @@
 }
 
 .ai-model-subtab-btn.active {
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-text, #38bdf8);
   border-bottom-color: var(--accent-color, #38bdf8);
   font-weight: 600;
 }
@@ -750,4 +2177,7 @@
 
 .ai-model-panel.active {
   display: flex;
+}
+.setting-item[hidden] {
+  display: none;
 }

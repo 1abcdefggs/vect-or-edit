@@ -213,6 +213,37 @@ export function updatePipelineVisibility(): void {
   const visible = pipelineOpenedByUser || (problem && !pipelineDismissedDuringError);
   strip.style.display = visible ? 'flex' : 'none';
   if (toggle) toggle.style.display = visible ? 'none' : 'flex';
+  paintPipelineToggle();
+}
+
+/** The worst state among the subsystems, most severe first. Standby (AI model or index not loaded yet) is not a fault. */
+type PipelineSeverity = 'error' | 'warning' | 'loading' | 'standby' | 'ready';
+
+function pipelineSeverity(): PipelineSeverity {
+  if (hasPipelineError()) return 'error';
+  if (hasPipelineWarning()) return 'warning';
+  const states = Object.values(subsystemState);
+  if (states.some(isLoadingStatus)) return 'loading';
+  if (states.some(s => s === 'standby' || s === 'unloaded' || s === false)) return 'standby';
+  return 'ready';
+}
+
+// Each severity lights the LED with an existing status colour; warning and loading share the amber one
+const SEVERITY_LED: Record<PipelineSeverity, string> = {
+  error: 'status-error',
+  warning: 'status-loading',
+  loading: 'status-loading',
+  standby: 'status-standby',
+  ready: 'status-ready'
+};
+
+/** The PIPELINE button's LED: it stays lit while the strip is closed, so a problem is visible without opening it. */
+function paintPipelineToggle(): void {
+  const led = document.getElementById('pipelineToggleLed');
+  if (!led) return;
+  const severity = pipelineSeverity();
+  led.className = `status-led-dot ${SEVERITY_LED[severity]}`;
+  document.getElementById('btnPipelineToggle')?.setAttribute('data-severity', severity);
 }
 
 function openPipelineStrip(): void {
