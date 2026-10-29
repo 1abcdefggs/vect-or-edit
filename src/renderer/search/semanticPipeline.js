@@ -55,7 +55,8 @@ async function embedText(text) {
       const worker = getWorker();
       const seq = ++_embedSeq;
       _pendingEmbedResolvers.set(seq, resolve);
-      worker.postMessage({ type: 'embed', seq, text: `query: ${text}` });
+      // No prefix here: worker.js adds the model's query prefix from the catalog (one source), so a prefix added here would double it
+      worker.postMessage({ type: 'embed', seq, text });
       // Timeout fallback: if worker doesn't respond in 5s, skip vector search
       setTimeout(() => {
         if (_pendingEmbedResolvers.has(seq)) {

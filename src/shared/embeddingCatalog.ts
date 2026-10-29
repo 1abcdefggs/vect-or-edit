@@ -11,6 +11,16 @@ export type LanguageFit = 'full' | 'partial' | 'none' | 'unknown' | 'unselected'
 
 export interface EmbeddingModelEntry {
   id: string;
+  /**
+   * Embedding space the vectors live in (the embedding facet id of vect-or-generate/registry/facets.json, keep in sync).
+   * Builds of one model share it. Absent: the model's own id is its space, so only that exact id matches.
+   */
+  spaceId?: string;
+  /**
+   * true: the first N values of a vector are a valid smaller embedding (Matryoshka training), so it may be truncated.
+   * Registered by hand after reading the model card; absent means not truncatable.
+   */
+  matryoshka?: boolean;
   /** null: not checked against the model card yet */
   dimensions: number | null;
   sizeMB: number | null;

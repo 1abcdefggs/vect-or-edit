@@ -6,11 +6,24 @@ import { resolveItemCode, resolveItemTitle, resolveItemDescription, escapeHtml }
 import { removeContextMenu } from '../editor/ui/contextMenuManager.js';
 import { aiManager } from '../core/aiStateManager.js';
 
-// Why the list is empty: the EMBED switch is off, the model is not ready, or nothing matched
+// Number of loaded knowledge slots, pushed by dictionary.js after each state read (0 until the first read)
+let loadedSlotCount = 0;
+// Of those, the slots whose vectors fit the selected embedding model (the rest are left out of the vector index)
+let usableSlotCount = 0;
+
+export function setLoadedSlotCount(count, usable = count) {
+  loadedSlotCount = count;
+  usableSlotCount = usable;
+}
+
+// Why the list is empty: no knowledge file is set, the EMBED switch is off, the model is not ready,
+// every dictionary was made for another model, or nothing matched
 function emptyStateKey() {
+  if (loadedSlotCount === 0) return 'no_slots_hint';
   const state = aiManager.getState();
   if (!state.embed) return 'embed_off_hint';
   if (!state.embedConfigured) return 'embed_not_ready_hint';
+  if (usableSlotCount === 0) return 'slots_all_excluded_hint';
   return 'vector_no_match';
 }
 
@@ -219,8 +232,8 @@ export function renderResults(results, isPreliminary = false) {
   if (!results || results.length === 0) {
     setVectorIconActive(false);
     const emptyKey = emptyStateKey();
-    // Not ready: say where to fix it, in one click
-    const action = emptyKey === 'embed_not_ready_hint'
+    // Not ready, or no dictionary fits the model: say where to fix it, in one click
+    const action = emptyKey === 'embed_not_ready_hint' || emptyKey === 'slots_all_excluded_hint'
       ? `<button type="button" class="empty-state__action" data-open-ai-settings>${t('embed_open_settings')}</button>`
       : '';
     resultsList.innerHTML = `<div class="empty-state" data-i18n="${emptyKey}">${t(emptyKey)}</div>${action}`;
@@ -269,10 +282,15 @@ export function renderResults(results, isPreliminary = false) {
     </div>`;
   }
 
-  // With EMBED off the results are text matches only; say so, so the scores are not read as meaning
-  const embedOffNote = aiManager.getState().embed
-    ? ''
-    : `<div class="embed-off-note" style="color: var(--text-muted); font-size: var(--fs-11); line-height: 1.5; padding: 2px 6px 6px;">${escapeHtml(t('embed_text_match_note'))}</div>`;
+  // With EMBED off the results are text matches only; say so, so the scores are not read as meaning.
+  // With EMBED on but no model ready, or no dictionary fitting the model, the same applies and the reason is shown.
+  const embedState = aiManager.getState();
+  const embedNoteKey = !embedState.embed ? 'embed_text_match_note'
+    : !embedState.embedConfigured ? 'embed_not_ready_hint'
+    : (loadedSlotCount > 0 && usableSlotCount === 0) ? 'slots_all_excluded_hint' : '';
+  const embedOffNote = embedNoteKey
+    ? `<div class="embed-off-note" style="color: var(--text-muted); font-size: var(--fs-11); line-height: 1.5; padding: 2px 6px 6px;">${escapeHtml(t(embedNoteKey))}</div>`
+    : '';
   resultsList.innerHTML = embedOffNote + html;
 
   const btnCopyAll = document.getElementById('btnCopyAllResults');
