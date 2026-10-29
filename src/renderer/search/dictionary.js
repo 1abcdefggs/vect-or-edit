@@ -14,6 +14,19 @@ function slotText(key, fallback) {
 }
 
 // The domain of each loaded dictionary, read once from its header and kept by slot id ('' when unknown)
+// Why a dictionary is not (fully) in the vector search, from the compatibility the main process worked out; '' when nothing to say
+function slotCompatNote(slot) {
+  const c = slot?.compat;
+  if (!c) return '';
+  if (c.state === 'excluded') {
+    const key = c.reason === 'space-mismatch' ? 'slot_compat_space' : c.reason === 'dim-mismatch-mixed' ? 'slot_compat_mixed' : c.reason === 'truncation-off' ? 'slot_compat_trunc_off' : 'slot_compat_dim';
+    return slotText(key, 'Left out of vector search');
+  }
+  if (c.state === 'approximate') return slotText('slot_compat_approx', 'Approximate: vectors are cut');
+  if (c.state === 'unverified') return slotText('slot_compat_unverified', 'Embedding model not recorded');
+  return '';
+}
+
 const slotDomainCache = new Map();
 
 function slotDomain(slot) {
@@ -244,6 +257,11 @@ export async function updateSemanticStateDisplay() {
           infoCol.appendChild(infoSpan);
           infoCol.appendChild(detailLine);
 
+          const compatNote = slotCompatNote(slot);
+          if (compatNote) {
+            detailLine.textContent += ` · ${compatNote}`;
+            detailLine.title = compatNote;
+          }
           leftContainer.appendChild(slotIndexBadge);
           leftContainer.appendChild(infoCol);
 
@@ -595,4 +613,9 @@ export function getQuickMatches(query, limit = 5) {
   }
 
   return [];
+}
+
+// The selected embedding model changed what can be compared: draw the dictionary list again
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:slotCompatChanged', () => { updateSemanticStateDisplay(); });
 }

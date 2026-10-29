@@ -429,6 +429,13 @@
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_truncation" data-label-text="Shorten vectors to fit" data-desc-key="setting_truncation_desc" data-desc-text="When a dictionary and the model differ in vector length but share one embedding space, cut the longer vectors to the shorter length (approximate). Off: such a dictionary is left out of vector search."></div>
+            <select id="modalTruncationSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_truncation">
+              <option value="on" selected data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
         </div>
 
 <section class="ai-control-overview" aria-label="AI system status">
