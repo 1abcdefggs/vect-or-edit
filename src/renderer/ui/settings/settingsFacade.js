@@ -271,7 +271,7 @@ export function initSettings(updateEditorCb) {
     const lineHeight = parseInt(modalLineHeightSelect?.value || String(DEFAULTS.LINE_HEIGHT), 10);
     const wordWrap = modalWordWrapSelect?.value || 'on';
     const lineNumbers = modalLineNumbersSelect?.value || 'on';
-    const renderLineHighlight = modalLineHighlightSelect?.value || 'line';
+    const renderLineHighlight = modalLineHighlightSelect?.value || 'gutter';
     const stickyScroll = (modalStickyScrollSelect?.value || 'on') === 'on';
     const renderWhitespace = modalWhitespaceSelect?.value || 'none';
     const quickEditorToneSelect = document.getElementById('quickEditorToneSelect');

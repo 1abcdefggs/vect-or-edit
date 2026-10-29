@@ -106,7 +106,7 @@ export async function initEditor() {
     folding: false,
     lineNumbersMinChars: 3,
     lineDecorationsWidth: 12,
-    renderLineHighlight: 'line',
+    renderLineHighlight: 'gutter',
     renderLineHighlightOnlyWhenFocus: true,
     smoothScrolling: true,
     cursorBlinking: 'smooth',
