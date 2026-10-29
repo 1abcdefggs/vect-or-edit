@@ -416,7 +416,7 @@ export async function addKnowledgeSlot() {
         resetVectorSearchResults();
         refreshLinter();
         return res;
-      } else if (res && !res.success) {
+      } else if (res && !res.success && !res.canceled) {
         const errorMsg = res.errorCode ? t(res.errorCode, res.errorParams || {}) : (res.error || t('error_slot_add', { message: 'Unknown' }));
         alert(errorMsg);
       }
