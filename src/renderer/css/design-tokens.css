@@ -19,9 +19,12 @@
   --transition-fast: 0.2s ease;
   /* The single UI font stack. Set once on body (utilities.css); everything else inherits it. */
   --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* Icon-only buttons (tab bar, sidebar toggle): one square size and one icon size for all of them. */
+  /* Icon-only buttons (tab bar, sidebar toggle, gear buttons): one square size and one icon size for all of them.
+     The icon is 86% of the box (target 80-90%): 24 / 28. */
   --icon-btn-size: 28px;
-  --icon-size: 20px;
+  --icon-size: 24px;
+  /* Icons that sit beside text (labels, menus, status pills): one size for all of them */
+  --icon-text-size: var(--fs-18);
   /* Button padding from the font size alone (golden ratio, em based): vertical 1/phi^3, horizontal 1/phi.
      Exact forms: phi = (1 + sqrt 5) / 2, 1/phi = (sqrt 5 - 1) / 2, 1/phi^3 = sqrt 5 - 2.
      Used with class btn-phi. Basis: layout-core docs/control-sizing-evidence.md sections 8 and 10. */

@@ -12,9 +12,9 @@
   --control-h-lg: 30px;
 }
 
-/* Gear button: square, sized by the row it sits in (.gear-btn--sm / --md / --lg) */
+/* Gear button: square, the shared icon-button box (--icon-btn-size) */
 .gear-btn {
-  --gear-size: var(--control-h-md);
+  --gear-size: var(--icon-btn-size);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -46,12 +46,13 @@
   color: var(--accent-color);
 }
 
-.gear-btn--sm { --gear-size: var(--control-h-sm); }
-.gear-btn--md { --gear-size: var(--control-h-md); }
-.gear-btn--lg { --gear-size: var(--control-h-lg); }
+/* One size for every gear button: the shared icon-button box, so sm / md / lg all match */
+.gear-btn--sm,
+.gear-btn--md,
+.gear-btn--lg { --gear-size: var(--icon-btn-size); }
 
 .gear-btn .material-symbols-outlined {
-  font-size: var(--fs-18);
+  font-size: var(--icon-size);
   line-height: 1;
   color: inherit;
   transition: color 0.2s ease, transform 0.2s ease;
@@ -414,6 +415,16 @@
 /* The selected state is on the knob, so its outside word is hidden; only the other word stays beside the track */
 .ai-switch-pill .toggle-switch-word.is-lit {
   display: none;
+}
+
+/* The track's empty side (under the knob's travel) is closed up: the other word tucks into it,
+   so the OFF and ON words sit about the same distance from the knob in both states. 24px = gap 6px + 18px travel. */
+.ai-switch-pill .toggle-switch-word[data-side="on"] {
+  margin-left: -24px;
+}
+
+.ai-switch-pill .toggle-switch-word[data-side="off"] {
+  margin-right: -24px;
 }
 
 /* ==========================================================================

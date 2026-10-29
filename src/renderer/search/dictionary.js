@@ -3,9 +3,103 @@ import { refreshLinter } from '../editor/editorManager.js';
 import { icons } from '../core/icons.js';
 import { i18n, t } from '../core/i18n.js';
 import { confirmClose } from '../ui/notifications/closeGuard.js';
+import { setLoadedSlotCount } from './searchUi.js';
 
 export const allKnowledgeItems = [];
 export const allDictEntries = [];
+
+// A translation, or the English fallback when the key is missing (t() returns the key itself then)
+function slotText(key, fallback) {
+  const value = t(key);
+  return value && value !== key ? value : fallback;
+}
+
+// Why a dictionary is not (fully) in the vector search, from the compatibility the main process worked out; '' when nothing to say
+function slotCompatNote(slot) {
+  const c = slot?.compat;
+  if (!c) return '';
+  if (c.state === 'excluded') {
+    const key = c.reason === 'space-mismatch' ? 'slot_compat_space' : c.reason === 'dim-mismatch-mixed' ? 'slot_compat_mixed' : c.reason === 'truncation-off' ? 'slot_compat_trunc_off' : 'slot_compat_dim';
+    return slotText(key, 'Left out of vector search');
+  }
+  if (c.state === 'approximate') return slotText('slot_compat_approx', 'Approximate: vectors are cut');
+  if (c.state === 'unverified') return slotText('slot_compat_unverified', 'Embedding model not recorded');
+  return '';
+}
+
+// The domain of each loaded dictionary, read once from its header and kept by slot id ('' when unknown)
+const slotDomainCache = new Map();
+
+function slotDomain(slot) {
+  return slotDomainCache.get(slot.id) || '';
+}
+
+async function loadSlotDomain(slot) {
+  if (slotDomainCache.has(slot.id)) return slotDomainCache.get(slot.id);
+  let domain = '';
+  try {
+    const res = await window.engineAPI.getSlotInfo(slot.id);
+    domain = res?.success && res.header?.domain ? String(res.header.domain) : '';
+  } catch (err) {
+    domain = '';
+  }
+  slotDomainCache.set(slot.id, domain);
+  return domain;
+}
+
+// The header of one dictionary (domain, version, dimension, ...), as a small table. Entries are never shown.
+async function renderSlotInfo(container, slot) {
+  container.textContent = '';
+  const note = document.createElement('div');
+  note.style.cssText = 'color: var(--text-muted); margin-bottom: 4px;';
+  container.appendChild(note);
+
+  let res;
+  try {
+    res = await window.engineAPI.getSlotInfo(slot.id);
+  } catch (err) {
+    res = { success: false, error: String(err) };
+  }
+  if (!res?.success) {
+    note.textContent = res?.error || slotText('kb_info_failed', 'Could not read this dictionary.');
+    return;
+  }
+  if (res.encrypted) {
+    note.textContent = slotText('kb_info_encrypted', 'Encrypted (VENC). Load it with its password to see the header.');
+  } else {
+    note.textContent = slotText('kb_info_note', 'Header only. The entries are not shown here.');
+  }
+
+  const h = res.header || {};
+  const yesNo = (v) => (v === null || v === undefined ? null : (v ? 'yes' : 'no'));
+  const rows = res.encrypted ? [
+    [slotText('kb_info_items', 'Items'), res.itemCount],
+  ] : [
+    [slotText('kb_info_domain', 'Domain'), h.domain],
+    [slotText('kb_info_version', 'Version'), h.version],
+    [slotText('kb_info_dimension', 'Dimension'), h.dimension],
+    [slotText('kb_info_metric', 'Metric'), h.metric],
+    [slotText('kb_info_items', 'Items'), res.itemCount],
+    [slotText('kb_info_fidelity', 'Fidelity'), h.fidelity_score == null ? null : `${h.fidelity_score} %`],
+    [slotText('kb_info_sanitized', 'Sanitized'), yesNo(h.is_sanitized)],
+  ];
+
+  const table = document.createElement('table');
+  table.style.cssText = 'width: 100%; border-collapse: collapse;';
+  rows.forEach(([label, value]) => {
+    const tr = document.createElement('tr');
+    const th = document.createElement('td');
+    th.style.cssText = 'color: var(--text-muted); padding: 2px 8px 2px 0; white-space: nowrap; vertical-align: top;';
+    th.textContent = label;
+    const td = document.createElement('td');
+    td.style.cssText = 'padding: 2px 0; word-break: break-word;';
+    td.textContent = value === null || value === undefined || value === '' ? '—' : String(value);
+    tr.appendChild(th);
+    tr.appendChild(td);
+    table.appendChild(tr);
+  });
+  container.appendChild(table);
+}
 
 function katakanaToHiragana(src) {
   return typeof src === 'string' ? src.replace(/[\u30a1-\u30f6]/g, m => String.fromCharCode(m.charCodeAt(0) - 0x60)) : '';
@@ -84,10 +178,36 @@ export async function updateSemanticStateDisplay() {
       if (btnInsertTemplate) btnInsertTemplate.style.display = 'none';
     }
 
+    // Guideline card: say what it is for while no guideline is loaded, so it is not an empty box
+    const guidelineCard = document.getElementById('guidelineModuleCard');
+    if (guidelineCard) {
+      guidelineCard.querySelector('.guideline-empty-hint')?.remove();
+      if (!state?.activeGoal) {
+        const hint = document.createElement('ul');
+        hint.className = 'guideline-empty-hint';
+        hint.style.cssText = 'margin: 0; padding: 4px 10px 8px 26px; font-size: var(--fs-11); line-height: 1.6; color: var(--text-muted);';
+        ['guideline_hint_1', 'guideline_hint_2', 'guideline_hint_3'].forEach((key) => {
+          const item = document.createElement('li');
+          item.textContent = t(key);
+          hint.appendChild(item);
+        });
+        // The card's body is what collapses, so the hint goes inside it
+        let body = guidelineCard.querySelector('.semantic-module-body');
+        if (!body) {
+          body = document.createElement('div');
+          body.className = 'semantic-module-body';
+          guidelineCard.appendChild(body);
+        }
+        body.appendChild(hint);
+      }
+    }
+
     // Toggle Clear All Slots button & Search Filters Container
     const btnClearAllSlots = document.getElementById('btnClearAllSlots');
     const searchFiltersContainer = document.getElementById('searchFiltersContainer');
     const hasSlots = (state?.slots && state.slots.length > 0);
+    const slots = state?.slots || [];
+    setLoadedSlotCount(slots.length, slots.filter((s) => s.compat?.state !== 'excluded').length);
 
     // "Unload All" only makes sense with two or more files; with one file the row's X is the way (ADR-11)
     if (btnClearAllSlots) {
@@ -109,28 +229,40 @@ export async function updateSemanticStateDisplay() {
       if (state?.slots?.length) {
         state.slots.forEach((slot, idx) => {
           const itemEl = document.createElement('div');
-          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); font-size: var(--fs-12); gap: 6px;';
-          
+          itemEl.className = 'knowledge-slot-row';
+
           const leftContainer = document.createElement('div');
           leftContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;';
 
+          // The index only: the panel's heading already says these are knowledge slots
           const slotIndexBadge = document.createElement('span');
-          slotIndexBadge.style.cssText = 'font-size: var(--fs-10);  font-family: var(--font-mono, monospace); color: var(--accent-color, #38bdf8); background: rgba(56, 189, 248, 0.12); padding: 1px 4px; border-radius: 3px; flex-shrink: 0;';
-          slotIndexBadge.textContent = `SLOT ${idx + 1}`;
+          slotIndexBadge.className = 'knowledge-slot-index';
+          slotIndexBadge.textContent = `${idx + 1}`;
 
           const infoSpan = document.createElement('span');
           infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981);  font-size: var(--fs-12);';
-          infoSpan.textContent = slot.name;
+          // The title is the dictionary's domain (from its header) when known, otherwise the file name
+          infoSpan.textContent = slotDomain(slot) || slot.name;
           infoSpan.title = t('tip_slot_info', { n: idx + 1, path: slot.filePath, items: slot.itemCount.toLocaleString() });
+          if (!slotDomainCache.has(slot.id)) {
+            loadSlotDomain(slot).then((domain) => {
+              if (domain && infoSpan.isConnected) infoSpan.textContent = domain;
+            });
+          }
 
           // Second line, under the name: the file name (its last part) and the item count, in a quiet colour
           const infoCol = document.createElement('div');
           infoCol.style.cssText = 'display: flex; flex-direction: column; min-width: 0;';
           const detailLine = document.createElement('span');
           detailLine.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-muted); font-size: var(--fs-10);';
-          const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
+          const itemLabel = slotText('label_items', 'items');
           const fileName = (slot.filePath || '').split(/[\\/]/).pop();
           detailLine.textContent = `${fileName} · ${slot.itemCount.toLocaleString()} ${itemLabel}`;
+          const compatNote = slotCompatNote(slot);
+          if (compatNote) {
+            detailLine.textContent += ` · ${compatNote}`;
+            detailLine.title = compatNote;
+          }
           infoCol.appendChild(infoSpan);
           infoCol.appendChild(detailLine);
 
@@ -160,16 +292,48 @@ export async function updateSemanticStateDisplay() {
 
           rightContainer.appendChild(btnDel);
 
+          // Info: the dictionary header (domain, version, dimension, ...) under the row, read on first open
+          const btnInfo = document.createElement('button');
+          btnInfo.type = 'button';
+          btnInfo.className = 'toolbar-btn';
+          btnInfo.style.cssText = 'background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 2px 4px; font-size: var(--fs-11); line-height: 1;';
+          btnInfo.textContent = slotText('kb_info_btn', 'Info');
+          btnInfo.title = slotText('kb_info_tip', 'Show the dictionary header');
+          rightContainer.insertBefore(btnInfo, btnDel);
+
+          // Read on first open only: each render would otherwise ask the main process to parse every file
+          const detailsEl = document.createElement('div');
+          detailsEl.hidden = true;
+          detailsEl.style.cssText = 'padding: 6px 8px 8px 26px; font-size: var(--fs-11); color: var(--text-main);';
+          btnInfo.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            detailsEl.hidden = !detailsEl.hidden;
+            btnInfo.setAttribute('aria-expanded', String(!detailsEl.hidden));
+            if (!detailsEl.hidden && !detailsEl.dataset.loaded) {
+              detailsEl.dataset.loaded = '1';
+              await renderSlotInfo(detailsEl, slot);
+            }
+          });
+          btnInfo.setAttribute('aria-expanded', 'false');
+
           itemEl.appendChild(leftContainer);
           itemEl.appendChild(rightContainer);
-          slotsListEl.appendChild(itemEl);
+          const wrapEl = document.createElement('div');
+          wrapEl.style.cssText = 'display: flex; flex-direction: column;';
+          wrapEl.appendChild(itemEl);
+          wrapEl.appendChild(detailsEl);
+          slotsListEl.appendChild(wrapEl);
         });
       } else {
         // No slot loaded: the section says what it is for, so it is not an empty box
-        const hint = document.createElement('div');
+        const hint = document.createElement('ul');
         hint.className = 'knowledge-empty-hint';
-        hint.style.cssText = 'font-size: var(--fs-11); line-height: 1.5; color: var(--text-muted); padding: 4px 6px;';
-        hint.textContent = t('knowledge_empty_hint');
+        hint.style.cssText = 'margin: 0; padding: 4px 6px 4px 20px; font-size: var(--fs-11); line-height: 1.6; color: var(--text-muted);';
+        ['knowledge_hint_1', 'knowledge_hint_2', 'knowledge_hint_3'].forEach((key) => {
+          const item = document.createElement('li');
+          item.textContent = t(key);
+          hint.appendChild(item);
+        });
         slotsListEl.appendChild(hint);
       }
     }
@@ -456,4 +620,9 @@ export function getQuickMatches(query, limit = 5) {
   }
 
   return [];
+}
+
+// The selected embedding model changed what can be compared: draw the dictionary list again
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:slotCompatChanged', () => { updateSemanticStateDisplay(); });
 }

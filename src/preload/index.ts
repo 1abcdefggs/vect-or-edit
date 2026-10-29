@@ -8,6 +8,7 @@ import type {
 
 const engineAPI: EngineAPI = {
   searchVector: (vector: number[], limit?: number) => ipcRenderer.invoke('engine:searchVector', vector, limit),
+  setEmbeddingModel: (modelId: string, allowTruncation?: boolean) => ipcRenderer.invoke('engine:setEmbeddingModel', modelId, allowTruncation),
   saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => ipcRenderer.invoke('app:saveFile', content, defaultName, forceDialog),
   openFile: () => ipcRenderer.invoke('app:openFile'),
   openWorkspace: () => ipcRenderer.invoke('app:openWorkspace'),
@@ -28,6 +29,14 @@ const engineAPI: EngineAPI = {
     ipcRenderer.on('engine:status', handler);
     return () => {
       ipcRenderer.removeListener('engine:status', handler);
+    };
+  },
+  // The main process asks before the window closes (the × button); the renderer answers with closeWindow
+  onCloseRequested: (callback: () => void) => {
+    const handler = () => callback();
+    ipcRenderer.on('app:closeRequested', handler);
+    return () => {
+      ipcRenderer.removeListener('app:closeRequested', handler);
     };
   },
   onSystemLog: (callback: (log: SystemLogEntry) => void) => {
@@ -61,6 +70,7 @@ const engineAPI: EngineAPI = {
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window:toggleMaximize'),
   closeWindow: () => ipcRenderer.invoke('window:close'),
+  getSlotInfo: (slotId: string) => ipcRenderer.invoke('engine:getSlotInfo', slotId),
   isWindowMaximized: () => ipcRenderer.invoke('window:isMaximized'),
   setZoomFactor: (factor: number) => webFrame.setZoomFactor(factor),
   getZoomFactor: () => webFrame.getZoomFactor(),

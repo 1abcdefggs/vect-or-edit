@@ -201,6 +201,7 @@ export function initSettings(updateEditorCb) {
   const modalLimitSelect = document.getElementById('modalLimitSelect');
   const modalShowFullMetadataChk = document.getElementById('modalShowFullMetadataChk');
   const modalLinterSelect = document.getElementById('modalLinterSelect');
+  const modalTruncationSelect = document.getElementById('modalTruncationSelect');
   const modalSuggestTriggerSelect = document.getElementById('modalSuggestTriggerSelect');
 
 
@@ -270,7 +271,7 @@ export function initSettings(updateEditorCb) {
     const lineHeight = parseInt(modalLineHeightSelect?.value || String(DEFAULTS.LINE_HEIGHT), 10);
     const wordWrap = modalWordWrapSelect?.value || 'on';
     const lineNumbers = modalLineNumbersSelect?.value || 'on';
-    const renderLineHighlight = modalLineHighlightSelect?.value || 'line';
+    const renderLineHighlight = modalLineHighlightSelect?.value || 'gutter';
     const stickyScroll = (modalStickyScrollSelect?.value || 'on') === 'on';
     const renderWhitespace = modalWhitespaceSelect?.value || 'none';
     const quickEditorToneSelect = document.getElementById('quickEditorToneSelect');
@@ -461,6 +462,14 @@ export function initSettings(updateEditorCb) {
   const savedLimit = localStorage.getItem(STORAGE_KEYS.SEARCH_LIMIT);
   [numMinScore, modalMinScoreInput].forEach(el => { if (el && savedMinScore) el.value = savedMinScore; });
   [selSearchLimit, modalLimitSelect].forEach(el => { if (el && savedLimit) el.value = savedLimit; });
+
+  if (modalTruncationSelect) {
+    modalTruncationSelect.value = localStorage.getItem(STORAGE_KEYS.EMBEDDING_TRUNCATION) === 'off' ? 'off' : 'on';
+    modalTruncationSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.EMBEDDING_TRUNCATION, modalTruncationSelect.value);
+      window.dispatchEvent(new CustomEvent('app:embeddingTruncationChanged'));
+    });
+  }
 
   if (modalLinterSelect) {
     modalLinterSelect.value = localStorage.getItem(STORAGE_KEYS.LINTER_ENABLED) === 'off' ? 'off' : 'on';
@@ -946,7 +955,7 @@ export function initSettings(updateEditorCb) {
       });
       if (!confirmed) return;
       const result = await window.engineAPI.clearCache();
-      window.alert(result.success ? 'Application cache cleared.' : (result.error || 'Unable to clear cache.'));
+      window.alert(result.success ? t('maint_cache_done') : (result.error || t('maint_cache_failed')));
     });
   }
 

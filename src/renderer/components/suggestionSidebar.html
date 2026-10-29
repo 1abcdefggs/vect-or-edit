@@ -17,7 +17,7 @@
         <!-- Embedding ON/OFF Status Pill (Shared UI/UX with Editor LLM Button) -->
         <button id="btnSidebarEmbeddingModel" class="ai-chip-pill ai-switch-pill" data-ui="sbr:embedding-toggle"
           role="switch" aria-checked="false" data-i18n-title="tip_embed_toggle">
-          <span id="iconNeuroContainer" class="material-symbols-outlined vector-activity-icon" style="font-size: var(--fs-15); color: var(--accent-color, #38bdf8); flex-shrink: 0;">neurology</span>
+          <span id="iconNeuroContainer" class="material-symbols-outlined vector-activity-icon" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); flex-shrink: 0;">neurology</span>
           <span class="ai-switch-pill__name">EMBED</span>
           <span class="toggle-switch-group" aria-hidden="true">
             <span class="toggle-switch-word" data-side="off">OFF</span>
@@ -46,7 +46,7 @@
 
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
       <!-- 1. Guidelines & Presets Section (Active) (card rules: module-cards.css) -->
-      <div id="guidelineModuleCard" data-ui="sbr:guideline-card" class="profile-control-card semantic-module-card">
+      <div id="guidelineModuleCard" data-ui="sbr:guideline-card" class="profile-control-card semantic-module-card has-body">
         <div class="semantic-module-header" data-i18n-title="tip_section_guideline">
           <span class="semantic-module-title">
             <span class="material-symbols-outlined collapse-icon">expand_more</span>
@@ -121,6 +121,11 @@
                   <option value="20">20</option>
                 </select>
               </label>
+            </div>
+
+            <div class="filter-help" style="display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-10); line-height: 1.5; color: var(--text-muted);">
+              <span data-i18n="filter_help_threshold">Items below this match threshold (%) are not shown.</span>
+              <span data-i18n="filter_help_limit">The maximum number of matched items to show.</span>
             </div>
 
             <label data-ui="sbr:metadata-toggle"

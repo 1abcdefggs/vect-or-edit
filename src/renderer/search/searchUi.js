@@ -4,6 +4,28 @@ import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
 import { insertTextIntoEditor } from '../editor/editorManager.js';
 import { resolveItemCode, resolveItemTitle, resolveItemDescription, escapeHtml } from './searchUtils.js';
 import { removeContextMenu } from '../editor/ui/contextMenuManager.js';
+import { aiManager } from '../core/aiStateManager.js';
+
+// Number of loaded knowledge slots, pushed by dictionary.js after each state read (0 until the first read)
+let loadedSlotCount = 0;
+// Of those, the slots whose vectors fit the selected embedding model (the rest are left out of the vector index)
+let usableSlotCount = 0;
+
+export function setLoadedSlotCount(count, usable = count) {
+  loadedSlotCount = count;
+  usableSlotCount = usable;
+}
+
+// Why the list is empty: no knowledge file is set, the EMBED switch is off, the model is not ready,
+// every dictionary was made for another model, or nothing matched
+function emptyStateKey() {
+  if (loadedSlotCount === 0) return 'no_slots_hint';
+  const state = aiManager.getState();
+  if (!state.embed) return 'embed_off_hint';
+  if (!state.embedConfigured) return 'embed_not_ready_hint';
+  if (usableSlotCount === 0) return 'slots_all_excluded_hint';
+  return 'vector_no_match';
+}
 
 let currentResults = [];
 let lastRawResults = [];
@@ -41,8 +63,7 @@ export function getSkeletonLoadingHtml(label) {
   return `
     <div class="loading-state">
       <div class="loading-header">
-        <div class="spinner"></div>
-        <span>${label || i18n.vector_computing || "Vectorizing..."}</span>
+        <div class="spinner" role="status" title="${escapeHtml(label || i18n.vector_computing || 'Vectorizing...')}" aria-label="${escapeHtml(label || i18n.vector_computing || 'Vectorizing...')}"></div>
       </div>
       <div class="neural-glow-line"></div>
     </div>
@@ -179,7 +200,9 @@ function renderSingleCard(r, index, isPreliminary = false) {
       <div class="card-header" style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; min-width: 0; flex: 1;">
           ${code ? `<span class="item-code" style="flex-shrink: 0; font-family: monospace; font-size: var(--fs-11); padding: 1px 5px; border-radius: 3px; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); ">${escapeHtml(code)}</span>` : ''}
-          <span class="similarity-score" style="flex-shrink: 0; font-size: var(--fs-12);  color: #10b981;">${isPreliminary ? escapeHtml(t('vector_computing') || "Computing...") : `${scorePct}%`}</span>
+          ${isPreliminary
+            ? `<span class="spinner" role="status" style="flex-shrink: 0;" title="${escapeHtml(t('vector_computing') || 'Computing...')}" aria-label="${escapeHtml(t('vector_computing') || 'Computing...')}"></span>`
+            : `<span class="similarity-score" style="flex-shrink: 0; font-size: var(--fs-12);  color: #10b981;">${scorePct}%</span>`}
           ${title ? `<span class="item-title" style="font-size: var(--fs-14);  color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(title)}">${escapeHtml(title)}</span>` : ''}
         </div>
         <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
@@ -208,7 +231,15 @@ export function renderResults(results, isPreliminary = false) {
 
   if (!results || results.length === 0) {
     setVectorIconActive(false);
-    resultsList.innerHTML = `<div class="empty-state" data-i18n="vector_no_match">${t('vector_no_match')}</div>`;
+    const emptyKey = emptyStateKey();
+    // Not ready, or no dictionary fits the model: say where to fix it, in one click
+    const action = emptyKey === 'embed_not_ready_hint' || emptyKey === 'slots_all_excluded_hint'
+      ? `<button type="button" class="empty-state__action" data-open-ai-settings>${t('embed_open_settings')}</button>`
+      : '';
+    resultsList.innerHTML = `<div class="empty-state" data-i18n="${emptyKey}">${t(emptyKey)}</div>${action}`;
+    resultsList.querySelector('[data-open-ai-settings]')?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAiSearch' } }));
+    });
     return;
   }
   setVectorIconActive(true);
@@ -237,7 +268,7 @@ export function renderResults(results, isPreliminary = false) {
     <div class="inspector-collapsible-section open">
       <div class="inspector-section-header">
         <span class="inspector-section-title" style="display: flex; align-items: center;">
-          <span class="material-symbols-outlined" style="font-size: var(--fs-18);">${iconCode}</span>
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">${iconCode}</span>
           <span>${escapeHtml(groupName)}</span>
           <span class="inspector-section-badge">${items.length}</span>
         </span>
@@ -251,7 +282,16 @@ export function renderResults(results, isPreliminary = false) {
     </div>`;
   }
 
-  resultsList.innerHTML = html;
+  // With EMBED off the results are text matches only; say so, so the scores are not read as meaning.
+  // With EMBED on but no model ready, or no dictionary fitting the model, the same applies and the reason is shown.
+  const embedState = aiManager.getState();
+  const embedNoteKey = !embedState.embed ? 'embed_text_match_note'
+    : !embedState.embedConfigured ? 'embed_not_ready_hint'
+    : (loadedSlotCount > 0 && usableSlotCount === 0) ? 'slots_all_excluded_hint' : '';
+  const embedOffNote = embedNoteKey
+    ? `<div class="embed-off-note" style="color: var(--text-muted); font-size: var(--fs-11); line-height: 1.5; padding: 2px 6px 6px;">${escapeHtml(t(embedNoteKey))}</div>`
+    : '';
+  resultsList.innerHTML = embedOffNote + html;
 
   const btnCopyAll = document.getElementById('btnCopyAllResults');
   if (btnCopyAll) {

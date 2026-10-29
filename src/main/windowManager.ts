@@ -4,6 +4,7 @@ import { bindLoggerToWindow, captureRendererConsole } from './logger';
 import { handleTrusted, isTrustedUrl, setTrustedRenderer } from './ipcSecurity';
 
 let mainWindowInstance: BrowserWindow | null = null;
+let allowClose = false;
 
 export function getMainWindow(): BrowserWindow | null {
   return mainWindowInstance;
@@ -136,7 +137,15 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     return true;
   });
 
+  // The × (and Alt+F4) first asks the renderer, which shows the close confirmation. Only window:close lets it through.
+  mainWindowInstance.on('close', (event) => {
+    if (allowClose) return;
+    event.preventDefault();
+    mainWindowInstance?.webContents.send('app:closeRequested');
+  });
+
   handleTrusted('window:close', () => {
+    allowClose = true;
     mainWindowInstance?.close();
     return true;
   });

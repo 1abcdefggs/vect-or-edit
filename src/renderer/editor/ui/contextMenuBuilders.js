@@ -36,7 +36,10 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   const btnSuggest = createMenuButton({
     className: 'pill-action-btn primary',
     title: modelReady ? (t('suggest_context_menu') || "AI Suggest") : (t('ai_suggest_model_unset_title') || "AI Suggest: Model not configured. Please select or download a model in Settings."),
-    innerHTML: `${icons.search} <span>${modelReady ? 'AISUGGEST' : (t('ai_suggest_model_unset_badge') || 'AISUGGEST - No Model')}</span>`,
+    // Disabled items are greyed, so the reason is a second line in normal text colour, not part of the grey label
+    innerHTML: modelReady
+      ? `${icons.search} <span>AISUGGEST</span>`
+      : `${icons.search} <span>AISUGGEST</span><span style="display: block; font-size: var(--fs-11); color: var(--text-main); white-space: normal;">${t('ai_suggest_reason_no_model') || 'No model set (choose one in Settings)'}</span>`,
     onClick: () => {
       if (!modelReady) return;
       onDismiss();
@@ -54,7 +57,7 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   const btnLlmChat = createMenuButton({
     className: 'pill-action-btn secondary',
     title: "Start LLM Chat or rewrite with selected text",
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-16); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
@@ -129,7 +132,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
     const btnLlm = createMenuButton({
       className: 'custom-context-menu-item',
-      innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-17); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+      innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
       onClick: () => {
         onDismiss();
         window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
@@ -193,7 +196,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
   const btnResetLayout = createMenuButton({
     className: 'custom-context-menu-item',
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--fs-17);">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:resetUIVisibility'));
