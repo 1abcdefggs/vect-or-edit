@@ -30,7 +30,6 @@ export const STORAGE_KEYS = {
   OPENAI_MODEL: 'openai_model',
   SHOW_FULL_METADATA: 'vect_show_full_metadata',
   APP_LANG: 'app_lang',
-  LOG_DISPLAY_POSITION: 'logDisplayPosition',
   EDITOR_BG_TONE: 'editor_bg_tone',
   CUSTOM_EDITOR_BG: 'editor_custom_bg',
   CUSTOM_EDITOR_FG: 'editor_custom_fg',
@@ -59,8 +58,6 @@ export const STORAGE_KEYS = {
   EMBEDDING_PICKER_PREFS: 'vect_embedding_picker_prefs',
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
   EMBEDDING_SOURCE: 'vect_embedding_source',
-  /** When EMBEDDING_SOURCE is 'llm-embed-*', which LLM provider to use as embedder */
-  LLM_EMBEDDING_PROVIDER: 'vect_llm_embedding_provider',
   /** 'off': never cut dictionary or query vectors to a shorter length (docs 04_10); anything else allows it */
   EMBEDDING_TRUNCATION: 'vect_embedding_truncation'
 } as const;
@@ -94,7 +91,6 @@ export const DEFAULTS = {
   AUTO_SAVE: true,
   AUTO_SAVE_IDLE: true,
   AUTO_SAVE_NEWLINE: true,
-  LOG_DISPLAY_POSITION: 'bottom',
   CONFIRM_BEFORE_CLOSE: 'on',
   CONFIRM_TAB_CLOSE: 'on',
 } as const;
