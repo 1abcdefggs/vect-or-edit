@@ -60,7 +60,9 @@ export const STORAGE_KEYS = {
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
   EMBEDDING_SOURCE: 'vect_embedding_source',
   /** When EMBEDDING_SOURCE is 'llm-embed-*', which LLM provider to use as embedder */
-  LLM_EMBEDDING_PROVIDER: 'vect_llm_embedding_provider'
+  LLM_EMBEDDING_PROVIDER: 'vect_llm_embedding_provider',
+  /** 'off': never cut dictionary or query vectors to a shorter length (docs 04_10); anything else allows it */
+  EMBEDDING_TRUNCATION: 'vect_embedding_truncation'
 } as const;
 
 export const TIMINGS = {

@@ -80,12 +80,20 @@ export interface SystemLogEntry {
   message: string;
 }
 
+/** How the slot's vectors relate to the selected embedding model (see shared/embeddingSpace.ts) */
+export interface KnowledgeSlotCompat {
+  /** ok: same space; approximate: cut to a shorter length; unverified: old dictionary, same length; unchecked: model not announced yet; excluded: not in the vector index */
+  state: 'ok' | 'approximate' | 'unverified' | 'unchecked' | 'excluded';
+  reason?: 'space-mismatch' | 'dim-mismatch-unknown-space' | 'dim-not-truncatable' | 'dim-mismatch-mixed' | 'truncation-off';
+}
+
 export interface KnowledgeSlot {
   id: string;
   name: string;
   filePath: string;
   itemCount: number;
   vencPassword?: string;
+  compat?: KnowledgeSlotCompat;
 }
 
 export interface SemanticState {
@@ -110,6 +118,7 @@ export interface DefaultWorkspaceResponse {
 
 export interface EngineAPI {
   searchVector: (vector: number[], limit?: number) => Promise<SearchVectorResponse>;
+  setEmbeddingModel?: (modelId: string, allowTruncation?: boolean) => Promise<{ success: boolean; slots?: KnowledgeSlot[] }>;
   saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => Promise<{ success: boolean, path?: string, filePath?: string, error?: string }>;
   openFile: () => Promise<{ success: boolean, path?: string, filePath?: string, fileName?: string, content?: string, encoding?: string, error?: string }>;
   openWorkspace: () => Promise<{ success: boolean, path?: string, error?: string }>;

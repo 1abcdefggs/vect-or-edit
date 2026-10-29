@@ -18,11 +18,14 @@ import {
   readStrippedKnowledgeItems,
   normalizeKbPayload,
   reloadCombinedKnowledgeIndex,
+  getQueryTruncateTo,
+  setActiveEmbeddingModel,
   setActiveProfile,
   resetActiveProfile,
   clearKnowledgeSlots
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
+import { truncateAndNormalize } from '../shared/embeddingSpace';
 import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
@@ -131,7 +134,17 @@ if (!gotTheLock) {
     // --- Engine IPC ---
     handleTrusted('engine:searchVector', async (_event, vector: number[], limit = 5) => {
       if (!isRustEngineReady()) return { success: false, error: 'Knowledge base not ready' };
-      return handleSearchVector({ vector, topK: limit });
+      // The index holds shorter vectors than the model makes (same space): cut the query the same way
+      const cutTo = getQueryTruncateTo();
+      const query = cutTo && vector.length > cutTo ? truncateAndNormalize(vector, cutTo) : vector;
+      return handleSearchVector({ vector: query, topK: limit });
+    });
+
+    // The renderer announces the selected embedding model; the index is rebuilt when the choice changes what can be compared
+    handleTrusted('engine:setEmbeddingModel', async (_event, modelId: string, allowTruncation?: boolean) => {
+      if (typeof modelId !== 'string' || !modelId) return { success: false };
+      if (setActiveEmbeddingModel(modelId, allowTruncation !== false) && knowledgeSlots.length > 0) await reloadCombinedKnowledgeIndex();
+      return { success: true, slots: knowledgeSlots };
     });
 
     handleTrusted('semantics:query', async (_event, queryText: string, contextText?: string) => {
