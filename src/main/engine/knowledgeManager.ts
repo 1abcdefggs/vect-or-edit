@@ -4,6 +4,8 @@ import fsPromises from 'node:fs/promises';
 import { app } from 'electron';
 import { getEngine, getVault } from './rustEngine';
 import type { KnowledgeSlot } from '../../preload/types';
+import { REGISTRY } from '../../shared/embeddingCatalog';
+import { decideSpace, truncateAndNormalize } from '../../shared/embeddingSpace';
 
 export interface KnowledgeSlotExt extends KnowledgeSlot {
   vencPassword?: string;
@@ -15,6 +17,27 @@ export const slotItemsCache: Map<string, any[]> = new Map();
 let _activeProfile: any = null;
 let _rustEngineReady = false;
 let _rustEngineItemCount = 0;
+
+// The embedding model the renderer has selected. Null until it says so: slots are then loaded as before, unchecked.
+let _activeModel: { id: string; dimensions: number } | null = null;
+// Set when the index holds shorter vectors than the model makes: a query is cut to this length before the search.
+let _queryTruncateTo: number | null = null;
+// The owner's switch (settings page): false means a dictionary that needs cutting is left out instead
+let _allowTruncation = true;
+
+export function getQueryTruncateTo() {
+  return _queryTruncateTo;
+}
+
+/** Returns true when the model changed (the index must then be rebuilt) */
+export function setActiveEmbeddingModel(modelId: string, allowTruncation = true): boolean {
+  const entry = REGISTRY.models.find((m) => m.id === modelId);
+  const next = entry?.dimensions ? { id: modelId, dimensions: entry.dimensions } : null;
+  const changed = _activeModel?.id !== next?.id || _allowTruncation !== allowTruncation;
+  _activeModel = next;
+  _allowTruncation = allowTruncation;
+  return changed;
+}
 
 export function getActiveProfile() {
   return _activeProfile;
@@ -169,11 +192,67 @@ export async function readStrippedKnowledgeItems(targetPath: string): Promise<an
   }
 }
 
+/** The header fields that say which embedding space the vectors are in (absent in old dictionaries) */
+function readSpaceHeader(payload: any): { spaceId?: string; model?: string } {
+  if (!payload || Array.isArray(payload)) return {};
+  return {
+    ...(typeof payload.spaceId === 'string' ? { spaceId: payload.spaceId } : {}),
+    ...(typeof payload.model === 'string' ? { model: payload.model } : {})
+  };
+}
+
 function logNormalized(slotName: string, payload: any): any[] {
   const n = normalizeKbPayload(payload);
   if (n.format === 'unknown') console.warn(`[App] ${slotName}: unrecognized KB shape, 0 items loaded`);
   if (n.skipped > 0) console.warn(`[App] ${slotName}: ${n.skipped} concept(s) without a usable embedding were skipped`);
   return n.items;
+}
+
+/**
+ * Decides, per slot, whether its vectors can enter the one combined index of the selected model, and cuts the ones
+ * that need it. Sets slot.compat for the UI. A slot of another embedding space is left out (its entries still serve
+ * the dictionary text search); the others stay in use.
+ */
+function selectSlotsForIndex(
+  loaded: { slot: KnowledgeSlotExt; items: any[]; header: { spaceId?: string; model?: string }; dimension: number }[]
+): any[] {
+  _queryTruncateTo = null;
+  const model = _activeModel;
+  if (!model) {
+    // Model not announced yet: the old behaviour, every slot goes in unchecked
+    for (const l of loaded) l.slot.compat = { state: 'unchecked' };
+    return loaded.flatMap((l) => l.items);
+  }
+
+  const decided = loaded.map((l) => ({ l, d: decideSpace({ ...l.header, dimension: l.dimension }, model, undefined, _allowTruncation) }));
+
+  // Slots made for a shorter vector than the model gives (same space): the whole index follows the shortest one
+  const queryCut = decided.filter((x) => x.d.action === 'truncate-query').map((x) => (x.d as { to: number }).to);
+  const keepsModelLength = decided.some((x) => x.d.action === 'use' || x.d.action === 'truncate-kb');
+  const target = !keepsModelLength && queryCut.length > 0 ? Math.min(...queryCut) : model.dimensions;
+  if (target < model.dimensions) _queryTruncateTo = target;
+
+  const items: any[] = [];
+  for (const { l, d } of decided) {
+    if (d.action === 'exclude') {
+      l.slot.compat = { state: 'excluded', reason: d.reason };
+      console.warn(`[App] ${l.slot.name} left out of the vector index (${d.reason})`);
+      continue;
+    }
+    if (d.action === 'truncate-query' && target === model.dimensions) {
+      // A shorter slot beside slots at the model's length cannot share one index
+      l.slot.compat = { state: 'excluded', reason: 'dim-mismatch-mixed' };
+      continue;
+    }
+    if (l.dimension !== target) {
+      l.slot.compat = { state: 'approximate' };
+      items.push(...l.items.map((it: any) => ({ ...it, vector: truncateAndNormalize(it.vector, target) })));
+    } else {
+      l.slot.compat = l.header.spaceId || l.header.model ? { state: target < model.dimensions ? 'approximate' : 'ok' } : { state: 'unverified' };
+      items.push(...l.items);
+    }
+  }
+  return items;
 }
 
 export async function reloadCombinedKnowledgeIndex(): Promise<number> {
@@ -186,13 +265,14 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
     return 0;
   }
 
-  const allItems: any[] = [];
   const _vault = getVault();
+  // One entry per readable slot; the decision on which of them enter the index comes after all are read
+  const loaded: { slot: KnowledgeSlotExt; items: any[]; header: { spaceId?: string; model?: string }; dimension: number }[] = [];
 
   for (const slot of knowledgeSlots) {
     try {
       if (fs.existsSync(slot.filePath)) {
-        let parsed: any[];
+        let payload: any;
 
         if (slot.filePath.endsWith('.venc')) {
           if (!_vault) {
@@ -204,21 +284,30 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
             continue;
           }
           const rawBuf = await fsPromises.readFile(slot.filePath);
-          parsed = logNormalized(slot.name, await _vault.decryptKnowledgeBase(rawBuf, slot.vencPassword));
+          payload = await _vault.decryptKnowledgeBase(rawBuf, slot.vencPassword);
         } else {
-          const raw = await fsPromises.readFile(slot.filePath, 'utf-8');
-          parsed = logNormalized(slot.name, JSON.parse(raw));
+          payload = JSON.parse(await fsPromises.readFile(slot.filePath, 'utf-8'));
         }
+        const parsed = logNormalized(slot.name, payload);
 
-        allItems.push(...parsed);
         slotItemsCache.set(slot.id, parsed.map((it: any) => {
           const { vector, ...rest } = it;
           return rest;
         }));
+        const first = parsed[0]?.vector;
+        loaded.push({ slot, items: parsed, header: readSpaceHeader(payload), dimension: Array.isArray(first) ? first.length : 0 });
       }
     } catch (e: any) {
       console.warn(`[App] Error reading slot ${slot.id} (${slot.name}):`, e?.message || e);
     }
+  }
+
+  const allItems = selectSlotsForIndex(loaded);
+  if (allItems.length === 0) {
+    // Every slot was left out. The engine keeps its previous index when given an empty file, so say not-ready instead.
+    _rustEngineReady = false;
+    _rustEngineItemCount = 0;
+    return 0;
   }
 
   const tempCombinedPath = path.join(app.getPath('userData'), 'combined_knowledge_base.json');

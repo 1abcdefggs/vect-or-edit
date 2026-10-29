@@ -8,6 +8,7 @@ import type {
 
 const engineAPI: EngineAPI = {
   searchVector: (vector: number[], limit?: number) => ipcRenderer.invoke('engine:searchVector', vector, limit),
+  setEmbeddingModel: (modelId: string, allowTruncation?: boolean) => ipcRenderer.invoke('engine:setEmbeddingModel', modelId, allowTruncation),
   saveFile: (content: string, defaultName?: string, forceDialog?: boolean) => ipcRenderer.invoke('app:saveFile', content, defaultName, forceDialog),
   openFile: () => ipcRenderer.invoke('app:openFile'),
   openWorkspace: () => ipcRenderer.invoke('app:openWorkspace'),

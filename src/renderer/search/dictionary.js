@@ -3,6 +3,7 @@ import { refreshLinter } from '../editor/editorManager.js';
 import { icons } from '../core/icons.js';
 import { i18n, t } from '../core/i18n.js';
 import { confirmClose } from '../ui/notifications/closeGuard.js';
+import { setLoadedSlotCount } from './searchUi.js';
 
 export const allKnowledgeItems = [];
 export const allDictEntries = [];
@@ -11,6 +12,19 @@ export const allDictEntries = [];
 function slotText(key, fallback) {
   const value = t(key);
   return value && value !== key ? value : fallback;
+}
+
+// Why a dictionary is not (fully) in the vector search, from the compatibility the main process worked out; '' when nothing to say
+function slotCompatNote(slot) {
+  const c = slot?.compat;
+  if (!c) return '';
+  if (c.state === 'excluded') {
+    const key = c.reason === 'space-mismatch' ? 'slot_compat_space' : c.reason === 'dim-mismatch-mixed' ? 'slot_compat_mixed' : c.reason === 'truncation-off' ? 'slot_compat_trunc_off' : 'slot_compat_dim';
+    return slotText(key, 'Left out of vector search');
+  }
+  if (c.state === 'approximate') return slotText('slot_compat_approx', 'Approximate: vectors are cut');
+  if (c.state === 'unverified') return slotText('slot_compat_unverified', 'Embedding model not recorded');
+  return '';
 }
 
 // The domain of each loaded dictionary, read once from its header and kept by slot id ('' when unknown)
@@ -192,6 +206,8 @@ export async function updateSemanticStateDisplay() {
     const btnClearAllSlots = document.getElementById('btnClearAllSlots');
     const searchFiltersContainer = document.getElementById('searchFiltersContainer');
     const hasSlots = (state?.slots && state.slots.length > 0);
+    const slots = state?.slots || [];
+    setLoadedSlotCount(slots.length, slots.filter((s) => s.compat?.state !== 'excluded').length);
 
     // "Unload All" only makes sense with two or more files; with one file the row's X is the way (ADR-11)
     if (btnClearAllSlots) {
@@ -213,14 +229,15 @@ export async function updateSemanticStateDisplay() {
       if (state?.slots?.length) {
         state.slots.forEach((slot, idx) => {
           const itemEl = document.createElement('div');
-          itemEl.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 4px 6px; border-radius: 4px; border: var(--border-width) solid var(--border-color); font-size: var(--fs-12); gap: 6px;';
-          
+          itemEl.className = 'knowledge-slot-row';
+
           const leftContainer = document.createElement('div');
           leftContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;';
 
+          // The index only: the panel's heading already says these are knowledge slots
           const slotIndexBadge = document.createElement('span');
-          slotIndexBadge.style.cssText = 'font-size: var(--fs-10);  font-family: var(--font-mono, monospace); color: var(--accent-color, #38bdf8); background: rgba(56, 189, 248, 0.12); padding: 1px 4px; border-radius: 3px; flex-shrink: 0;';
-          slotIndexBadge.textContent = `SLOT ${idx + 1}`;
+          slotIndexBadge.className = 'knowledge-slot-index';
+          slotIndexBadge.textContent = `${idx + 1}`;
 
           const infoSpan = document.createElement('span');
           infoSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--success-color, #10b981);  font-size: var(--fs-12);';
@@ -238,9 +255,14 @@ export async function updateSemanticStateDisplay() {
           infoCol.style.cssText = 'display: flex; flex-direction: column; min-width: 0;';
           const detailLine = document.createElement('span');
           detailLine.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-muted); font-size: var(--fs-10);';
-          const itemLabel = t('label_items') === 'label_items' ? 'items' : t('label_items');
+          const itemLabel = slotText('label_items', 'items');
           const fileName = (slot.filePath || '').split(/[\\/]/).pop();
           detailLine.textContent = `${fileName} · ${slot.itemCount.toLocaleString()} ${itemLabel}`;
+          const compatNote = slotCompatNote(slot);
+          if (compatNote) {
+            detailLine.textContent += ` · ${compatNote}`;
+            detailLine.title = compatNote;
+          }
           infoCol.appendChild(infoSpan);
           infoCol.appendChild(detailLine);
 
@@ -279,17 +301,20 @@ export async function updateSemanticStateDisplay() {
           btnInfo.title = slotText('kb_info_tip', 'Show the dictionary header');
           rightContainer.insertBefore(btnInfo, btnDel);
 
+          // Read on first open only: each render would otherwise ask the main process to parse every file
           const detailsEl = document.createElement('div');
           detailsEl.hidden = true;
           detailsEl.style.cssText = 'padding: 6px 8px 8px 26px; font-size: var(--fs-11); color: var(--text-main);';
           btnInfo.addEventListener('click', async (e) => {
             e.stopPropagation();
             detailsEl.hidden = !detailsEl.hidden;
+            btnInfo.setAttribute('aria-expanded', String(!detailsEl.hidden));
             if (!detailsEl.hidden && !detailsEl.dataset.loaded) {
               detailsEl.dataset.loaded = '1';
               await renderSlotInfo(detailsEl, slot);
             }
           });
+          btnInfo.setAttribute('aria-expanded', 'false');
 
           itemEl.appendChild(leftContainer);
           itemEl.appendChild(rightContainer);
@@ -595,4 +620,9 @@ export function getQuickMatches(query, limit = 5) {
   }
 
   return [];
+}
+
+// The selected embedding model changed what can be compared: draw the dictionary list again
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:slotCompatChanged', () => { updateSemanticStateDisplay(); });
 }
