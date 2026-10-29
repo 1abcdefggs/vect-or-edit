@@ -224,7 +224,8 @@
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_line_highlight" data-label-text="Current Line Highlight" data-desc-key="setting_line_highlight_desc" data-desc-text="Configure cursor highlight style."></div>
             <select id="modalLineHighlightSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_line_highlight">
-              <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
+              <option value="gutter" selected data-i18n="opt_highlight_gutter">Line Number Only</option>
+              <option value="line" data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
               <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
               <option value="none" data-i18n="opt_highlight_none">Disabled</option>
             </select>
@@ -426,6 +427,13 @@
             <div data-setting-text data-label-key="setting_embedding_assistant" data-label-text="Embedding assistant" data-desc-key="setting_embedding_assistant_desc" data-desc-text="Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."></div>
             <select id="modalEmbeddingAssistantSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_embedding_assistant">
               <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_truncation" data-label-text="Shorten vectors to fit" data-desc-key="setting_truncation_desc" data-desc-text="When a dictionary and the model differ in vector length but share one embedding space, cut the longer vectors to the shorter length (approximate). Off: such a dictionary is left out of vector search."></div>
+            <select id="modalTruncationSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_truncation">
+              <option value="on" selected data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>

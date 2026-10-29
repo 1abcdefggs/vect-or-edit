@@ -121,6 +121,7 @@
   "models": [
     {
       "id": "Xenova/multilingual-e5-small",
+      "spaceId": "F.embedding.e5small",
       "dimensions": 384,
       "sizeMB": 118,
       "languages": [
@@ -312,6 +313,7 @@
     },
     {
       "id": "Xenova/multilingual-e5-base",
+      "spaceId": "F.embedding.e5base",
       "dimensions": 768,
       "sizeMB": 279,
       "languages": [
@@ -675,6 +677,7 @@
     },
     {
       "id": "Xenova/multilingual-e5-large",
+      "spaceId": "F.embedding.e5large",
       "dimensions": 1024,
       "sizeMB": 562,
       "languages": [

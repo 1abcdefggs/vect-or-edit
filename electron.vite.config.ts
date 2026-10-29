@@ -1,4 +1,5 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
+import { normalizePath } from 'vite';
 import { resolve, dirname } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
@@ -14,7 +15,8 @@ const resolveTsForJsImports = {
       const resolvedPath = resolve(dirname(importer), source.slice(0, -3) + '.ts');
       try {
         if (existsSync(resolvedPath)) {
-          return resolvedPath;
+          // Same id form as Vite's own resolution (forward slashes): a backslash id made a second copy of the module
+          return normalizePath(resolvedPath);
         }
       } catch {
         // fallback

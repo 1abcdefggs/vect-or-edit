@@ -31,8 +31,17 @@ export function initLocalAiWorker(getCurrentResults) {
   if (isWorkerInitialized && embeddingWorker) return;
   isWorkerInitialized = true;
 
+  // The main process decides which dictionaries fit the selected model, so it must know the model (at start and on every switch)
+  // The truncation switch (settings page) goes along: 'off' stops the main process from cutting vectors to a shorter length
+  const announceModel = (modelId) => window.engineAPI?.setEmbeddingModel?.(modelId, localStorage.getItem(STORAGE_KEYS.EMBEDDING_TRUNCATION) !== 'off')
+    .then(() => window.dispatchEvent(new CustomEvent('app:slotCompatChanged')))
+    .catch(() => {});
+  announceModel(getActiveModelId());
+  window.addEventListener('app:embeddingTruncationChanged', () => announceModel(getActiveModelId()));
+
   window.addEventListener('app:requestLocalAiInit', (ev) => {
     const modelToLoad = ev?.detail?.model || localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+    announceModel(modelToLoad);
     if (isLocalAiDownloading) return;
     isLocalAiDownloading = true;
     if (embeddingWorker) {
