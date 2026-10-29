@@ -149,6 +149,27 @@
   display: none;
 }
 
+/* A loaded knowledge slot is active: an accent bar on the left and a tinted background */
+.knowledge-slot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 6px 4px 8px;
+  border-radius: 4px;
+  border: var(--border-width) solid var(--border-color);
+  border-left: 3px solid var(--accent-color, #38bdf8);
+  background: rgba(56, 189, 248, 0.08);
+  font-size: var(--fs-12);
+}
+
+.knowledge-slot-row .knowledge-slot-index {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-10);
+  color: var(--accent-color, #38bdf8);
+  flex-shrink: 0;
+}
+
 /* Narrow sidebar: keep only the "+" icon on the add buttons (title tooltip still shows the full action).
    With the label the header content needs about 250px, which a 280px container still holds */
 .semantic-control-container {
