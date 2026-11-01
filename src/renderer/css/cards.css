@@ -275,3 +275,147 @@
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+
+/* Result card (renderSingleCard): name first, then similarity; kind tag and ID on the last row (blueprint P20-P25) */
+.result-card--compact {
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.result-card--preliminary {
+  opacity: 0.85;
+  border-left: 3px solid #818cf8;
+}
+
+.result-card--compact .score-progress-bar {
+  top: auto;
+  bottom: 0;
+  height: 2px;
+  opacity: 1;
+  background: var(--success-color, #10b981);
+}
+
+.result-card__header {
+  position: relative;
+  z-index: 1;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.result-card__main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.result-card__title {
+  font-size: var(--fs-14);
+  margin-bottom: 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Similarity is a plain number: the bar on the card edge already shows the same value, so colour adds no meaning */
+.result-card__score {
+  flex-shrink: 0;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.result-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-item-insert {
+  background: rgba(129, 140, 248, 0.15);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  color: var(--accent-color);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: var(--fs-11);
+  cursor: pointer;
+}
+
+.btn-item-copy-json {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+}
+
+/* Copy shows on hover, and on keyboard focus so it stays reachable */
+.result-card:hover .btn-item-copy-json,
+.result-card:focus-within .btn-item-copy-json,
+.btn-item-copy-json:focus-visible {
+  opacity: 1;
+}
+
+.result-card__body {
+  position: relative;
+  z-index: 1;
+  margin-top: 3px;
+}
+
+.result-card__desc {
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.result-card__desc[data-lines="1"] {
+  -webkit-line-clamp: 1;
+}
+
+.result-card__meta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 3px;
+}
+
+.result-card__kind {
+  flex-shrink: 0;
+  padding: 0 5px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-11);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* The ID is developer information: hidden until hover or focus, but it keeps its space so the card does not jump */
+.result-card__id {
+  min-width: 0;
+  padding: 0 5px;
+  font-family: monospace;
+  font-size: var(--fs-11);
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  visibility: hidden;
+}
+
+.result-card:hover .result-card__id,
+.result-card:focus-within .result-card__id {
+  visibility: visible;
+}

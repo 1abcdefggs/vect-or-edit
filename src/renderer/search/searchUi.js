@@ -136,6 +136,8 @@ export function initSearchUi() {
     selSearchLimitInput.addEventListener('change', reRenderWithCurrentResults);
   }
 
+  window.addEventListener('app:resultDescLinesChanged', reRenderWithCurrentResults);
+
   const chkFullMeta = document.getElementById('chkShowFullMetadata');
   if (chkFullMeta) {
     chkFullMeta.checked = showFullMetadata;
@@ -209,6 +211,20 @@ function renderMetaFieldChecks(results) {
   }
 }
 
+// Kind of an item, from the scheme in a v2 concept id ("c:ui-setting:x" -> "ui-setting"); the label comes from the dictionary
+function resolveKindLabel(code) {
+  const m = /^c:([^:]+):/.exec(code || '');
+  if (!m) return '';
+  const key = 'result_kind_' + m[1].replace(/-/g, '_');
+  const label = t(key);
+  return label && label !== key ? label : m[1];
+}
+
+// 'vect_result_desc_lines': 1 or 2 lines of description on a card (2 by default)
+function getResultDescLines() {
+  try { return localStorage.getItem(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2'; } catch { return '2'; }
+}
+
 function renderSingleCard(r, index, isPreliminary = false) {
   const title = resolveItemTitle(r);
   const code = resolveItemCode(r);
@@ -232,33 +248,34 @@ function renderSingleCard(r, index, isPreliminary = false) {
   // An AI suggestion inserts its answer; the name and id on the card are only labels (they must never reach the document)
   const insertPayload = typeof r.insertText === 'string' ? r.insertText : (title || code || '');
   const btnInsertText = escapeHtml(t('btn_insert') || "Insert");
+  const kind = resolveKindLabel(code);
+
+  const scoreHtml = isPreliminary
+    ? `<span class="spinner result-card__score" role="status" title="${escapeHtml(t('vector_computing') || 'Computing...')}" aria-label="${escapeHtml(t('vector_computing') || 'Computing...')}"></span>`
+    : `<span class="similarity-score result-card__score">${scorePct}%</span>`;
+  // The kind tag and the ID share one row; the ID is hidden until hover or focus, but keeps its space so the card does not jump
+  const metaRowHtml = (kind || code)
+    ? `<div class="result-card__meta">${kind ? `<span class="result-card__kind">${escapeHtml(kind)}</span>` : ''}${code ? `<span class="item-code result-card__id" title="${escapeHtml(code)}">${escapeHtml(code)}</span>` : ''}</div>`
+    : '';
 
   return `
-    <div class="result-card vector-widget-card" data-result-index="${index}" data-insert-text="${escapeHtml(insertPayload)}" style="padding: 6px 8px; margin-bottom: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); border: var(--border-width) solid var(--border-color); cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s ease; ${isPreliminary ? 'opacity: 0.85; border-left: 3px solid #818cf8;' : ''}">
-      <div class="score-progress-bar" style="position: absolute; left: 0; bottom: 0; height: 2px; width: ${scorePct}%; background: var(--success-color, #10b981);"></div>
-      <!-- Line 1: Code + Score + Title (Left) and Action Buttons (Right) -->
-      <div class="card-header" style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; min-width: 0; flex: 1;">
-          ${code ? `<span class="item-code" style="flex-shrink: 0; font-family: monospace; font-size: var(--fs-11); padding: 1px 5px; border-radius: 3px; background: rgba(56, 189, 248, 0.15); color: var(--accent-color, #38bdf8); ">${escapeHtml(code)}</span>` : ''}
-          ${isPreliminary
-            ? `<span class="spinner" role="status" style="flex-shrink: 0;" title="${escapeHtml(t('vector_computing') || 'Computing...')}" aria-label="${escapeHtml(t('vector_computing') || 'Computing...')}"></span>`
-            : `<span class="similarity-score" style="flex-shrink: 0; font-size: var(--fs-16); font-weight: 600; color: #10b981;">${scorePct}%</span>`}
-          ${title ? `<span class="item-title" style="font-size: var(--fs-14);  color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(title)}">${escapeHtml(title)}</span>` : ''}
+    <div class="result-card vector-widget-card result-card--compact${isPreliminary ? ' result-card--preliminary' : ''}" data-result-index="${index}" data-insert-text="${escapeHtml(insertPayload)}">
+      <div class="score-progress-bar" style="width: ${scorePct}%;"></div>
+      <div class="card-header result-card__header">
+        <div class="result-card__main">
+          ${title ? `<span class="item-title result-card__title" title="${escapeHtml(title)}">${escapeHtml(title)}</span>` : ''}
+          ${scoreHtml}
         </div>
-        <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
-          <button type="button" class="btn-item-insert" style="background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.4); color: var(--accent-color); border-radius: 4px; padding: 1px 6px; font-size: var(--fs-11);  cursor: pointer;" title="${btnInsertText}">
-            ${btnInsertText}
-          </button>
-          <button type="button" class="btn-item-copy-json" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; padding: 2px;" title="Copy JSON">
-            ${icons.copy}
-          </button>
+        <div class="result-card__actions">
+          <button type="button" class="btn-item-insert" title="${btnInsertText}">${btnInsertText}</button>
+          <button type="button" class="btn-item-copy-json" title="Copy JSON">${icons.copy}</button>
         </div>
       </div>
-      <!-- Line 2: Description & Extended Metadata -->
-      <div style="position: relative; z-index: 1; margin-top: 3px;">
-        ${desc ? `<div class="item-desc" style="font-size: var(--fs-12); line-height: 1.35; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(desc)}">${escapeHtml(desc)}</div>` : ''}
+      <div class="result-card__body">
+        ${desc ? `<div class="item-desc result-card__desc" data-lines="${getResultDescLines()}" title="${escapeHtml(desc)}">${escapeHtml(desc)}</div>` : ''}
         ${metadataHtml}
       </div>
+      ${metaRowHtml}
     </div>`;
 }
 
