@@ -569,6 +569,72 @@
       "checkedAt": "2026-10-21"
     },
     {
+      "id": "onnx-community/ruri-v3-130m-ONNX",
+      "dimensions": 512,
+      "sizeMB": 127,
+      "languages": [
+        "ja"
+      ],
+      "languageNote": null,
+      "blurb": "Japanese-focused retrieval model, mid-size. Needs the 検索クエリ / 検索文書 prefixes.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-11-01"
+      },
+      "downloadsMonthly": 87,
+      "prefixes": {
+        "query": "検索クエリ: ",
+        "passage": "検索文書: "
+      },
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/ruri-v3-130m-ONNX"
+      },
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "onnx-community/ruri-v3-310m-ONNX",
+      "dimensions": 768,
+      "sizeMB": 301,
+      "languages": [
+        "ja"
+      ],
+      "languageNote": null,
+      "blurb": "Largest Japanese Ruri model. Better retrieval than 130m, but heavier in a browser.",
+      "tasks": {
+        "list": [
+          "retrieval",
+          "similarity"
+        ],
+        "evidence": "verified"
+      },
+      "license": {
+        "repo": "Apache-2.0",
+        "original": null,
+        "verifiedAt": "2026-11-01"
+      },
+      "downloadsMonthly": 137,
+      "prefixes": {
+        "query": "検索クエリ: ",
+        "passage": "検索文書: "
+      },
+      "maxTokens": null,
+      "crossLingual": null,
+      "sourceUrls": {
+        "model": "https://huggingface.co/onnx-community/ruri-v3-310m-ONNX"
+      },
+      "checkedAt": "2026-11-01"
+    },
+    {
       "id": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
       "dimensions": 384,
       "sizeMB": 118,
