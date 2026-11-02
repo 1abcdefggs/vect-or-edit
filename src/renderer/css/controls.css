@@ -373,7 +373,7 @@
   justify-content: center;
   background: var(--text-main, #ffffff);
   color: var(--bg-primary, #0f172a);
-  font-size: 9px;
+  font-size: var(--fs-9);
   font-weight: 700;
   letter-spacing: 0.04em;
   user-select: none;

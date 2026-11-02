@@ -202,6 +202,7 @@ export function initSettings(updateEditorCb) {
   const modalShowFullMetadataChk = document.getElementById('modalShowFullMetadataChk');
   const modalLinterSelect = document.getElementById('modalLinterSelect');
   const modalTruncationSelect = document.getElementById('modalTruncationSelect');
+  const modalResultDescLinesSelect = document.getElementById('modalResultDescLinesSelect');
   const modalSuggestTriggerSelect = document.getElementById('modalSuggestTriggerSelect');
 
 
@@ -468,6 +469,14 @@ export function initSettings(updateEditorCb) {
     modalTruncationSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.EMBEDDING_TRUNCATION, modalTruncationSelect.value);
       window.dispatchEvent(new CustomEvent('app:embeddingTruncationChanged'));
+    });
+  }
+
+  if (modalResultDescLinesSelect) {
+    modalResultDescLinesSelect.value = localStorage.getItem(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2';
+    modalResultDescLinesSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.RESULT_DESC_LINES, modalResultDescLinesSelect.value);
+      window.dispatchEvent(new CustomEvent('app:resultDescLinesChanged'));
     });
   }
 

@@ -568,6 +568,13 @@
             <input type="checkbox" id="modalShowFullMetadataChk" data-i18n-title="tip_show_full_metadata">
           </div>
           <div data-setting-row>
+            <div data-setting-text data-label-key="setting_result_desc_lines" data-label-text="Description lines on result cards" data-desc-key="setting_result_desc_lines_desc" data-desc-text="How many lines of the description a suggestion card shows. With 1 line, the full text is shown on hover."></div>
+            <select id="modalResultDescLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_desc_lines">
+              <option value="1" data-i18n="opt_desc_lines_1">1 line</option>
+              <option value="2" selected data-i18n="opt_desc_lines_2">2 lines</option>
+            </select>
+          </div>
+          <div data-setting-row>
             <div data-setting-text data-label-key="setting_linter_enabled" data-label-text="Real-time Validation (Linter)" data-desc-key="setting_linter_enabled_desc" data-desc-text="Enable background document validation."></div>
             <select id="modalLinterSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_linter">
               <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>

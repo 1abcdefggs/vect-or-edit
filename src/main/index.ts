@@ -304,14 +304,20 @@ if (!gotTheLock) {
 
           let count = 0;
           let arr: any[] = [];
+          let skippedNoVector = 0;
           try {
+            let normalized: { items: any[]; skipped: number } | null = null;
             if (isVenc && _vault && resolvedPassword) {
               console.log(`[App] Decrypting ${fp} with password length: ${resolvedPassword.length}`);
               const rawBuf = await fsPromises.readFile(fp);
-              arr = normalizeKbPayload(await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword)).items;
+              normalized = normalizeKbPayload(await _vault.decryptKnowledgeBase(rawBuf, resolvedPassword));
             } else if (!isVenc) {
               const raw = await fsPromises.readFile(fp, 'utf-8');
-              arr = normalizeKbPayload(JSON.parse(raw)).items;
+              normalized = normalizeKbPayload(JSON.parse(raw));
+            }
+            if (normalized) {
+              arr = normalized.items;
+              skippedNoVector = normalized.skipped;
             }
           } catch (e) {
             arr = [];
@@ -330,6 +336,14 @@ if (!gotTheLock) {
             }
             count = arr.length;
           } else if (arr.length === 0) {
+            if (skippedNoVector > 0) {
+              return {
+                success: false,
+                errorCode: 'error_slot_no_vector',
+                errorParams: { file: base },
+                error: `File "${base}" contains no vector embeddings.`
+              };
+            }
             return {
               success: false,
               errorCode: 'error_slot_empty',
