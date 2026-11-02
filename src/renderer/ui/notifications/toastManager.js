@@ -25,21 +25,38 @@ export function showToast(message, type = 'info', action = null) {
   }
 
   const actionsList = Array.isArray(action) ? action : (action && action.label ? [action] : []);
-  const actionHtml = actionsList.map((act, idx) => {
-    const isSecondary = act.secondary || act.type === 'secondary';
-    const btnClass = isSecondary ? 'toast-action-btn secondary' : 'toast-action-btn';
-    const extraStyle = isSecondary ? 'background: rgba(255, 255, 255, 0.12); color: var(--text-main); border: var(--border-width) solid var(--border-color);' : '';
-    return `<button class="${btnClass}" type="button" data-toast-action-idx="${idx}" style="${extraStyle}">${act.label}</button>`;
-  }).join('');
+  // The message and the action labels are plain text: they are set with textContent, never parsed as HTML.
+  // Only the icon (a fixed string chosen above) goes through innerHTML.
+  const iconEl = document.createElement('span');
+  iconEl.className = 'toast-icon';
+  iconEl.style.cssText = 'display: flex; align-items: center; flex-shrink: 0;';
+  iconEl.innerHTML = iconSvg;
 
-  toast.innerHTML = `
-    <span class="toast-icon" style="display: flex; align-items: center; flex-shrink: 0;">${iconSvg}</span>
-    <span class="toast-message" style="line-height: 1.45; word-break: break-word; white-space: pre-line;">${message}</span>
-    <div class="toast-actions" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-      ${actionHtml}
-    </div>
-    <button class="toast-close-btn" aria-label="Close">&times;</button>
-  `;
+  const messageEl = document.createElement('span');
+  messageEl.className = 'toast-message';
+  messageEl.style.cssText = 'line-height: 1.45; word-break: break-word; white-space: pre-line;';
+  messageEl.textContent = String(message ?? '');
+
+  const actionsEl = document.createElement('div');
+  actionsEl.className = 'toast-actions';
+  actionsEl.style.cssText = 'display: flex; align-items: center; gap: 6px; flex-shrink: 0;';
+  actionsList.forEach((act, idx) => {
+    const isSecondary = act.secondary || act.type === 'secondary';
+    const btn = document.createElement('button');
+    btn.className = isSecondary ? 'toast-action-btn secondary' : 'toast-action-btn';
+    btn.type = 'button';
+    btn.dataset.toastActionIdx = String(idx);
+    if (isSecondary) btn.style.cssText = 'background: rgba(255, 255, 255, 0.12); color: var(--text-main); border: var(--border-width) solid var(--border-color);';
+    btn.textContent = String(act.label ?? '');
+    actionsEl.append(btn);
+  });
+
+  const closeEl = document.createElement('button');
+  closeEl.className = 'toast-close-btn';
+  closeEl.setAttribute('aria-label', 'Close');
+  closeEl.textContent = '×';
+
+  toast.append(iconEl, messageEl, actionsEl, closeEl);
   document.body.appendChild(toast);
 
   actionsList.forEach((act, idx) => {
