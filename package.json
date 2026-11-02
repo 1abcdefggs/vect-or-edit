@@ -124,5 +124,9 @@
       "shortcutName": "VectOrEdit",
       "differentialPackage": false
     }
+  },
+  "overrides": {
+    "sharp": "0.35.5",
+    "dompurify": "$dompurify"
   }
 }
