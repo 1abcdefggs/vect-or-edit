@@ -88,18 +88,25 @@ export function renderTabs() {
     tabEl.className = `editor-tab-item ${tab.id === activeTabId ? 'active' : ''} ${tab.isDirty ? 'is-dirty' : 'is-saved'}`;
     tabEl.title = t('tip_tab_rename', { name: tab.filePath || tab.title });
 
-    const statusBadgeHtml = tab.isDirty
-      ? `<span class="tab-dirty-dot" title="Unsaved changes"></span>`
-      : ``;
+    // Left-aligned close button (larger, distinct) + status badge + title.
+    // Built with DOM calls so a file name is never parsed as HTML.
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'btn-tab-close';
+    closeBtn.title = t('tip_menu_close_tab');
+    closeBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    tabEl.append(closeBtn);
 
-    // Left-aligned close button (larger, distinct) + status badge + title
-    tabEl.innerHTML = `
-      <button class="btn-tab-close" title="${t('tip_menu_close_tab')}">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-      ${statusBadgeHtml}
-      <span class="tab-title">${tab.title}</span>
-    `;
+    if (tab.isDirty) {
+      const dirtyDot = document.createElement('span');
+      dirtyDot.className = 'tab-dirty-dot';
+      dirtyDot.title = t('close_tab_unsaved_title');
+      tabEl.append(dirtyDot);
+    }
+
+    const titleEl = document.createElement('span');
+    titleEl.className = 'tab-title';
+    titleEl.textContent = tab.title;
+    tabEl.append(titleEl);
 
     // Re-selecting the active tab would rebuild every tab element and refocus Monaco, which
     // detaches the element before a double-click (rename) lands on it.
