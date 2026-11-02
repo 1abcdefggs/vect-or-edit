@@ -23,5 +23,5 @@ export const BULLET_TIP_KEYS: ReadonlySet<string> = new Set([
 /** Each 、 starts a new bulleted line. The tooltip element uses white-space: pre-wrap, so the line breaks show. */
 export function formatTipText(key: string, text: string): string {
   if (!BULLET_TIP_KEYS.has(key)) return text;
-  return text.replace(/、/g, '\n・');
+  return text.replace(/\u3001/g, '\n\u30fb');
 }
