@@ -1,5 +1,5 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
-import { normalizePath } from 'vite';
+import { loadEnv, normalizePath } from 'vite';
 import { resolve, dirname } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
@@ -26,9 +26,13 @@ const resolveTsForJsImports = {
   }
 };
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    define: {
+      // core/vault/index.js reads it; a packaged app has no .env. Read from .env or the build environment
+      'process.env.VECTOR_SHARED_APP_SECRET': JSON.stringify(loadEnv(mode, __dirname, 'VECTOR_SHARED_APP_SECRET').VECTOR_SHARED_APP_SECRET ?? '')
+    }
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
@@ -77,4 +81,4 @@ export default defineConfig({
       }
     }
   }
-});
+}));

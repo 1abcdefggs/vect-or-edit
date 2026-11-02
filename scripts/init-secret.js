@@ -53,6 +53,10 @@ async function appendSecretsToEnv(secret, vaultPassword) {
 
 async function main() {
   try {
+    if (!(existsSync(ENV_PATH) && (await fs.readFile(ENV_PATH, 'utf8')).includes('VECTOR_SHARED_APP_SECRET='))) {
+      console.warn('VECTOR_SHARED_APP_SECRET is not in .env. It must be the same value in vect-or-edit and vect-or-generate, so it is not generated here.');
+    }
+
     if (await hasExistingSecret()) {
       console.log('Secret key already exists. Initialization skipped.');
       process.exit(0);

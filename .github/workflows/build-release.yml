@@ -27,11 +27,14 @@ jobs:
 
       - name: Build Application Bundle
         run: npm run build
+        env:
+          VECTOR_SHARED_APP_SECRET: ${{ secrets.VECTOR_SHARED_APP_SECRET }}
 
       - name: Build Windows Installer (.exe)
         run: npm run dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VECTOR_SHARED_APP_SECRET: ${{ secrets.VECTOR_SHARED_APP_SECRET }}
 
       - name: Upload Installer to Release Assets
         uses: softprops/action-gh-release@v2
