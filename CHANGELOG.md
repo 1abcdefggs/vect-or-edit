@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.56] - 2026-11-02
+
+### Changed
+
+- Tooltip bullet separators are written as Unicode escapes, so no Japanese literal stays in the source; the tests use English fixtures.
+- The AI switch "OFF" label and the first-run disclosure icons take their sizes from the type scale (`--fs-9`, `--fs-18`, `--fs-20`) instead of literal pixel values.
+
+
 ## [0.3.55] - 2026-10-27
 
 ### Added

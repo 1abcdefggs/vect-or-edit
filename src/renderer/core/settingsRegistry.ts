@@ -69,6 +69,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'sbr:score-filter': true,
     'sbr:limit-select': true,
     'sbr:metadata-toggle': true,
+    'sbr:metadata-fields': true,
     'sbr:quick-settings': true,
     'sbr:embedding-toggle': true,
     'sbr:import-dictionary': true,
@@ -440,6 +441,14 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     prefPath: 'sidebar.fullMetadata',
     visibilityKey: 'sbr:metadata-toggle',
     controlType: 'toggle'
+  },
+  {
+    id: 'sb_metadata_fields',
+    label: 'Metadata Field Checkboxes',
+    description: 'One checkbox per metadata field of the results; ticked fields are shown on each card.',
+    category: 'sidebar',
+    visibilityKey: 'sbr:metadata-fields',
+    controlType: 'none'
   },
   {
     id: 'sb_quick_settings',

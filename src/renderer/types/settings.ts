@@ -78,6 +78,7 @@ export type SidebarUiKey =
   | 'sbr:score-filter'
   | 'sbr:limit-select'
   | 'sbr:metadata-toggle'
+  | 'sbr:metadata-fields'
   | 'sbr:quick-settings'
   | 'sbr:embedding-toggle'
   | 'sbr:import-dictionary'
