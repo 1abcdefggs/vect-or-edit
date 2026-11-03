@@ -1,33 +1,33 @@
 # VectOrEdit (`vect-or-edit`)
- **Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
+**Next-Generation Vector-based Semantic Knowledge Editor & Real-Time Linter**
 
-[![Release](https://img.shields.io/badge/Release-v0.3.30-2563eb?style=flat&logo=github)](https://github.com/1abcdefggs/vect-or-edit/releases)
+[![Release](https://img.shields.io/github/package-json/v/1abcdefggs/vect-or-edit?label=Release&color=2563eb&style=flat&logo=github)](https://github.com/1abcdefggs/vect-or-edit/releases)
 [![Author](https://img.shields.io/badge/Author-1abcdefggs-1e293b?style=flat&logo=github)](https://github.com/1abcdefggs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-334155?style=flat)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows_10%2F11-0284c7?style=flat&logo=windows)](https://github.com/1abcdefggs/vect-or-edit)
 [![Offline](https://img.shields.io/badge/Mode-100%25_Offline_Local-059669?style=flat)](https://github.com/1abcdefggs/vect-or-edit)
-[![Electron](https://img.shields.io/badge/Electron-31.x-334155?style=flat&logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![Electron](https://img.shields.io/badge/Electron-45.x-334155?style=flat&logo=electron&logoColor=white)](https://www.electronjs.org/)
 [![Monaco Editor](https://img.shields.io/badge/Monaco_Editor-0.56-334155?style=flat&logo=visualstudiocode&logoColor=white)](https://microsoft.github.io/monaco-editor/)
-[![Vite](https://img.shields.io/badge/Vite-5.x-334155?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Vite](https://img.shields.io/badge/Vite-6.x-334155?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-334155?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Rust N-API](https://img.shields.io/badge/Rust-N--API_Engine-334155?style=flat&logo=rust&logoColor=white)](https://napi.rs/)
 [![ONNX Runtime Web](https://img.shields.io/badge/ONNX-WASM-334155?style=flat&logo=onnx&logoColor=white)](https://onnxruntime.ai/)
 [![Transformers.js](https://img.shields.io/badge/Transformers.js-Embeddings-334155?style=flat)](https://huggingface.co/docs/transformers.js)
 [![Google GenAI SDK](https://img.shields.io/badge/Google_GenAI_SDK-2.21-334155?style=flat&logo=google&logoColor=white)](https://github.com/googleapis/genai-js)
 [![Vitest](https://img.shields.io/badge/Tested_with-Vitest-334155?style=flat&logo=vitest&logoColor=white)](https://vitest.dev/)
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-334155?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22.12.0-334155?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-1e293b?style=flat)](https://github.com/1abcdefggs/vect-or-edit/pulls)
 <p align="center">
-<p align="center"><b>v0.3.14</b><br/>
-  <img src="docs/assets/repository-ui-v0312.gif" alt="VectOrEdit v0.3.14 Demo" ... />
+  <img src="docs/assets/repository-ui-v0356.gif" alt="VectOrEdit v0.3.56 demo: themes, sidebar, log panel and settings" width="720" />
 </p>
 
-<p align="center"><b>v0.3.1</b><br/>
-  <img src="docs/assets/repository-ui-v031.gif" alt="VectOrEdit v0.3.1 Demo" ... />
+<p align="center">
+  Past versions: <a href="docs/assets/repository-ui-v0312.gif">v0.3.14</a> · <a href="docs/assets/repository-ui-v031.gif">v0.3.1</a> · <a href="docs/assets/repository-ui-v020.gif">v0.2.0</a>
 </p>
-
 
 **VectOrEdit** is a standalone, high-performance desktop editor designed for knowledge management, structured document drafting, and real-time semantic validation. It seamlessly integrates a native Rust-powered vector indexing engine (HNSW) with local transformer embeddings, multi-provider AI connectors, and Monaco Editor.
+
+> ※ Vector search needs a dictionary file (`kb_*.json` or `.venc`) generated beforehand, for example with `vect-or-generate`. The editor does not create dictionaries. Without one loaded, it works as a plain text editor and vector search does not run.
 
 ---
 
@@ -36,16 +36,16 @@
 ### 1. Vector Search & Semantic Suggestions
 
 - **Selection Auto-Popover**: Select any word or phrase in the editor; a popover automatically appears below the cursor showing cosine-similarity matches from the active knowledge base (`kb_*.json` / `.venc`).
-- **Keyboard Trigger**: Press <kbd>Alt</kbd>+<kbd>S</kbd> (or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) on the current word or selection to query the vector engine.
+- **Keyboard Trigger**: Press <kbd>Alt</kbd>+<kbd>S</kbd> on the current word or selection to query the vector engine.
 - **Insert Candidate**: Click any suggested term in the popover or sidebar to replace the selection with standard canonical terminology.
 
 ### 2. Knowledge Slots & Guideline Management (Right Sidebar)
 
-- **Open / Collapse Sidebar**: Press <kbd>Ctrl</kbd>+<kbd>B</kbd> or click the blue sidebar toggle button on the top-left of the sidebar.
-- **Embedding Toggle & Quick Settings**: Click **`[ ● EMBED OFF ]`** on the top-right of the sidebar to toggle real-time semantic vector assistance (synchronized with Master AI), or click the gear icon (**`⚙️`**) to open Vector and Knowledge settings.
-- **Add Knowledge Slot**: Click **`＋ Add`** in the Knowledge section to dynamically load and merge domain JSON datasets (`medical/`, `drama/`, `postcard/`, etc.).
-- **Load Presets / Guidelines**: Click **`＋ Preset`** to load drafting rules and linting schemas (`guideline_*.json`).
-- **Filter Thresholds**: Adjust the **`Min: %`** score input and **`Limit`** selector in the sidebar to control suggestion precision and candidate volume.
+- **Open / Collapse Sidebar**: Press <kbd>Ctrl</kbd>+<kbd>B</kbd> or click the sidebar toggle button on the top-left of the sidebar.
+- **Embedding Toggle & Quick Settings**: Turn on **EMBED** in the header or the sidebar to enable dictionary search. EMBED is independent of the LLM button, so either can be on or off on its own. The gear icon (**`⚙️`**) opens the Vector and Knowledge settings.
+- **Add Knowledge Slot**: Click **Add files** in the Knowledge section to dynamically load and merge domain JSON datasets.
+- **Load Presets / Guidelines**: Click **Add files** in the Guidelines section to load drafting rules and linting schemas (`guideline_*.json`).
+- **Filter Thresholds**: Adjust the **Threshold** (%) score input and the **Max results** selector in the sidebar to control suggestion precision and candidate volume.
 
 ### 3. Settings & UI Customization
 
@@ -56,7 +56,7 @@
 ### 4. File Operations & Multi-Tab Drafting
 
 - **New / Open / Save**: Use standard shortcuts (<kbd>Ctrl</kbd>+<kbd>N</kbd>, <kbd>Ctrl</kbd>+<kbd>O</kbd>, <kbd>Ctrl</kbd>+<kbd>S</kbd>) or the top menu bar.
-- **AutoSave**: Click the green/gray LED dot in the `[💾 AUTO ● ▾]` button to toggle AutoSave on or off.
+- **AutoSave**: Open the arrow beside **SAVE**, choose **AutoSave**, and the LED on the SAVE button shows whether it is on or off.
 - **Duplicate Tab**: Click the duplicate icon (`+`) on the tab bar to branch your current document into a new tab.
 - **Rename Tab**: Double-click any tab title to rename it with an instant high-contrast overlay input.
 
@@ -64,27 +64,25 @@
 
 ## What's New
 
-### v0.3.13　- **Master Settings & UI Visibility Architecture**
+### v0.3.56 (2026-11-02)
 
-  - Implemented `data-ui="{area}:{element}"` binding schema across all 4 quadrants (`hdr:`, `edt:`, `sbr:`, `sys:`).
-  - Added dynamic 👁️ / 🚫 element show/hide toggles with instant CSS-level reflection (`[hidden]`).
-  - Added dual-sync persistence with `localStorage` and `.settings.json`.
-  - Added dual safety rescue mechanism (<kbd>Ctrl</kbd>+<kbd>,</kbd> and status bar reset layout command).
-  - Added quick settings gear buttons across all UI quadrants.
+- Tooltip and first-run icon sizes come from the shared type scale.
 
-### v0.3.12
+### v0.3.55 (2026-10-27)
 
-- **Header Extras & Menu Bar Refactoring**:
-- Refactored menu bar operations to use a centralized command registration mechanism via `CommandManager`. 
-- Consolidated and enhanced styling for header toolbar elements (theme selector, language switcher, zoom controls, version display, etc.) in `header-extras.css`.
-- **IPC Security & Validation Hardening**:
-- Implemented runtime argument validation for IPC handlers in the main process and ensured complete isolation via the Context Bridge.
-- **Vector Search & Provider Enhancements**:
-- Improved usability of the vector search UI and stabilized integration with the Google GenAI SDK (`@google/genai`).
-- **Domain-Neutral Core**:
-- Decoupled the core to function as a general-purpose, standalone vector knowledge editor that does not rely on domain-specific ontologies (e.g., medical).
+- Each knowledge slot has an Info button that shows its dictionary header. An encrypted slot shows the header only while its password is loaded.
+- A loaded dictionary shows its domain as the slot title.
 
-See full release history in [CHANGELOG.md](CHANGELOG.md).
+### v0.3.54 (2026-10-27)
+
+- Closing the window with the × button asks first, the same as File > Exit.
+- Empty search results say why: the search model is off or not ready, or nothing matched.
+
+### v0.3.53 (2026-10-26)
+
+- The minimum score and the auto-save delay fields have − and + buttons.
+
+See the full release history in [CHANGELOG.md](CHANGELOG.md).
 
 ## Core Features & Capabilities
 
@@ -92,7 +90,7 @@ See full release history in [CHANGELOG.md](CHANGELOG.md).
 
 - **Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting powered by native Rust N-API bindings (`@1abcdefggs/vect-or-engine`).
 - **100% Offline & Private (Local Mode)**: Zero external telemetry required. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
-- **Hybrid AI Provider Integration**: Seamless switching between Local Offline Embeddings, Google Gemini (`@google/genai`), OpenAI, and Anthropic Claude.
+- **Hybrid AI Provider Integration**: Switch between Local Offline Embeddings and cloud LLMs. Google Gemini (`@google/genai`) is verified with `gemini-3.1-flash-lite` and Flash models; the OpenAI and Anthropic Claude connectors are included but not yet verified.
 - **Monaco IntelliSense & Semantic Linter**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and international terminology with instant documentation hover previews.
 - **Command-Driven Navigation & Header Extras**: Centralized `CommandManager` architecture with streamlined header controls (theme selector, zoom, language switcher, window actions).
 - **Streamlined Selection Popover & Widget**: Select any text to immediately trigger semantic vector matching or external queries with intelligent context-menu exclusion.
@@ -108,7 +106,7 @@ See full release history in [CHANGELOG.md](CHANGELOG.md).
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [Node.js](https://nodejs.org/) (v22.12 or higher)
 - [Rust](https://www.rust-lang.org/) & `cargo` (for compiling native N-API engine bindings)
 - `npm` or `pnpm`
 
@@ -155,7 +153,7 @@ npm run build:win
 `vect-or-edit` follows the official **Electron Security Guidelines**:
 - **Context Isolation & Sandbox**: Renderer runs with complete process isolation.
 - **Typed IPC Bridge**: Direct `ipcRenderer.invoke` is strictly prohibited. Only explicit, typed methods (`engineAPI.querySemantics`) are exposed via `contextBridge`.
-- **Knowledge Vault & Decryption**: Complies with the system-wide [Security and Encryption Architecture Specification](file:///c:/vect/docs/domain-and-pipeline-rules/SECURITY_AND_ENCRYPTION_ARCHITECTURE_SPEC.md).
+- **Knowledge Vault & Decryption**: Encrypted `.venc` knowledge slots are decrypted in the main process with a password. The security design is described in the workspace spec `SECURITY_AND_ENCRYPTION_ARCHITECTURE_SPEC.md`.
 
 
 ---
@@ -171,7 +169,7 @@ npm run build:win
   - `sys:` — **System & Bottom Bar Area** (Status metadata, 7-stage LED pipeline, log console)
 - **Zero-DOM-Destruction Toggling**: Elements are toggled using native `[hidden]` CSS enforcement (`display: none !important;`), preserving editor focus, undo history, and event listeners without re-rendering.
 - **Dual-Sync Persistence**: Fast memory caching (`localStorage`) coupled with asynchronous IPC `.settings.json` disk persistence for seamless VS Code-compatible settings management.
-- **Fail-Safe Rescue**: Permanent fallback access via global keybinding (<kbd>Ctrl</kbd>+<kbd>,</kbd>) and status bar context menus ("Reset Layout to Default").
+- **Fail-Safe Rescue**: Permanent fallback access via global keybinding (<kbd>Ctrl</kbd>+<kbd>,</kbd>) and status bar context menus (`Reset Layout (UI Display)`).
 
 ---
 
@@ -205,6 +203,7 @@ vect-or-edit/
         └── types/               # TypeScript type definitions (settings.ts, global.d.ts)
 
 ```
+
 ---
 
 ## Author & Maintainer
@@ -218,4 +217,3 @@ vect-or-edit/
 ## License
 
 This project is licensed under the [MIT License](LICENSE) © 2026 1abcdefggs.
----
