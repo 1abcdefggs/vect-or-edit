@@ -45,8 +45,8 @@ export function showChoiceModalWithCheckbox(options: ChoiceModalOptions): Promis
     const existing = document.getElementById('globalConfirmModal');
     if (existing) existing.remove();
 
-    const title = options.title || t('confirm_title') || 'Confirmation';
-    const cancelText = options.cancelText || t('btn_cancel') || 'Cancel';
+    const title = options.title || t('confirm_title');
+    const cancelText = options.cancelText || t('btn_cancel');
     const icon = options.icon || (options.type === 'warning' ? 'warning' : 'info');
     const iconColor = options.type === 'warning' ? '#f59e0b' : 'var(--accent-color, #38bdf8)';
     const accentBg = options.type === 'warning' ? '#f59e0b' : 'var(--accent-color, #38bdf8)';
@@ -71,7 +71,7 @@ export function showChoiceModalWithCheckbox(options: ChoiceModalOptions): Promis
     `;
 
     modalOverlay.innerHTML = `
-      <div class="settings-modal-dialog elevated-modal-card" style="width: 480px; max-width: 92vw; height: auto; padding: 0; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-secondary, #0f172a); box-shadow: 0 24px 60px -12px rgba(0,0,0,0.85), 0 0 24px rgba(56, 189, 248, 0.15);">
+      <div class="settings-modal-dialog elevated-modal-card" style="width: 480px; max-width: 92vw; height: auto; padding: 0;">
         <div class="modal-header" style="padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: var(--hover-bg);">
           <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
             <span id="confirmIcon" class="material-symbols-outlined" style="font-size: var(--fs-22); color: ${iconColor}; flex-shrink: 0;"></span>
@@ -178,7 +178,7 @@ export async function showConfirmModal(options: ConfirmModalOptions): Promise<bo
   const { confirmText, ...rest } = options;
   const result = await showChoiceModal({
     ...rest,
-    choices: [{ id: 'confirm', text: confirmText || t('btn_confirm') || 'Proceed', primary: true }]
+    choices: [{ id: 'confirm', text: confirmText || t('btn_confirm'), primary: true }]
   });
   return result === 'confirm';
 }

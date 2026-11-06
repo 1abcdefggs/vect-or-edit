@@ -8,6 +8,7 @@ import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
 import { t } from '../../core/i18n.js';
+import { openLlmChat } from '../../core/externalActions.js';
 import { commandManager } from '../../core/commandManager';
 import { captureBaseline, applyStoredOverrides, withCreateOnlyOverrides } from '../options/monacoOptionsStore.js';
 
@@ -91,7 +92,7 @@ export async function initEditor() {
   } catch (_) {}
 
   const baseOptions = {
-    value: t('initial_document_content') || '',
+    value: t('initial_document_content'),
     language: 'markdown',
     theme: currentTheme || 'vs-dark',
     fontSize: getFontSize(),
@@ -150,7 +151,7 @@ export async function initEditor() {
         promptText = monacoEditorInstance.getModel().getLineContent(pos.lineNumber).trim();
       }
     }
-    window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: promptText } }));
+    openLlmChat(promptText);
   });
 
   // Inline Quick Trigger on Enter: Check for /ai or >> prompt commands
@@ -163,7 +164,7 @@ export async function initEditor() {
         e.preventDefault();
         const prompt = currentLine.replace(/^(\/ai|>>)\s*/, '').trim();
         if (prompt) {
-          window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt } }));
+          openLlmChat(prompt);
         }
       }
     }
@@ -267,8 +268,8 @@ export function applyAiOutputToEditor(text, mode = 'insert', type = 'generate') 
   const decorationRange = new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
   const inlineClassName = type === 'rewrite' ? 'monaco-ai-rewritten-inline' : 'monaco-ai-generated-inline';
   const hoverMessage = type === 'rewrite'
-    ? { value: t('ai_hover_rewritten') || '**AI Rewritten Text**' }
-    : { value: t('ai_hover_generated') || '**AI Generated Text (LLM)**' };
+    ? { value: t('ai_hover_rewritten') }
+    : { value: t('ai_hover_generated') };
 
   activeAiDecorations = ed.deltaDecorations(activeAiDecorations, [
     {

@@ -134,7 +134,7 @@ export function registerAppCommands(): void {
       else if (!result.canceled) failedCount++;
     }
     if (failedCount) showToast(t('save_failed'), 'error');
-    showToast(`Saved ${savedCount} document(s)`, 'success');
+    showToast(t('toast_saved_count', { count: savedCount }), 'success');
   };
 
   // Exit and Close Window end the same single window, so both ask first (the close-confirmation setting applies)
@@ -262,7 +262,7 @@ export function registerAppCommands(): void {
             try {
               await navigator.clipboard.writeText(textToCut);
               ed.executeEdits('menu-cut', [{ range: selection, text: '', forceMoveMarkers: true }]);
-              showToast('Cut to clipboard', 'info');
+              showToast(t('toast_cut_clipboard'), 'info');
             } catch (err) {
               console.warn('Cut failed:', err);
             }
@@ -291,7 +291,7 @@ export function registerAppCommands(): void {
         if (textToCopy) {
           try {
             await navigator.clipboard.writeText(textToCopy);
-            showToast('Copied to clipboard', 'info');
+            showToast(t('toast_copy_clipboard'), 'info');
           } catch (err) {
             console.warn('Clipboard copy failed:', err);
           }
@@ -307,7 +307,7 @@ export function registerAppCommands(): void {
           const text = await navigator.clipboard.readText();
           if (text) {
             insertTextIntoEditor(text);
-            showToast('Pasted from clipboard', 'info');
+            showToast(t('toast_paste_clipboard'), 'info');
           }
         } catch (err) {
           console.warn('Clipboard paste failed:', err);
@@ -363,7 +363,7 @@ export function registerAppCommands(): void {
           const next = Math.min(3.0, Math.round((current + 0.1) * 10) / 10);
           window.engineAPI.setZoomFactor(next);
           localStorage.setItem('app_zoom_factor', next.toString());
-          showToast(`Zoom: ${Math.round(next * 100)}%`, 'info');
+          showToast(t('toast_zoom', { percent: Math.round(next * 100) }), 'info');
         }
       }
     },
@@ -377,7 +377,7 @@ export function registerAppCommands(): void {
           const next = Math.max(0.5, Math.round((current - 0.1) * 10) / 10);
           window.engineAPI.setZoomFactor(next);
           localStorage.setItem('app_zoom_factor', next.toString());
-          showToast(`Zoom: ${Math.round(next * 100)}%`, 'info');
+          showToast(t('toast_zoom', { percent: Math.round(next * 100) }), 'info');
         }
       }
     },
@@ -389,7 +389,7 @@ export function registerAppCommands(): void {
         if (window.engineAPI?.setZoomFactor) {
           window.engineAPI.setZoomFactor(1.0);
           localStorage.setItem('app_zoom_factor', '1.0');
-          showToast('Zoom: 100%', 'info');
+          showToast(t('toast_zoom', { percent: 100 }), 'info');
         }
       }
     },

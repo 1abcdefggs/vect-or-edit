@@ -312,13 +312,37 @@
   flex: 1;
 }
 
+/* Title wraps; the setting picks 1, 2 (default), 3 lines or the full heading (data-lines="full") */
 .result-card__title {
   font-size: var(--fs-14);
   margin-bottom: 0;
   min-width: 0;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.result-card__title[data-lines="1"] {
+  -webkit-line-clamp: 1;
+}
+
+.result-card__title[data-lines="3"] {
+  -webkit-line-clamp: 3;
+}
+
+.result-card__title[data-lines="full"] {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* A file is dragged over a sidebar card (Guideline, Knowledge) */
+.semantic-module-card.drop-target {
+  outline: 2px dashed var(--accent-color);
+  outline-offset: -4px;
 }
 
 /* Similarity is a plain number: the bar on the card edge already shows the same value, so colour adds no meaning */

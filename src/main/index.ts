@@ -22,7 +22,8 @@ import {
   setActiveEmbeddingModel,
   setActiveProfile,
   resetActiveProfile,
-  clearKnowledgeSlots
+  clearKnowledgeSlots,
+  removeCombinedKbTempFile
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { truncateAndNormalize } from '../shared/embeddingSpace';
@@ -57,6 +58,7 @@ if (!gotTheLock) {
     }
 
     await initRustEngine();
+    await removeCombinedKbTempFile();
     installPermissionPolicy();
 
     handleTrusted('app:getVersion', () => app.getVersion());
@@ -281,6 +283,8 @@ if (!gotTheLock) {
           if (canceled || !filePaths || filePaths.length === 0) return { success: false, canceled: true };
           filePathsToProcess.push(...filePaths);
         } else {
+          // A dropped or passed path is accepted only for knowledge base file types
+          if (!/\.(json|venc)$/i.test(targetPath)) return { success: false, error: 'Unsupported file type' };
           filePathsToProcess.push(targetPath);
         }
 
@@ -447,23 +451,30 @@ if (!gotTheLock) {
       }
     });
 
-    handleTrusted('engine:importKnowledgeBase', async () => {
+    handleTrusted('engine:importKnowledgeBase', async (_event, customPaths?: string[]) => {
       const mainWindow = getMainWindow();
       if (!mainWindow) return { success: false, error: 'No main window' };
       const engine = getEngine();
       if (!engine) return { success: false, error: 'Engine not loaded' };
       try {
-        const ws = await getDefaultWorkspace(true);
-        const defaultWorkspace = ws.path;
+        // Dropped files skip the dialog; only .json files are accepted from a drop
+        const dropped = Array.isArray(customPaths) ? customPaths.filter((p) => typeof p === 'string' && p.toLowerCase().endsWith('.json')) : [];
+        let filePaths: string[] = dropped;
 
-        const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-          title: 'Import Knowledge Base / Dictionary JSON',
-          defaultPath: defaultWorkspace,
-          filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
-          properties: ['openFile', 'multiSelections']
-        });
+        if (dropped.length === 0) {
+          const ws = await getDefaultWorkspace(true);
+          const defaultWorkspace = ws.path;
 
-        if (canceled || !filePaths || filePaths.length === 0) return { success: false, canceled: true };
+          const picked = await dialog.showOpenDialog(mainWindow, {
+            title: 'Import Knowledge Base / Dictionary JSON',
+            defaultPath: defaultWorkspace,
+            filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
+            properties: ['openFile', 'multiSelections']
+          });
+
+          if (picked.canceled || !picked.filePaths || picked.filePaths.length === 0) return { success: false, canceled: true };
+          filePaths = picked.filePaths;
+        }
 
         clearKnowledgeSlots();
 

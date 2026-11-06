@@ -310,11 +310,9 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
     return 0;
   }
 
-  const tempCombinedPath = path.join(app.getPath('userData'), 'combined_knowledge_base.json');
-  await fsPromises.writeFile(tempCombinedPath, JSON.stringify(allItems), 'utf-8');
-
   try {
-    const count = await engine.loadKnowledgeBase(tempCombinedPath);
+    // The decrypted items go to the engine as text in memory; no file is written
+    const count = await engine.loadKnowledgeBaseFromString(JSON.stringify(allItems));
     await engine.buildIndex();
     _rustEngineReady = true;
     _rustEngineItemCount = count;
@@ -323,6 +321,19 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
   } catch (err) {
     console.error("[App] Failed to rebuild combined HNSW index:", err);
     return 0;
+  }
+}
+
+function getCombinedKbTempPath(): string {
+  return path.join(app.getPath('userData'), 'combined_knowledge_base.json');
+}
+
+/** Deletes the plaintext hand-off file that versions up to 0.3.22 left in the user data folder; run at startup. */
+export async function removeCombinedKbTempFile(): Promise<void> {
+  try {
+    await fsPromises.rm(getCombinedKbTempPath(), { force: true });
+  } catch (e: any) {
+    console.warn('[App] Could not remove combined_knowledge_base.json:', e?.message || e);
   }
 }
 

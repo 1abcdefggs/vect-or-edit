@@ -108,6 +108,20 @@ export function renderTabs() {
     titleEl.textContent = tab.title;
     tabEl.append(titleEl);
 
+    // Duplicate sits on the right of its own tab, so it is clear which tab is copied.
+    // Its click must not reach the tab (which would switch to it).
+    const duplicateBtn = document.createElement('button');
+    duplicateBtn.type = 'button';
+    duplicateBtn.className = 'btn-tab-duplicate';
+    duplicateBtn.title = t('tip_tab_duplicate');
+    // The label hides when the tab bar is narrow (buttons.css @container rule); the title keeps the full name
+    duplicateBtn.innerHTML = `${icons.duplicate}<span class="tab-duplicate-label">${t('tab_label_duplicate')}</span>`;
+    duplicateBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      duplicateTab(tab.id);
+    });
+    tabEl.append(duplicateBtn);
+
     // Re-selecting the active tab would rebuild every tab element and refocus Monaco, which
     // detaches the element before a double-click (rename) lands on it.
     tabEl.addEventListener('click', () => {
@@ -122,7 +136,7 @@ export function renderTabs() {
     if (titleSpan) {
       tabEl.addEventListener('dblclick', (e) => {
         // Prevent triggering if clicked on close button
-        if (e.target.closest('.btn-tab-close')) return;
+        if (e.target.closest('.btn-tab-close, .btn-tab-duplicate')) return;
         e.stopPropagation();
 
         const input = document.createElement('input');
@@ -205,25 +219,14 @@ export function renderTabs() {
     tabsContainer.appendChild(tabEl);
   });
 
-  // Duplicate Tab Button directly next to tabs
-  const btnInlineDuplicateTab = document.createElement('button');
-  btnInlineDuplicateTab.className = 'toolbar-btn icon-btn';
-  btnInlineDuplicateTab.id = 'btnDuplicateTabInline';
-  btnInlineDuplicateTab.title = t('tip_tab_duplicate');
-  btnInlineDuplicateTab.style.color = 'var(--text-muted)';
-  btnInlineDuplicateTab.style.marginLeft = '2px';
-  btnInlineDuplicateTab.innerHTML = icons.duplicate;
-  btnInlineDuplicateTab.addEventListener('click', () => duplicateTab());
-  tabsContainer.appendChild(btnInlineDuplicateTab);
-
-  // Inline New Tab Button directly next to Duplicate button
+  // Inline New Tab Button directly after the tabs (duplicate lives inside each tab)
   const btnInlineNewTab = document.createElement('button');
-  btnInlineNewTab.className = 'toolbar-btn icon-btn';
+  btnInlineNewTab.className = 'toolbar-btn icon-btn tab-inline-btn';
   btnInlineNewTab.id = 'btnNewTabInline';
   btnInlineNewTab.title = t('tip_tab_new');
   btnInlineNewTab.style.color = 'var(--text-muted)';
   btnInlineNewTab.style.marginLeft = '2px';
-  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">&#xf741;</span>`;
+  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">&#xf741;</span><span class="tab-inline-label">${t('tab_label_new')}</span>`;
   btnInlineNewTab.addEventListener('click', () => createBlankTab());
   tabsContainer.appendChild(btnInlineNewTab);
 

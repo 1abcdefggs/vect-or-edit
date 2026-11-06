@@ -10,31 +10,30 @@
   font-size: var(--fs-12);
   color: var(--text-main);
   border-bottom: var(--border-width) solid var(--border-color);
-  border-left: 3px solid #38bdf8;
+  border-left: 3px solid var(--accent-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.log-toast-strip.log-toast-success { border-left-color: #10b981; }
-.log-toast-strip.log-toast-warning { border-left-color: #f59e0b; }
-.log-toast-strip.log-toast-error { border-left-color: #ef4444; }
+.log-toast-strip.log-toast-success { border-left-color: var(--success-color); }
+.log-toast-strip.log-toast-warning { border-left-color: var(--warn-color); }
+.log-toast-strip.log-toast-error { border-left-color: var(--error-color); }
 
 .app-toast {
   position: fixed;
   top: 52px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(15, 23, 42, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: #ffffff;
+  /* Overlay tokens (variables.css): the opposite of the window mode, so the toast stands out in both modes */
+  background: var(--overlay-bg);
+  color: var(--overlay-fg);
   padding: 10px 18px 10px 18px;
   border-radius: var(--radius-md, 8px);
   font-size: var(--fs-14);
   font-weight: 500;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  box-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.3), 0 0 18px rgba(56, 189, 248, 0.15);
+  border: 1px solid var(--overlay-border);
+  box-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -95,19 +94,19 @@
 }
 
 .app-toast.toast-success {
-  border-left: 4px solid var(--success-color, #10b981) !important;
+  border-left: 4px solid var(--success-color) !important;
 }
 
 .app-toast.toast-warning {
-  border-left: 4px solid #f59e0b !important;
+  border-left: 4px solid var(--warn-color) !important;
 }
 
 .app-toast.toast-error {
-  border-left: 4px solid var(--error-color, #ef4444) !important;
+  border-left: 4px solid var(--error-color) !important;
 }
 
 .app-toast.toast-info {
-  border-left: 4px solid var(--accent-color, #38bdf8) !important;
+  border-left: 4px solid var(--accent-color) !important;
 }
 
 .app-toast.toast-fadeout {
@@ -115,25 +114,33 @@
   transform: translate(-50%, -10px) !important;
 }
 
+/* Close control: a visible round button so it reads as clickable on the dark toast */
 .toast-close-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted, #94a3b8);
-  cursor: pointer;
-  font-size: var(--fs-18);
-  line-height: 1;
-  padding: 2px 6px;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
   margin-left: 4px;
-  border-radius: var(--radius-sm, 4px);
+  background: var(--overlay-hover);
+  border: 1px solid var(--overlay-muted);
+  color: var(--overlay-fg);
+  cursor: pointer;
+  font-size: var(--fs-16);
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.toast-close-btn:hover {
-  color: var(--text-main, #ffffff);
-  background: var(--hover-bg, rgba(255, 255, 255, 0.15));
+.toast-close-btn:hover,
+.toast-close-btn:focus-visible {
+  color: var(--overlay-bg);
+  background: var(--overlay-fg);
+  border-color: var(--overlay-fg);
+  outline: none;
 }
 
 .toast-action-btn {

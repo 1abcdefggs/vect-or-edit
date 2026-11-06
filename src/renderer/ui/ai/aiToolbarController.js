@@ -158,11 +158,11 @@ export function initAiControls() {
     const state = aiManager.getState();
     if (!state.llmConfigured) {
       const confirmed = await showConfirmModal({
-        title: t('ai_setup_required_title') || 'AI Setup Required',
-        message: t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.',
-        detail: t('ai_setup_required_detail') || 'Would you like to navigate to Settings to configure your Gemini or OpenAI API key?',
-        confirmText: t('btn_open_settings') || 'Open Settings',
-        cancelText: t('btn_cancel') || 'Stay in Editor',
+        title: t('ai_setup_required_title'),
+        message: t('ai_setup_required_msg'),
+        detail: t('ai_setup_required_detail'),
+        confirmText: t('btn_open_settings'),
+        cancelText: t('btn_cancel'),
         type: 'info',
         icon: 'cloud'
       });
@@ -246,7 +246,7 @@ function initLlmChatDock() {
       const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
       modelBadge.textContent = `Claude (${model.replace('claude-', '')})`;
     } else {
-      modelBadge.textContent = 'LLM (Cloud)';
+      modelBadge.textContent = t('llm_badge_cloud');
     }
   }
 
@@ -300,7 +300,7 @@ function initLlmChatDock() {
       if (icon) {
         icon.textContent = isPassword ? 'visibility' : 'visibility_off';
       }
-      btnToggleQuickVisibility.title = isPassword ? (t('hide_api_key') || 'Hide API Key') : (t('show_api_key') || 'Show API Key');
+      btnToggleQuickVisibility.title = isPassword ? (t('hide_api_key')) : (t('show_api_key'));
     });
   }
 
@@ -428,7 +428,7 @@ function initLlmChatDock() {
 
     // Without a configured key, keep the prompt in the input and point to setup instead of sending.
     if (!aiManager.getState?.().llmConfigured) {
-      showToast(t('ai_setup_required_msg') || 'Cloud LLM / AI model is not configured yet.', 'warning');
+      showToast(t('ai_setup_required_msg'), 'warning');
       return;
     }
     if (!canUseLlm()) {
@@ -477,15 +477,15 @@ function initLlmChatDock() {
           </div>
           <div class="llm-ai-body" style="white-space: pre-wrap; word-break: break-word;">${escapeHtml(text)}</div>
           <div class="llm-msg-actions">
-            <button class="llm-action-btn btn-action-insert" title="Insert output at editor cursor">
+            <button class="llm-action-btn btn-action-insert" title="${t('llm_action_insert_tip')}">
               <span class="material-symbols-outlined" style="font-size: var(--fs-12);">input</span>
               <span>Insert</span>
             </button>
-            <button class="llm-action-btn btn-action-rewrite" title="Replace selected text with this output (decorated)">
+            <button class="llm-action-btn btn-action-rewrite" title="${t('llm_action_rewrite_tip')}">
               <span class="material-symbols-outlined" style="font-size: var(--fs-12);">auto_fix_high</span>
               <span>Replace (Rewrite)</span>
             </button>
-            <button class="llm-action-btn btn-action-copy" title="Copy to clipboard">
+            <button class="llm-action-btn btn-action-copy" title="${t('llm_action_copy_tip')}">
               <span class="material-symbols-outlined" style="font-size: var(--fs-12);">content_copy</span>
               <span>Copy</span>
             </button>

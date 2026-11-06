@@ -1,6 +1,7 @@
 import { triggerMonacoVectorSearch } from '../../search/vectorSearch.js';
 import { saveTextToFile } from '../io/fileIO.js';
 import { i18n } from '../../core/i18n.js';
+import { openGoogleSearch } from '../../core/externalActions.js';
 import { editorEvents } from './editorEvents.js';
 
 export function registerMonacoSuggestAction(editor, monacoRef) {
@@ -110,12 +111,7 @@ export function registerMonacoSuggestAction(editor, monacoRef) {
         query = word ? word.word : '';
       }
       if (query.trim()) {
-        const queryUrl = `https://www.google.com/search?q=${encodeURIComponent(query.trim())}`;
-        if (window.engineAPI && window.engineAPI.openExternal) {
-          window.engineAPI.openExternal(queryUrl);
-        } else {
-          window.open(queryUrl, '_blank');
-        }
+        openGoogleSearch(query);
       }
     }
   });

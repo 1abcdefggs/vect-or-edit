@@ -127,6 +127,12 @@
   <!-- Chrome-style Multi-Document Tab Bar -->
   <div class="editor-tab-bar" id="editorTabBar" data-ui="edt:tab-bar" style="display: flex; align-items: center; background: var(--bg-card); border-bottom: var(--border-width) solid var(--border-color);">
     <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" data-i18n-title="tip_editor_tabs"></div>
+    <!-- The view switch for the active document. Always shown; a Text document shows it disabled with the reason beside it (markdownPreview.js) -->
+    <button type="button" id="btnMarkdownPreview" data-ui="edt:markdown-preview" class="markdown-preview-toggle" aria-pressed="false" data-i18n-title="tip_markdown_preview">
+      <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">preview</span>
+      <span class="markdown-preview-label">Preview</span>
+      <span class="markdown-preview-reason" data-i18n="preview_unavailable_reason">Text has no preview</span>
+    </button>
   </div>
   <div id="monacoContainer" style="display: block; width: 100%; flex: 1; min-height: 0;"></div>
   <div id="markdownPreview" class="markdown-preview" hidden></div>
@@ -152,11 +158,6 @@
           <button type="button" class="format-switch__item" role="menuitemradio" aria-checked="false" data-format="text" data-i18n="format_option_text" data-i18n-title="tip_format_text">Text (.txt)</button>
         </span>
       </span>
-      <span class="status-bar-separator" data-preview-separator>|</span>
-      <button type="button" id="btnMarkdownPreview" data-ui="edt:markdown-preview" class="markdown-preview-toggle" aria-pressed="false" data-i18n-title="tip_markdown_preview">
-        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">preview</span>
-        <span class="markdown-preview-label">Preview</span>
-      </button>
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, webFrame } from 'electron';
+import { contextBridge, ipcRenderer, webFrame, webUtils } from 'electron';
 import type { 
   EngineAPI, 
   EngineStatus, 
@@ -56,7 +56,9 @@ const engineAPI: EngineAPI = {
   listGeminiModels: (apiKey?: string) => ipcRenderer.invoke('app:listGeminiModels', apiKey),
   openaiSemanticSuggest: (payload) => ipcRenderer.invoke('app:openaiSemanticSuggest', payload),
   llmEmbedding: (payload) => ipcRenderer.invoke('app:llmEmbedding', payload),
-  importKnowledgeBase: () => ipcRenderer.invoke('engine:importKnowledgeBase'),
+  importKnowledgeBase: (customPaths?: string[]) => ipcRenderer.invoke('engine:importKnowledgeBase', customPaths),
+  // Drag and drop: Electron no longer exposes File.path, so the real path comes from webUtils
+  getPathForFile: (file: File) => webUtils.getPathForFile(file),
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => ipcRenderer.invoke('app:setTitleBarOverlay', options),
   clearCache: () => ipcRenderer.invoke('app:clearCache'),
   restartApp: () => ipcRenderer.invoke('app:restart'),

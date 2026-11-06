@@ -80,18 +80,16 @@ export async function toggleMarkdownPreview() {
 }
 
 /**
- * Shows or hides the Preview button: only a Markdown document has a rendered view.
+ * Enables or disables the Preview button: only a Markdown document has a rendered view.
+ * A Text document shows the button disabled with its reason beside it, so the control never disappears.
  * When the active document becomes Text while the preview is open, the preview closes and the editor comes back.
  */
 export function setPreviewAvailable(available) {
   const button = document.getElementById('btnMarkdownPreview');
   if (!button) return;
-  // It stays in the layout (invisible), so the format button beside it does not shift when the format changes
+  button.disabled = !available;
   button.classList.toggle('is-unavailable', !available);
-  button.tabIndex = available ? 0 : -1;
-  button.setAttribute('aria-hidden', String(!available));
-  const separator = document.querySelector('[data-preview-separator]');
-  if (separator) separator.classList.toggle('is-unavailable', !available);
+  button.setAttribute('aria-disabled', String(!available));
   if (!available && isPreviewVisible) toggleMarkdownPreview();
 }
 

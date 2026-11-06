@@ -1,5 +1,6 @@
 import { setEditorContent, focusEditor } from '../../editor/editorManager.js';
-import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledgeSlot, clearAllKnowledgeSlots } from '../../search/dictionary.js';
+import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledgeSlot, clearAllKnowledgeSlots, importDictionary } from '../../search/dictionary.js';
+import { enableFileDrop } from './fileDrop.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
@@ -128,6 +129,25 @@ export function bindAppActionEvents() {
     };
     btnAddSlot.addEventListener('click', handleAddSlot);
   }
+
+  // Drop files on the Knowledge card: each file becomes one slot, like Add files
+  enableFileDrop(document.getElementById('knowledgeModuleCard'), async (paths) => {
+    let added = null;
+    for (const p of paths) {
+      const res = await addKnowledgeSlot(p);
+      if (res?.success) added = res;
+    }
+    if (added) {
+      document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
+      showToast(t('toast_kb_updated', { count: added.totalCount, slots: added.slots?.length || 0 }), 'success');
+      setLedStatus('kb', true, `7. HNSW: Indexed (${added.totalCount?.toLocaleString()} items)`);
+    }
+  });
+
+  // Drop files on the Guideline card: loads them as the preset, like Add files there
+  enableFileDrop(document.getElementById('guidelineModuleCard'), async (paths) => {
+    await importDictionary(paths);
+  });
 
   if (btnClearAllSlots) {
     btnClearAllSlots.addEventListener('click', async () => {

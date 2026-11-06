@@ -162,7 +162,7 @@ export async function updateSemanticStateDisplay() {
         profileIconEl.textContent = '';
       }
       if (profileHeaderLabelEl) {
-        profileHeaderLabelEl.textContent = isGuideline ? (t('active_guideline_preset_label') || 'Guideline') : 'Preset';
+        profileHeaderLabelEl.textContent = isGuideline ? (t('active_guideline_preset_label')) : 'Preset';
       }
 
       const btnResetGoal = document.getElementById('btnResetGoal');
@@ -221,7 +221,7 @@ export async function updateSemanticStateDisplay() {
     const countBadgeEl = document.getElementById('knowledgeSlotsCountBadge');
     if (countBadgeEl) {
       const slotCount = state?.slots?.length || 0;
-      countBadgeEl.textContent = `${slotCount} ${t('label_slots') || 'Slots'}`;
+      countBadgeEl.textContent = `${slotCount} ${t('label_slots')}`;
     }
 
     if (slotsListEl) {
@@ -352,27 +352,27 @@ function promptForPassword(filePath) {
     modal.style.cssText = 'background:var(--bg-panel);border:var(--border-width) solid var(--border-color);border-radius:8px;padding:20px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:15px;font-family:inherit;';
     
     const title = document.createElement('div');
-    title.textContent = `Encrypted Knowledge Slot`;
+    title.textContent = t('dict_enc_title');
     title.style.cssText = 'font-weight:600;color:var(--text-color);font-size:var(--fs-15);';
     
     const desc = document.createElement('div');
-    desc.textContent = `Password required for: ${filename}`;
+    desc.textContent = t('dict_enc_desc', { filename });
     desc.style.cssText = 'color:var(--text-muted);font-size:var(--fs-12);word-break:break-all;';
     
     const input = document.createElement('input');
     input.type = 'password';
-    input.placeholder = 'Enter password...';
+    input.placeholder = t('dict_enc_placeholder');
     input.style.cssText = 'padding:10px;border:var(--border-width) solid var(--border-color);border-radius:6px;background:var(--bg-input);color:var(--text-color);outline:none;font-size:var(--fs-14);';
     
     const btnRow = document.createElement('div');
     btnRow.style.cssText = 'display:flex;justify-content:flex-end;gap:10px;margin-top:5px;';
     
     const btnCancel = document.createElement('button');
-    btnCancel.textContent = 'Cancel';
+    btnCancel.textContent = t('btn_cancel');
     btnCancel.style.cssText = 'padding:6px 12px;border:var(--border-width) solid var(--border-color);border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:var(--fs-13);';
     
     const btnSubmit = document.createElement('button');
-    btnSubmit.textContent = 'Unlock';
+    btnSubmit.textContent = t('btn_unlock');
     btnSubmit.style.cssText = 'padding:6px 12px;border:none;border-radius:4px;background:var(--accent-color, #007acc);color:#fff;cursor:pointer;font-size:var(--fs-13);';
     
     btnRow.appendChild(btnCancel);
@@ -398,10 +398,10 @@ function promptForPassword(filePath) {
   });
 }
 
-export async function addKnowledgeSlot() {
+export async function addKnowledgeSlot(customPath) {
   if (window.engineAPI && window.engineAPI.addKnowledgeSlot) {
     try {
-      let res = await window.engineAPI.addKnowledgeSlot();
+      let res = await window.engineAPI.addKnowledgeSlot(customPath);
       if (res && res.requiresPassword) {
         const pwd = await promptForPassword(res.filePath);
         if (pwd) {
@@ -507,10 +507,10 @@ export async function insertActiveTemplate(setEditorTextCallback) {
   }
 }
 
-export async function importDictionary() {
+export async function importDictionary(customPaths) {
   if (window.engineAPI && window.engineAPI.importKnowledgeBase) {
     try {
-      const res = await window.engineAPI.importKnowledgeBase();
+      const res = await window.engineAPI.importKnowledgeBase(customPaths);
       if (res && res.success) {
         setKnowledgeItems(res.data);
         await updateSemanticStateDisplay();

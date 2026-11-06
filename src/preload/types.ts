@@ -153,7 +153,8 @@ export interface EngineAPI {
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   /** LLM-as-Embedding: converts text to a pseudo-vector using an LLM provider. */
   llmEmbedding: (payload: { text: string; provider: 'gemini' | 'claude' | 'openai'; model?: string; apiKey?: string; dimensions?: number }) => Promise<{ success: boolean; vector?: number[]; error?: string }>;
-  importKnowledgeBase: () => Promise<ImportKnowledgeBaseResponse>;
+  importKnowledgeBase: (customPaths?: string[]) => Promise<ImportKnowledgeBaseResponse>;
+  getPathForFile: (file: File) => string;
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => Promise<{ success: boolean; error?: string }>;
   clearCache: () => Promise<{ success: boolean; error?: string }>;
   restartApp: () => Promise<void>;

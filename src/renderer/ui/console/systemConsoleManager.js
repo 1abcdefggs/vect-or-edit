@@ -177,7 +177,7 @@ export function initSystemConsole() {
     navigator.clipboard.writeText(formatLogs());
     if (!button) return;
     const original = [...button.childNodes];
-    button.textContent = 'Copied!';
+    button.textContent = t('msg_copied');
     setTimeout(() => button.replaceChildren(...original), 2000);
   };
 

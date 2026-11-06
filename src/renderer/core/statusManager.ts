@@ -98,13 +98,13 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
   const cachedBadges = getCachedBadges(subType);
 
   const tooltipExplanations: Record<string, { desc: string; active: string }> = {
-    bin: { desc: t('tt_desc_bin') || "Core search and analysis engine (Rust).", active: t('tt_active_bin') || "Automatically starts and connects." },
-    kb: { desc: t('tt_desc_kb') || "Search index for specialized dictionaries and past documents.", active: t('tt_active_kb') || "Load dictionary JSON from [+Slot] in the sidebar." },
-    conf: { desc: t('tt_desc_conf') || "User settings (font size, etc.).", active: t('tt_active_conf') || "Opens the settings screen and saves them." },
-    thm: { desc: t('tt_desc_thm') || "Editor color theme (dark mode, etc.).", active: t('tt_active_thm') || "Select a theme from the settings screen." },
-    i18n: { desc: t('tt_desc_i18n') || "Multilingual UI data (Japanese, etc.).", active: t('tt_active_i18n') || "Loaded automatically." },
-    monaco: { desc: t('tt_desc_monaco') || "High-performance editor (Monaco Editor).", active: t('tt_active_monaco') || "Drawn automatically upon screen initialization." },
-    ai: { desc: t('tt_desc_ai') || "AI model for understanding and searching by semantic meaning.", active: t('tt_active_ai') || "Download or enable the AI model from the settings screen." }
+    bin: { desc: t('tt_desc_bin'), active: t('tt_active_bin') },
+    kb: { desc: t('tt_desc_kb'), active: t('tt_active_kb') },
+    conf: { desc: t('tt_desc_conf'), active: t('tt_active_conf') },
+    thm: { desc: t('tt_desc_thm'), active: t('tt_active_thm') },
+    i18n: { desc: t('tt_desc_i18n'), active: t('tt_active_i18n') },
+    monaco: { desc: t('tt_desc_monaco'), active: t('tt_active_monaco') },
+    ai: { desc: t('tt_desc_ai'), active: t('tt_active_ai') }
   };
 
   cachedBadges.forEach(({ badge, dot }) => {
@@ -131,9 +131,9 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
       let fullTitle = tooltipText;
       const info = tooltipExplanations[subType];
       if (info) {
-        fullTitle += `\n\n${t('tt_meaning') || '[Meaning]'}\n${info.desc}`;
+        fullTitle += `\n\n${t('tt_meaning')}\n${info.desc}`;
         if (!isReady && !isStandby) {
-          fullTitle += `\n\n${t('tt_how_to_enable') || '[How to Enable]'}\n${info.active}`;
+          fullTitle += `\n\n${t('tt_how_to_enable')}\n${info.active}`;
         }
       }
       // Instant custom tooltip attribute instead of 'title'
