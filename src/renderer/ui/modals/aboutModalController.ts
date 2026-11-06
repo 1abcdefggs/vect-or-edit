@@ -126,7 +126,7 @@ function createAboutModalElement(): HTMLElement {
   div.className = 'settings-modal-overlay';
   div.style.display = 'none';
   div.innerHTML = `
-    <div class="settings-modal-dialog" style="width: 720px; max-width: calc(100vw - 2rem); height: auto; max-height: calc(100vh - 4rem); margin: 1rem; border-radius: 12px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65); border: var(--border-width) solid var(--border-color); overflow: hidden;">
+    <div class="settings-modal-dialog" style="width: 720px; max-width: calc(100vw - 2rem); height: auto; max-height: calc(100vh - 4rem); margin: 1rem; overflow: hidden;">
       <div class="modal-header" style="padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="${appLogoUrl}" alt="VectOrEdit" style="width: 22px; height: 22px; border-radius: 4px;">

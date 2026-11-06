@@ -75,9 +75,9 @@
   flex: 1;
 }
 
-/* Elevated Dialog Card (Used in Update, Workspace & Confirmation Modals) */
-.settings-modal-overlay .settings-modal-dialog,
-.modal-overlay .settings-modal-dialog,
+/* Elevated Dialog Card (Used in Update, Workspace & Confirmation Modals). The first-run dialog keeps its own surface (.first-run-dialog) */
+.settings-modal-overlay .settings-modal-dialog:not(.first-run-dialog),
+.modal-overlay .settings-modal-dialog:not(.first-run-dialog),
 .elevated-modal-card {
   background: var(--bg-secondary, #0f172a) !important;
   border: 1px solid rgba(56, 189, 248, 0.32) !important;
@@ -680,7 +680,7 @@
 /* One typeface for the whole setup: the editor's default body font. It is set on every text element (inputs, buttons,
    paths and codes included) except the icon font, whose glyphs must keep their own family. */
 .first-run-overlay {
-  --first-run-font: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
+  --first-run-font: var(--font-brand);
 }
 
 .first-run-overlay,
@@ -691,6 +691,8 @@
 .first-run-dialog {
   width: 840px;
   max-width: 94vw;
+  /* Kept from the elevated card rule this dialog used to match, so its size in the flex overlay does not change */
+  flex: none;
   /* One height for every step and language, so the dialog never jumps; the body scrolls if a language needs more */
   height: min(780px, 100%);
   max-height: 100%;

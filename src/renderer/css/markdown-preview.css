@@ -4,19 +4,41 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
+  margin: 0 6px;
   padding: 0 6px;
   background: transparent;
   border: none;
+  border-radius: 4px;
   color: inherit;
   font: inherit;
+  white-space: nowrap;
   cursor: pointer;
 }
 
-/* A Text document has no rendered view: the button turns invisible but keeps its place (setPreviewAvailable) */
-.markdown-preview-toggle.is-unavailable,
-.status-bar-separator.is-unavailable {
-  visibility: hidden;
-  pointer-events: none;
+.markdown-preview-toggle:hover {
+  background: var(--hover-bg);
+}
+
+.markdown-preview-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+/* The reason is shown only while the button is disabled (a Text document) */
+.markdown-preview-reason {
+  display: none;
+}
+
+/* A Text document has no rendered view: the button is disabled and says why (setPreviewAvailable) */
+.markdown-preview-toggle.is-unavailable {
+  opacity: 0.6;
+  cursor: default;
+  background: transparent;
+}
+
+.markdown-preview-toggle.is-unavailable .markdown-preview-reason {
+  display: inline;
 }
 
 .markdown-preview-toggle[aria-pressed="true"] {

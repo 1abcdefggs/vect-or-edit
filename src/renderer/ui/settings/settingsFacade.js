@@ -1,6 +1,6 @@
 import { icons } from '../../core/icons.js';
 import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
-import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode } from '../../editor/core/themeLoader.js';
+import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode, OVERLAY_COLORS, getOverlayColor } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { importDictionary } from '../../search/dictionary.js';
@@ -88,6 +88,20 @@ export function refreshColorModeControls() {
  * Switches the appearance mode. The theme stays; its light or dark face shows.
  * Anything else that shows the mode or the theme (the first-run cards) listens to app:themeChanged.
  */
+/** Shows the stored popup colour choice and sets the class that switches the overlay tokens (variables.css). */
+export function refreshOverlayColorControl() {
+  const value = getOverlayColor();
+  const sel = document.getElementById('modalOverlayColorSelect');
+  if (sel) sel.value = value;
+  document.documentElement.classList.toggle('overlay-match-window', value === 'window');
+}
+
+export function applyOverlayColor(value) {
+  if (!OVERLAY_COLORS.includes(value)) return;
+  setAndSync(STORAGE_KEYS.OVERLAY_COLOR, value);
+  refreshOverlayColorControl();
+}
+
 export async function applyColorMode(mode) {
   if (!COLOR_MODES.includes(mode)) return;
   setAndSync(STORAGE_KEYS.COLOR_MODE, mode);
@@ -203,6 +217,7 @@ export function initSettings(updateEditorCb) {
   const modalLinterSelect = document.getElementById('modalLinterSelect');
   const modalTruncationSelect = document.getElementById('modalTruncationSelect');
   const modalResultDescLinesSelect = document.getElementById('modalResultDescLinesSelect');
+  const modalResultTitleLinesSelect = document.getElementById('modalResultTitleLinesSelect');
   const modalSuggestTriggerSelect = document.getElementById('modalSuggestTriggerSelect');
 
 
@@ -228,6 +243,8 @@ export function initSettings(updateEditorCb) {
   refreshColorModeControls();
   document.getElementById('modalColorModeSelect')?.addEventListener('change', (e) => applyColorMode(e.target.value));
   document.querySelectorAll('#colorModeSwitch [data-mode]').forEach((seg) => seg.addEventListener('click', () => applyColorMode(seg.dataset.mode)));
+  refreshOverlayColorControl();
+  document.getElementById('modalOverlayColorSelect')?.addEventListener('change', (e) => applyOverlayColor(e.target.value));
 
   // Language toggle & 2-way sync. Any language change (header, settings, first-run setup) ends in app:languageChanged.
   const applyLanguage = (lang) => applyLanguageSetting(lang);
@@ -480,6 +497,15 @@ export function initSettings(updateEditorCb) {
     });
   }
 
+  if (modalResultTitleLinesSelect) {
+    const savedTitleLines = localStorage.getItem(STORAGE_KEYS.RESULT_TITLE_LINES);
+    modalResultTitleLinesSelect.value = ['1', '3', 'full'].includes(savedTitleLines) ? savedTitleLines : '2';
+    modalResultTitleLinesSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.RESULT_TITLE_LINES, modalResultTitleLinesSelect.value);
+      window.dispatchEvent(new CustomEvent('app:resultTitleLinesChanged'));
+    });
+  }
+
   if (modalLinterSelect) {
     modalLinterSelect.value = localStorage.getItem(STORAGE_KEYS.LINTER_ENABLED) === 'off' ? 'off' : 'on';
     modalLinterSelect.addEventListener('change', () => {
@@ -604,7 +630,7 @@ export function initSettings(updateEditorCb) {
     const keyToUse = explicitKey || modalGeminiKeyInput?.value?.trim();
 
     if (geminiModelsFetchStatus) {
-      geminiModelsFetchStatus.textContent = 'Google API Keys loading ...';
+      geminiModelsFetchStatus.textContent = t('gemini_keys_loading');
       geminiModelsFetchStatus.style.color = 'var(--accent-color, #38bdf8)';
     }
 
@@ -637,7 +663,7 @@ export function initSettings(updateEditorCb) {
         localStorage.setItem('cached_gemini_models', JSON.stringify(models));
 
         if (geminiModelsFetchStatus) {
-          geminiModelsFetchStatus.textContent = `Google API Keys loaded ${models.length} items.`;
+          geminiModelsFetchStatus.textContent = t('gemini_keys_loaded', { count: models.length });
           geminiModelsFetchStatus.style.color = 'var(--success-color, #10b981)';
         }
       } else {
@@ -646,7 +672,7 @@ export function initSettings(updateEditorCb) {
     } catch (err) {
       console.warn('[Gemini] Model list fetch error:', err);
       if (geminiModelsFetchStatus) {
-        geminiModelsFetchStatus.textContent = 'Google API Keys Error...';
+        geminiModelsFetchStatus.textContent = t('gemini_keys_error');
         geminiModelsFetchStatus.style.color = '#ef4444';
       }
     }
@@ -737,7 +763,7 @@ export function initSettings(updateEditorCb) {
       if (icon) {
         icon.textContent = isPassword ? 'visibility' : 'visibility_off';
       }
-      btn.title = isPassword ? (t('hide_api_key') || 'Hide API Key') : (t('show_api_key') || 'Show API Key');
+      btn.title = isPassword ? (t('hide_api_key')) : (t('show_api_key'));
     });
   }
 

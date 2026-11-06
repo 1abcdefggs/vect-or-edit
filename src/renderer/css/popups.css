@@ -8,9 +8,10 @@
   z-index: 10000;
   min-width: 160px;
   padding: 4px;
-  border: var(--border-width) solid var(--border-color);
+  border: var(--border-width) solid var(--overlay-border);
   border-radius: 8px;
-  background: var(--bg-secondary);
+  background: var(--overlay-bg);
+  color: var(--overlay-fg);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
 }
 
@@ -21,7 +22,7 @@
   border: none;
   border-radius: 5px;
   background: transparent;
-  color: var(--text-main);
+  color: var(--overlay-fg);
   font: inherit;
   font-size: var(--fs-13);
   text-align: left;
@@ -38,8 +39,9 @@
 .custom-context-menu {
   position: absolute;
   z-index: 1000;
-  background: var(--bg-secondary);
-  border: var(--border-width) solid var(--border-color);
+  background: var(--overlay-bg);
+  color: var(--overlay-fg);
+  border: var(--border-width) solid var(--overlay-border);
   border-radius: var(--radius-md);
   box-shadow: 0 4px 20px var(--modal-shadow);
   padding: 4px;
@@ -54,7 +56,7 @@
   gap: 8px;
   padding: 8px 12px;
   font-size: var(--fs-14);
-  color: var(--text-main);
+  color: var(--overlay-fg);
   border-radius: var(--radius-sm);
   cursor: pointer;
   border: none;
@@ -100,8 +102,8 @@
 }
 
 .pill-top-row .pill-action-btn.secondary {
-  border: 1px solid color-mix(in srgb, var(--text-muted) 32%, transparent);
-  color: var(--text-main);
+  border: 1px solid color-mix(in srgb, var(--overlay-muted) 40%, transparent);
+  color: var(--overlay-fg);
 }
 
 .pill-action-btn {
@@ -112,7 +114,7 @@
   padding: 6px 12px;
   font-size: var(--fs-13);
   font-family: inherit;
-  color: var(--text-main);
+  color: var(--overlay-fg);
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
@@ -122,16 +124,16 @@
 }
 
 .pill-action-btn:hover {
-  background: var(--hover-bg);
+  background: var(--overlay-hover);
 }
 
 .pill-action-btn.primary {
-  color: var(--accent-color);
+  color: var(--overlay-accent);
   font-weight: 500;
 }
 
 .pill-action-btn.primary:hover {
-  background: var(--hover-bg);
+  background: var(--overlay-hover);
   border-color: var(--border-color);
 }
 
@@ -139,20 +141,22 @@
   padding: 6px 8px;
 }
 
+/* Disabled stays readable: it is shown by the muted text colour and a dashed edge, not by fading (opacity would
+   drop the contrast below 4.5:1). The reason line in the button keeps the same muted colour */
 .pill-action-btn.disabled {
-  opacity: 0.45;
+  color: var(--overlay-muted);
   cursor: not-allowed;
-  filter: saturate(0.4);
+  border-style: dashed;
 }
 
 .external-action-icon {
   margin-left: auto;
   font-size: var(--fs-14);
-  color: var(--text-muted);
+  color: var(--overlay-muted);
 }
 
 .pill-action-btn.secondary:hover {
-  background: var(--hover-bg);
+  background: var(--overlay-hover);
   border-color: var(--border-color);
 }
 
@@ -190,15 +194,15 @@
 }
 
 .pill-candidate-chip:hover {
-  background: var(--hover-bg);
+  background: var(--overlay-hover);
 }
 
 .chip-title {
   font-size: var(--fs-14);
-  color: var(--text-main);
+  color: var(--overlay-fg);
 }
 
 .chip-desc {
   font-size: var(--fs-11);
-  color: var(--text-muted);
+  color: var(--overlay-muted);
 }

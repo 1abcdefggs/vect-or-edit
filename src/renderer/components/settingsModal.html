@@ -73,6 +73,13 @@
             <select id="modalColorModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_color_mode"></select>
           </div>
           <div data-setting-row>
+            <div data-setting-text data-label-key="overlay_color_label" data-label-text="Popup colour" data-desc-key="overlay_color_desc" data-desc-text="Colour of selection popups, context menus and tooltips. Invert shows them on a dark surface in light mode and a light surface in dark mode, so they stand out."></div>
+            <select id="modalOverlayColorSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_overlay_color">
+              <option value="invert" data-i18n="overlay_color_invert">Invert (default)</option>
+              <option value="window" data-i18n="overlay_color_window">Same as window</option>
+            </select>
+          </div>
+          <div data-setting-row>
             <div data-setting-text data-label-key="theme_label" data-label-text="Color Theme" data-desc-key="setting_theme_desc" data-desc-text="Switch color palette and titlebar theme."></div>
             <select id="modalThemeSelect" class="toolbar-select" data-i18n-title="tip_set_theme"></select>
           </div>
@@ -572,6 +579,15 @@
             <select id="modalResultDescLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_desc_lines">
               <option value="1" data-i18n="opt_desc_lines_1">1 line</option>
               <option value="2" selected data-i18n="opt_desc_lines_2">2 lines</option>
+            </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_result_title_lines" data-label-text="Heading lines on result cards" data-desc-key="setting_result_title_lines_desc" data-desc-text="How many lines of the heading a suggestion card shows. Full shows the whole heading without cutting it."></div>
+            <select id="modalResultTitleLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_title_lines">
+              <option value="1" data-i18n="opt_title_lines_1">1 line</option>
+              <option value="2" selected data-i18n="opt_title_lines_2">2 lines</option>
+              <option value="3" data-i18n="opt_title_lines_3">3 lines</option>
+              <option value="full" data-i18n="opt_title_lines_full">Full</option>
             </select>
           </div>
           <div data-setting-row>

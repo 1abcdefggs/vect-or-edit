@@ -137,6 +137,7 @@ export function initSearchUi() {
   }
 
   window.addEventListener('app:resultDescLinesChanged', reRenderWithCurrentResults);
+  window.addEventListener('app:resultTitleLinesChanged', reRenderWithCurrentResults);
 
   const chkFullMeta = document.getElementById('chkShowFullMetadata');
   if (chkFullMeta) {
@@ -225,6 +226,14 @@ function getResultDescLines() {
   try { return localStorage.getItem(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2'; } catch { return '2'; }
 }
 
+// 'vect_result_title_lines': '1' | '2' | '3' | 'full' (2 by default); 'full' shows the whole heading
+function getResultTitleLines() {
+  try {
+    const v = localStorage.getItem(STORAGE_KEYS.RESULT_TITLE_LINES);
+    return ['1', '3', 'full'].includes(v) ? v : '2';
+  } catch { return '2'; }
+}
+
 function renderSingleCard(r, index, isPreliminary = false) {
   const title = resolveItemTitle(r);
   const code = resolveItemCode(r);
@@ -247,11 +256,11 @@ function renderSingleCard(r, index, isPreliminary = false) {
 
   // An AI suggestion inserts its answer; the name and id on the card are only labels (they must never reach the document)
   const insertPayload = typeof r.insertText === 'string' ? r.insertText : (title || code || '');
-  const btnInsertText = escapeHtml(t('btn_insert') || "Insert");
+  const btnInsertText = escapeHtml(t('btn_insert'));
   const kind = resolveKindLabel(code);
 
   const scoreHtml = isPreliminary
-    ? `<span class="spinner result-card__score" role="status" title="${escapeHtml(t('vector_computing') || 'Computing...')}" aria-label="${escapeHtml(t('vector_computing') || 'Computing...')}"></span>`
+    ? `<span class="spinner result-card__score" role="status" title="${escapeHtml(t('vector_computing'))}" aria-label="${escapeHtml(t('vector_computing'))}"></span>`
     : `<span class="similarity-score result-card__score">${scorePct}%</span>`;
   // The kind tag and the ID share one row; the ID is hidden until hover or focus, but keeps its space so the card does not jump
   const metaRowHtml = (kind || code)
@@ -263,12 +272,12 @@ function renderSingleCard(r, index, isPreliminary = false) {
       <div class="score-progress-bar" style="width: ${scorePct}%;"></div>
       <div class="card-header result-card__header">
         <div class="result-card__main">
-          ${title ? `<span class="item-title result-card__title" title="${escapeHtml(title)}">${escapeHtml(title)}</span>` : ''}
+          ${title ? `<span class="item-title result-card__title" data-lines="${getResultTitleLines()}" title="${escapeHtml(title)}">${escapeHtml(title)}</span>` : ''}
           ${scoreHtml}
         </div>
         <div class="result-card__actions">
           <button type="button" class="btn-item-insert" title="${btnInsertText}">${btnInsertText}</button>
-          <button type="button" class="btn-item-copy-json" title="Copy JSON">${icons.copy}</button>
+          <button type="button" class="btn-item-copy-json" title="${t('btn_copy_json')}">${icons.copy}</button>
         </div>
       </div>
       <div class="result-card__body">
@@ -307,7 +316,7 @@ export function renderResults(results, isPreliminary = false) {
 
   for (const r of results) {
     const rawCat = r.category || r.metadata?.category || r.type || r.metadata?.type || '';
-    const catName = rawCat ? String(rawCat) : (t('sec_general') || 'Knowledge Items');
+    const catName = rawCat ? String(rawCat) : (t('sec_general'));
 
     if (!categoryGroups.has(catName)) {
       categoryGroups.set(catName, []);

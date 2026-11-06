@@ -7,6 +7,7 @@ export const STORAGE_KEYS = {
   THEME: 'vect_theme',
   LEGACY_THEME: 'themeName',
   COLOR_MODE: 'vect_color_mode',
+  OVERLAY_COLOR: 'vect_overlay_color',
   FONT_FAMILY: 'editor_fontFamily',
   FONT_SIZE: 'editor_fontSize',
   LINE_HEIGHT: 'editor_lineHeight',
@@ -32,6 +33,8 @@ export const STORAGE_KEYS = {
   META_FIELDS: 'vect_meta_fields',
   // '1' | '2': how many lines of the description a result card shows
   RESULT_DESC_LINES: 'vect_result_desc_lines',
+  // '1' | '2' | '3' | 'full': how many lines of the result heading show (2 by default)
+  RESULT_TITLE_LINES: 'vect_result_title_lines',
   APP_LANG: 'app_lang',
   EDITOR_BG_TONE: 'editor_bg_tone',
   CUSTOM_EDITOR_BG: 'editor_custom_bg',

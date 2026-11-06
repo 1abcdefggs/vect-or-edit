@@ -117,6 +117,19 @@ export function getColorMode() {
   return legacy.face || families.get(legacy.name)?.original || 'system';
 }
 
+/** Popups, context menus, tooltips: 'invert' (default, opposite of the mode) or 'window' (the window's own surface). */
+export const OVERLAY_COLORS = ['invert', 'window'];
+
+export function getOverlayColor() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.OVERLAY_COLOR);
+    if (OVERLAY_COLORS.includes(stored)) return stored;
+  } catch {
+    // Storage unavailable: keep the default
+  }
+  return 'invert';
+}
+
 /** Whether the mode currently resolves to dark (the OS decides only in 'system'). */
 export function isDarkModeActive() {
   const mode = getColorMode();

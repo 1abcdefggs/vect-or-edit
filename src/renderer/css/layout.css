@@ -104,7 +104,7 @@ body.ai-standby .header-full-border-line {
 
 .live-log-ticker-body {
   padding: 4px 12px;
-  font-family: 'Cascadia Code', Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: var(--fs-11);
   line-height: 1.4;
   display: flex;

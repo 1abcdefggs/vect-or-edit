@@ -35,9 +35,10 @@ export function setupEditorContextMenu(editor, container) {
           });
 
           if (endPos) {
+            // Anchor below the bottom edge of the selection's last line, so the menu never covers the selected text
             const containerRect = container.getBoundingClientRect();
             const posX = containerRect.left + endPos.left;
-            const posY = containerRect.top + endPos.top + 28;
+            const posY = containerRect.top + endPos.top + endPos.height + 4;
             showSelectionPopoverMenu(posX, posY, text, null, 'selection');
           }
         } else {

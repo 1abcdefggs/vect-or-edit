@@ -9,13 +9,14 @@
   --accent-hover: #1d4ed8;
   --text-main: #edf5ff;
   --text-muted: #b7c6dc;
-  --window-border-width: 1px;
+  --window-border-width: 2px;
   --border-width: 1px;
   --border-color: #64748b;
   /* Outline of an operable control: at least 3:1 against the background (style_rules: control-border) */
   --control-border: #64748b;
   --border-primary: var(--border-color);
-  --window-border: var(--border-color);
+  /* Window frame (layout.css .app-container::after): white in dark mode, black in light mode */
+  --window-border: #f8fafc;
   --success-color: #10b981;
   --warn-color: #f59e0b;
   --error-color: #f87171;
@@ -24,10 +25,19 @@
   /* Longest line of a tooltip or a toast: about 75 characters of running text. 65ch, because the digit "0" the unit counts is
      wider than an average letter in the UI font (75ch came to about 87 letters). See style_rules.csv wrap-width */
   --wrap-width: 65ch;
-  /* Tooltips show the opposite of the mode, so they stand out from the window: light in dark mode, dark in light mode */
-  --tooltip-bg: #f1f5f9;
-  --tooltip-fg: #0f172a;
-  --tooltip-border: rgba(15, 23, 42, 0.35);
+  /* Overlays (popups, context menus, tooltips, modals) show the opposite of the mode, so they stand out from the window.
+     Default is inverted: light surface in dark mode, dark surface in light mode. Contrast (WCAG): dark mode 17.1:1 text,
+     9.9:1 muted; light mode 16.3:1 text, 12.0:1 muted. Setting "Same as window" (html.overlay-match-window) overrides these. */
+  --overlay-bg: #f8fafc;
+  --overlay-fg: #0f172a;
+  --overlay-muted: #334155;
+  --overlay-border: #94a3b8;
+  /* Accent for icons and labels on an overlay: 6.4:1 on the light surface (2563eb is only 4.9:1) */
+  --overlay-accent: #1d4ed8;
+  --overlay-hover: rgba(15, 23, 42, 0.08);
+  --tooltip-bg: var(--overlay-bg);
+  --tooltip-fg: var(--overlay-fg);
+  --tooltip-border: var(--overlay-border);
   /* Accent colour for text: mixed with the main text colour so it stays readable (4.5:1) on dark and on tinted light backgrounds */
   --accent-text: color-mix(in srgb, var(--accent-color) 62%, var(--text-main));
   --app-backdrop: #080c16;
@@ -62,9 +72,13 @@
 }
 
 :root.light-theme {
-  --tooltip-bg: #0f172a;
-  --tooltip-fg: #f1f5f9;
-  --tooltip-border: rgba(241, 245, 249, 0.35);
+  --overlay-bg: #0f172a;
+  --overlay-fg: #f1f5f9;
+  --overlay-muted: #cbd5e1;
+  --overlay-border: #475569;
+  /* 7.0:1 on the dark surface (2563eb is only 3.5:1) */
+  --overlay-accent: #60a5fa;
+  --overlay-hover: rgba(241, 245, 249, 0.1);
   --bg-primary: #edf3f9;
   --bg-secondary: #ffffff;
   --header-bg: #dfeaf5;
@@ -76,7 +90,7 @@
   --border-color: #94a3b8;
   --control-border: #64748b;
   --border-primary: var(--border-color);
-  --window-border: var(--border-color);
+  --window-border: #0f172a;
   --app-backdrop: #d6dde6;
   --success-color: #047857;
   /* Darker on a light background, so the warning and error text stay readable */
@@ -106,6 +120,16 @@
   --select-bg: rgba(255, 255, 255, 0.96);
   --select-text: #0f172a;
   --select-border: rgba(148, 163, 184, 0.5);
+}
+
+/* Setting "Same as window": overlays take the window's own surface and text (declared after the modes, so it wins) */
+:root.overlay-match-window {
+  --overlay-bg: var(--bg-secondary);
+  --overlay-fg: var(--text-main);
+  --overlay-muted: var(--text-muted);
+  --overlay-border: var(--border-color);
+  --overlay-accent: var(--accent-text);
+  --overlay-hover: var(--hover-bg);
 }
 
 @keyframes matrix-pulse {

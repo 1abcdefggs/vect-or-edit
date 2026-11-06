@@ -64,7 +64,7 @@ export function createNewTab(title = null, initialContent = null, filePath = nul
 
   const id = `tab_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
   const tabTitle = title || generateDefaultDocumentTitle();
-    const contentToSet = initialContent !== null ? initialContent : (t('initial_document_content') || '');
+    const contentToSet = initialContent !== null ? initialContent : (t('initial_document_content'));
   // The file name decides the format: .txt is plain text, everything else is Markdown
   const model = monaco.editor.createModel(contentToSet, DOCUMENT_FORMATS[formatOfName(tabTitle)].languageId);
 
@@ -231,7 +231,7 @@ if (typeof window !== 'undefined') {
       if (tab.model) {
         const currentVal = tab.model.getValue();
         if (WELCOME_TEXTS.includes(currentVal)) {
-          const newContent = t('initial_document_content') || '';
+          const newContent = t('initial_document_content');
           if (newContent === currentVal) return;
           // A language swap is not an edit: it must not mark the tab dirty or start AutoSave
           isSwappingWelcomeText = true;

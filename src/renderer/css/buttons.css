@@ -49,12 +49,36 @@
 }
 
 /* Icon-only buttons without an outline; only their hover tint shows that they are buttons:
-   the sidebar collapse button in the header, and the duplicate and new tab buttons beside the tabs */
+   the sidebar collapse button in the header, and the new tab button beside the tabs */
 #btnHeaderToggleSidebar,
-#btnDuplicateTabInline,
 #btnNewTabInline {
   border: none;
   background: transparent;
+}
+
+/* Tab buttons with a label: the label sits beside the icon; the button widens to fit it */
+.editor-tab-bar .tab-inline-btn {
+  width: auto;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-inline-label {
+  font-size: var(--fs-12);
+  white-space: nowrap;
+}
+
+@container tab-bar (max-width: 560px) {
+  .editor-tab-bar .tab-inline-btn {
+    width: var(--icon-btn-size);
+    padding: 0;
+  }
+  .tab-inline-label,
+  .tab-duplicate-label {
+    display: none;
+  }
 }
 
 /* Editor style group: the font name takes the width that the other parts of the bar leave free.
@@ -256,7 +280,11 @@ button.btn-phi {
 }
 
 /* Chrome-style Multi-Document Tab Bar */
+/* Tab bar: the new tab button shows its label while the bar is wide, and only the icon when it is narrow.
+   Each tab's duplicate button (.btn-tab-duplicate) follows the same rule.
+   The width threshold (560px) is the container query below; the bar itself is the measured container. */
 .editor-tab-bar {
+  container: tab-bar / inline-size;
   display: flex;
   align-items: center;
   background: var(--bg-secondary, #080c14);
@@ -292,6 +320,30 @@ button.btn-phi {
   color: #ffffff;
   opacity: 1;
   transform: scale(1.08);
+}
+
+/* Duplicate button inside a tab, on the right of the file name: icon plus label, the label hides when the bar is narrow */
+.btn-tab-duplicate {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  height: 20px;
+  padding: 0 6px;
+  margin-right: -4px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #94a3b8);
+  font-size: var(--fs-12);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-tab-duplicate:hover {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-color, #66f);
 }
 
 .btn-new-tab {

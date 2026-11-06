@@ -1,11 +1,10 @@
 import { icons } from '../../core/icons.js';
 import { t } from '../../core/i18n.js';
 import { insertTextIntoEditor } from '../core/editorCore.js';
-import { duplicateCurrentTab } from '../tabs/tabManager.js';
-import { saveTextToFile } from '../io/fileIO.js';
 import { triggerSearchAndRender } from '../../search/vectorSearch.js';
 import { getQuickMatches } from '../../search/dictionary.js';
 import { canUseEmbedding, canUseLlm } from '../../core/aiAccess.js';
+import { openGoogleSearch, openLlmChat } from '../../core/externalActions.js';
 
 export function createMenuButton({ className, title, innerHTML, onClick }) {
   const btn = document.createElement('button');
@@ -19,6 +18,11 @@ export function createMenuButton({ className, title, innerHTML, onClick }) {
     });
   }
   return btn;
+}
+
+// Chat icon and label of the "LLM Chat & Rewrite" entry, used by both menus
+function llmChatInnerHtml() {
+  return `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--overlay-accent, #1d4ed8);">chat</span> <span>${t('ctx_llm_chat_rewrite')}</span>`;
 }
 
 export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
@@ -35,11 +39,11 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
 
   const btnSuggest = createMenuButton({
     className: 'pill-action-btn primary',
-    title: modelReady ? (t('suggest_context_menu') || "AI Suggest") : (t('ai_suggest_model_unset_title') || "AI Suggest: Model not configured. Please select or download a model in Settings."),
+    title: modelReady ? t('suggest_context_menu') : t('ai_suggest_model_unset_title'),
     // Disabled items are greyed, so the reason is a second line in normal text colour, not part of the grey label
     innerHTML: modelReady
-      ? `${icons.search} <span>AISUGGEST</span>`
-      : `${icons.search} <span>AISUGGEST</span><span style="display: block; font-size: var(--fs-11); color: var(--text-main); white-space: normal;">${t('ai_suggest_reason_no_model') || 'No model set (choose one in Settings)'}</span>`,
+      ? `${icons.search} <span>${t('ctx_ai_suggest_label')}</span>`
+      : `${icons.search} <span>${t('ctx_ai_suggest_label')}</span><span style="display: block; font-size: var(--fs-11); color: var(--overlay-muted); white-space: normal;">${t('ai_suggest_reason_no_model')}</span>`,
     onClick: () => {
       if (!modelReady) return;
       onDismiss();
@@ -53,31 +57,24 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   }
   topRow.appendChild(btnSuggest);
 
-  // LLM Chat & Rewrite button
   const btnLlmChat = createMenuButton({
     className: 'pill-action-btn secondary',
-    title: "Start LLM Chat or rewrite with selected text",
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+    title: t('tip_ctx_llm_chat_rewrite'),
+    innerHTML: llmChatInnerHtml(),
     onClick: () => {
       onDismiss();
-      window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
+      openLlmChat(selectedText);
     }
   });
   topRow.appendChild(btnLlmChat);
 
-
   const btnQuickGoogle = createMenuButton({
     className: 'pill-action-btn secondary',
-    title: t('action_google_search') || "Search with Google",
-    innerHTML: `${icons.google} <span>${t('action_google_search') || "Search with Google"}</span> <span class="external-action-icon">↗</span>`,
+    title: t('action_google_search'),
+    innerHTML: `${icons.google} <span>${t('action_google_search')}</span> <span class="external-action-icon">↗</span>`,
     onClick: () => {
       onDismiss();
-      const queryUrl = `https://www.google.com/search?q=${encodeURIComponent(selectedText.trim())}`;
-      if (window.engineAPI?.openExternal) {
-        window.engineAPI.openExternal(queryUrl);
-      } else {
-        window.open(queryUrl, '_blank');
-      }
+      openGoogleSearch(selectedText);
     }
   });
   topRow.appendChild(btnQuickGoogle);
@@ -122,7 +119,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
   if (hasText) {
     const btnVector = createMenuButton({
       className: 'custom-context-menu-item custom-context-menu-item-primary',
-      innerHTML: `${icons.search} <span>AI Suggest</span>`,
+      innerHTML: `${icons.search} <span>${t('suggest_context_menu')}</span>`,
       onClick: () => {
         onDismiss();
         triggerSearchAndRender(selectedText);
@@ -132,23 +129,20 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
     const btnLlm = createMenuButton({
       className: 'custom-context-menu-item',
-      innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">chat</span> <span>LLM Chat & Rewrite</span>`,
+      innerHTML: llmChatInnerHtml(),
       onClick: () => {
         onDismiss();
-        window.dispatchEvent(new CustomEvent('app:openLlmChat', { detail: { prompt: selectedText } }));
+        openLlmChat(selectedText);
       }
     });
     menu.appendChild(btnLlm);
 
-
     const btnGoogle = createMenuButton({
       className: 'custom-context-menu-item',
-      innerHTML: `${icons.google} <span>${t('action_google_search') || "Search with Google"}</span>`,
+      innerHTML: `${icons.google} <span>${t('action_google_search')}</span>`,
       onClick: () => {
         onDismiss();
-        const url = `https://www.google.com/search?q=${encodeURIComponent(selectedText.trim())}`;
-        if (window.engineAPI?.openExternal) window.engineAPI.openExternal(url);
-        else window.open(url, '_blank');
+        openGoogleSearch(selectedText);
       }
     });
     menu.appendChild(btnGoogle);
@@ -161,12 +155,12 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
   const standardActions = [];
   if (hasText) {
     standardActions.push(
-      { label: 'Copy', icon: icons.copy, action: () => navigator.clipboard.writeText(selectedText) },
-      { label: 'Cut', icon: icons.cut, action: () => { navigator.clipboard.writeText(selectedText); insertTextIntoEditor(''); } }
+      { label: t('menu_edit_copy'), icon: icons.copy, action: () => navigator.clipboard.writeText(selectedText) },
+      { label: t('menu_edit_cut'), icon: icons.cut, action: () => { navigator.clipboard.writeText(selectedText); insertTextIntoEditor(''); } }
     );
   } else {
     standardActions.push(
-      { label: 'Copy All', icon: icons.copy, action: () => {
+      { label: t('ctx_copy_all'), icon: icons.copy, action: () => {
         const editor = window.monacoEditorInstance;
         const allText = editor?.getValue() || '';
         if (allText) navigator.clipboard.writeText(allText);
@@ -175,7 +169,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
   }
 
   standardActions.push(
-    { label: 'Paste', icon: icons.paste, action: async () => { const text = await navigator.clipboard.readText(); if (text) insertTextIntoEditor(text); } }
+    { label: t('menu_edit_paste'), icon: icons.paste, action: async () => { const text = await navigator.clipboard.readText(); if (text) insertTextIntoEditor(text); } }
   );
 
   standardActions.forEach(act => {
@@ -196,7 +190,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
   const btnResetLayout = createMenuButton({
     className: 'custom-context-menu-item',
-    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">restart_alt</span> <span>Reset Layout (UI Display)</span>`,
+    innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">restart_alt</span> <span>${t('ctx_reset_layout')}</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:resetUIVisibility'));
@@ -206,7 +200,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
 
   const btnSettings = createMenuButton({
     className: 'custom-context-menu-item',
-    innerHTML: `${icons.settings} <span>Settings (Ctrl+,)...</span>`,
+    innerHTML: `${icons.settings} <span>${t('ctx_open_settings')}</span>`,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAppearance' } }));
