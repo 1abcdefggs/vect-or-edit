@@ -286,7 +286,7 @@
 
 .menu-accelerator {
   font-size: var(--fs-11);
-  font-family: 'Cascadia Code', Consolas, monospace;
+  font-family: var(--font-mono);
   color: var(--text-muted, #94a3b8);
   opacity: 0.85;
   pointer-events: none;
