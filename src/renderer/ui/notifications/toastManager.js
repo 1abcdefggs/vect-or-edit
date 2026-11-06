@@ -46,7 +46,7 @@ export function showToast(message, type = 'info', action = null) {
     btn.className = isSecondary ? 'toast-action-btn secondary' : 'toast-action-btn';
     btn.type = 'button';
     btn.dataset.toastActionIdx = String(idx);
-    if (isSecondary) btn.style.cssText = 'background: rgba(255, 255, 255, 0.12); color: var(--text-main); border: var(--border-width) solid var(--border-color);';
+    if (isSecondary) btn.style.cssText = 'background: var(--overlay-hover); color: var(--overlay-fg); border: var(--border-width) solid var(--overlay-border);';
     btn.textContent = String(act.label ?? '');
     actionsEl.append(btn);
   });

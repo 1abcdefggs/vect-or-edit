@@ -95,7 +95,7 @@
 .app-header__version-text {
   font-size: var(--fs-12);
   font-weight: 500;
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-brand);
   color: var(--text-muted, #94a3b8);
   opacity: 0.75;
   margin-left: 4px;
