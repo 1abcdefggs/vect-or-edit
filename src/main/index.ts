@@ -22,7 +22,8 @@ import {
   setActiveEmbeddingModel,
   setActiveProfile,
   resetActiveProfile,
-  clearKnowledgeSlots
+  clearKnowledgeSlots,
+  removeCombinedKbTempFile
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { truncateAndNormalize } from '../shared/embeddingSpace';
@@ -57,6 +58,7 @@ if (!gotTheLock) {
     }
 
     await initRustEngine();
+    await removeCombinedKbTempFile();
     installPermissionPolicy();
 
     handleTrusted('app:getVersion', () => app.getVersion());
