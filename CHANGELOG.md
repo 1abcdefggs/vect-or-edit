@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.57] - 2026-11-07
+
+### Added
+
+- The first-run setup has a Cancel button. It quits the app without storing the setup choices, so the setup opens again on the next start. Language and theme, which are stored when chosen, stay.
+
+### Changed
+
+- Selected items (first-run choices, theme and provider cards, settings areas, the embedding model card, dropdown items, settings and editor tabs) share one selected style from `css/selection.css`, the same in every theme and mode.
+- First-run steps 1 and 2 keep a 12px minimum gap between their groups.
+
+### Removed
+
+- The unused `.ai-setup-card` rules.
+
 ## [0.3.56] - 2026-11-02
 
 ### Changed
