@@ -247,12 +247,7 @@
 /* Selected provider: filled with a check so it reads without color */
 .provider-card { position: relative; }
 
-.provider-card.active {
-  border-color: var(--accent-color, #38bdf8);
-  background: color-mix(in srgb, var(--accent-color, #38bdf8) 12%, transparent);
-  box-shadow: inset 0 0 0 1px var(--accent-color, #38bdf8);
-}
-
+/* The selected surface and edge come from selection.css */
 .provider-card.active::after {
   content: '\2713';
   position: absolute;
@@ -260,7 +255,6 @@
   right: 8px;
   font-size: var(--fs-12);
   font-weight: 700;
-  color: var(--accent-text, #38bdf8);
 }
 
 .color-pick { display: flex; align-items: center; gap: 6px; font-size: var(--fs-12); min-height: 0; }
@@ -483,13 +477,7 @@
   cursor: pointer;
 }
 .settings-area:hover { color: var(--text-main); }
-.settings-area.active {
-  color: var(--text-main);
-  border-color: var(--accent-color);
-  box-shadow: inset 0 0 0 1px var(--accent-color);
-}
 .settings-area-name { font-size: var(--fs-13); font-weight: 600; }
-.settings-area.active .settings-area-name { color: var(--accent-text, var(--accent-color)); }
 /* Only the marked area shows its sentence, which keeps the map low; the others have it as a tooltip */
 .settings-area-desc { display: none; font-size: var(--fs-11); line-height: 1.3; }
 .settings-area.active .settings-area-desc { display: block; }

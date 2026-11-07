@@ -192,10 +192,6 @@
   border: var(--border-width) solid var(--border-color);
 }
 
-.ep-card.is-active {
-  border-color: var(--success-color);
-}
-
 .ep-card.is-loading {
   border-color: var(--accent-color);
 }
