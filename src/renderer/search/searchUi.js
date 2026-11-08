@@ -301,7 +301,7 @@ export function renderResults(results, isPreliminary = false) {
     const emptyKey = emptyStateKey();
     // Not ready, or no dictionary fits the model: say where to fix it, in one click
     const action = emptyKey === 'embed_not_ready_hint' || emptyKey === 'slots_all_excluded_hint'
-      ? `<button type="button" class="empty-state__action" data-open-ai-settings>${t('embed_open_settings')}</button>`
+      ? `<button type="button" class="empty-state__action" data-open-ai-settings>${t('btn_open_settings')}</button>`
       : '';
     resultsList.innerHTML = `<div class="empty-state" data-i18n="${emptyKey}">${t(emptyKey)}</div>${action}`;
     resultsList.querySelector('[data-open-ai-settings]')?.addEventListener('click', () => {
@@ -330,7 +330,7 @@ export function renderResults(results, isPreliminary = false) {
 
   for (const [groupName, items] of categoryGroups.entries()) {
     const isRanked = items.some(r => typeof r.score === 'number' && r.score > 0);
-    const iconCode = isRanked ? '&#xe242;' : '&#xe241;';
+    const iconCode = isRanked ? 'format_list_numbered' : 'format_list_bulleted';
     html += `
     <div class="inspector-collapsible-section open">
       <div class="inspector-section-header">

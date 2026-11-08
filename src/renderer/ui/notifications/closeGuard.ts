@@ -60,7 +60,7 @@ export async function confirmClose(target: CloseTarget, params: Record<string, s
     // The title is the question itself; a second line would only repeat it
     title: t(`close_confirm_${target}`, params),
     message: '',
-    confirmText: t(target === 'app' ? 'btn_exit_confirm' : 'btn_close_confirm'),
+    confirmText: t(target === 'app' ? 'menu_file_exit' : 'btn_close_confirm'),
     cancelText: t('btn_keep_open'),
     type: 'warning'
   });

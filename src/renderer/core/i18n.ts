@@ -44,14 +44,14 @@ export async function loadLocales(): Promise<void> {
     i18n = composeDictionary(lang);
     console.log(`[i18n] Applying locale: ${lang} (keys: ${Object.keys(i18n).length})`);
     applyI18n();
-    setLedStatus('i18n', true, `3. LOCALE: ${lang}.json loaded`);
+    setLedStatus('i18n', true, t('led_i18n_loaded', { lang }));
     window.dispatchEvent(new CustomEvent('app:languageChanged', { detail: { lang } }));
   } catch (err) {
     console.error('[i18n] Failed to apply locale:', err);
     currentLang = 'en';
     i18n = LOCALES.en;
     applyI18n();
-    setLedStatus('i18n', 'error', `3. LOCALE: Error`);
+    setLedStatus('i18n', 'error', t('led_i18n_error'));
   }
 }
 
@@ -120,6 +120,17 @@ export function applyI18n(): void {
       }
     } catch (e) {
       console.warn('Failed to apply i18n-placeholder to element:', el, e);
+    }
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-i18n-aria]').forEach(el => {
+    try {
+      const key = el.getAttribute('data-i18n-aria');
+      if (key && i18n[key]) {
+        el.setAttribute('aria-label', i18n[key]);
+      }
+    } catch (e) {
+      console.warn('Failed to apply i18n-aria to element:', el, e);
     }
   });
 }

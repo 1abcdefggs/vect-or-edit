@@ -9,7 +9,7 @@
       <!-- Sidebar Toggle / Collapse Button on the Top-Left of Sidebar -->
       <button id="btnHeaderToggleSidebar" class="toolbar-btn icon-btn" data-i18n-title="btn_toggle_sidebar"
         style="color: var(--text-muted);">
-        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8);">&#xf705;</span>
+        <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8);">right_panel_close</span>
       </button>
 
       <!-- Right-Aligned Action Group: [ Embedding Toggle Pill | Gear Icon ] -->
@@ -18,9 +18,9 @@
         <button id="btnSidebarEmbeddingModel" class="ai-chip-pill ai-switch-pill" data-ui="sbr:embedding-toggle"
           role="switch" aria-checked="false" data-i18n-title="tip_embed_toggle">
           <span id="iconNeuroContainer" class="material-symbols-outlined vector-activity-icon" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); flex-shrink: 0;">neurology</span>
-          <span class="ai-switch-pill__name">EMBED</span>
+          <span class="ai-switch-pill__name" data-i18n="ai_pill_embed">EMBED</span>
           <span class="toggle-switch-group" aria-hidden="true">
-            <span class="toggle-switch-word" data-side="off">OFF</span>
+            <span class="toggle-switch-word" data-side="off" data-i18n="opt_toggle_off">OFF</span>
             <span class="toggle-switch"><span class="toggle-switch__knob"></span></span>
             <span class="toggle-switch-word" data-side="on">ON</span>
           </span>
@@ -51,7 +51,7 @@
           <span class="semantic-module-title">
             <span class="material-symbols-outlined collapse-icon">expand_more</span>
             <span id="profileIcon">
-              <span class="material-symbols-outlined semantic-module-icon">&#xf1c9;</span>
+              <span class="material-symbols-outlined semantic-module-icon">rule_folder</span>
             </span>
             <span class="module-title-separator semantic-module-sep">|</span>
             <span id="profileHeaderLabel" data-i18n="active_guideline_preset_label">Guideline</span>
@@ -63,11 +63,11 @@
             </button>
             <button id="btnImportDictionary" data-ui="sbr:import-dictionary" class="toolbar-btn semantic-btn-add btn-phi" data-i18n-title="btn_import_preset">
               <span class="plus">＋</span>
-              <span class="btn-label" data-i18n="btn_import_preset_short">Add files</span>
+              <span class="btn-label" data-i18n="btn_add_slot_short">Add files</span>
             </button>
             <button id="btnResetGoal" class="toolbar-btn semantic-btn-clear btn-phi" style="display: none;"
               data-i18n-title="btn_reset_profile">
-              <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">&#xe419;</span>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">rotate_left</span>
               <span data-i18n="btn_unload_profile">Unload</span>
             </button>
           </div>
@@ -79,7 +79,7 @@
         <div class="semantic-module-header" data-i18n-title="tip_section_slots">
           <span class="semantic-module-title">
             <span class="material-symbols-outlined collapse-icon">expand_more</span>
-            <span class="material-symbols-outlined semantic-module-icon">&#xea19;</span>
+            <span class="material-symbols-outlined semantic-module-icon">menu_book</span>
             <span class="module-title-separator semantic-module-sep">|</span>
             <span data-i18n="knowledge_slots_label">Knowledge</span>
             <span id="knowledgeSlotsCountBadge" hidden data-i18n-title="tip_slots_count">0 Slots</span>
@@ -87,8 +87,8 @@
           <div class="semantic-module-actions">
             <button id="btnClearAllSlots" class="toolbar-btn semantic-btn-clear btn-phi" style="display: none;"
               data-i18n-title="btn_clear_all_slots">
-              <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">&#xe419;</span>
-              <span data-i18n="btn_clear_slots">Unload</span>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-14); color: #ef4444;">rotate_left</span>
+              <span data-i18n="btn_unload_all_confirm">Unload</span>
             </button>
             <button id="btnAddSlot" data-ui="sbr:add-slot" class="toolbar-btn semantic-btn-add btn-phi" data-i18n-title="btn_add_slot">
               <span class="plus">＋</span>
@@ -167,14 +167,14 @@
   <!-- Collapsed Rail: Shown only when .suggestion-sidebar.collapsed is active -->
   <div id="sidebarCollapsedRail" data-ui="sbr:rail" class="sidebar-collapsed-rail">
     <button id="btnRailExpand" class="rail-icon-btn" data-i18n-title="btn_toggle_sidebar">
-      <span class="material-symbols-outlined" style="font-size: var(--fs-20); color: var(--accent-color, #38bdf8);">&#xf705;</span>
+      <span class="material-symbols-outlined" style="font-size: var(--fs-20); color: var(--accent-color, #38bdf8);">right_panel_close</span>
     </button>
     <div style="width: 20px; height: 1px; background: var(--border-color); opacity: 0.6; margin: 2px 0;"></div>
     <button id="btnRailGuideline" class="rail-icon-btn" data-i18n-title="active_guideline_preset_label">
-      <span class="material-symbols-outlined" style="font-size: var(--fs-20);">&#xf1c9;</span>
+      <span class="material-symbols-outlined" style="font-size: var(--fs-20);">rule_folder</span>
     </button>
     <button id="btnRailKnowledge" class="rail-icon-btn" data-i18n-title="knowledge_slots_label">
-      <span class="material-symbols-outlined" style="font-size: var(--fs-20);">&#xea19;</span>
+      <span class="material-symbols-outlined" style="font-size: var(--fs-20);">menu_book</span>
     </button>
   </div>
 </aside>

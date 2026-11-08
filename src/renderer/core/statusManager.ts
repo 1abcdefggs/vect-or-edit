@@ -146,7 +146,7 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
     const prefix = isReady ? '[OK]' : (isError ? '[ERROR]' : (isStandby ? '[STANDBY]' : '[LOADING]'));
     const msg = `[Pipeline] ${prefix} ${tooltipText}`;
     // Suppress spamming log lines during download progress (handled by progress bar row)
-    const isDownloadingProgress = subType === 'ai' && tooltipText.includes('Downloading');
+    const isDownloadingProgress = subType === 'ai' && status === 'loading'; // only the model download reports 'loading' for ai
     if ((window as any).appendSystemLog && !isDownloadingProgress) {
       (window as any).appendSystemLog(msg, isError ? 'error' : (isReady ? 'success' : 'info'));
     }
@@ -275,25 +275,25 @@ export function getSubsystemStates(): Record<SubsystemType, boolean> {
  */
 export function initAllLedTooltips(): void {
   if (subsystemState.conf !== 'ready' && subsystemState.conf !== true) {
-    setLedStatus('conf', 'loading', '1. CONFIG: Loading...');
+    setLedStatus('conf', 'loading', t('led_conf_loading'));
   }
   if (subsystemState.thm !== 'ready' && subsystemState.thm !== true) {
-    setLedStatus('thm', 'loading', '2. THEME: Loading...');
+    setLedStatus('thm', 'loading', t('led_thm_loading'));
   }
   if (subsystemState.i18n !== 'ready' && subsystemState.i18n !== true) {
-    setLedStatus('i18n', 'loading', '3. LOCALE: Loading...');
+    setLedStatus('i18n', 'loading', t('led_i18n_loading'));
   }
   if (subsystemState.monaco !== 'ready' && subsystemState.monaco !== true) {
-    setLedStatus('monaco', 'loading', '4. EDITOR: Initializing...');
+    setLedStatus('monaco', 'loading', t('led_monaco_loading'));
   }
   if (subsystemState.bin !== 'ready' && subsystemState.bin !== true) {
-    setLedStatus('bin', 'loading', '5. RUST: Initializing...');
+    setLedStatus('bin', 'loading', t('led_bin_loading'));
   }
   if (subsystemState.ai !== 'ready' && subsystemState.ai !== true) {
-    setLedStatus('ai', 'standby', '6. AI-MODEL: Standby');
+    setLedStatus('ai', 'standby', t('led_ai_standby'));
   }
   if (subsystemState.kb !== 'ready' && subsystemState.kb !== true) {
-    setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
+    setLedStatus('kb', 'standby', t('led_kb_unloaded'));
   }
 
   document.getElementById('btnPipelineToggle')?.addEventListener('click', openPipelineStrip);

@@ -31,6 +31,8 @@ export interface SystemPreferences {
   collapseLogsOnStartup: boolean;
   logTimeFormat: 'h24' | 'h12' | 'os' | 'iso';
   logTimeZone: 'local' | 'utc';
+  /** ask: question on exit (default); always: keep every session; never: keep nothing */
+  logSaveMode: 'ask' | 'always' | 'never';
 }
 
 export interface AppPreferences {
@@ -111,17 +113,11 @@ export interface AppSettings {
 }
 
 export interface SettingOption {
-  label: string;
   value: any;
-  i18nKey?: string;
 }
 
 export interface SettingItemDef {
   id: string;
-  label: string;
-  description?: string;
-  i18nLabel?: string;
-  i18nDesc?: string;
   category: 'header' | 'editor' | 'sidebar' | 'system';
   /** Locale key of a warning shown when the part is hidden: what stops being available. */
   hideNoticeKey?: string;

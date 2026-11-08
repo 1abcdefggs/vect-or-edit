@@ -41,7 +41,7 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
   if (item.isEssential) {
     const lock = document.createElement('span');
     lock.className = 'vis-lock-icon';
-    lock.innerHTML = '&#xe897;'; // material-symbols lock
+    lock.innerHTML = 'lock'; // material-symbols lock
     lock.title = formatTipText('tip_vis_locked', t('tip_vis_locked'));
     lock.style.cssText = 'font-family: "Material Symbols Outlined"; font-size: var(--fs-17); color: var(--text-muted); opacity: 0.6; cursor: not-allowed;';
     wrapper.appendChild(lock);

@@ -23,7 +23,7 @@
         </h3>
       </div>
       <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
-        <span class="material-symbols-outlined">help</span><span data-i18n="btn_settings_guide">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
+        <span class="material-symbols-outlined">help</span><span data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
       </button>
       <button id="btnCloseSettingsModal" class="log-panel-btn settings-close-btn" data-i18n-title="tip_close_settings">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -35,7 +35,7 @@
     </div>
 
     <!-- Window map: the four areas of the settings laid out as in the window. A press selects the tab (settingsAreaMap.js) -->
-    <nav class="settings-area-map" aria-label="Settings areas">
+    <nav class="settings-area-map" aria-label="Settings areas" data-i18n-aria="aria_settings_areas">
       <button type="button" class="settings-area" data-area-tab="tabAppearance" data-i18n-title="tip_tab_appearance" style="grid-area: hdr;">
         <span class="settings-area-name" data-i18n="tab_appearance">Header</span>
         <span class="settings-area-desc" data-i18n="tab_appearance_desc">The top of the window: title bar and menus</span>
@@ -67,7 +67,7 @@
       <!-- Tab 1: Header (hdr) - what the title bar and its menus control -->
       <div id="tabAppearance" class="settings-tab-content active">
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="palette" data-key="grp_theme" data-text="Theme"></h4>
+          <h4 data-card-heading data-icon="palette" data-key="common_theme" data-text="Theme"></h4>
           <div data-setting-row>
             <div data-setting-text data-label-key="color_mode_label" data-label-text="Appearance" data-desc-key="color_mode_desc" data-desc-text="Light, dark, or follow the system. The theme shows its light or dark face."></div>
             <select id="modalColorModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_color_mode"></select>
@@ -80,15 +80,15 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="theme_label" data-label-text="Color Theme" data-desc-key="setting_theme_desc" data-desc-text="Switch color palette and titlebar theme."></div>
+            <div data-setting-text data-label-key="common_theme" data-label-text="Color Theme" data-desc-key="setting_theme_desc" data-desc-text="Switch color palette and titlebar theme."></div>
             <select id="modalThemeSelect" class="toolbar-select" data-i18n-title="tip_set_theme"></select>
           </div>
         </div>
 
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="translate" data-key="grp_language" data-text="Language"></h4>
+          <h4 data-card-heading data-icon="translate" data-key="common_language" data-text="Language"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="language_label" data-label-text="UI Language" data-desc-key="setting_language_desc" data-desc-text="Switch application locale."></div>
+            <div data-setting-text data-label-key="common_language" data-label-text="UI Language" data-desc-key="setting_language_desc" data-desc-text="Switch application locale."></div>
             <select id="modalLangSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_language">
               <option value="en" data-i18n="lang_en">English (EN)</option>
               <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
@@ -97,7 +97,7 @@
         </div>
 
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="zoom_in" data-key="grp_display_view" data-text="Display"></h4>
+          <h4 data-card-heading data-icon="zoom_in" data-key="monaco_group_display" data-text="Display"></h4>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_ui_scaling" data-label-text="UI Scaling (Zoom)" data-desc-key="setting_ui_scaling_desc" data-desc-text="Adjust the overall size of the application UI."></div>
             <select id="modalZoomSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_zoom">
@@ -263,24 +263,24 @@
         </div>
 
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="save" data-key="autosave_group_title" data-text="Autosave"></h4>
+          <h4 data-card-heading data-icon="save" data-key="autosave_menu_item" data-text="Autosave"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_autosave" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write."></div>
-            <select id="modalAutoSaveSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_autosave">
+            <div data-setting-text data-label-key="autosave_menu_item" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write."></div>
+            <select id="modalAutoSaveSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_autosave_toggle">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_autosave_idle" data-label-text="Save when typing pauses" data-desc-key="setting_autosave_idle_desc" data-desc-text="Saves after the pause set below."></div>
-            <select id="modalAutoSaveIdleSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_autosave_idle">
+            <select id="modalAutoSaveIdleSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_setup_autosave_idle">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_autosave_newline" data-label-text="Save at each new line" data-desc-key="setting_autosave_newline_desc" data-desc-text="Saves every time you start a new line."></div>
-            <select id="modalAutoSaveNewlineSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_autosave_newline">
+            <select id="modalAutoSaveNewlineSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_setup_autosave_newline">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
@@ -433,7 +433,7 @@
       <!-- Tab 3: Sidebar (sbr) - embedding, knowledge search and validation -->
       <div id="tabAiSearch" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="neurology" data-key="grp_embedding_assistant" data-text="Embedding assistant"></h4>
+          <h4 data-card-heading data-icon="neurology" data-key="setting_embedding_assistant" data-text="Embedding assistant"></h4>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_embedding_assistant" data-label-text="Embedding assistant" data-desc-key="setting_embedding_assistant_desc" data-desc-text="Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."></div>
             <select id="modalEmbeddingAssistantSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_embedding_assistant">
@@ -450,42 +450,42 @@
           </div>
         </div>
 
-<section class="ai-control-overview" aria-label="AI system status">
+<section class="ai-control-overview" aria-label="AI system status" data-i18n-aria="aria_ai_status">
           <div class="ai-overview-heading">
             <div data-setting-text data-label-key="ai_overview_title" data-label-text="AI Control Center" data-desc-key="ai_overview_desc" data-desc-text="Live status for verification before configuring."></div>
             <span class="ai-overview-note" data-i18n="ai_overview_badge">Local-first</span>
           </div>
           <div class="ai-status-grid ai-status-grid--3">
             <div class="ai-status-card" data-status-tone="neutral">
-              <span class="ai-status-kicker">EMBEDDING</span>
-              <strong id="settingsEmbeddingStatus">Not configured</strong>
-              <span id="settingsEmbeddingDetail">Local vector model</span>
+              <span class="ai-status-kicker" data-i18n="ai_kicker_embedding">EMBEDDING</span>
+              <strong id="settingsEmbeddingStatus" data-i18n="ai_status_not_configured">Not configured</strong>
+              <span id="settingsEmbeddingDetail" data-i18n="ai_status_local_model">Local vector model</span>
             </div>
             <div class="ai-status-card" data-status-tone="neutral">
-              <span class="ai-status-kicker">KNOWLEDGE</span>
-              <strong id="settingsKnowledgeStatus">Not loaded</strong>
-              <span id="settingsKnowledgeDetail">Add a JSON or VENC slot</span>
+              <span class="ai-status-kicker" data-i18n="ai_kicker_knowledge">KNOWLEDGE</span>
+              <strong id="settingsKnowledgeStatus" data-i18n="ai_status_not_loaded">Not loaded</strong>
+              <span id="settingsKnowledgeDetail" data-i18n="ai_status_add_slot">Add a JSON or VENC slot</span>
             </div>
             <div class="ai-status-card" data-status-tone="neutral">
-              <span class="ai-status-kicker">LLM / GENERATION</span>
-              <strong id="settingsGenerationStatus">Local AI</strong>
-              <span id="settingsGenerationDetail">Suggestions use the active provider</span>
+              <span class="ai-status-kicker" data-i18n="ai_kicker_generation">LLM / GENERATION</span>
+              <strong id="settingsGenerationStatus" data-i18n="ai_status_local_ai">Local AI</strong>
+              <span id="settingsGenerationDetail" data-i18n="ai_status_suggest_active">Suggestions use the active provider</span>
             </div>
           </div>
-          <div class="ai-structure-map" aria-label="AI processing structure">
+          <div class="ai-structure-map" aria-label="AI processing structure" data-i18n-aria="aria_ai_structure">
             <div class="ai-structure-column">
-              <span class="ai-structure-label">INPUT</span>
-              <div class="ai-structure-node">Editor text</div>
+              <span class="ai-structure-label" data-i18n="ai_kicker_input">INPUT</span>
+              <div class="ai-structure-node" data-i18n="ai_node_editor_text">Editor text</div>
             </div>
             <span class="ai-structure-connector" aria-hidden="true">+</span>
             <div class="ai-structure-column">
-              <span class="ai-structure-label">EMBEDDING</span>
-              <div class="ai-structure-node" id="settingsStructureEmbedding">Local model</div>
+              <span class="ai-structure-label" data-i18n="ai_kicker_embedding">EMBEDDING</span>
+              <div class="ai-structure-node" id="settingsStructureEmbedding" data-i18n="ai_node_local_model">Local model</div>
             </div>
             <span class="ai-structure-connector" aria-hidden="true">+</span>
             <div class="ai-structure-column">
-              <span class="ai-structure-label">KNOWLEDGE</span>
-              <div class="ai-structure-node" id="settingsStructureKnowledge">HNSW index</div>
+              <span class="ai-structure-label" data-i18n="ai_kicker_knowledge">KNOWLEDGE</span>
+              <div class="ai-structure-node" id="settingsStructureKnowledge" data-i18n="ai_node_hnsw">HNSW index</div>
             </div>
           </div>
           <div class="ai-structure-caption">
@@ -510,7 +510,7 @@
               <h4>
                 <span class="material-symbols-outlined">menu_book</span>
                 <span data-i18n="heading_embedding_catalog">EMBEDDING CATALOG</span>
-                <span class="card-badge card-badge--ok">100% OFFLINE</span>
+                <span class="card-badge card-badge--ok" data-i18n="ai_badge_offline">100% OFFLINE</span>
               </h4>
               <div class="setting-desc" data-i18n="embedding_card_desc">Used for the editor's specialized terminology dictionary, HNSW vector search, and real-time intelligence. Models are not required for normal dictionary and text input functionality.</div>
               <div id="localAiSettingsBlock" class="settings-subpanel">
@@ -540,7 +540,7 @@
               <h4>
                 <span class="material-symbols-outlined">cloud_sync</span>
                 <span data-i18n="cloud_emb_title">Cloud Vector Embedding (API Vectorizer)</span>
-                <span class="card-badge">CLOUD API</span>
+                <span class="card-badge" data-i18n="ai_badge_cloud">CLOUD API</span>
               </h4>
               <div class="setting-desc" data-i18n="cloud_emb_desc">Use an external API for semantic search when you need higher accuracy. Local 384-dimension search stays the default. Set the API key in the LLM tab first.</div>
               <div class="setting-actions">
@@ -588,8 +588,8 @@
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_result_title_lines" data-label-text="Heading lines on result cards" data-desc-key="setting_result_title_lines_desc" data-desc-text="How many lines of the heading a suggestion card shows. Full shows the whole heading without cutting it."></div>
             <select id="modalResultTitleLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_title_lines">
-              <option value="1" data-i18n="opt_title_lines_1">1 line</option>
-              <option value="2" selected data-i18n="opt_title_lines_2">2 lines</option>
+              <option value="1" data-i18n="opt_desc_lines_1">1 line</option>
+              <option value="2" selected data-i18n="opt_desc_lines_2">2 lines</option>
               <option value="3" data-i18n="opt_title_lines_3">3 lines</option>
               <option value="full" data-i18n="opt_title_lines_full">Full</option>
             </select>
@@ -692,10 +692,10 @@
             <span data-i18n="settings_group_logs">System log</span>
             <span class="setting-actions">
               <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="clear" data-i18n-title="tip_logs_clear">
-                <span class="material-symbols-outlined">&#xe419;</span><span data-i18n="btn_clear_logs">CLEAR</span>
+                <span class="material-symbols-outlined">rotate_left</span><span data-i18n="btn_clear_logs">CLEAR</span>
               </button>
               <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="copy" data-i18n-title="tip_logs_copy">
-                <span class="material-symbols-outlined">&#xe2ec;</span><span data-i18n="btn_copy_logs">Copy Logs</span>
+                <span class="material-symbols-outlined">copy_all</span><span data-i18n="btn_copy_logs">Copy Logs</span>
               </button>
               <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="download" data-i18n-title="tip_logs_save">
                 <span class="material-symbols-outlined">download</span><span data-i18n="btn_download_logs">Save Logs</span>
@@ -727,6 +727,20 @@
               <option value="utc" data-i18n="opt_time_utc">UTC</option>
             </select>
           </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_log_save" data-label-text="Save logs" data-desc-key="setting_log_save_desc" data-desc-text="Choose how the log is kept. Ask when exiting asks each time you quit. Always save keeps every session for 30 days. Do not save keeps nothing."></div>
+            <select id="modalLogSaveModeSelect" class="toolbar-select" data-i18n-title="tip_set_log_save">
+              <option value="ask" selected data-i18n="opt_log_save_ask">Ask when exiting</option>
+              <option value="always" data-i18n="opt_log_save_always">Always save</option>
+              <option value="never" data-i18n="opt_log_save_never">Do not save</option>
+            </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_log_sessions" data-label-text="Saved logs" data-desc-key="setting_log_sessions_desc" data-desc-text="Pick a saved session to read it below. Sessions older than 30 days are removed when the app starts."></div>
+            <select id="modalLogSessionSelect" class="toolbar-select" data-i18n-title="tip_set_log_sessions"></select>
+            <button id="btnLogSessionOpen" class="toolbar-btn" type="button" data-i18n="btn_open_log_session" data-i18n-title="tip_open_log_session">Open</button>
+          </div>
+          <div id="logSessionView" class="log-entries-container" hidden></div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_remember_layout" data-label-text="Remember layout" data-desc-key="setting_remember_layout_desc" data-desc-text="Remembers the height of the log panel and the chat dock and the width of the sidebar, and restores them at the next start. Turning it off forgets them."></div>
             <select id="modalRememberLayoutSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_remember_layout">
@@ -761,7 +775,7 @@
             <button id="btnResetSettings" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_btn" data-i18n-title="tip_reset_settings">Restore Defaults</button>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="maint_reset_dev_label" data-label-text="Dev reset" data-desc-key="maint_reset_dev_desc" data-desc-text="Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again."></div>
+            <div data-setting-text data-label-key="maint_reset_dev_btn" data-label-text="Dev reset" data-desc-key="maint_reset_dev_desc" data-desc-text="Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again."></div>
             <button id="btnResetSettingsDev" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_dev_btn" data-i18n-title="tip_reset_settings_dev">Dev reset</button>
           </div>
         </div>
@@ -769,7 +783,7 @@
     </div>
 
     <!-- The guide: the generated document of the active tab, shown beside the settings (ui/settings/settingsHelpPane.js) -->
-    <aside id="settingsHelpPane" class="settings-help-pane" hidden aria-label="Guide"></aside>
+    <aside id="settingsHelpPane" class="settings-help-pane" hidden aria-label="Guide" data-i18n-aria="settings_help_title"></aside>
     </div>
   </div>
 </div>

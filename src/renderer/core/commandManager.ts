@@ -7,7 +7,6 @@
 
 export interface CommandDefinition {
   id: string;
-  title: string;
   category?: string;
   shortcut?: string;
   handler: () => void | Promise<void>;

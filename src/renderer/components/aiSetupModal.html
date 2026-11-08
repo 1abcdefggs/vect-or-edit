@@ -16,7 +16,7 @@
       <!-- Step 1: language and theme (applied immediately) -->
       <section class="first-run-step first-run-step--fill" data-setup-step="1" data-ui="stp:step-appearance">
         <div class="first-run-section first-run-section--row" role="group" aria-labelledby="setupLangLabel">
-          <h2 class="first-run-heading"><span id="setupLangLabel" data-i18n="setup_lang_label">Language</span><span data-info-tip="setup_info_lang"></span></h2>
+          <h2 class="first-run-heading"><span id="setupLangLabel" data-i18n="common_language">Language</span><span data-info-tip="setup_info_lang"></span></h2>
           <!-- A two-position switch: the thumb slides to the chosen side (English left, Japanese right) -->
           <div class="first-run-segment" role="radiogroup" aria-labelledby="setupLangLabel" data-ui="stp:lang">
             <label class="first-run-segment-option" data-i18n-title="tip_setup_lang_en"><input data-tip-exempt="its label carries the tip" type="radio" name="setup_lang" value="en" checked><span data-i18n="lang_name_en">English</span></label>
@@ -41,7 +41,7 @@
         <hr class="first-run-divider">
 
         <div class="first-run-section" role="group" aria-labelledby="setupThemeLabel">
-          <h2 class="first-run-heading"><span id="setupThemeLabel" data-i18n="setup_theme_label">Theme</span><span data-info-tip="setup_info_theme"></span></h2>
+          <h2 class="first-run-heading"><span id="setupThemeLabel" data-i18n="common_theme">Theme</span><span data-info-tip="setup_info_theme"></span></h2>
           <!-- One card per theme, drawn from the theme files (setupThemeCards in aiSetupController.js) -->
           <div id="setupThemeCards" class="first-run-theme-grid" data-ui="stp:theme"></div>
         </div>
@@ -264,7 +264,7 @@
       </div>
       <div class="first-run-actions">
         <!-- Quits without saving the choices; the setup opens again on the next start -->
-        <button data-ui="stp:cancel" id="btnSetupCancel" class="btn first-run-btn-quiet" type="button" data-i18n="setup_btn_cancel" data-i18n-title="tip_setup_cancel">Cancel</button>
+        <button data-ui="stp:cancel" id="btnSetupCancel" class="btn first-run-btn-quiet" type="button" data-i18n="common_cancel" data-i18n-title="tip_setup_cancel">Cancel</button>
         <!-- Each button names where it leads: a small caption ("Next") over the step name -->
         <button data-ui="stp:back" id="btnSetupBack" class="btn first-run-btn first-run-nav-btn" type="button" hidden data-i18n-title="tip_setup_back">
           <span class="material-symbols-outlined first-run-nav-icon" aria-hidden="true">chevron_left</span>

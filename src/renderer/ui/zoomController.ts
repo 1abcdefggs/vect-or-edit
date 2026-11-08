@@ -1,3 +1,4 @@
+import { t } from '../core/i18n';
 import { showToast } from './notifications/toastManager';
 
 export function initZoomControls(): void {
@@ -51,7 +52,7 @@ export function initZoomControls(): void {
     }
 
     if (notify) {
-      showToast(`Zoom: ${Math.round(currentZoom * 100)}%`, 'info');
+      showToast(t('toast_zoom', { percent: Math.round(currentZoom * 100) }), 'info');
     }
   }
 

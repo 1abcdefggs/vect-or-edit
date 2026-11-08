@@ -140,6 +140,10 @@ export function registerAppCommands(): void {
   // Exit and Close Window end the same single window, so both ask first (the close-confirmation setting applies)
   const exitApplication = async () => {
     if (!(await confirmClose('app'))) return;
+    // Listeners (saved logs) finish their work first; a failed listener does not block the exit
+    const exit = { tasks: [] as Promise<unknown>[] };
+    window.dispatchEvent(new CustomEvent('app:beforeExit', { detail: exit }));
+    await Promise.allSettled(exit.tasks);
     window.engineAPI?.closeWindow?.();
   };
 
@@ -157,45 +161,38 @@ export function registerAppCommands(): void {
     // File Commands
     {
       id: 'file.new',
-      title: 'New File',
       category: 'File',
       shortcut: 'Ctrl+N',
       handler: () => createBlankTab()
     },
     {
       id: 'file.open',
-      title: 'Open File',
       category: 'File',
       shortcut: 'Ctrl+O',
       handler: () => executeOpenFile()
     },
     {
       id: 'file.openWorkspace',
-      title: 'Open Workspace',
       category: 'File',
       handler: () => showWorkspaceModal('open')
     },
     {
       id: 'file.save',
-      title: 'Save File',
       category: 'File',
       handler: () => executeSaveTab(false)
     },
     {
       id: 'file.saveAs',
-      title: 'Save As',
       category: 'File',
       handler: () => executeSaveTab(true)
     },
     {
       id: 'file.saveAll',
-      title: 'Save All',
       category: 'File',
       handler: () => executeSaveAll()
     },
     {
       id: 'file.closeTab',
-      title: 'Close Tab',
       category: 'File',
       shortcut: 'Ctrl+W',
       handler: () => {
@@ -205,7 +202,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'file.closeAllTabs',
-      title: 'Close All Tabs',
       category: 'File',
       handler: async () => {
         for (const id of tabs.map((t) => t.id)) {
@@ -217,7 +213,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'file.exit',
-      title: 'Exit Application',
       category: 'File',
       handler: exitApplication
     },
@@ -225,7 +220,6 @@ export function registerAppCommands(): void {
     // Edit Commands
     {
       id: 'edit.undo',
-      title: 'Undo',
       category: 'Edit',
       handler: () => {
         const ed = getEditorInstance();
@@ -237,7 +231,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'edit.redo',
-      title: 'Redo',
       category: 'Edit',
       handler: () => {
         const ed = getEditorInstance();
@@ -249,7 +242,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'edit.cut',
-      title: 'Cut',
       category: 'Edit',
       handler: async () => {
         const ed = getEditorInstance();
@@ -272,7 +264,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'edit.copy',
-      title: 'Copy',
       category: 'Edit',
       handler: async () => {
         const ed = getEditorInstance();
@@ -300,7 +291,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'edit.paste',
-      title: 'Paste',
       category: 'Edit',
       handler: async () => {
         try {
@@ -316,7 +306,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'edit.selectAll',
-      title: 'Select All',
       category: 'Edit',
       handler: () => {
         const ed = getEditorInstance();
@@ -333,7 +322,6 @@ export function registerAppCommands(): void {
     // View Commands
     {
       id: 'view.toggleSidebar',
-      title: 'Toggle Suggest Sidebar',
       category: 'View',
       shortcut: 'Ctrl+B',
       handler: () => {
@@ -345,7 +333,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'view.toggleLogs',
-      title: 'Toggle System Logs',
       category: 'View',
       shortcut: 'Ctrl+J',
       handler: () => {
@@ -355,7 +342,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'view.zoomIn',
-      title: 'Zoom In',
       category: 'View',
       handler: () => {
         if (window.engineAPI?.getZoomFactor && window.engineAPI?.setZoomFactor) {
@@ -369,7 +355,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'view.zoomOut',
-      title: 'Zoom Out',
       category: 'View',
       handler: () => {
         if (window.engineAPI?.getZoomFactor && window.engineAPI?.setZoomFactor) {
@@ -383,7 +368,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'view.resetZoom',
-      title: 'Reset Zoom',
       category: 'View',
       handler: () => {
         if (window.engineAPI?.setZoomFactor) {
@@ -395,7 +379,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'view.toggleLang',
-      title: 'Toggle Language',
       category: 'View',
       handler: () => {
         // The language lives in the settings page now (no header button): flip its select, which applies the language
@@ -407,7 +390,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'view.toggleTheme',
-      title: 'Toggle Theme',
       category: 'View',
       handler: () => {
         // Step to the next theme in the header select; its change listener applies it.
@@ -421,7 +403,6 @@ export function registerAppCommands(): void {
     // Window Commands
     {
       id: 'window.minimize',
-      title: 'Minimize Window',
       category: 'Window',
       handler: () => {
         if (window.engineAPI?.minimizeWindow) window.engineAPI.minimizeWindow();
@@ -429,7 +410,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'window.maximize',
-      title: 'Maximize Window',
       category: 'Window',
       handler: () => {
         if (window.engineAPI?.maximizeWindow) window.engineAPI.maximizeWindow();
@@ -437,7 +417,6 @@ export function registerAppCommands(): void {
     },
     {
       id: 'window.close',
-      title: 'Close Window',
       category: 'Window',
       handler: exitApplication
     },
@@ -445,13 +424,11 @@ export function registerAppCommands(): void {
     // Help Commands
     {
       id: 'help.aiSetup',
-      title: 'First-run Setup',
       category: 'Help',
       handler: () => showAiSetupModal()
     },
     {
       id: 'help.settings',
-      title: 'Preferences & Settings',
       category: 'Help',
       handler: () => {
         const settingsModal = document.getElementById('settingsModal');
@@ -462,13 +439,11 @@ export function registerAppCommands(): void {
     },
     {
       id: 'help.docs',
-      title: 'Documentation',
       category: 'Help',
       handler: () => showHelpPage()
     },
     {
       id: 'help.about',
-      title: 'About VectOrEdit',
       category: 'Help',
       handler: () => showAboutModal()
     }

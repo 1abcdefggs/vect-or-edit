@@ -19,7 +19,7 @@ export function triggerRpgSavedExpFloat(tabId = activeTabId) {
 
   const floatBadge = document.createElement('span');
   floatBadge.className = 'rpg-saved-float';
-  floatBadge.textContent = '+Saved ✓';
+  floatBadge.textContent = t('badge_saved_float');
   targetTab.appendChild(floatBadge);
 
   setTimeout(() => {
@@ -172,7 +172,7 @@ export function renderTabs() {
             title: t('rename_format_title'),
             message: t('rename_format_confirm'),
             type: 'warning',
-            confirmText: t('rename_format_btn')
+            confirmText: t('ep_change')
           });
           if (newName && newName !== tab.title && confirmed) {
             tab.title = newName;
@@ -226,7 +226,7 @@ export function renderTabs() {
   btnInlineNewTab.title = t('tip_tab_new');
   btnInlineNewTab.style.color = 'var(--text-muted)';
   btnInlineNewTab.style.marginLeft = '2px';
-  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">&#xf741;</span><span class="tab-inline-label">${t('tab_label_new')}</span>`;
+  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">tab_new_right</span><span class="tab-inline-label">${t('tab_label_new')}</span>`;
   btnInlineNewTab.addEventListener('click', () => createBlankTab());
   tabsContainer.appendChild(btnInlineNewTab);
 

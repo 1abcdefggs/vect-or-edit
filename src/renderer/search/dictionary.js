@@ -77,7 +77,7 @@ async function renderSlotInfo(container, slot) {
   ] : [
     [slotText('kb_info_domain', 'Domain'), h.domain],
     [slotText('kb_info_version', 'Version'), h.version],
-    [slotText('kb_info_dimension', 'Dimension'), h.dimension],
+    [slotText('ep_dimensions', 'Dimensions'), h.dimension],
     [slotText('kb_info_metric', 'Metric'), h.metric],
     [slotText('kb_info_items', 'Items'), res.itemCount],
     [slotText('kb_info_fidelity', 'Fidelity'), h.fidelity_score == null ? null : `${h.fidelity_score} %`],
@@ -368,7 +368,7 @@ function promptForPassword(filePath) {
     btnRow.style.cssText = 'display:flex;justify-content:flex-end;gap:10px;margin-top:5px;';
     
     const btnCancel = document.createElement('button');
-    btnCancel.textContent = t('btn_cancel');
+    btnCancel.textContent = t('common_cancel');
     btnCancel.style.cssText = 'padding:6px 12px;border:var(--border-width) solid var(--border-color);border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:var(--fs-13);';
     
     const btnSubmit = document.createElement('button');
@@ -417,7 +417,7 @@ export async function addKnowledgeSlot(customPath) {
         refreshLinter();
         return res;
       } else if (res && !res.success && !res.canceled) {
-        const errorMsg = res.errorCode ? t(res.errorCode, res.errorParams || {}) : (res.error || t('error_slot_add', { message: 'Unknown' }));
+        const errorMsg = res.errorCode ? t(res.errorCode, res.errorParams || {}) : (res.error || t('error_slot_add', { message: t('ep_unknown') }));
         alert(errorMsg);
       }
     } catch (err) {

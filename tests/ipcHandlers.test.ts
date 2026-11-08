@@ -9,6 +9,9 @@ vi.mock('../src/main/engine/rustEngine', () => {
 });
 import { getEngine } from '../src/main/engine/rustEngine';
 
+// The main process reads the OS locale through electron's app; tests run without electron
+vi.mock('electron', () => ({ app: { getLocale: () => 'en' } }));
+
 describe('IPC Handlers (Vitest)', () => {
   beforeEach(() => {
     vi.clearAllMocks();

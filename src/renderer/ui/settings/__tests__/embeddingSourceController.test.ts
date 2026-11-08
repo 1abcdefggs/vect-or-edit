@@ -18,11 +18,11 @@ import {
 describe('Embedding Source Controller (Domain & Interface Logic)', () => {
   it('correctly maps local and LLM badge configuration', () => {
     expect(getBadgeConfig('local')).toEqual(BADGE_CONFIG.local);
-    expect(getBadgeConfig('local').text).toBe('LOCAL');
+    expect(getBadgeConfig('local').textKey).toBe('badge_local');
     expect(getBadgeConfig('llm-embed-gemini')).toEqual(BADGE_CONFIG.llm);
-    expect(getBadgeConfig('llm-embed-gemini').text).toBe('LLM');
-    expect(getBadgeConfig('llm-embed-claude').text).toBe('LLM');
-    expect(getBadgeConfig('llm-embed-openai').text).toBe('LLM');
+    expect(getBadgeConfig('llm-embed-gemini').textKey).toBe('embed_badge_llm');
+    expect(getBadgeConfig('llm-embed-claude').textKey).toBe('embed_badge_llm');
+    expect(getBadgeConfig('llm-embed-openai').textKey).toBe('embed_badge_llm');
   });
 
   it('determines whether an embedding source is LLM-based', () => {

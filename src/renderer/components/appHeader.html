@@ -6,7 +6,7 @@
     </div>
 
     <!-- VS Code Style Inline Menu Bar (File, Edit, View, Window, Help) -->
-    <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu" data-ui="hdr:menu-bar">
+    <nav id="appMenuBar" class="app-header__menu" aria-label="Application Menu" data-i18n-aria="aria_app_menu" data-ui="hdr:menu-bar">
       <!-- File Menu -->
       <div class="menu-bar-item" data-menu="file" data-ui="hdr:menu-file">
         <button class="menu-bar-btn btn-phi" id="menuBtnFile" type="button" aria-haspopup="true" aria-expanded="false"
@@ -81,8 +81,8 @@
     <!-- Global Theme Selector -->
     <div class="app-header__theme-select-wrapper" data-ui="hdr:theme-select" data-i18n-title="tip_header_theme">
       <span class="material-symbols-outlined theme-select-icon"
-        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">&#xe40a;</span>
-      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="label_theme"></select>
+        style="font-size: var(--fs-18); color: var(--accent-color, #38bdf8);">palette</span>
+      <select id="themeSelect" class="app-header__theme-select theme-select" data-i18n-title="common_theme"></select>
     </div>
 
     <span class="header-control-divider" aria-hidden="true"></span>
@@ -94,7 +94,7 @@
       <!-- Hover hint: bold arrows say the wheel zooms in (up) and out (down). The label stays English (style_rules.csv zoom-label) -->
       <span class="header-zoom-hint" aria-hidden="true">
         <span class="material-symbols-outlined header-zoom-hint__arrow">arrow_upward</span>
-        <span class="header-zoom-hint__label"><span class="material-symbols-outlined">search</span>Zoom</span>
+        <span class="header-zoom-hint__label"><span class="material-symbols-outlined">search</span><span data-i18n="header_zoom_hint">Zoom</span></span>
         <input id="headerZoomSlider" class="header-zoom-slider" type="range" min="0.5" max="3" step="0.1" value="1"
           data-i18n-title="tip_header_zoom_slider" aria-hidden="true" tabindex="-1">
         <span class="material-symbols-outlined header-zoom-hint__arrow">arrow_downward</span>

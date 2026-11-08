@@ -1,3 +1,4 @@
+import { mainT } from './i18n';
 import { app, BrowserWindow, shell, dialog, session } from 'electron';
 import { handleTrusted, installPermissionPolicy } from './ipcSecurity';
 
@@ -6,6 +7,7 @@ import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 
 import { initLogger, exportLogBacklog } from './logger';
+import { appendToCurrentSession, saveSnapshot, listSessions, readSession, pruneOldSessions } from './logStore';
 import { initRustEngine, getEngine, getVault, isRustBinaryLoaded } from './engine/rustEngine';
 import {
   knowledgeSlots,
@@ -63,6 +65,15 @@ if (!gotTheLock) {
 
     handleTrusted('app:getVersion', () => app.getVersion());
     handleTrusted('app:requestLogBacklog', () => exportLogBacklog());
+    handleTrusted('logs:append', (_event, entries) => appendToCurrentSession(entries));
+    handleTrusted('logs:saveSnapshot', (_event, entries) => saveSnapshot(entries));
+    handleTrusted('logs:list', () => listSessions());
+    handleTrusted('logs:read', (_event, id) => readSession(id as string));
+    try {
+      pruneOldSessions();
+    } catch (err) {
+      console.warn('[logs] could not remove old saved logs:', err);
+    }
     // Where the app keeps its own data (the embedding model is cached inside it); shown in first-run setup
     handleTrusted('app:getUserDataPath', () => app.getPath('userData'));
     // The app's own license plus the generated third-party notices (scripts/generate-notices.mjs); null when not bundled
@@ -234,7 +245,7 @@ if (!gotTheLock) {
         let targetPath = customPath;
         if (!targetPath) {
           const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-            title: 'Select Goal & Lint Profile JSON',
+            title: mainT('main_dialog_goal_profile'),
             filters: [{ name: 'Profile JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
             properties: ['openFile']
           });
@@ -273,7 +284,7 @@ if (!gotTheLock) {
 
         if (!targetPath) {
           const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-            title: 'Add Knowledge Base (Slot)',
+            title: mainT('main_dialog_add_slot'),
             filters: [
               { name: 'Knowledge Base Files', extensions: ['json', 'venc'] },
               { name: 'Encrypted Knowledge Base (.venc)', extensions: ['venc'] },
@@ -468,7 +479,7 @@ if (!gotTheLock) {
           const defaultWorkspace = ws.path;
 
           const picked = await dialog.showOpenDialog(mainWindow, {
-            title: 'Import Knowledge Base / Dictionary JSON',
+            title: mainT('main_dialog_import_dict'),
             defaultPath: defaultWorkspace,
             filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
             properties: ['openFile', 'multiSelections']

@@ -130,7 +130,7 @@ export function updateAutoSaveUI() {
     ? t('autosave_state_on', { path: filePath })
     : t(`autosave_state_${state}`);
 
-  if (labelEl) labelEl.textContent = state === 'on' ? t('btn_save_auto') : (state === 'pending' ? t('btn_save_as') : t('btn_save'));
+  if (labelEl) labelEl.textContent = state === 'on' ? t('btn_save_auto') : (state === 'pending' ? t('btn_save_as') : t('common_save'));
   if (btnSave) btnSave.dataset.autosaveState = state;
   if (ledDot) {
     ledDot.className = `status-led-dot autosave-led is-${state}`;
@@ -211,7 +211,7 @@ async function ensureAutoSaveTarget(tab) {
     if (!firstRunDone) {
       useDefault = await showConfirmModal({
         message: t('autosave_location_confirm'),
-        cancelText: t('btn_cancel'),
+        cancelText: t('common_cancel'),
         type: 'info'
       });
       try { localStorage.setItem(LOCATION_CONFIRMED_KEY, 'true'); } catch { /* storage unavailable */ }

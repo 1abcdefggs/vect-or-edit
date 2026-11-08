@@ -4,6 +4,7 @@
  * uses, and follows the window when it changes the value, so the two never disagree.
  */
 import { t } from '../../core/i18n.js';
+import { renderStoredLogs } from '../console/systemConsoleManager.js';
 import { aiManager } from '../../core/aiStateManager.js';
 import { settingsStore } from '../../core/settingsStore.js';
 import { showToast } from '../notifications/toastManager.js';
@@ -24,6 +25,7 @@ import {
 const LOGS_PATH = 'system.collapseLogsOnStartup';
 const LOG_TIME_PATH = 'system.logTimeFormat';
 const LOG_TIME_ZONE_PATH = 'system.logTimeZone';
+const LOG_SAVE_PATH = 'system.logSaveMode';
 const onOff = (value) => (value ? 'on' : 'off');
 
 function bindAutoSave() {
@@ -124,6 +126,46 @@ function bindLogTimeZone() {
   select.addEventListener('change', () => settingsStore.updatePreference(LOG_TIME_ZONE_PATH, select.value));
 }
 
+function bindLogSaveMode() {
+  const select = document.getElementById('modalLogSaveModeSelect');
+  if (!select) return;
+  select.value = settingsStore.getPreference(LOG_SAVE_PATH) || 'never';
+  select.addEventListener('change', () => settingsStore.updatePreference(LOG_SAVE_PATH, select.value));
+}
+
+/** Saved sessions: the list comes from the main process (names and sizes only); a session is read when chosen. */
+function bindLogSessions() {
+  const select = document.getElementById('modalLogSessionSelect');
+  const open = document.getElementById('btnLogSessionOpen');
+  const view = document.getElementById('logSessionView');
+  if (!select || !open || !view) return;
+
+  const refresh = async () => {
+    const sessions = (await window.engineAPI?.listLogSessions?.()) ?? [];
+    const options = sessions.map((s) => {
+      const option = document.createElement('option');
+      option.value = s.id;
+      option.textContent = `${s.modified.replace('T', ' ').slice(0, 19)} (${Math.max(1, Math.round(s.bytes / 1024))} KB)`;
+      return option;
+    });
+    if (options.length === 0) {
+      const none = document.createElement('option');
+      none.value = '';
+      none.textContent = t('log_session_none');
+      options.push(none);
+    }
+    select.replaceChildren(...options);
+  };
+  refresh();
+
+  open.addEventListener('click', async () => {
+    if (!select.value) return;
+    const entries = (await window.engineAPI?.readLogSession?.(select.value)) ?? [];
+    renderStoredLogs(view, entries);
+    view.hidden = false;
+  });
+}
+
 function bindRememberLayout() {
   const select = document.getElementById('modalRememberLayoutSelect');
   if (!select) return;
@@ -145,5 +187,7 @@ export function initWindowFeatureSettings() {
   bindLogsOnStart();
   bindLogTimeFormat();
   bindLogTimeZone();
+  bindLogSaveMode();
+  bindLogSessions();
   bindRememberLayout();
 }

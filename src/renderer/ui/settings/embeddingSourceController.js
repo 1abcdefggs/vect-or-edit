@@ -15,11 +15,12 @@
  *   #embSrcLlmWarning      – warning strip shown for LLM sources
  */
 
+import { t } from '../../core/i18n.js';
 import { adapterRegistry } from '../../search/adapterRegistry.js';
 
 export const BADGE_CONFIG = {
-  local: { text: 'LOCAL', bg: 'rgba(16,185,129,0.15)', color: '#10b981' },
-  llm:   { text: 'LLM',   bg: 'rgba(56,189,248,0.15)',  color: '#38bdf8' }
+  local: { textKey: 'badge_local', bg: 'rgba(16,185,129,0.15)', color: '#10b981' },
+  llm:   { textKey: 'embed_badge_llm', bg: 'rgba(56,189,248,0.15)',  color: '#38bdf8' }
 };
 
 export function getBadgeConfig(id) {
@@ -28,7 +29,7 @@ export function getBadgeConfig(id) {
 
 function applyBadge(el, cfg) {
   if (!el) return;
-  el.textContent = cfg.text;
+  el.textContent = t(cfg.textKey);
   el.style.background = cfg.bg;
   el.style.color = cfg.color;
 }

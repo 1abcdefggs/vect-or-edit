@@ -124,7 +124,7 @@ export function bindAppActionEvents() {
         // Show what was just set: open the Knowledge card (search collapses it to make room for results)
         document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
-        setLedStatus('kb', true, `7. HNSW: Indexed (${res.totalCount?.toLocaleString()} items)`);
+        setLedStatus('kb', true, t('led_kb_indexed', { count: res.totalCount?.toLocaleString() }));
       }
     };
     btnAddSlot.addEventListener('click', handleAddSlot);
@@ -140,7 +140,7 @@ export function bindAppActionEvents() {
     if (added) {
       document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
       showToast(t('toast_kb_updated', { count: added.totalCount, slots: added.slots?.length || 0 }), 'success');
-      setLedStatus('kb', true, `7. HNSW: Indexed (${added.totalCount?.toLocaleString()} items)`);
+      setLedStatus('kb', true, t('led_kb_indexed', { count: added.totalCount?.toLocaleString() }));
     }
   });
 
@@ -163,7 +163,7 @@ export function bindAppActionEvents() {
       if (!confirmed) return;
       await clearAllKnowledgeSlots();
       showToast(t('toast_all_slots_unloaded'), 'info');
-      setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
+      setLedStatus('kb', 'standby', t('led_kb_unloaded'));
     });
   }
 
@@ -173,7 +173,7 @@ export function bindAppActionEvents() {
       if (res?.success) {
         const profileName = res.profile?.domain_name || res.fileName || 'Preset';
         showToast(t('toast_goal_set', { name: profileName }), 'success');
-        setLedStatus('guideline', true, `Guideline / Preset: Loaded (${profileName})`);
+        setLedStatus('guideline', true, t('led_guideline_loaded', { profile: profileName }));
       }
       setTimeout(() => focusEditor(), 50);
     };
