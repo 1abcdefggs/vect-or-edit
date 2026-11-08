@@ -24,7 +24,7 @@ import { applyFormatToUnsavedTabs, getDefaultDocumentFormat } from '../../editor
 import { toDocumentFormat } from '../../../shared/documentFormat';
 
 // Dictionary keys of the step names, in order; they name the tabs and the Back / Next buttons
-const STEP_KEYS = ['setup_step_appearance', 'setup_step_saving', 'setup_step_ai'];
+const STEP_KEYS = ['setup_step_appearance', 'setting_save_location', 'setup_step_ai'];
 const TOTAL_STEPS = STEP_KEYS.length;
 // The one model the setup installs (the others are English-only or much larger); Settings still lists them all
 const SETUP_MODEL = DEFAULTS.LOCAL_EMBEDDING_MODEL;
@@ -323,7 +323,7 @@ async function renderFormatSamples() {
   if (toggle) toggle.setAttribute('aria-pressed', String(showView));
   // The same words as the status-bar button: "Preview" to look, "Edit" to go back to the symbols
   const label = $('setupSampleToggleLabel');
-  if (label) label.textContent = t(showView ? 'btn_markdown_edit' : 'btn_markdown_preview');
+  if (label) label.textContent = t(showView ? 'menu_edit' : 'btn_markdown_preview');
 }
 
 /** The (i) icons beside the headings; their text follows the language. */

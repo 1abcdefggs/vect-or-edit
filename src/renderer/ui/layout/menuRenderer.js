@@ -13,7 +13,7 @@ export function menuItemMarkup(item, translate = t) {
   const hidden = item.hidden ? ' hidden' : '';
   const accelerator = item.accelerator ? `<span class="menu-accelerator">${escapeHtml(item.accelerator)}</span>` : '';
   return `<button class="menu-dropdown-item" id="${item.id}" role="menuitem" type="button"${hidden} data-command="${item.command}" data-i18n-title="${item.tip}">`
-    + `<span class="menu-item-label" data-i18n="${item.label}">${escapeHtml(translate(item.label) || item.text)}</span>`
+    + `<span class="menu-item-label" data-i18n="${item.label}">${escapeHtml(translate(item.label))}</span>`
     + `${accelerator}</button>`;
 }
 

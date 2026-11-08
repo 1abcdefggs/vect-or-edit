@@ -1,3 +1,4 @@
+import { mainT } from './i18n';
 import { dialog, app } from 'electron';
 import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
@@ -49,7 +50,7 @@ export async function saveFile(content: string, defaultName?: string, forceDialo
     // The dialog opens in the folder of the last save, else in the save folder (Settings > Save location)
     const startDir = await getLastSaveDir() ?? (await getDefaultWorkspace(false)).path;
     const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
-      title: 'Save File',
+      title: mainT('main_dialog_save_file'),
       defaultPath: startDir ? path.join(startDir, defaultPath) : defaultPath,
       filters: [...(textFirst ? [textFilter, markdownFilter] : [markdownFilter, textFilter]), { name: 'All Files', extensions: ['*'] }]
     });
@@ -91,7 +92,7 @@ export async function openFile() {
   if (!mainWindow) return { success: false, error: 'No main window' };
   try {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-      title: 'Open File',
+      title: mainT('main_dialog_open_file'),
       properties: ['openFile']
     });
 
@@ -115,7 +116,7 @@ export async function openWorkspace() {
   if (!mainWindow) return { success: false, error: 'No main window' };
   try {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-      title: 'Open Workspace Folder',
+      title: mainT('main_dialog_open_workspace'),
       properties: ['openDirectory']
     });
 
@@ -222,7 +223,7 @@ export async function chooseDefaultWorkspace(): Promise<WorkspaceResult> {
   try {
     const current = await getDefaultWorkspace(false);
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-      title: 'Choose where the save folder goes',
+      title: mainT('main_dialog_save_folder'),
       defaultPath: path.dirname(current.path as string),
       properties: ['openDirectory', 'createDirectory']
     });

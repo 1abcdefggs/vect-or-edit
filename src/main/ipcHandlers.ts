@@ -1,3 +1,4 @@
+import { mainT } from './i18n';
 import { getEngine } from './engine/rustEngine';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
 
@@ -27,7 +28,7 @@ export async function handleSearchVector(payload: any, opts?: { timeoutMs?: numb
   try {
     const engine = getEngine();
     if (!engine || typeof engine.search !== 'function') {
-      return { success: false, error: { message: 'Engine.search unavailable', code: 'ENGINE_MISSING' } };
+      return { success: false, error: { message: mainT('error_engine_search_unavailable'), code: 'ENGINE_MISSING' } };
     }
     const { vector, topK } = payload ?? {};
     if (!vector) return { success: false, error: { message: 'missing vector', code: 'INVALID_PAYLOAD' } };

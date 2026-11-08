@@ -1,3 +1,4 @@
+import { mainT } from './i18n';
 import { app, BrowserWindow, shell, dialog, session } from 'electron';
 import { handleTrusted, installPermissionPolicy } from './ipcSecurity';
 
@@ -234,7 +235,7 @@ if (!gotTheLock) {
         let targetPath = customPath;
         if (!targetPath) {
           const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-            title: 'Select Goal & Lint Profile JSON',
+            title: mainT('main_dialog_goal_profile'),
             filters: [{ name: 'Profile JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
             properties: ['openFile']
           });
@@ -273,7 +274,7 @@ if (!gotTheLock) {
 
         if (!targetPath) {
           const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-            title: 'Add Knowledge Base (Slot)',
+            title: mainT('main_dialog_add_slot'),
             filters: [
               { name: 'Knowledge Base Files', extensions: ['json', 'venc'] },
               { name: 'Encrypted Knowledge Base (.venc)', extensions: ['venc'] },
@@ -468,7 +469,7 @@ if (!gotTheLock) {
           const defaultWorkspace = ws.path;
 
           const picked = await dialog.showOpenDialog(mainWindow, {
-            title: 'Import Knowledge Base / Dictionary JSON',
+            title: mainT('main_dialog_import_dict'),
             defaultPath: defaultWorkspace,
             filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
             properties: ['openFile', 'multiSelections']

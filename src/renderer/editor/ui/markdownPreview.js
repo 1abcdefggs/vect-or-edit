@@ -61,7 +61,7 @@ async function renderPreview(preview) {
 function updateButtonLabel() {
   const button = document.getElementById('btnMarkdownPreview');
   if (!button) return;
-  const label = isPreviewVisible ? t('btn_markdown_edit') : t('btn_markdown_preview');
+  const label = isPreviewVisible ? t('menu_edit') : t('btn_markdown_preview');
   button.querySelector('.markdown-preview-label').textContent = label;
   button.setAttribute('aria-pressed', String(isPreviewVisible));
 }

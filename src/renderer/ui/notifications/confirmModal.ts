@@ -46,7 +46,7 @@ export function showChoiceModalWithCheckbox(options: ChoiceModalOptions): Promis
     if (existing) existing.remove();
 
     const title = options.title || t('confirm_title');
-    const cancelText = options.cancelText || t('btn_cancel');
+    const cancelText = options.cancelText || t('common_cancel');
     const icon = options.icon || (options.type === 'warning' ? 'warning' : 'info');
     const iconColor = options.type === 'warning' ? '#f59e0b' : 'var(--accent-color, #38bdf8)';
     const accentBg = options.type === 'warning' ? '#f59e0b' : 'var(--accent-color, #38bdf8)';

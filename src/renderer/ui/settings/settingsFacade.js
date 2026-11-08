@@ -446,7 +446,7 @@ export function initSettings(updateEditorCb) {
     if (e.target === quickEditorToneSelect && modalEditorBgSelect) {
       modalEditorBgSelect.value = quickEditorToneSelect.value;
       const selectedOption = quickEditorToneSelect.options[quickEditorToneSelect.selectedIndex];
-      if (selectedOption) showToast(`Editor ${selectedOption.text}`, 'info');
+      if (selectedOption) showToast(t('toast_editor_tone', { tone: selectedOption.text }), 'info');
     } else if (e.target === modalEditorBgSelect && quickEditorToneSelect) {
       quickEditorToneSelect.value = modalEditorBgSelect.value;
     }
@@ -986,7 +986,7 @@ export function initSettings(updateEditorCb) {
         title: t('maint_cache_label'),
         message: t('maint_cache_desc'),
         confirmText: t('maint_cache_btn'),
-        cancelText: t('btn_cancel'),
+        cancelText: t('common_cancel'),
         type: 'warning'
       });
       if (!confirmed) return;
@@ -999,10 +999,10 @@ export function initSettings(updateEditorCb) {
   for (const [id, dev] of [['btnResetSettings', false], ['btnResetSettingsDev', true]]) {
     document.getElementById(id)?.addEventListener('click', async () => {
       const confirmed = await showConfirmModal({
-        title: t(dev ? 'maint_reset_dev_label' : 'maint_reset_label'),
+        title: t(dev ? 'maint_reset_dev_btn' : 'maint_reset_label'),
         message: t(dev ? 'maint_reset_dev_confirm' : 'maint_reset_confirm'),
         confirmText: t(dev ? 'maint_reset_dev_btn' : 'maint_reset_btn'),
-        cancelText: t('btn_cancel'),
+        cancelText: t('common_cancel'),
         type: 'warning'
       });
       if (confirmed) await resetApp({ dev });
@@ -1016,7 +1016,7 @@ export function initSettings(updateEditorCb) {
         title: t('maint_reload_label'),
         message: t('maint_reload_confirm'),
         confirmText: t('maint_reload_btn'),
-        cancelText: t('btn_cancel'),
+        cancelText: t('common_cancel'),
         type: 'warning'
       });
       if (confirmed) window.location.reload();
@@ -1030,7 +1030,7 @@ export function initSettings(updateEditorCb) {
         title: t('maint_restart_label'),
         message: t('maint_restart_confirm'),
         confirmText: t('maint_restart_btn'),
-        cancelText: t('btn_cancel'),
+        cancelText: t('common_cancel'),
         type: 'warning'
       });
       if (confirmed) window.engineAPI.restartApp();
@@ -1039,7 +1039,7 @@ export function initSettings(updateEditorCb) {
 
   // Initial apply
   applyEditorSettings();
-  setLedStatus('conf', true, `1. CONFIG: Settings Restored`);
+  setLedStatus('conf', true, t('led_conf_restored'));
 }
 
 export function getTheme() {

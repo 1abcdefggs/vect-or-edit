@@ -10,7 +10,6 @@ describe('CommandManager (Deep Module)', () => {
     const handler = vi.fn();
     commandManager.registerCommand({
       id: 'file.new',
-      title: 'New File',
       handler
     });
 
@@ -33,7 +32,6 @@ describe('CommandManager (Deep Module)', () => {
 
     commandManager.registerCommand({
       id: 'edit.undo',
-      title: 'Undo',
       handler,
       isEnabled: () => enabled
     });
@@ -53,7 +51,6 @@ describe('CommandManager (Deep Module)', () => {
   it('should unregister command when unregister function is called', async () => {
     const unregister = commandManager.registerCommand({
       id: 'view.toggleSidebar',
-      title: 'Toggle Sidebar',
       handler: () => {}
     });
 

@@ -36,7 +36,7 @@ export function initUpdateChecker(): void {
           container.onclick = async () => {
             const confirmed = await showConfirmModal({
               message: t('update_confirm', { version: data.version }),
-              cancelText: t('btn_cancel'),
+              cancelText: t('common_cancel'),
               type: 'info'
             });
             if (confirmed) {
@@ -68,7 +68,7 @@ export function initUpdateChecker(): void {
             const confirmed = await showConfirmModal({
               message: t('update_restart_confirm'),
               confirmText: t('maint_restart_btn'),
-              cancelText: t('btn_cancel'),
+              cancelText: t('common_cancel'),
               type: 'warning'
             });
             if (confirmed) {

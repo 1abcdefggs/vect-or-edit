@@ -1,3 +1,4 @@
+import { t } from './core/i18n';
 import { icons } from './core/icons';
 import { initStartupFlow, completeStartup, hideStartupLoader } from './core/startupManager';
 import { loadLocales } from './core/i18n';
@@ -103,15 +104,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.engineAPI?.onEngineStatus) {
     window.engineAPI.onEngineStatus((status) => {
       if (status.binReady) {
-        setLedStatus('bin', true, '5. RUST: Bound via N-API');
+        setLedStatus('bin', true, t('led_bin_bound'));
       } else {
-        setLedStatus('bin', 'error', '5. RUST: Engine Not Available');
+        setLedStatus('bin', 'error', t('led_bin_unavailable'));
       }
 
       if (status.kbReady) {
-        setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
+        setLedStatus('kb', true, t('led_kb_indexed', { count: status.count.toLocaleString() }));
       } else {
-        setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
+        setLedStatus('kb', 'standby', t('led_kb_unloaded'));
       }
     });
   }
@@ -119,18 +120,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.engineAPI?.getEngineStatus) {
     window.engineAPI.getEngineStatus().then((status) => {
       if (status?.binReady) {
-        setLedStatus('bin', true, '5. RUST: Bound via N-API');
+        setLedStatus('bin', true, t('led_bin_bound'));
       } else {
-        setLedStatus('bin', 'error', '5. RUST: Engine Not Available');
+        setLedStatus('bin', 'error', t('led_bin_unavailable'));
       }
 
       if (status?.kbReady) {
-        setLedStatus('kb', true, `7. HNSW: Indexed (${status.count.toLocaleString()} items)`);
+        setLedStatus('kb', true, t('led_kb_indexed', { count: status.count.toLocaleString() }));
       } else {
-        setLedStatus('kb', 'standby', '7. HNSW: Unloaded');
+        setLedStatus('kb', 'standby', t('led_kb_unloaded'));
       }
     }).catch(() => {
-      setLedStatus('bin', 'error', '5. RUST: IPC Connection Failed');
+      setLedStatus('bin', 'error', t('led_bin_ipc_failed'));
     });
   }
 

@@ -1,3 +1,4 @@
+import { t } from '../../core/i18n';
 /**
  * Memory monitoring subsystem
  */
@@ -15,7 +16,7 @@ export function initMemoryMonitor() {
       const usedMB = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
       statusMemoryUsage.textContent = `RAM: ${usedMB} MB`;
     } else {
-      statusMemoryUsage.textContent = `RAM: Active`;
+      statusMemoryUsage.textContent = t('status_ram_active');
     }
     if (statusItem) statusItem.title = statusMemoryUsage.textContent;
   };

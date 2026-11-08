@@ -42,19 +42,19 @@ export function initAiControls() {
     const provider = localStorage.getItem('ai_provider') || 'local';
     const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
 
-    if (embeddingStatus) embeddingStatus.textContent = window.__isLocalAiModelReady ? 'Ready' : 'Not ready';
-    if (embeddingDetail) embeddingDetail.textContent = window.__isLocalAiModelReady ? localModel : 'Install a local vector model';
+    if (embeddingStatus) embeddingStatus.textContent = window.__isLocalAiModelReady ? t('ai_status_ready') : t('ai_status_not_ready');
+    if (embeddingDetail) embeddingDetail.textContent = window.__isLocalAiModelReady ? localModel : t('ai_detail_install_model');
     if (embeddingCard) embeddingCard.dataset.statusTone = window.__isLocalAiModelReady ? 'ready' : 'neutral';
-    if (structureEmbedding) structureEmbedding.textContent = window.__isLocalAiModelReady ? localModel : 'Model not ready';
-    if (generationStatus) generationStatus.textContent = provider === 'local' ? 'Local AI' : provider.toUpperCase();
-    if (generationDetail) generationDetail.textContent = provider === 'local' ? 'Embedding and local suggestions' : 'Cloud suggestion provider';
+    if (structureEmbedding) structureEmbedding.textContent = window.__isLocalAiModelReady ? localModel : t('ai_structure_model_not_ready');
+    if (generationStatus) generationStatus.textContent = provider === 'local' ? t('ai_status_local_ai') : provider.toUpperCase();
+    if (generationDetail) generationDetail.textContent = provider === 'local' ? t('ai_detail_local_suggest') : t('ai_status_cloud_suggest');
     if (knowledgeStatus && window.engineAPI?.getEngineStatus) {
       window.engineAPI.getEngineStatus().then((result) => {
         const count = Number(result?.count || 0);
-        knowledgeStatus.textContent = count > 0 ? 'Loaded' : 'Not loaded';
-        knowledgeDetail.textContent = count > 0 ? `${count} indexed items` : 'Add a JSON or VENC slot';
+        knowledgeStatus.textContent = count > 0 ? t('ai_status_loaded') : t('ai_status_not_loaded');
+        knowledgeDetail.textContent = count > 0 ? t('ai_status_indexed_items', { count }) : t('ai_status_add_slot');
         if (knowledgeCard) knowledgeCard.dataset.statusTone = count > 0 ? 'ready' : 'neutral';
-        if (structureKnowledge) structureKnowledge.textContent = count > 0 ? `HNSW index (${count})` : 'Knowledge not loaded';
+        if (structureKnowledge) structureKnowledge.textContent = count > 0 ? t('ai_structure_hnsw_count', { count }) : t('ai_structure_knowledge_missing');
       }).catch(() => { });
     }
   }
@@ -162,7 +162,7 @@ export function initAiControls() {
         message: t('ai_setup_required_msg'),
         detail: t('ai_setup_required_detail'),
         confirmText: t('btn_open_settings'),
-        cancelText: t('btn_cancel'),
+        cancelText: t('common_cancel'),
         type: 'info',
         icon: 'cloud'
       });
@@ -310,7 +310,7 @@ function initLlmChatDock() {
       const key = quickApiKeyInput.value.trim();
 
       if (!key) {
-        showToast('Please enter an API key before saving.', 'warning');
+        showToast(t('toast_api_key_required'), 'warning');
         quickApiKeyInput.focus();
         return;
       }
@@ -341,7 +341,7 @@ function initLlmChatDock() {
 
       updateDockModelBadge();
       window.dispatchEvent(new Event('app:settingsChanged'));
-      showToast(`${provider.toUpperCase()} API Key saved successfully!`, 'success');
+      showToast(t('toast_api_key_saved', { provider: provider.toUpperCase() }), 'success');
       if (quickApiBanner) quickApiBanner.style.display = 'none';
     });
   }
@@ -472,7 +472,7 @@ function initLlmChatDock() {
           <div class="llm-msg-ai-header">
             <span style="display: flex; align-items: center; gap: 4px;">
               <span class="material-symbols-outlined" style="font-size: var(--fs-14);">smart_toy</span>
-              <span>${modelName}</span>
+              <span>${escapeHtml(modelName)}</span>
             </span>
           </div>
           <div class="llm-ai-body" style="white-space: pre-wrap; word-break: break-word;">${escapeHtml(text)}</div>
@@ -499,21 +499,21 @@ function initLlmChatDock() {
         if (btnInsert) {
           btnInsert.addEventListener('click', () => {
             applyAiOutputToEditor(text, 'insert', 'generate');
-            showToast('Inserted AI output into editor', 'success');
+            showToast(t('toast_ai_inserted'), 'success');
           });
         }
 
         if (btnRewrite) {
           btnRewrite.addEventListener('click', () => {
             applyAiOutputToEditor(text, 'replace', 'rewrite');
-            showToast('Replaced selection with AI rewritten output', 'success');
+            showToast(t('toast_ai_replaced'), 'success');
           });
         }
 
         if (btnCopy) {
           btnCopy.addEventListener('click', async () => {
             await navigator.clipboard.writeText(text);
-            showToast('Copied AI text to clipboard', 'info');
+            showToast(t('toast_ai_copied'), 'info');
           });
         }
       } else {

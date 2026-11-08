@@ -97,7 +97,7 @@ export function initSystemConsole() {
     time: new Date().toISOString(),
     source: 'App:Init',
     level: 'INFO',
-    message: 'VectOrEdit core system online. Ready.'
+    message: t('log_core_online')
   });
 
   // Main-process entries arrive as a backlog (everything logged before this point) plus live pushes.
@@ -155,7 +155,7 @@ export function initSystemConsole() {
         title: t('log_clear_title'),
         message: t('log_clear_confirm'),
         type: 'warning',
-        confirmText: t('log_clear_btn')
+        confirmText: t('btn_clear_logs')
       });
       if (!confirmed) return;
     }

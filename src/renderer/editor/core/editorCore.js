@@ -158,7 +158,7 @@ export async function initEditor() {
   });
   editorEvents.emit('onStatusBarUpdateNeeded');
 
-  setLedStatus('monaco', true, `4. EDITOR: Mounted & Ready`);
+  setLedStatus('monaco', true, t('led_monaco_ready'));
 
   window.__monacoEditorInstance = monacoEditorInstance;
 

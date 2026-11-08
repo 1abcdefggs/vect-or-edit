@@ -301,7 +301,7 @@ export function renderResults(results, isPreliminary = false) {
     const emptyKey = emptyStateKey();
     // Not ready, or no dictionary fits the model: say where to fix it, in one click
     const action = emptyKey === 'embed_not_ready_hint' || emptyKey === 'slots_all_excluded_hint'
-      ? `<button type="button" class="empty-state__action" data-open-ai-settings>${t('embed_open_settings')}</button>`
+      ? `<button type="button" class="empty-state__action" data-open-ai-settings>${t('btn_open_settings')}</button>`
       : '';
     resultsList.innerHTML = `<div class="empty-state" data-i18n="${emptyKey}">${t(emptyKey)}</div>${action}`;
     resultsList.querySelector('[data-open-ai-settings]')?.addEventListener('click', () => {

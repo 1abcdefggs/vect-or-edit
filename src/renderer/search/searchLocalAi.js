@@ -1,3 +1,4 @@
+import { t } from '../core/i18n.js';
 import { setLedStatus } from '../core/statusManager.js';
 import { i18n } from '../core/i18n.js';
 import { renderResults } from './searchUi.js';
@@ -97,7 +98,7 @@ export function initLocalAiWorker(getCurrentResults) {
       if (status === 'initiate' || status === 'download' || status === 'progress') {
         const pct = data.progress !== undefined ? Math.round(data.progress) : 0;
         const fileName = data.file || 'AI Model Weights';
-        setLedStatus('ai', 'loading', `AI Model: Downloading ${pct}%`);
+        setLedStatus('ai', 'loading', t('led_ai_downloading', { pct }));
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct, fileName, status } }));
         
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'block';
@@ -152,7 +153,7 @@ export function initLocalAiWorker(getCurrentResults) {
         window.__isLocalAiModelReady = true;
         isLocalAiDownloading = false;
         const modelShortName = loadedModel.split('/').pop();
-        setLedStatus('ai', true, `6. AI-MODEL: Ready (${modelShortName})`);
+        setLedStatus('ai', true, t('led_ai_ready', { model: modelShortName }));
         window.dispatchEvent(new CustomEvent('app:settingsChanged'));
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct: 100, status: 'ready', model: loadedModel } }));
         markModelDownloaded(loadedModel);
@@ -185,7 +186,7 @@ export function initLocalAiWorker(getCurrentResults) {
       } else if (status === 'error') {
         isLocalAiDownloading = false;
         console.warn("Embedding worker reported error:", error);
-        setLedStatus('ai', 'error', `AI Model Error: ${error}`);
+        setLedStatus('ai', 'error', t('led_ai_error', { error }));
         if (btnInitLocalAi) {
           btnInitLocalAi.disabled = false;
           btnInitLocalAi.style.opacity = '1';

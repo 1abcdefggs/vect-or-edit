@@ -447,6 +447,13 @@
   flex-shrink: 0;
 }
 
+/* Bottom bar labels use the menu bar's text size and weight (header.css .menu-bar-btn) */
+#nativeBottomBar .bottom-bar-text {
+  font-size: var(--fs-12);
+  font-weight: 500;
+  font-family: inherit;
+}
+
 /* Step 1: pipeline stages show only their LEDs (saves about 370px) */
 @container bottom-bar (max-width: 1000px) {
   #nativeBottomBar .status-pill-label,
