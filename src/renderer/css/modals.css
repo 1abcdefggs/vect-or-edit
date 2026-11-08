@@ -184,7 +184,9 @@
   border-bottom: var(--border-width) solid var(--border-color);
   padding: 8px 18px 0;
   gap: 6px;
-  overflow-x: auto;
+  /* Wrap instead of scrolling: a horizontal scroll box also clipped the tab text at the bottom */
+  flex-wrap: wrap;
+  overflow: visible;
   flex-shrink: 0;
 }
 
@@ -1701,28 +1703,15 @@
   background: var(--bg-primary, rgba(0, 0, 0, 0.2));
 }
 
+/* The app's own title bar (layout.css .app-header), so the picture reads as the desktop window */
 .setup-ai-window-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 32px;
-  padding: 0 14px;
-  background: var(--active-bg);
-  font-family: var(--font-mono, monospace);
-  font-size: var(--fs-12);
-  color: var(--text-muted);
-}
-
-.setup-ai-dots {
-  display: flex;
-  gap: 5px;
-}
-
-.setup-ai-dots i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--border-color);
+  gap: 8px;
+  height: var(--header-height);
+  padding: 0 12px;
+  background-color: var(--header-bg, #080c16);
+  color: var(--header-fg, var(--text-main));
 }
 
 .setup-ai-panes {

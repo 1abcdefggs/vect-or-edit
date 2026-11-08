@@ -22,7 +22,7 @@ body {
 }
 
 .app-header {
-  height: 38px;
+  height: var(--header-height);
   background-color: var(--header-bg, #080c16);
   color: var(--header-fg, var(--text-main));
   display: flex;

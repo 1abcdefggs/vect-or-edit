@@ -8,12 +8,12 @@ import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { showToast } from '../notifications/toastManager.js';
 import { applyI18n, currentLang, t } from '../../core/i18n';
 import { applyColorMode, applyLanguageSetting, applyThemeSetting, getStoredThemeSetting, getThemeList, refreshColorModeControls } from '../settings/settingsFacade.js';
-import { getThemePreview, hasBothFaces, isDarkModeActive } from '../../editor/core/themeLoader.js';
+import { getColorMode, getThemePreview, hasBothFaces, isDarkModeActive } from '../../editor/core/themeLoader.js';
 import { applyEditorCanvasTone } from '../../editor/editorManager.js';
 import { AUTO_SAVE_DELAY_RANGE_MS, getAutoSaveDelayMs, isIdleAutoSaveEnabled, isNewlineAutoSaveEnabled, markAutoSaveLocationConfirmed, setAutoSaveDelayMs, setTriggers, updateAutoSaveUI } from '../../editor/ui/autoSaveManager.js';
 import { syncSettingsToBackend } from '../settings/settingsState.js';
 import { saveApiKey } from '../../core/apiKeyStore.js';
-import { bindSaveLocationControls } from '../settings/saveLocation.js';
+import { bindSaveLocationControls, getSaveLocation } from '../settings/saveLocation.js';
 import { getDownloadedModelIds } from '../../search/embeddingModels.js';
 import { aiManager } from '../../core/aiStateManager.js';
 import { createStepTabs } from '../components/stepTabs.js';
@@ -35,6 +35,8 @@ let currentStep = 1;
 let editorReady = false;
 // Set once finishSetup starts (it awaits the key save), so a second click on the last button does nothing
 let isFinishing = false;
+// Language, theme and appearance as they were when setup opened; cancel puts them back (see cancelSetup)
+let openingChoices = null;
 const readyQueue = [];
 
 let stepTabs = null;
@@ -74,6 +76,11 @@ export function showAiSetupModal() {
   const overlay = $('aiSetupModalOverlay');
   if (!overlay) return;
   isFinishing = false;
+  openingChoices = { lang: currentLang, theme: getStoredThemeSetting(), mode: getColorMode(), workspace: null };
+  // The save folder held when setup opened (null in the browser build, where there is no folder).
+  // The main process keeps its own copy of the saved choice, so cancel restores that and nothing from the renderer.
+  getSaveLocation().then((location) => { if (openingChoices) openingChoices.workspace = location; });
+  window.engineAPI?.snapshotDefaultWorkspace?.();
   // The header shows only its brand while setup runs (see header.css)
   document.documentElement.classList.add('setup-active');
   bindSetup();
@@ -150,6 +157,9 @@ function bindSetup() {
   // The cards follow a theme chosen somewhere else (header, settings) and redraw their samples on every applied
   // theme, since a mode change (or the OS, in system mode) swaps the face they show
   window.addEventListener('app:themeApplied', renderThemeCards);
+  // The pressed card follows the stored theme. app:themeApplied fires before the choice is stored (inside loadTheme),
+  // so the pressed state is refreshed again once app:themeChanged, which comes after the store, has fired
+  window.addEventListener('app:themeChanged', updateThemeCardState);
 
   saveLocation = bindSaveLocationControls({
     pathEl: $('setupSaveLocation'),
@@ -507,14 +517,36 @@ function queueLocalModelInstall() {
 }
 
 /**
- * Quits the app without storing the setup choices. AI_SETUP_COMPLETED stays unset, so the setup opens again on the
- * next start. Language and theme are already applied and stored when chosen (see the header of this file), so they stay.
- * window:close skips the close confirmation on purpose: the user already chose to leave the setup.
+ * Quits the app without storing the setup choices. Steps 1-2 apply language, theme, appearance and the save folder as they
+ * are chosen, so cancel puts back the values held when setup opened. AI_SETUP_COMPLETED stays unset, so the setup opens again on
+ * the next start. window:close skips the close confirmation on purpose: the user already chose to leave the setup.
  */
-function cancelSetup() {
+async function cancelSetup() {
   if (isFinishing) return;
   isFinishing = true;
+  try {
+    await restoreOpeningChoices();
+  } catch (err) {
+    console.warn('[Setup] Could not restore the choices from when setup opened:', err);
+  }
   window.engineAPI?.closeWindow?.();
+}
+
+/**
+ * Puts back the language, theme, appearance and save folder that were held when setup opened. Only changed values are
+ * applied. The folder comes back as a location only: a name changed in step 2 is part of that location and returns with it.
+ */
+async function restoreOpeningChoices() {
+  const opening = openingChoices;
+  if (!opening) return;
+  if (currentLang !== opening.lang) await applyLanguageSetting(opening.lang);
+  if (getColorMode() !== opening.mode) await applyColorMode(opening.mode);
+  if (getStoredThemeSetting() !== opening.theme) await applyThemeSetting(opening.theme);
+  const before = opening.workspace;
+  const now = await getSaveLocation();
+  if (before && now && (now.path !== before.path || now.isBuiltIn !== before.isBuiltIn)) {
+    await window.engineAPI?.restoreDefaultWorkspace?.();
+  }
 }
 
 /** Stores the saving and AI choices and closes the setup. Reached only from the last step's button. */
