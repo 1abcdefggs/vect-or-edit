@@ -172,8 +172,8 @@
             <div data-setting-text data-label-key="setting_line_height" data-label-text="Line Height" data-desc-key="setting_line_height_desc" data-desc-text="Adjust vertical pitch between lines."></div>
             <select id="modalLineHeightSelect" class="toolbar-select" data-i18n-title="tip_set_line_height">
               <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
-              <option value="26" selected data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
-              <option value="30" data-i18n="opt_lh_relaxed">1.8 Relaxed (30px)</option>
+              <option value="26" data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
+              <option value="30" selected data-i18n="opt_lh_relaxed">1.8 Relaxed (30px)</option>
               <option value="34" data-i18n="opt_lh_spacious">2.0 Spacious (34px)</option>
             </select>
           </div>
@@ -231,8 +231,8 @@
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_line_highlight" data-label-text="Current Line Highlight" data-desc-key="setting_line_highlight_desc" data-desc-text="Configure cursor highlight style."></div>
             <select id="modalLineHighlightSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_line_highlight">
-              <option value="gutter" selected data-i18n="opt_highlight_gutter">Line Number Only</option>
-              <option value="line" data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
+              <option value="gutter" data-i18n="opt_highlight_gutter">Line Number Only</option>
+              <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
               <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
               <option value="none" data-i18n="opt_highlight_none">Disabled</option>
             </select>
@@ -244,6 +244,10 @@
               <option value="boundary" data-i18n="opt_ws_boundary">Boundary (Leading/Trailing)</option>
               <option value="all" data-i18n="opt_ws_all">All (Show everywhere)</option>
             </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="monaco_reset_row_label" data-label-text="Editor options" data-desc-key="monaco_reset_row_desc" data-desc-text="Puts back every value you changed in the Editor Options panel to its default."></div>
+            <button id="btnEditorOptionsReset" class="settings-btn" type="button" data-i18n="monaco_reset_row_btn" data-i18n-title="tip_monaco_reset_row">Restore Defaults</button>
           </div>
         </div>
 

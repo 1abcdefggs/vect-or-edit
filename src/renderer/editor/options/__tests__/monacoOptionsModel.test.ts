@@ -3,12 +3,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import * as modelModule from '../monacoOptionsModel.js';
 import catalog from '../monacoOptions.catalog.json';
-import ja from '../monacoOptions.ja.json';
+import ja from '../../../locales/ja.json';
+import en from '../../../locales/en.json';
 
 // The model is plain JS; its inferred types are narrower than the data it really handles
 const model: any = modelModule;
 const controls: any[] = model.buildControls(catalog);
 const index = model.indexControls(controls);
+
+const DESCRIPTION_PREFIX = 'settings.editor.';
 
 describe('monaco option catalog', () => {
   it('was generated from the installed monaco-editor version', () => {
@@ -16,17 +19,22 @@ describe('monaco option catalog', () => {
     expect(catalog.monacoVersion, 'Run: node scripts/extract-monaco-options.mjs').toBe(pkg.version);
   });
 
-  it('has a Japanese description for every option and every member of an object option', () => {
-    const dict = ja as Record<string, string>;
-    const missing = controls.filter((c) => !dict[c.path]).map((c) => c.path);
-    const missingParents = catalog.options.map((o: { name: string }) => o.name).filter((n: string) => !dict[n]);
-    expect([...missing, ...missingParents], `Add these to monacoOptions.ja.json:\n${[...missing, ...missingParents].join('\n')}`).toEqual([]);
+  it('has a dictionary description in both languages for every option and every member of an object option', () => {
+    const names = new Set<string>([...catalog.options.map((o: { name: string }) => o.name), ...controls.map((c) => c.path)]);
+    const missing: string[] = [];
+    for (const [lang, dict] of [['ja', ja], ['en', en]] as const) {
+      for (const name of names) {
+        if ((dict as Record<string, string>)[DESCRIPTION_PREFIX + name] === undefined) missing.push(`${lang} ${name}`);
+      }
+    }
+    expect(missing, `Add these to the locale files as settings.editor.<option>:\n${missing.join('\n')}`).toEqual([]);
   });
 
-  it('has no Japanese description for an option that does not exist', () => {
-    const known = new Set<string>([...catalog.options.map((o: { name: string }) => o.name), ...controls.map((c) => c.path)]);
-    const stale = Object.keys(ja).filter((k) => !known.has(k));
-    expect(stale, `Remove these from monacoOptions.ja.json:\n${stale.join('\n')}`).toEqual([]);
+  it('has no settings.editor description for an option that does not exist', () => {
+    const names = new Set<string>([...catalog.options.map((o: { name: string }) => o.name), ...controls.map((c) => c.path)]);
+    const stale = [...Object.keys(ja), ...Object.keys(en)]
+      .filter((k) => k.startsWith(DESCRIPTION_PREFIX) && !names.has(k.slice(DESCRIPTION_PREFIX.length)));
+    expect(stale, `Remove these from the locale files:\n${stale.join('\n')}`).toEqual([]);
   });
 });
 

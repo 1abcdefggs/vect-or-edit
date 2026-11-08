@@ -81,7 +81,7 @@ export const DEFAULTS = {
   MIN_SCORE_PCT: 70,
   SEARCH_LIMIT: 5,
   FONT_SIZE: 16,
-  LINE_HEIGHT: 26,
+  LINE_HEIGHT: 30,
   FONT_FAMILY: "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif",
   LOCAL_EMBEDDING_MODEL: 'Xenova/multilingual-e5-small',
   CLAUDE_MODEL: 'claude-opus-5-5',

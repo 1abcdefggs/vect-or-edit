@@ -23,7 +23,16 @@ function resolveLang(): string {
 const initialLang = resolveLang();
 
 export let currentLang: string = initialLang;
-export let i18n: Record<string, string> = LOCALES[initialLang] || LOCALES.ja;
+/**
+ * Active dictionary: the chosen language layered over English, so a key missing from the chosen language
+ * falls back to English everywhere (t(), applyI18n and direct lookups alike).
+ */
+function composeDictionary(lang: string): Record<string, string> {
+  const chosen = LOCALES[lang] || LOCALES.en;
+  return { ...LOCALES.en, ...chosen };
+}
+
+export let i18n: Record<string, string> = composeDictionary(initialLang);
 
 export async function loadLocales(): Promise<void> {
   try {
@@ -32,7 +41,7 @@ export async function loadLocales(): Promise<void> {
     // Keeps the document language in step with the UI language; the browser uses it to pick CJK fallback fonts.
     document.documentElement.lang = lang;
 
-    i18n = LOCALES[lang] || LOCALES.en;
+    i18n = composeDictionary(lang);
     console.log(`[i18n] Applying locale: ${lang} (keys: ${Object.keys(i18n).length})`);
     applyI18n();
     setLedStatus('i18n', true, `3. LOCALE: ${lang}.json loaded`);

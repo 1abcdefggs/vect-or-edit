@@ -54,7 +54,10 @@
   box-sizing: border-box;
   background: var(--bg-primary);
   color: var(--text-main);
-  line-height: 1.7;
+  /* Set from the editor's font and line height on each render; the fallbacks apply before the first render */
+  font-family: var(--preview-font-family, inherit);
+  font-size: var(--preview-font-size, inherit);
+  line-height: var(--preview-line-height, 1.7);
   overflow-wrap: anywhere;
 }
 

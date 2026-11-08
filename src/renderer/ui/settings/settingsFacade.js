@@ -3,6 +3,7 @@ import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
 import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode, OVERLAY_COLORS, getOverlayColor } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { EDITOR_DEFAULTS } from '../../editor/options/editorDefaults.js';
 import { importDictionary } from '../../search/dictionary.js';
 import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, refreshLinter, updateAutoSaveUI } from '../../editor/editorManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
@@ -289,7 +290,7 @@ export function initSettings(updateEditorCb) {
     const lineHeight = parseInt(modalLineHeightSelect?.value || String(DEFAULTS.LINE_HEIGHT), 10);
     const wordWrap = modalWordWrapSelect?.value || 'on';
     const lineNumbers = modalLineNumbersSelect?.value || 'on';
-    const renderLineHighlight = modalLineHighlightSelect?.value || 'gutter';
+    const renderLineHighlight = modalLineHighlightSelect?.value || EDITOR_DEFAULTS.renderLineHighlight;
     const stickyScroll = (modalStickyScrollSelect?.value || 'on') === 'on';
     const renderWhitespace = modalWhitespaceSelect?.value || 'none';
     const quickEditorToneSelect = document.getElementById('quickEditorToneSelect');
