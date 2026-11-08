@@ -146,7 +146,13 @@
      "definition": "Document and workspace commands: New, Open, Open Workspace, Save, Save As, Save All, Close Tab, Settings and Exit."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:settingsFolderName",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -447,7 +453,13 @@
      "definition": "The color theme menu. Every theme has a light and a dark face; the appearance mode picks which one is shown."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalColorModeSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -747,6 +759,16 @@
      "type": "alsoSee",
      "target": "c:ui-setting:modalAutoSaveSelect",
      "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalAutoSaveSelect",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalAutoSaveSelect",
+     "source": "internal"
     }
    ],
    "facet": "F.concept"
@@ -789,7 +811,23 @@
      "definition": "Chooses the background tone of the editor."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalFontFamilySelect",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalFontFamilySelect",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalFontFamilySelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -877,7 +915,13 @@
      "definition": "Chooses the editor text size."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalFontFamilySelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -1273,6 +1317,16 @@
     {
      "type": "alsoSee",
      "target": "c:ui-setting:modalGeminiModelSelect",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalOpenAiKeyInput",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalClaudeKeyInput",
      "source": "internal"
     }
    ],
@@ -1731,7 +1785,13 @@
      "definition": "Loads a goal profile (preset) from a file you choose. On success a notice shows the profile name."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -1862,7 +1922,13 @@
      "definition": "The minimum similarity a suggestion needs (50% to 99%, default 70%). Results below it are not shown."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -1903,7 +1969,13 @@
      "definition": "The menu for the maximum number of suggestions."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -1944,7 +2016,13 @@
      "definition": "When on, suggestion results show all metadata and attributes."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -2026,7 +2104,13 @@
      "definition": "The card that lists every Monaco editor option. Click to expand or collapse. The search box filters by name or description. Changing an option updates the main editor at once and is saved with the settings. A changed option gets a coloured bar and a ↺ button that restores that option alone; the button in the card header restores them all. Options the settings page already owns (font, word wrap, line numbers and so on) are read-only here. See MONACO_OPTIONS.md for the full list."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalWordWrapSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -2128,7 +2212,13 @@
      "definition": "Clears all log entries from the log panel. A confirmation appears first."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -2169,7 +2259,13 @@
      "definition": "The button that copies all log entries to the clipboard."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -2210,7 +2306,13 @@
      "definition": "The button that saves all log entries to a text file."
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -2309,6 +2411,21 @@
     }
    ],
    "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "source": "internal"
+    },
     {
      "type": "alsoSee",
      "target": "c:ui-setting:modalLogsOnStartSelect",
@@ -3290,12 +3407,25 @@
     {
      "id": "modalColorModeSelect#pair.en",
      "definition": "linked: Same value as the appearance button in the header"
+    },
+    {
+     "id": "modalThemeSelect#pair.ja",
+     "definition": "linked: ヘッダーのテーマ選択、View メニューのテーマ切替と同じ値"
+    },
+    {
+     "id": "modalThemeSelect#pair.en",
+     "definition": "linked: Same value as the theme selector in the header and the theme switch in the View menu"
     }
    ],
    "relations": [
     {
      "type": "alsoSee",
      "target": "c:data-ui:hdr:color-mode",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:hdr:theme-select",
      "source": "internal"
     }
    ],
@@ -3435,9 +3565,23 @@
     {
      "id": "settingsFolderName#desc.en",
      "definition": "Folder for new documents and the settings file (.settings.json)."
+    },
+    {
+     "id": "btnImportWorkspace#pair.ja",
+     "definition": "linked: File メニューの「ワークスペースを開く」と同じ操作"
+    },
+    {
+     "id": "btnImportWorkspace#pair.en",
+     "definition": "linked: Same action as File > Open Workspace"
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:hdr:menu-file",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -3494,12 +3638,48 @@
     {
      "id": "modalFontFamilySelect#desc.en",
      "definition": "Select typeface for text rendering."
+    },
+    {
+     "id": "modalCustomBgPicker#pair.ja",
+     "definition": "linked: 「カスタム」選択時の背景色"
+    },
+    {
+     "id": "modalCustomBgPicker#pair.en",
+     "definition": "linked: Background colour when Custom is chosen"
+    },
+    {
+     "id": "modalCustomFgPicker#pair.ja",
+     "definition": "linked: 「カスタム」選択時の文字色"
+    },
+    {
+     "id": "modalCustomFgPicker#pair.en",
+     "definition": "linked: Text colour when Custom is chosen"
     }
    ],
    "relations": [
     {
      "type": "alsoSee",
      "target": "c:data-ui:edt:font-family",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:font-size",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:bg-tone",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:bg-tone",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:bg-tone",
      "source": "internal"
     }
    ],
@@ -3537,9 +3717,23 @@
     {
      "id": "modalWordWrapSelect#desc.en",
      "definition": "Toggle automatic text wrapping based on viewport width."
+    },
+    {
+     "id": "btnEditorOptionsReset#pair.ja",
+     "definition": "linked: エディタオプションのカードの「既定に戻す」と同じ操作"
+    },
+    {
+     "id": "btnEditorOptionsReset#pair.en",
+     "definition": "linked: Same action as Restore Defaults in the editor options card"
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:editor-options-card",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -3633,9 +3827,35 @@
     {
      "id": "modalAutoSaveSelect#pair.en",
      "definition": "linked: Same value as the AutoSave switch in the save button's menu"
+    },
+    {
+     "id": "modalAutoSaveIdleSelect#pair.ja",
+     "definition": "reflected: 保存ボタンの LED が状態を表示"
+    },
+    {
+     "id": "modalAutoSaveIdleSelect#pair.en",
+     "definition": "reflected: The lamp on the save button shows the state"
+    },
+    {
+     "id": "modalAutoSaveNewlineSelect#pair.ja",
+     "definition": "reflected: 保存ボタンの LED が状態を表示"
+    },
+    {
+     "id": "modalAutoSaveNewlineSelect#pair.en",
+     "definition": "reflected: The lamp on the save button shows the state"
     }
    ],
    "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:save",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:save",
+     "source": "internal"
+    },
     {
      "type": "alsoSee",
      "target": "c:data-ui:edt:save",
@@ -3877,12 +4097,25 @@
     {
      "id": "modalOpenAiKeyInput#pair.en",
      "definition": "linked: Same key as the key field in the chat dock"
+    },
+    {
+     "id": "modalOpenAiModelSelect#pair.ja",
+     "definition": "reflected: チャットドックのモデル表示バッジ"
+    },
+    {
+     "id": "modalOpenAiModelSelect#pair.en",
+     "definition": "reflected: The model badge in the chat dock"
     }
    ],
    "relations": [
     {
      "type": "alsoSee",
      "target": "c:data-ui:edt:llm-key-config",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-dock",
      "source": "internal"
     }
    ],
@@ -3928,12 +4161,25 @@
     {
      "id": "modalClaudeKeyInput#pair.en",
      "definition": "linked: Same key as the key field in the chat dock"
+    },
+    {
+     "id": "modalClaudeModelSelect#pair.ja",
+     "definition": "reflected: チャットドックのモデル表示バッジ"
+    },
+    {
+     "id": "modalClaudeModelSelect#pair.en",
+     "definition": "reflected: The model badge in the chat dock"
     }
    ],
    "relations": [
     {
      "type": "alsoSee",
      "target": "c:data-ui:edt:llm-key-config",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-dock",
      "source": "internal"
     }
    ],
@@ -4139,9 +4385,38 @@
     {
      "id": "modalSuggestTriggerSelect#desc.en",
      "definition": "Control how vector suggestions are invoked (Selection Auto / Context Menu / Shortcut)."
+    },
+    {
+     "id": "btnModalImportDict#pair.ja",
+     "definition": "linked: サイドバーの辞書インポートと同じ操作"
+    },
+    {
+     "id": "btnModalImportDict#pair.en",
+     "definition": "linked: Same action as the import button in the sidebar"
     }
    ],
-   "relations": [],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:score-filter",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:limit-select",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:metadata-toggle",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:import-dictionary",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -4237,15 +4512,93 @@
      "definition": "Whether the log panel is open when the app starts."
     },
     {
+     "id": "log:clear#pair.ja",
+     "definition": "linked: ログパネルのクリアと同じ操作"
+    },
+    {
+     "id": "log:clear#pair.en",
+     "definition": "linked: Same action as Clear in the log panel"
+    },
+    {
+     "id": "log:copy#pair.ja",
+     "definition": "linked: ログパネルのコピーと同じ操作"
+    },
+    {
+     "id": "log:copy#pair.en",
+     "definition": "linked: Same action as Copy in the log panel"
+    },
+    {
+     "id": "log:download#pair.ja",
+     "definition": "linked: ログパネルの保存と同じ操作"
+    },
+    {
+     "id": "log:download#pair.en",
+     "definition": "linked: Same action as Save in the log panel"
+    },
+    {
      "id": "modalLogsOnStartSelect#pair.ja",
      "definition": "reflected: 起動時のログパネルの開閉"
     },
     {
      "id": "modalLogsOnStartSelect#pair.en",
      "definition": "reflected: Whether the log panel is open at startup"
+    },
+    {
+     "id": "modalRememberLayoutSelect#pair.ja",
+     "definition": "reflected: ログ・チャット欄の高さとサイドバーの幅を記憶する（オフにすると記憶を消す）"
+    },
+    {
+     "id": "modalRememberLayoutSelect#pair.en",
+     "definition": "reflected: Remembers the log and chat heights and the sidebar width (off forgets them)"
+    },
+    {
+     "id": "modalLogTimeFormatSelect#pair.ja",
+     "definition": "reflected: ログの各行の時刻の表示形式（24 時間、12 時間、OS に従う、ISO 8601）"
+    },
+    {
+     "id": "modalLogTimeFormatSelect#pair.en",
+     "definition": "reflected: Time format of each log line (24 hours"
+    },
+    {
+     "id": "modalLogTimeZoneSelect#pair.ja",
+     "definition": "reflected: ログの時刻のタイムゾーン（ローカルか UTC か）"
+    },
+    {
+     "id": "modalLogTimeZoneSelect#pair.en",
+     "definition": "reflected: Time zone of the log times (local or UTC)"
     }
    ],
    "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-clear",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-copy",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-download",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-console",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-console",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-console",
+     "source": "internal"
+    },
     {
      "type": "alsoSee",
      "target": "c:data-ui:sys:log-console",
