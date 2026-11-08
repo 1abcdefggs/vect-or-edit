@@ -1098,7 +1098,7 @@
   "part_stp_format": "File format",
   "part_stp_autosave": "Auto-save",
   "part_stp_autosave-delay": "Auto-save delay",
-  "part_stp_embed": "Embedding on/off button",
+  "part_stp_embed": "Dictionary search (EMBED) on/off button",
   "part_stp_cloud-provider": "Cloud AI provider",
   "part_stp_cancel": "Cancel",
   "part_stp_back": "Back",
