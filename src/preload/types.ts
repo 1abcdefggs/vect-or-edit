@@ -129,6 +129,10 @@ export interface EngineAPI {
   renameDefaultWorkspace: (name: string) => Promise<DefaultWorkspaceResponse>;
   /** Returns the save folder to the built-in Documents/VectOrEdit. */
   resetDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
+  /** Keeps the save folder choice held when the first-run setup opened. The renderer passes no path. */
+  snapshotDefaultWorkspace: () => Promise<void>;
+  /** Puts the save folder back to the choice kept by snapshotDefaultWorkspace (first-run setup cancel). Only the pointer is written. */
+  restoreDefaultWorkspace: () => Promise<DefaultWorkspaceResponse>;
   loadSettings: () => Promise<{ success: boolean, settings?: any, error?: string }>;
   saveSettings: (settings: any) => Promise<{ success: boolean, error?: string }>;
   validateDocument: (text: string) => Promise<ValidationResponse>;

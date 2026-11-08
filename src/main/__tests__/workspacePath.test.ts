@@ -12,7 +12,7 @@ vi.mock('electron', () => ({
 }));
 vi.mock('../windowManager', () => ({ getMainWindow: () => null }));
 
-const { getDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace } = await import('../fileSystem');
+const { getDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, snapshotOpeningWorkspace, restoreDefaultWorkspace } = await import('../fileSystem');
 
 describe('save folder (built-in name and rename)', () => {
   // Documents/VectOrFoldEr was the name before 0.3.25; nothing is carried over from it (no existing users to keep).
@@ -67,5 +67,52 @@ describe('save folder (built-in name and rename)', () => {
     const reset = await resetDefaultWorkspace();
     expect(reset.path).toBe(path.join(documents, 'VectOrEdit'));
     expect(reset.isBuiltIn).toBe(true);
+  });
+});
+
+describe('save folder restore (first-run setup cancel)', () => {
+  beforeEach(() => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vect-ws-restore-'));
+    documents = path.join(root, 'Documents');
+    userData = path.join(root, 'userData');
+    fs.mkdirSync(documents);
+    fs.mkdirSync(userData);
+  });
+
+  afterEach(() => {
+    fs.rmSync(path.dirname(documents), { recursive: true, force: true });
+  });
+
+  it('restores the choice held at snapshot time, and takes no path from the caller', async () => {
+    await renameDefaultWorkspace('MyNotes');
+    await snapshotOpeningWorkspace();
+    await renameDefaultWorkspace('Changed');
+
+    const res = await restoreDefaultWorkspace();
+    expect(res.success).toBe(true);
+    expect(res.path).toBe(path.join(documents, 'MyNotes'));
+    expect(JSON.parse(fs.readFileSync(path.join(userData, 'workspace-location.json'), 'utf8')).path).toBe(path.join(documents, 'MyNotes'));
+  });
+
+  it('clears the pointer when the held choice was the built-in folder', async () => {
+    await snapshotOpeningWorkspace();
+    await renameDefaultWorkspace('Changed');
+
+    const res = await restoreDefaultWorkspace();
+    expect(res.isBuiltIn).toBe(true);
+    expect(fs.existsSync(path.join(userData, 'workspace-location.json'))).toBe(false);
+  });
+
+  it('refuses to restore when no snapshot was taken, and stores nothing', async () => {
+    const res = await restoreDefaultWorkspace();
+    expect(res.success).toBe(false);
+    expect(fs.existsSync(path.join(userData, 'workspace-location.json'))).toBe(false);
+  });
+
+  it('a snapshot is used once: a second restore is refused', async () => {
+    await snapshotOpeningWorkspace();
+    await restoreDefaultWorkspace();
+    const again = await restoreDefaultWorkspace();
+    expect(again.success).toBe(false);
   });
 });

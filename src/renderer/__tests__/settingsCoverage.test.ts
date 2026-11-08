@@ -49,13 +49,22 @@ describe('settings page coverage', () => {
 
 describe('window parts and the settings registry', () => {
   const COMPONENTS = path.join(RENDERER, 'components');
-  // Outside the parts table and this check on purpose: the first-run setup shows once at start (README, "部品表の対象外")
-  const OUTSIDE_PARTS = new Set(['aiSetupModal.html']);
+  // The first-run setup (aiSetupModal.html) is a part-only area (stp): its parts are in the parts table, but it has no
+  // eye switch, so only the four visibility areas are compared with the registry below (README: part-only area)
   const htmlKeys = new Set<string>();
-  for (const f of fs.readdirSync(COMPONENTS).filter((n) => n.endsWith('.html') && !OUTSIDE_PARTS.has(n))) {
-    for (const m of fs.readFileSync(path.join(COMPONENTS, f), 'utf8').matchAll(/data-ui="((?:hdr|edt|sbr|sys):[a-z-]+)"/g)) htmlKeys.add(m[1]);
+  const partOnlyKeys = new Set<string>();
+  for (const f of fs.readdirSync(COMPONENTS).filter((n) => n.endsWith('.html'))) {
+    const text = fs.readFileSync(path.join(COMPONENTS, f), 'utf8');
+    for (const m of text.matchAll(/data-ui="((?:hdr|edt|sbr|sys):[a-z-]+)"/g)) htmlKeys.add(m[1]);
+    for (const m of text.matchAll(/data-ui="(stp:[a-z-]+)"/g)) partOnlyKeys.add(m[1]);
   }
   const registryKeys = new Set(SETTINGS_REGISTRY.map((i) => i.visibilityKey).filter(Boolean) as string[]);
+
+  it('has part-only setup parts that have no eye switch', () => {
+    expect(partOnlyKeys.size, 'The first-run setup should carry stp: keys').toBeGreaterThan(0);
+    const withEye = [...partOnlyKeys].filter((k) => registryKeys.has(k));
+    expect(withEye, `Part-only keys must not be in settingsRegistry.ts:\n${withEye.join('\n')}`).toEqual([]);
+  });
 
   it('registers every part of the window that carries a data-ui key', () => {
     const missing = [...htmlKeys].filter((k) => !registryKeys.has(k));
@@ -86,7 +95,7 @@ describe('window parts and the settings registry', () => {
       const file = path.join(RENDERER, 'generated', `ui_help.${lang}.json`);
       expect(fs.existsSync(file), `Missing ${file}: run control/tools/build_ui_help_md.mjs --lang ${lang}`).toBe(true);
       const guide = JSON.parse(fs.readFileSync(file, 'utf8'));
-      expect(Object.keys(guide.areas).sort()).toEqual(['Editor', 'Header', 'Sidebar', 'System']);
+      expect(Object.keys(guide.areas).sort()).toEqual(['Editor', 'Header', 'Setup', 'Sidebar', 'System']);
       for (const area of Object.values<{ html: string }>(guide.areas)) expect(area.html.length).toBeGreaterThan(200);
     }
   });
