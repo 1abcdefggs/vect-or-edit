@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.58] - 2026-11-08
+
+### Added
+
+- Session logs can be saved, with a three-mode setting.
+- The trimmed Material Symbols icon font is bundled, so the icons work offline.
+- The Markdown preview uses the editor's font and line height, and shows a single line break as a line break.
+- The editor options have a restore-defaults row, and Monaco's first-run defaults are set (tab size 2, no quick suggestions, no format on paste or type).
+
+### Changed
+
+- The log list shows a capped number of rows and renders them in batches. The log panel shrinks, so long logs scroll inside it.
+- Monaco option descriptions are read from the dictionary.
+- Duplicate labels are merged and unused label fields are removed.
+- The dictionary step of the first-run setup is renamed.
+
+### Fixed
+
+- Saving overwrites a file without asking only when the user chose that path in a dialog during this run. Any other path goes through the save dialog.
+- The model name in an AI response is escaped before it is shown.
+- The first-run setup restores the save folder and the choices when Cancel is pressed.
+
+### Removed
+
+- The unused `_archive/rust-napi` copy.
+- The empty completion provider stub in the editor extensions.
+
 ## [0.3.57] - 2026-11-07
 
 ### Added
