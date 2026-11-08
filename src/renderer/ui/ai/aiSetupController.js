@@ -233,6 +233,7 @@ function bindSetup() {
     if (icon) icon.textContent = isPass ? 'visibility' : 'visibility_off';
   });
 
+  $('btnSetupCancel')?.addEventListener('click', cancelSetup);
   $('btnSetupBack')?.addEventListener('click', () => goToStep(currentStep - 1));
   $('btnSetupNext')?.addEventListener('click', () => {
     if (currentStep < TOTAL_STEPS) goToStep(currentStep + 1);
@@ -503,6 +504,17 @@ function queueLocalModelInstall() {
     showToast(t(isCached ? 'setup_ai_cached' : 'setup_ai_queued', { model: model.split('/').pop() }), 'info');
     window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model } }));
   });
+}
+
+/**
+ * Quits the app without storing the setup choices. AI_SETUP_COMPLETED stays unset, so the setup opens again on the
+ * next start. Language and theme are already applied and stored when chosen (see the header of this file), so they stay.
+ * window:close skips the close confirmation on purpose: the user already chose to leave the setup.
+ */
+function cancelSetup() {
+  if (isFinishing) return;
+  isFinishing = true;
+  window.engineAPI?.closeWindow?.();
 }
 
 /** Stores the saving and AI choices and closes the setup. Reached only from the last step's button. */

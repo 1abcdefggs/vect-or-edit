@@ -156,12 +156,9 @@
   color: var(--text-main);
 }
 
+/* Surface and text come from selection.css; the top rule is the selection edge */
 .editor-tab-item.active {
-  background: var(--bg-card, #0d121f);
-  color: var(--text-main);
-  border-color: var(--border-color);
-  border-top: 2px solid var(--accent-color, #66f);
-
+  border-top: 2px solid var(--sel-edge);
 }
 
 .editor-tab-item.is-dirty .tab-dirty-dot {

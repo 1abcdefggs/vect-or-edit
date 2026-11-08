@@ -110,8 +110,8 @@
   background: var(--hover-bg, rgba(255, 255, 255, 0.08));
 }
 
+/* Surface, text and edge come from selection.css */
 .ui-select-option.is-selected {
-  color: var(--accent-color, #38bdf8);
   font-weight: 600;
 }
 

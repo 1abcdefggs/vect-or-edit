@@ -14,7 +14,7 @@
 
     <div class="first-run-body">
       <!-- Step 1: language and theme (applied immediately) -->
-      <section class="first-run-step" data-setup-step="1">
+      <section class="first-run-step first-run-step--fill" data-setup-step="1">
         <div class="first-run-section first-run-section--row" role="group" aria-labelledby="setupLangLabel">
           <h2 class="first-run-heading"><span id="setupLangLabel" data-i18n="setup_lang_label">Language</span><span data-info-tip="setup_info_lang"></span></h2>
           <!-- A two-position switch: the thumb slides to the chosen side (English left, Japanese right) -->
@@ -38,6 +38,8 @@
           </div>
         </div>
 
+        <hr class="first-run-divider">
+
         <div class="first-run-section" role="group" aria-labelledby="setupThemeLabel">
           <h2 class="first-run-heading"><span id="setupThemeLabel" data-i18n="setup_theme_label">Theme</span><span data-info-tip="setup_info_theme"></span></h2>
           <!-- One card per theme, drawn from the theme files (setupThemeCards in aiSetupController.js) -->
@@ -46,7 +48,7 @@
       </section>
 
       <!-- Step 2: save location and AutoSave -->
-      <section class="first-run-step" data-setup-step="2" hidden>
+      <section class="first-run-step first-run-step--fill" data-setup-step="2" hidden>
         <div class="first-run-section">
           <h2 class="first-run-heading"><span data-i18n="setup_save_location_label">Save location</span><span data-info-tip="setup_info_save"></span></h2>
           <div class="first-run-save-box">
@@ -143,7 +145,7 @@
 
       <!-- Step 3: AI (the embedding model installs in the background after setup) -->
       <section class="first-run-step" data-setup-step="3" hidden>
-        <div class="first-run-section">
+        <div class="first-run-section first-run-section--spaced">
           <h2 class="first-run-heading">
             <span data-i18n="setup_ai_embedding_heading">Embedding AI</span>
             <span class="first-run-badge" data-i18n="setup_ai_core_badge">Core feature</span>
@@ -262,6 +264,8 @@
         <span id="setupLoadStatus" class="first-run-status" role="status" aria-live="polite"></span>
       </div>
       <div class="first-run-actions">
+        <!-- Quits without saving the choices; the setup opens again on the next start -->
+        <button id="btnSetupCancel" class="btn first-run-btn-quiet" type="button" data-i18n="setup_btn_cancel" data-i18n-title="tip_setup_cancel">Cancel</button>
         <!-- Each button names where it leads: a small caption ("Next") over the step name -->
         <button id="btnSetupBack" class="btn first-run-btn first-run-nav-btn" type="button" hidden data-i18n-title="tip_setup_back">
           <span class="material-symbols-outlined first-run-nav-icon" aria-hidden="true">chevron_left</span>

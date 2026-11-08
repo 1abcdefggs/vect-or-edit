@@ -49,8 +49,10 @@ describe('settings page coverage', () => {
 
 describe('window parts and the settings registry', () => {
   const COMPONENTS = path.join(RENDERER, 'components');
+  // Outside the parts table and this check on purpose: the first-run setup shows once at start (README, "部品表の対象外")
+  const OUTSIDE_PARTS = new Set(['aiSetupModal.html']);
   const htmlKeys = new Set<string>();
-  for (const f of fs.readdirSync(COMPONENTS).filter((n) => n.endsWith('.html'))) {
+  for (const f of fs.readdirSync(COMPONENTS).filter((n) => n.endsWith('.html') && !OUTSIDE_PARTS.has(n))) {
     for (const m of fs.readFileSync(path.join(COMPONENTS, f), 'utf8').matchAll(/data-ui="((?:hdr|edt|sbr|sys):[a-z-]+)"/g)) htmlKeys.add(m[1]);
   }
   const registryKeys = new Set(SETTINGS_REGISTRY.map((i) => i.visibilityKey).filter(Boolean) as string[]);

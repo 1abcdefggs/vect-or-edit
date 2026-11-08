@@ -1,0 +1,77 @@
+/*
+ * Selected state, one definition for every boxed choice (style_rules: selected-state).
+ * The surface is the inverse of the window: dark in light mode, light in dark mode. It is built from the text and
+ * background tokens, so it follows the theme and the mode without a rule of its own. Size does not change it.
+ */
+:root {
+  --sel-surface: var(--text-main);
+  --sel-on-surface: var(--bg-primary);
+  --sel-edge: var(--accent-color);
+  --sel-edge-width: 2px;
+}
+
+.first-run-choice:has(input:checked),
+.first-run-theme-card[aria-pressed="true"],
+.provider-card.active {
+  background: var(--sel-surface);
+  color: var(--sel-on-surface);
+  border-color: var(--sel-edge);
+  box-shadow: inset 0 0 0 var(--sel-edge-width) var(--sel-edge);
+}
+
+/* Hover keeps the selected surface instead of the plain hover tint */
+.first-run-choice:has(input:checked):hover,
+.first-run-theme-card[aria-pressed="true"]:hover,
+.provider-card.active:hover {
+  background: var(--sel-surface);
+  color: var(--sel-on-surface);
+}
+
+/* Settings areas, provider-like list cards, dropdown items: the same boxed selection */
+.settings-area.active,
+.ep-card.is-active,
+.ui-select-option.is-selected {
+  background: var(--sel-surface);
+  color: var(--sel-on-surface);
+  border-color: var(--sel-edge);
+  box-shadow: inset 0 0 0 var(--sel-edge-width) var(--sel-edge);
+}
+
+.settings-area.active:hover,
+.ep-card.is-active:hover,
+.ui-select-option.is-selected:hover {
+  background: var(--sel-surface);
+  color: var(--sel-on-surface);
+}
+
+/* Tabs keep their edge on one side (underline or top rule); the surface and text are the same tokens */
+.settings-tab-btn.active,
+.editor-tab-item.active {
+  background: var(--sel-surface);
+  color: var(--sel-on-surface);
+}
+
+.settings-tab-btn.active {
+  border-bottom-color: var(--sel-edge);
+}
+
+.editor-tab-item.active {
+  border-top-color: var(--sel-edge);
+}
+
+/* Text inside a selected surface takes its color from the surface, not from the muted text tokens of the window */
+.first-run-choice:has(input:checked) .first-run-hint,
+.first-run-choice:has(input:checked) .first-run-md-marker,
+.first-run-theme-card[aria-pressed="true"] .first-run-theme-name {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.first-run-choice:has(input:checked) .first-run-choice-mark {
+  background: var(--sel-on-surface);
+  color: var(--sel-surface);
+}
+
+.provider-card.active::after {
+  color: var(--sel-on-surface);
+}
