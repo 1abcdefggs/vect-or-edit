@@ -11,6 +11,8 @@ const LOG_SAVE_PATH = 'system.logSaveMode';
 const SAVE_FLUSH_MS = 500;
 const SAVE_BATCH = 500;
 const SNAPSHOT_MAX = 5000;
+// Rows kept in the visible views. The buffer keeps every entry, so Copy and Save still take the full log.
+const MAX_VISIBLE_ROWS = 1000;
 
 /** The fields that are stored; nothing else leaves the renderer. */
 function toStored(entry) {
@@ -58,6 +60,9 @@ export function initSystemConsole() {
   let persistedCount = 0;
   let flushTimer = null;
   let flushChain = Promise.resolve();
+  // Entries logged since the last frame; their rows are added to the views in one batch
+  let pendingRows = [];
+  let rowFrame = 0;
 
   function updateLogBadge() {
     if (!logCountBadge) return;
@@ -84,7 +89,9 @@ export function initSystemConsole() {
     views.forEach((view) => {
       if (filledMirrors.has(view)) return;
       filledMirrors.add(view);
-      view.replaceChildren(...logBuffer.map(buildLogRow));
+      // Entries still waiting for a frame are added by renderPendingRows, so only the rendered part is copied here
+      const rendered = logBuffer.slice(0, logBuffer.length - pendingRows.length);
+      view.replaceChildren(...rendered.slice(-MAX_VISIBLE_ROWS).map(buildLogRow));
       view.scrollTop = view.scrollHeight;
     });
     return views;
@@ -113,14 +120,23 @@ export function initSystemConsole() {
     logBuffer.push(entry);
     updateLogBadge();
     if (settingsStore.getPreference(LOG_SAVE_PATH) === 'always') scheduleFlush();
+    pendingRows.push(entry);
+    if (!rowFrame) rowFrame = requestAnimationFrame(renderPendingRows);
+  }
 
-    const targets = [...(logEntriesContainer ? [logEntriesContainer] : [])];
-    liveMirrors().forEach((view) => {
-      // A view filled just now already holds this entry
-      if (view.childElementCount < logBuffer.length) targets.push(view);
-    });
-    for (const view of targets) {
-      view.appendChild(buildLogRow(entry));
+  // One layout pass per frame however many entries arrived in it; each view keeps only its last MAX_VISIBLE_ROWS rows
+  function renderPendingRows() {
+    rowFrame = 0;
+    if (pendingRows.length === 0) return;
+    const views = [...(logEntriesContainer ? [logEntriesContainer] : []), ...liveMirrors()];
+    const entries = pendingRows;
+    pendingRows = [];
+    for (const view of views) {
+      const fragment = document.createDocumentFragment();
+      fragment.append(...entries.map(buildLogRow));
+      view.appendChild(fragment);
+      const excess = view.childElementCount - MAX_VISIBLE_ROWS;
+      for (let i = 0; i < excess; i++) view.firstElementChild.remove();
       view.scrollTop = view.scrollHeight;
     }
   }
@@ -230,6 +246,8 @@ export function initSystemConsole() {
     }
     logBuffer.length = 0;
     persistedCount = 0;
+    pendingRows = [];
+    if (rowFrame) { cancelAnimationFrame(rowFrame); rowFrame = 0; }
     if (logEntriesContainer) logEntriesContainer.innerHTML = '';
     liveMirrors().forEach((view) => view.replaceChildren());
     updateLogBadge();
