@@ -5,7 +5,6 @@
 import { t, currentLang } from '../../core/i18n.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
 import {
-  loadCatalog,
   loadControls,
   getOverrides,
   setOverride,
@@ -30,7 +29,6 @@ const SEARCH_DELAY_MS = 120;
 const state = {
   built: false,
   controls: [],
-  ja: {},
   overrides: {},
   snapshot: {},
   rows: new Map(),
@@ -46,16 +44,13 @@ function el(tag, className, text) {
   return node;
 }
 
-/** Description in the UI language: Japanese text when we have it, the catalog's English documentation otherwise. */
+/** Description in the UI language, from the dictionary (settings.editor.<option path>). */
 function describe(control) {
-  const own = currentLang === 'ja' ? state.ja[control.path] : null;
-  if (own) return own;
-  if (control.member === null) return currentLang === 'ja' && state.ja[control.name] ? state.ja[control.name] : control.doc;
-  return control.doc;
+  return t(`settings.editor.${control.path}`);
 }
 
 function tooltipOf(control) {
-  const parent = control.member !== null && currentLang === 'ja' ? state.ja[control.name] : '';
+  const parent = control.member !== null && currentLang === 'ja' ? t(`settings.editor.${control.name}`) : '';
   return [parent, control.doc].filter(Boolean).join('\n');
 }
 
@@ -249,8 +244,7 @@ async function ensureBuilt() {
   }
   state.built = true;
   try {
-    const [{ ja }, { controls }, overrides] = await Promise.all([loadCatalog(), loadControls(), getOverrides()]);
-    state.ja = ja;
+    const [{ controls }, overrides] = await Promise.all([loadControls(), getOverrides()]);
     state.controls = controls;
     state.overrides = overrides;
     refreshSnapshot();
@@ -259,6 +253,17 @@ async function ensureBuilt() {
     state.built = false;
     console.error('[MonacoOptions] Could not build the panel:', err);
   }
+}
+
+/** Removes every panel override, then redraws the list and the summary from the empty state. */
+async function resetEditorOptions() {
+  await resetAllOverrides(getEditor());
+  state.overrides = {};
+  if (state.built) {
+    refreshSnapshot();
+    for (const row of state.rows.values()) row.refresh();
+  }
+  updateSummary();
 }
 
 export function initMonacoOptionsPanel() {
@@ -294,16 +299,10 @@ export function initMonacoOptionsPanel() {
     timer = setTimeout(applyFilter, SEARCH_DELAY_MS);
   });
 
+  // The panel's header button and the settings page row both put every panel change back to its default
   const resetAll = document.getElementById('btnMonacoOptionsResetAll');
-  resetAll?.addEventListener('click', async () => {
-    await resetAllOverrides(getEditor());
-    state.overrides = {};
-    if (state.built) {
-      refreshSnapshot();
-      for (const row of state.rows.values()) row.refresh();
-    }
-    updateSummary();
-  });
+  resetAll?.addEventListener('click', resetEditorOptions);
+  document.getElementById('btnEditorOptionsReset')?.addEventListener('click', resetEditorOptions);
   // Overrides from an earlier session: show the reset button without loading the whole catalog
   if (resetAll && localStorage.getItem(STORAGE_KEYS.MONACO_OPTIONS)) resetAll.hidden = false;
 

@@ -11,12 +11,10 @@ let catalogPromise = null;
 let controlsPromise = null;
 let baseline = null;
 
-/** The generated catalog (monacoOptions.catalog.json) plus the Japanese texts, loaded once. */
+/** The generated catalog (monacoOptions.catalog.json), loaded once. Descriptions come from the dictionary (settings.editor.*). */
 export function loadCatalog() {
-  catalogPromise ||= Promise.all([
-    import('./monacoOptions.catalog.json'),
-    import('./monacoOptions.ja.json')
-  ]).then(([catalog, ja]) => ({ catalog: catalog.default ?? catalog, ja: ja.default ?? ja }));
+  catalogPromise ||= import('./monacoOptions.catalog.json')
+    .then((catalog) => ({ catalog: catalog.default ?? catalog }));
   return catalogPromise;
 }
 
