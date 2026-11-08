@@ -1429,5 +1429,9 @@
   "settings.editor.dropIntoEditor.enabled": "Enable dropping into editor. Defaults to true.",
   "settings.editor.dropIntoEditor.showDropSelector": "Controls if a widget is shown after a drop. Defaults to 'afterDrop'.",
   "settings.editor.pasteAs.enabled": "Enable paste as functionality in editors. Defaults to true.",
-  "settings.editor.pasteAs.showPasteSelector": "Controls if a widget is shown after a drop. Defaults to 'afterPaste'."
+  "settings.editor.pasteAs.showPasteSelector": "Controls if a widget is shown after a drop. Defaults to 'afterPaste'.",
+  "monaco_reset_row_label": "Editor options",
+  "monaco_reset_row_desc": "Puts back every value you changed in the Editor Options panel to its default.",
+  "monaco_reset_row_btn": "Restore Defaults",
+  "tip_monaco_reset_row": "Puts back every value you changed in the Editor Options panel to its default"
 }

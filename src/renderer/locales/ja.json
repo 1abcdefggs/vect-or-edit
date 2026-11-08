@@ -1545,5 +1545,9 @@
   "settings.editor.dropIntoEditor.enabled": "ファイルのドロップで、エディタに挿入できるようにする",
   "settings.editor.dropIntoEditor.showDropSelector": "ドロップのあとに、挿入形式の選択を表示する: afterDrop / never",
   "settings.editor.pasteAs.enabled": "「形式を選んで貼り付け」の機能を有効にする",
-  "settings.editor.pasteAs.showPasteSelector": "貼り付けのあとに、形式の選択を表示する: afterPaste / never"
+  "settings.editor.pasteAs.showPasteSelector": "貼り付けのあとに、形式の選択を表示する: afterPaste / never",
+  "monaco_reset_row_label": "エディタオプション",
+  "monaco_reset_row_desc": "エディタオプションのパネルで変えた値を、すべて初期値に戻します。",
+  "monaco_reset_row_btn": "初期値に戻す",
+  "tip_monaco_reset_row": "エディタオプションのパネルで変えた値を、すべて初期値に戻します"
 }
