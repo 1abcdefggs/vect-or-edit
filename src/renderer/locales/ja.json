@@ -1573,5 +1573,22 @@
   "led_ai_ready": "6. AI-MODEL: 準備完了（{model}）",
   "led_ai_error": "AI モデルのエラー: {error}",
   "led_guideline_loaded": "ガイドライン／プリセット: 読み込み済み（{profile}）",
-  "led_conf_restored": "1. CONFIG: 設定を復元しました"
+  "led_conf_restored": "1. CONFIG: 設定を復元しました",
+  "setting_log_save": "ログの保存",
+  "setting_log_save_desc": "ログを残す方法を選びます。終了時に確認は、終了のたびに尋ねます。常に保存は、すべてのセッションを 30 日間残します。保存しないは、何も残しません。",
+  "tip_set_log_save": "ログを残す方法",
+  "opt_log_save_ask": "終了時に確認",
+  "opt_log_save_always": "常に保存",
+  "opt_log_save_never": "保存しない",
+  "setting_log_sessions": "保存されたログ",
+  "setting_log_sessions_desc": "保存されたセッションを選ぶと、下に内容を表示します。30 日を過ぎたセッションは、アプリの起動時に削除されます。",
+  "tip_set_log_sessions": "保存されたセッション（新しい順）",
+  "btn_open_log_session": "開く",
+  "log_session_none": "保存されたセッションはありません",
+  "log_save_exit_title": "ログを保存しますか？",
+  "log_save_exit_message": "このセッションのログを保存します。後で 設定 > システム から読めます。保存の前に秘密情報は取り除かれます。",
+  "log_save_exit_btn": "保存して終了",
+  "log_save_exit_skip": "保存せずに終了",
+  "tip_open_log_session": "選んだ保存済みセッションを開く",
+  "log_save_enabled_toast": "終了時にログを保存するか確認するように設定しました。"
 }

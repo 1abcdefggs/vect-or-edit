@@ -31,6 +31,8 @@ export interface SystemPreferences {
   collapseLogsOnStartup: boolean;
   logTimeFormat: 'h24' | 'h12' | 'os' | 'iso';
   logTimeZone: 'local' | 'utc';
+  /** ask: question on exit (default); always: keep every session; never: keep nothing */
+  logSaveMode: 'ask' | 'always' | 'never';
 }
 
 export interface AppPreferences {

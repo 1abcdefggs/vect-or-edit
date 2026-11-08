@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 
 import { initLogger, exportLogBacklog } from './logger';
+import { appendToCurrentSession, saveSnapshot, listSessions, readSession, pruneOldSessions } from './logStore';
 import { initRustEngine, getEngine, getVault, isRustBinaryLoaded } from './engine/rustEngine';
 import {
   knowledgeSlots,
@@ -64,6 +65,15 @@ if (!gotTheLock) {
 
     handleTrusted('app:getVersion', () => app.getVersion());
     handleTrusted('app:requestLogBacklog', () => exportLogBacklog());
+    handleTrusted('logs:append', (_event, entries) => appendToCurrentSession(entries));
+    handleTrusted('logs:saveSnapshot', (_event, entries) => saveSnapshot(entries));
+    handleTrusted('logs:list', () => listSessions());
+    handleTrusted('logs:read', (_event, id) => readSession(id as string));
+    try {
+      pruneOldSessions();
+    } catch (err) {
+      console.warn('[logs] could not remove old saved logs:', err);
+    }
     // Where the app keeps its own data (the embedding model is cached inside it); shown in first-run setup
     handleTrusted('app:getUserDataPath', () => app.getPath('userData'));
     // The app's own license plus the generated third-party notices (scripts/generate-notices.mjs); null when not bundled

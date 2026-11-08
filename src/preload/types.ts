@@ -146,6 +146,12 @@ export interface EngineAPI {
   onCloseRequested: (callback: () => void) => () => void;
   /** Everything the main process has logged so far; call after onSystemLog is registered. */
   requestLogBacklog: () => Promise<SystemLogEntry[]>;
+  /** Appends log entries to this start's saved session (main validates and redacts them). */
+  appendLogSession: (entries: SystemLogEntry[]) => Promise<{ written: number }>;
+  /** Saves the given entries as a new session file (used by the exit question). */
+  saveLogSnapshot: (entries: SystemLogEntry[]) => Promise<{ id: string; written: number }>;
+  listLogSessions: () => Promise<Array<{ id: string; modified: string; bytes: number }>>;
+  readLogSession: (id: string) => Promise<SystemLogEntry[]>;
   claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   /** Encrypted API key store (OS key store) for every cloud LLM provider. */

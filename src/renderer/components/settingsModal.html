@@ -728,6 +728,20 @@
             </select>
           </div>
           <div data-setting-row>
+            <div data-setting-text data-label-key="setting_log_save" data-label-text="Save logs" data-desc-key="setting_log_save_desc" data-desc-text="Choose how the log is kept. Ask when exiting asks each time you quit. Always save keeps every session for 30 days. Do not save keeps nothing."></div>
+            <select id="modalLogSaveModeSelect" class="toolbar-select" data-i18n-title="tip_set_log_save">
+              <option value="ask" selected data-i18n="opt_log_save_ask">Ask when exiting</option>
+              <option value="always" data-i18n="opt_log_save_always">Always save</option>
+              <option value="never" data-i18n="opt_log_save_never">Do not save</option>
+            </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_log_sessions" data-label-text="Saved logs" data-desc-key="setting_log_sessions_desc" data-desc-text="Pick a saved session to read it below. Sessions older than 30 days are removed when the app starts."></div>
+            <select id="modalLogSessionSelect" class="toolbar-select" data-i18n-title="tip_set_log_sessions"></select>
+            <button id="btnLogSessionOpen" class="toolbar-btn" type="button" data-i18n="btn_open_log_session" data-i18n-title="tip_open_log_session">Open</button>
+          </div>
+          <div id="logSessionView" class="log-entries-container" hidden></div>
+          <div data-setting-row>
             <div data-setting-text data-label-key="setting_remember_layout" data-label-text="Remember layout" data-desc-key="setting_remember_layout_desc" data-desc-text="Remembers the height of the log panel and the chat dock and the width of the sidebar, and restores them at the next start. Turning it off forgets them."></div>
             <select id="modalRememberLayoutSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_remember_layout">
               <option value="on" selected data-i18n="opt_toggle_on">On</option>

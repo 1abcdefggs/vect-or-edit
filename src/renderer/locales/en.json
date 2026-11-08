@@ -1457,5 +1457,22 @@
   "led_ai_ready": "6. AI-MODEL: Ready ({model})",
   "led_ai_error": "AI Model Error: {error}",
   "led_guideline_loaded": "Guideline / Preset: Loaded ({profile})",
-  "led_conf_restored": "1. CONFIG: Settings Restored"
+  "led_conf_restored": "1. CONFIG: Settings Restored",
+  "setting_log_save": "Save logs",
+  "setting_log_save_desc": "Choose how the log is kept. Ask when exiting asks each time you quit. Always save keeps every session for 30 days. Do not save keeps nothing.",
+  "tip_set_log_save": "How the log is kept",
+  "opt_log_save_ask": "Ask when exiting",
+  "opt_log_save_always": "Always save",
+  "opt_log_save_never": "Do not save",
+  "setting_log_sessions": "Saved logs",
+  "setting_log_sessions_desc": "Pick a saved session to read it below. Sessions older than 30 days are removed when the app starts.",
+  "tip_set_log_sessions": "Saved sessions, newest first",
+  "btn_open_log_session": "Open",
+  "log_session_none": "No saved session",
+  "log_save_exit_title": "Save the log?",
+  "log_save_exit_message": "The log of this session is saved, so you can read it later in Settings > System. Secrets are removed before saving.",
+  "log_save_exit_btn": "Save and exit",
+  "log_save_exit_skip": "Exit without saving",
+  "tip_open_log_session": "Open the selected saved session",
+  "log_save_enabled_toast": "Logs will be asked to save when you exit."
 }

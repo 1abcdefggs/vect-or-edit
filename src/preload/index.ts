@@ -49,6 +49,10 @@ const engineAPI: EngineAPI = {
     };
   },
   requestLogBacklog: () => ipcRenderer.invoke('app:requestLogBacklog') as Promise<SystemLogEntry[]>,
+  appendLogSession: (entries: SystemLogEntry[]) => ipcRenderer.invoke('logs:append', entries) as Promise<{ written: number }>,
+  saveLogSnapshot: (entries: SystemLogEntry[]) => ipcRenderer.invoke('logs:saveSnapshot', entries) as Promise<{ id: string; written: number }>,
+  listLogSessions: () => ipcRenderer.invoke('logs:list') as Promise<Array<{ id: string; modified: string; bytes: number }>>,
+  readLogSession: (id: string) => ipcRenderer.invoke('logs:read', id) as Promise<SystemLogEntry[]>,
   claudeSemanticSuggest: (payload) => ipcRenderer.invoke('app:claudeSemanticSuggest', payload),
   geminiSemanticSuggest: (payload) => ipcRenderer.invoke('app:geminiSemanticSuggest', payload),
   saveApiKey: (provider: string, apiKey: string) => ipcRenderer.invoke('app:saveApiKey', provider, apiKey),

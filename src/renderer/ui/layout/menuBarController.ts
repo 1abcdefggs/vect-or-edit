@@ -140,6 +140,10 @@ export function registerAppCommands(): void {
   // Exit and Close Window end the same single window, so both ask first (the close-confirmation setting applies)
   const exitApplication = async () => {
     if (!(await confirmClose('app'))) return;
+    // Listeners (saved logs) finish their work first; a failed listener does not block the exit
+    const exit = { tasks: [] as Promise<unknown>[] };
+    window.dispatchEvent(new CustomEvent('app:beforeExit', { detail: exit }));
+    await Promise.allSettled(exit.tasks);
     window.engineAPI?.closeWindow?.();
   };
 

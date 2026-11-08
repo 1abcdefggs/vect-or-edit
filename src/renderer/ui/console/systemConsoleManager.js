@@ -4,6 +4,46 @@ import { settingsStore } from '../../core/settingsStore.js';
 import { formatLogTime } from '../../core/logTime.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
 import { t } from '../../core/i18n.js';
+import { showToast } from '../notifications/toastManager.js';
+
+// Saved-log helpers (module scope: also used by the saved-session view in Settings)
+const LOG_SAVE_PATH = 'system.logSaveMode';
+const SAVE_FLUSH_MS = 500;
+const SAVE_BATCH = 500;
+const SNAPSHOT_MAX = 5000;
+
+/** The fields that are stored; nothing else leaves the renderer. */
+function toStored(entry) {
+  const stored = { time: entry.time, source: entry.source, level: entry.level, message: entry.message };
+  if (entry.tone === 'success') stored.tone = 'success';
+  return stored;
+}
+
+function buildLogRow(entry) {
+  const row = document.createElement('div');
+  row.className = entry.tone ? `log-row log-row--${entry.tone}` : 'log-row';
+  const badgeClass = entry.level === 'ERROR' ? 'badge-error' : (entry.level === 'WARN' ? 'badge-warn' : 'badge-info');
+  // Built with textContent: messages carry raw console text (renderer HTML, file paths) that must not be parsed as markup
+  const cells = [
+    ['log-time', `[${formatLogTime(entry.time, settingsStore.getPreference('system.logTimeFormat'), settingsStore.getPreference('system.logTimeZone'))}]`],
+    [`log-badge ${badgeClass}`, entry.level],
+    ['log-source', `[${entry.source}]`],
+    ['log-msg', entry.message]
+  ];
+  for (const [className, text] of cells) {
+    const span = document.createElement('span');
+    span.className = className;
+    span.textContent = String(text ?? '');
+    row.append(span, ' ');
+  }
+  return row;
+}
+
+/** Renders saved entries into a container (read-only view). Text is set with textContent, never as HTML. */
+export function renderStoredLogs(container, entries) {
+  container.replaceChildren(...entries.map(buildLogRow));
+  container.scrollTop = container.scrollHeight;
+}
 
 export function initSystemConsole() {
   const logEntriesContainer = document.getElementById('logEntriesContainer');
@@ -14,6 +54,10 @@ export function initSystemConsole() {
   const btnCopyLogs = document.getElementById('btnCopyLogs');
   const btnDownloadLogs = document.getElementById('btnDownloadLogs');
   const logBuffer = [];
+  // Entries before this index are already saved (only used when the mode is 'always')
+  let persistedCount = 0;
+  let flushTimer = null;
+  let flushChain = Promise.resolve();
 
   function updateLogBadge() {
     if (!logCountBadge) return;
@@ -32,26 +76,6 @@ export function initSystemConsole() {
     }
   }
 
-  function buildLogRow(entry) {
-    const row = document.createElement('div');
-    row.className = entry.tone ? `log-row log-row--${entry.tone}` : 'log-row';
-    const badgeClass = entry.level === 'ERROR' ? 'badge-error' : (entry.level === 'WARN' ? 'badge-warn' : 'badge-info');
-    // Built with textContent: messages carry raw console text (renderer HTML, file paths) that must not be parsed as markup
-    const cells = [
-      ['log-time', `[${formatLogTime(entry.time, settingsStore.getPreference('system.logTimeFormat'), settingsStore.getPreference('system.logTimeZone'))}]`],
-      [`log-badge ${badgeClass}`, entry.level],
-      ['log-source', `[${entry.source}]`],
-      ['log-msg', entry.message]
-    ];
-    for (const [className, text] of cells) {
-      const span = document.createElement('span');
-      span.className = className;
-      span.textContent = String(text ?? '');
-      row.append(span, ' ');
-    }
-    return row;
-  }
-
   // Extra read-only views of the same buffer (the Settings > System tab). They are marked [data-log-mirror] and
   // can load after this init, so they are looked up on every append and filled from the buffer when first seen.
   const filledMirrors = new WeakSet();
@@ -66,9 +90,29 @@ export function initSystemConsole() {
     return views;
   }
 
+  function scheduleFlush() {
+    if (flushTimer) return;
+    flushTimer = setTimeout(() => {
+      flushTimer = null;
+      flushChain = flushChain.then(flushSaved).catch((err) => console.warn('[logs] could not save log entries', err));
+    }, SAVE_FLUSH_MS);
+  }
+
+  // Sends the entries that are not saved yet, in order. A failed send leaves them for the next try.
+  async function flushSaved() {
+    if (settingsStore.getPreference(LOG_SAVE_PATH) !== 'always') return;
+    while (persistedCount < logBuffer.length) {
+      const batch = logBuffer.slice(persistedCount, persistedCount + SAVE_BATCH).map(toStored);
+      const res = await window.engineAPI?.appendLogSession?.(batch);
+      if (!res) return;
+      persistedCount += batch.length;
+    }
+  }
+
   function appendLogEntry(entry) {
     logBuffer.push(entry);
     updateLogBadge();
+    if (settingsStore.getPreference(LOG_SAVE_PATH) === 'always') scheduleFlush();
 
     const targets = [...(logEntriesContainer ? [logEntriesContainer] : [])];
     liveMirrors().forEach((view) => {
@@ -148,6 +192,31 @@ export function initSystemConsole() {
   logsDisclosure?.set(!settingsStore.getPreference('system.collapseLogsOnStartup'));
   document.getElementById('btnCloseLogs')?.addEventListener('click', () => logsDisclosure?.set(false));
 
+  // Runs before the window closes (menuBarController dispatches app:beforeExit after the exit confirmation)
+  async function prepareLogsForExit() {
+    const mode = settingsStore.getPreference(LOG_SAVE_PATH);
+    try {
+      if (mode === 'always') {
+        flushChain = flushChain.then(flushSaved);
+        await flushChain;
+      } else if (mode === 'ask' && logBuffer.length > 0) {
+        const save = await showConfirmModal({
+          title: t('log_save_exit_title'),
+          message: t('log_save_exit_message'),
+          type: 'info',
+          confirmText: t('log_save_exit_btn'),
+          cancelText: t('log_save_exit_skip')
+        });
+        if (save) await window.engineAPI?.saveLogSnapshot?.(logBuffer.slice(-SNAPSHOT_MAX).map(toStored));
+      }
+    } catch (err) {
+      console.warn('[logs] could not save logs on exit', err);
+    }
+  }
+  window.addEventListener('app:beforeExit', (event) => {
+    event.detail?.tasks?.push(prepareLogsForExit());
+  });
+
   // Clearing cannot be undone, so it asks first, but only when there is something to lose
   const clearLogs = async () => {
     if (logBuffer.length > 0) {
@@ -160,6 +229,7 @@ export function initSystemConsole() {
       if (!confirmed) return;
     }
     logBuffer.length = 0;
+    persistedCount = 0;
     if (logEntriesContainer) logEntriesContainer.innerHTML = '';
     liveMirrors().forEach((view) => view.replaceChildren());
     updateLogBadge();
@@ -167,7 +237,12 @@ export function initSystemConsole() {
 
   const formatLogs = () => logBuffer.map(l => `[${l.time}] [${l.level}] [${l.source}] ${l.message}`).join('\n');
 
+  // Pressing save turns on the exit question when saving is off, then writes the text file as before
   const downloadLogs = () => {
+    if (settingsStore.getPreference(LOG_SAVE_PATH) === 'never') {
+      settingsStore.updatePreference(LOG_SAVE_PATH, 'ask');
+      showToast(t('log_save_enabled_toast'), 'info');
+    }
     const stamp = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 19);
     saveTextToFile(formatLogs(), `vectoredit-logs-${stamp}.txt`, 'txt');
   };

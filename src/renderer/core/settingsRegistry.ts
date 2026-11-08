@@ -33,7 +33,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
     system: {
       collapseLogsOnStartup: false,
       logTimeFormat: 'h24',
-      logTimeZone: 'local'
+      logTimeZone: 'local',
+      logSaveMode: 'never'
     }
   },
   visibility: {
@@ -501,6 +502,12 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     category: 'system',
     prefPath: 'system.collapseLogsOnStartup',
     controlType: 'toggle'
+  },
+  {
+    id: 'sys_log_save',
+    category: 'system',
+    prefPath: 'system.logSaveMode',
+    controlType: 'select'
   },
   {
     id: 'sys_log_clear',
