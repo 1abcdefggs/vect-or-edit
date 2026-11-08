@@ -71,16 +71,29 @@ const themeAssets = Object.entries(themeAttribution).map(([name, a]) => ({
 const BUNDLED_ASSETS = [
   ...themeAssets,
   {
-    name: 'Material Symbols Outlined and the UI/editor fonts (Noto Sans JP, Noto Serif JP, Source Code Pro, Source Sans 3, Source Serif 4, Cascadia Code)',
-    license: 'Apache-2.0 (Material Symbols); SIL OFL 1.1 (fonts)',
+    // Bundled: a subset of the upstream variable font, built by scripts/icon-font/subset-icon-font.py
+    name: 'Material Symbols Outlined (subset: 68 icon glyphs, src/renderer/assets/fonts/material-symbols-outlined.subset.woff2)',
+    license: 'Apache-2.0',
+    source: 'https://github.com/google/material-design-icons',
+    note: 'Modified: subsetted to the icons in scripts/icon-font/icon-names.txt, FILL and GRAD pinned to 0. Full licence text follows.',
+    licenseFile: 'src/renderer/assets/fonts/LICENSE-MaterialSymbols.txt'
+  },
+  {
+    // Not bundled: loaded at runtime from Google Fonts (see the CSP and the font links in src/renderer/index.html)
+    name: 'UI and editor fonts (Noto Sans JP, Noto Serif JP, Source Code Pro, Source Sans 3, Source Serif 4, Cascadia Code)',
+    license: 'SIL Open Font License 1.1 (per family on Google Fonts)',
     source: 'https://fonts.google.com',
-    note: 'Not bundled. Loaded at runtime from Google Fonts (see the CSP in src/renderer/index.html).'
+    note: 'Not bundled. Loaded at runtime from Google Fonts.'
   }
 ];
 
 parts.push('='.repeat(78), 'Bundled and runtime-loaded assets', '');
 for (const asset of BUNDLED_ASSETS) {
   parts.push(`- ${asset.name}`, `  License: ${asset.license}`, `  Source: ${asset.source}`, `  ${asset.note}`, '');
+  if (asset.licenseFile) {
+    const text = fs.readFileSync(path.join(root, asset.licenseFile), 'utf8').trim();
+    parts.push('='.repeat(78), `${asset.name.split(' (')[0]} license text (${asset.licenseFile})`, '', text, '');
+  }
 }
 
 for (const { pkg, dir } of entries) {

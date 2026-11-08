@@ -6,6 +6,10 @@ import path from 'node:path';
 import { getMainWindow } from './windowManager';
 import { checkFolderName, type FolderNameProblem } from '../shared/folderName';
 import { formatOfName } from '../shared/documentFormat';
+import { createSavePathAllowlist } from './savePathAllowlist';
+
+// Paths the user chose in a dialog during this run; only these may be overwritten without asking again (see savePathAllowlist.ts)
+const savePaths = createSavePathAllowlist();
 
 // The folder of the last successful save. Kept in userData so it survives a restart.
 function lastSaveDirFile(): string {
@@ -33,8 +37,8 @@ export async function saveFile(content: string, defaultName?: string, forceDialo
   const mainWindow = getMainWindow();
   if (!mainWindow) return { success: false, error: 'No main window' };
   try {
-    // If not forcing dialog and defaultName is an absolute path, overwrite directly
-    if (!forceDialog && defaultName && path.isAbsolute(defaultName)) {
+    // Overwrite directly only a path the user already chose in a dialog this run; any other absolute path goes through the dialog
+    if (!forceDialog && defaultName && path.isAbsolute(defaultName) && savePaths.isApproved(defaultName)) {
       await fsPromises.writeFile(defaultName, content, 'utf-8');
       return { success: true, filePath: defaultName };
     }
@@ -59,6 +63,7 @@ export async function saveFile(content: string, defaultName?: string, forceDialo
       return { success: false, canceled: true };
     }
 
+    savePaths.approveFile(filePath);
     await fsPromises.writeFile(filePath, content, 'utf-8');
     await setLastSaveDir(path.dirname(filePath));
     return { success: true, filePath };
@@ -101,6 +106,7 @@ export async function openFile() {
     }
 
     const filePath = filePaths[0];
+    savePaths.approveFile(filePath);
     const buffer = await fsPromises.readFile(filePath);
     const { encoding, text } = decodeText(buffer);
     const fileName = path.basename(filePath);
@@ -125,6 +131,7 @@ export async function openWorkspace() {
     }
 
     const folderPath = filePaths[0];
+    savePaths.approveFolder(folderPath);
     const dirents = await fsPromises.readdir(folderPath, { withFileTypes: true });
     const mdFiles = dirents
       .filter(d => d.isFile() && (d.name.endsWith('.md') || d.name.endsWith('.txt')))
@@ -190,6 +197,8 @@ export async function getDefaultWorkspace(createIfMissing?: boolean): Promise<Wo
       }
     }
 
+    // The save folder is either the built-in one or the one the user chose in a dialog, so the app may write into it
+    savePaths.approveFolder(workspacePath);
     return { success: true, path: workspacePath, exists, isBuiltIn: !chosen };
   } catch (err: any) {
     return { success: false, error: err.message };
