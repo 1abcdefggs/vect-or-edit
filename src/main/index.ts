@@ -29,7 +29,7 @@ import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { truncateAndNormalize } from '../shared/embeddingSpace';
 import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow } from './windowManager';
-import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
+import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, snapshotOpeningWorkspace, restoreDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 import { getCursorBaseSize } from './cursorSize';
 
 let currentKbPath: string = ""; // Default empty
@@ -112,6 +112,8 @@ if (!gotTheLock) {
     handleTrusted('app:chooseDefaultWorkspace', () => chooseDefaultWorkspace());
     handleTrusted('app:renameDefaultWorkspace', (_event, name: unknown) => renameDefaultWorkspace(name));
     handleTrusted('app:resetDefaultWorkspace', () => resetDefaultWorkspace());
+    handleTrusted('app:snapshotDefaultWorkspace', () => snapshotOpeningWorkspace());
+    handleTrusted('app:restoreDefaultWorkspace', () => restoreDefaultWorkspace());
 
     handleTrusted('app:loadSettings', () => loadSettings());
     handleTrusted('app:saveSettings', (_event, settings) => saveSettings(settings));

@@ -258,6 +258,34 @@ export async function resetDefaultWorkspace(): Promise<WorkspaceResult> {
   }
 }
 
+/**
+ * The saved choice (pointer file value, or null for the built-in folder) held when the first-run setup opened.
+ * It is read here, in the main process, so the renderer never supplies a path that restore would write back.
+ * `undefined` means no snapshot was taken.
+ */
+let openingWorkspaceChoice: string | null | undefined;
+
+export async function snapshotOpeningWorkspace(): Promise<void> {
+  openingWorkspaceChoice = await readChosenWorkspacePath();
+}
+
+/**
+ * Puts the save folder back to the choice held when the first-run setup opened (cancel restores steps 1-2).
+ * Only the pointer is written; no folder is moved or renamed on disk. A null choice (built-in folder) clears the pointer.
+ */
+export async function restoreDefaultWorkspace(): Promise<WorkspaceResult> {
+  if (openingWorkspaceChoice === undefined) return { success: false, error: 'No opening choice was saved' };
+  const choice = openingWorkspaceChoice;
+  openingWorkspaceChoice = undefined;
+  try {
+    if (choice === null) return resetDefaultWorkspace();
+    await persistWorkspacePath(choice);
+    return getDefaultWorkspace(true);
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
 export async function loadSettings() {
   try {
     const ws = await getDefaultWorkspace(true);
