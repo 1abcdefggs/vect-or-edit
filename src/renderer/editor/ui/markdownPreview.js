@@ -5,6 +5,7 @@
 import { getCurrentContent, focusEditor } from '../core/editorCore.js';
 import { t } from '../../core/i18n.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
+import { previewTypography } from '../options/editorDefaults.js';
 
 const SANITIZE_CONFIG = {
   USE_PROFILES: { html: true },
@@ -38,11 +39,22 @@ function loadRenderer() {
  */
 export async function renderMarkdownInto(target, markdown) {
   const { marked, purify } = await loadRenderer();
-  const rawHtml = marked.parse(markdown || '', { gfm: true, async: false });
+  // breaks: a single newline is a line break, as in the editor (Japanese prose has no spaces to join with)
+  const rawHtml = marked.parse(markdown || '', { gfm: true, breaks: true, async: false });
   target.innerHTML = purify.sanitize(rawHtml, SANITIZE_CONFIG);
 }
 
+/** Copies the editor's font and line height onto the preview (read-only: no typing happens here). */
+function applyEditorTypography(preview) {
+  const editor = window.__monacoEditorInstance;
+  const typo = previewTypography(typeof editor?.getRawOptions === 'function' ? editor.getRawOptions() : {});
+  preview.style.setProperty('--preview-font-family', typo.fontFamily);
+  preview.style.setProperty('--preview-font-size', `${typo.fontSize}px`);
+  preview.style.setProperty('--preview-line-height', `${typo.lineHeightPx}px`);
+}
+
 async function renderPreview(preview) {
+  applyEditorTypography(preview);
   await renderMarkdownInto(preview, getCurrentContent() || '');
 }
 

@@ -1,4 +1,5 @@
 import { AppSettings, SettingItemDef } from '../types/settings';
+import { DEFAULTS } from './constants';
 
 export const DEFAULT_SETTINGS: AppSettings = {
   version: '0.3.12',
@@ -11,7 +12,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
       windowHeight: 800
     },
     editor: {
-      fontFamily: "'Source Code Pro', monospace",
+      fontFamily: DEFAULTS.FONT_FAMILY,
       fontSize: '16px',
       lineWrapping: 'on',
       minimap: false,

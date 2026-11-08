@@ -11,6 +11,7 @@ import { t } from '../../core/i18n.js';
 import { openLlmChat } from '../../core/externalActions.js';
 import { commandManager } from '../../core/commandManager';
 import { captureBaseline, applyStoredOverrides, withCreateOnlyOverrides } from '../options/monacoOptionsStore.js';
+import { buildMonacoBaseOptions } from '../options/editorDefaults.js';
 
 let monacoEditorInstance = null;
 let monaco = null;
@@ -91,47 +92,13 @@ export async function initEditor() {
     await loadTheme(currentTheme);
   } catch (_) {}
 
-  const baseOptions = {
+  const baseOptions = buildMonacoBaseOptions({
     value: t('initial_document_content'),
     language: 'markdown',
     theme: currentTheme || 'vs-dark',
     fontSize: getFontSize(),
-    fontFamily: getFontFamily(),
-    lineHeight: 24,
-    letterSpacing: 0.3,
-    wordWrap: 'on',
-    minimap: { enabled: false },
-    automaticLayout: true,
-    scrollBeyondLastLine: false,
-    glyphMargin: false,
-    folding: false,
-    lineNumbersMinChars: 3,
-    lineDecorationsWidth: 12,
-    renderLineHighlight: 'gutter',
-    renderLineHighlightOnlyWhenFocus: true,
-    smoothScrolling: true,
-    cursorBlinking: 'smooth',
-    cursorSmoothCaretAnimation: 'on',
-    fixedOverflowWidgets: true,
-    padding: { top: 12, bottom: 12 },
-    scrollbar: {
-      vertical: 'visible',
-      horizontal: 'auto',
-      verticalScrollbarSize: 6,
-      horizontalScrollbarSize: 6,
-      arrowSize: 0,
-      useShadows: false,
-      verticalHasArrows: false,
-      horizontalHasArrows: false,
-      verticalSliderSize: 6,
-      horizontalSliderSize: 6,
-      handleMouseWheel: true
-    },
-    overviewRulerLanes: 0,
-    overviewRulerBorder: false,
-    hideCursorInOverviewRuler: true,
-    contextmenu: false
-  };
+    fontFamily: getFontFamily()
+  });
   // Options Monaco reads only at creation (from the Editor Options panel) are merged in here
   monacoEditorInstance = monaco.editor.create(monacoContainer, await withCreateOnlyOverrides(baseOptions));
 
