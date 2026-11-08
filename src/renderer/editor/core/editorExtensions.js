@@ -43,13 +43,7 @@ export function runEngineLinter(editor, monacoRef) {
   }, 800);
 }
 
-export function registerEngineCompletionProvider(monacoRef) {
-  // Removed IntelliSense / CompletionProvider per user request.
-  // The sidebar search will be the primary dictionary interface.
-}
-
 export function initializeKnowledgeExtensions(editor, monacoRef) {
-  registerEngineCompletionProvider(monacoRef);
   runEngineLinter(editor, monacoRef);
   editor.onDidChangeModelContent(() => {
     runEngineLinter(editor, monacoRef);
