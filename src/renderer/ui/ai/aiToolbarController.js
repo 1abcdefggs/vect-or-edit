@@ -354,7 +354,7 @@ function initLlmChatDock() {
     }
     dock.style.display = 'flex';
     dock.classList.remove('collapsed');
-    if (collapseIcon) collapseIcon.innerHTML = '&#xe5cf;';
+    if (collapseIcon) collapseIcon.innerHTML = 'expand_more';
     updateDockModelBadge();
     if (initialPrompt) {
       chatInput.value = initialPrompt;
@@ -374,7 +374,7 @@ function initLlmChatDock() {
   function toggleCollapseDock() {
     const isCollapsed = dock.classList.toggle('collapsed');
     if (collapseIcon) {
-      collapseIcon.innerHTML = isCollapsed ? '&#xe5ce;' : '&#xe5cf;';
+      collapseIcon.innerHTML = isCollapsed ? 'expand_less' : 'expand_more';
     }
   }
 
@@ -401,7 +401,7 @@ function initLlmChatDock() {
     btnClear.addEventListener('click', () => {
       chatMessages.innerHTML = `
         <div class="llm-msg llm-msg-system">
-          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">&#xe88e;</span>
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
           <span>Conversation cleared. Type a prompt, question, or select text in Monaco Editor and right-click "LLM Chat" to converse or rewrite here.</span>
         </div>
       `;
@@ -482,7 +482,7 @@ function initLlmChatDock() {
               <span>Insert</span>
             </button>
             <button class="llm-action-btn btn-action-rewrite" title="${t('llm_action_rewrite_tip')}">
-              <span class="material-symbols-outlined" style="font-size: var(--fs-12);">auto_fix_high</span>
+              <span class="material-symbols-outlined" style="font-size: var(--fs-12);">auto_awesome</span>
               <span>Replace (Rewrite)</span>
             </button>
             <button class="llm-action-btn btn-action-copy" title="${t('llm_action_copy_tip')}">

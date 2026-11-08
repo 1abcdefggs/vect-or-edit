@@ -226,7 +226,7 @@ export function renderTabs() {
   btnInlineNewTab.title = t('tip_tab_new');
   btnInlineNewTab.style.color = 'var(--text-muted)';
   btnInlineNewTab.style.marginLeft = '2px';
-  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">&#xf741;</span><span class="tab-inline-label">${t('tab_label_new')}</span>`;
+  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">tab_new_right</span><span class="tab-inline-label">${t('tab_label_new')}</span>`;
   btnInlineNewTab.addEventListener('click', () => createBlankTab());
   tabsContainer.appendChild(btnInlineNewTab);
 

@@ -8,12 +8,12 @@
 
         <!-- Split save button: the left part saves at once (or asks for a location while AutoSave is pending); the arrow opens the menu below. The LED and label show the AutoSave state (autoSaveManager.js). -->
         <button id="btnSave" class="editor-header-btn" type="button" style="height: 28px; background: transparent; border: none; padding: 0 4px 0 6px; display: flex; align-items: center; gap: 5px; border-radius: 4px; cursor: pointer; color: var(--text-main); white-space: nowrap;" data-i18n-title="tip_save">
-          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); flex-shrink: 0; color: var(--accent-color, #38bdf8);">&#xe161;</span>
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); flex-shrink: 0; color: var(--accent-color, #38bdf8);">save</span>
           <span class="icon-label-text" id="btnSaveLabel" style="font-size: var(--fs-12); font-weight: 700; letter-spacing: 0.5px;">SAVE</span>
           <span id="autoSaveLedDot" class="status-led-dot autosave-led is-pending" aria-hidden="true"></span>
         </button>
         <button id="btnSaveMenu" class="editor-header-btn save-menu-toggle" type="button" aria-haspopup="menu" aria-expanded="false" data-i18n-title="tip_save_menu">
-          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xe5cf;</span>
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">expand_more</span>
         </button>
 
         <div class="save-dropdown-menu" role="menu">
@@ -23,15 +23,15 @@
           </button>
           <div class="save-dropdown-separator" role="separator"></div>
           <button id="btnSaveFile" class="save-dropdown-item" data-i18n-title="tip_save">
-            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xe161;</span>
+            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">save</span>
             <span data-i18n="btn_save">Save</span>
           </button>
           <button id="btnSaveAs" class="save-dropdown-item" data-i18n-title="btn_save_as">
-            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xeb60;</span>
+            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">save_as</span>
             <span data-i18n="btn_save_as">Save As</span>
           </button>
           <button id="btnSaveAll" class="save-dropdown-item disabled" data-i18n-title="btn_save_all_title">
-            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">&#xf774;</span>
+            <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">folder_supervised</span>
             <span data-i18n="btn_save_all">Save All</span>
           </button>
         </div>
@@ -42,7 +42,7 @@
       <!-- Unified Editor Style Group [BG/FG | Font Family | Font Size] -->
       <div class="font-control-integrated-group" style="display: flex; align-items: center; background: var(--bg-card); border: var(--border-width) solid var(--border-color); border-radius: var(--radius-md); padding: 0 8px; height: var(--control-h-lg); gap: 4px;" data-i18n-title="tip_editor_appearance">
         <!-- BG/FG Theme -->
-        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_bg_theme">&#xe41d;</span>
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_bg_theme">style</span>
         <span class="style-label style-label--bg" style="font-size: var(--fs-12); color: var(--text-main); margin-right: 2px;" data-i18n-title="tip_editor_bg_colors">BG/FG</span>
         <select id="quickEditorToneSelect" data-ui="edt:bg-tone" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 110px;"
           data-i18n-title="setting_editor_bg">
@@ -54,7 +54,7 @@
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
 
         <!-- FONT Family -->
-        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_family">&#xe165;</span>
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_family">text_format</span>
         <div data-ui="edt:font-family" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_family">
           <select id="fontFamilySelect" class="editor-toolbar-select editor-toolbar-select--flat"
             data-i18n-title="tip_editor_font_family">
@@ -71,7 +71,7 @@
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
 
         <!-- Font Size -->
-        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_size">&#xe245;</span>
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_size">format_size</span>
         <div data-ui="edt:font-size" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_size">
           <select id="fontSizeSelect" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 80px;"
             data-i18n-title="tip_editor_font_size">
@@ -150,7 +150,7 @@
       <!-- The format of the current document. Pointing at it lists Markdown and Text; the current one is lit and either can be chosen (documentFormatControl.js) -->
       <span class="format-switch">
         <button type="button" id="btnDocumentFormat" data-ui="edt:document-format" class="status-bar-item status-bar-button" aria-haspopup="menu" data-i18n-title="format_switch_title">
-          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">&#xf552;</span>
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">markdown</span>
           <span id="statusSyntaxLabel">Markdown</span>
         </button>
         <span class="format-switch__menu" role="menu">
@@ -175,13 +175,13 @@
           <span data-i18n="btnLlmKeyConfigLabel">API Key</span>
         </button>
         <button id="btnLlmClearChat" data-ui="edt:llm-clear-chat" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_clear_chat">
-          <span class="material-symbols-outlined">&#xe419;</span>
+          <span class="material-symbols-outlined">rotate_left</span>
         </button>
         <button id="btnLlmToggleCollapse" data-ui="edt:llm-collapse" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_toggle_dock">
-          <span id="llmCollapseIcon" class="material-symbols-outlined">&#xe5cf;</span>
+          <span id="llmCollapseIcon" class="material-symbols-outlined">expand_more</span>
         </button>
         <button id="btnLlmCloseChat" data-ui="edt:llm-close" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_close_chat">
-          <span class="material-symbols-outlined">&#xe5cd;</span>
+          <span class="material-symbols-outlined">close</span>
         </button>
       </div>
     </div>
@@ -212,7 +212,7 @@
 
     <div id="llmChatMessages" class="llm-chat-messages" data-i18n="llm_chat_section">
       <div class="llm-msg llm-msg-system">
-        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">&#xe88e;</span>
+        <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
         <span data-i18n="llm_chat_welcome">You can chat or refine your text here in conjunction with the writing process at the top of the editor. You can also issue AI instructions directly from within the editor by pressing Ctrl+K.</span>
       </div>
     </div>

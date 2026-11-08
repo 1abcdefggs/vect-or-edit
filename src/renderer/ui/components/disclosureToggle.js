@@ -3,8 +3,8 @@
  * Open: chevron points down (click to close). Closed: chevron points up (click to open).
  * The button gets aria-expanded, and an optional icon element (`[data-disclosure-icon]`) shows the chevron.
  */
-const ICON_OPEN = ''; // expand_more
-const ICON_CLOSED = ''; // expand_less
+const ICON_OPEN = 'expand_more';
+const ICON_CLOSED = 'expand_less';
 
 // Optional motion (animate: true): the panel slides up 12px while it fades in, and reverses on close.
 // Only transform and opacity move, so the layout above (the editor) is not reflowed frame by frame.

@@ -16,13 +16,13 @@ export function initUpdateChecker(): void {
         case 'checking':
           textEl.textContent = t('update_checking');
           iconEl.style.color = 'var(--text-muted)';
-          iconEl.innerHTML = '&#xe86a;'; // sync
+          iconEl.innerHTML = 'cached'; // sync
           container.onclick = null;
           container.style.background = 'rgba(0, 0, 0, 0.2)';
           break;
         case 'available':
           iconEl.style.color = '#e67e22'; // orange alert
-          iconEl.innerHTML = '&#xe8d3;'; // notification/update icon
+          iconEl.innerHTML = 'supervisor_account'; // notification/update icon
           container.style.background = 'rgba(230, 126, 34, 0.25)';
           if (data.portable) {
             // Portable builds cannot self-update; open the release page instead.
@@ -54,7 +54,7 @@ export function initUpdateChecker(): void {
           const pct = data.percent ? Math.round(data.percent) : 0;
           textEl.textContent = t('update_downloading', { pct });
           iconEl.style.color = '#3498db'; // blue
-          iconEl.innerHTML = '&#xf090;'; // download
+          iconEl.innerHTML = 'download'; // download
           container.style.background = 'rgba(52, 152, 219, 0.2)';
           container.onclick = null;
           break;
@@ -62,7 +62,7 @@ export function initUpdateChecker(): void {
         case 'downloaded':
           textEl.textContent = t('update_restart', { version: data.version });
           iconEl.style.color = '#2ecc71'; // green
-          iconEl.innerHTML = '&#xe8d3;'; // system_update
+          iconEl.innerHTML = 'supervisor_account'; // system_update
           container.style.background = 'rgba(46, 204, 113, 0.2)';
           container.onclick = async () => {
             const confirmed = await showConfirmModal({

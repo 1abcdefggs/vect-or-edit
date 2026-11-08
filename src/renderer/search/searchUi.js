@@ -330,7 +330,7 @@ export function renderResults(results, isPreliminary = false) {
 
   for (const [groupName, items] of categoryGroups.entries()) {
     const isRanked = items.some(r => typeof r.score === 'number' && r.score > 0);
-    const iconCode = isRanked ? '&#xe242;' : '&#xe241;';
+    const iconCode = isRanked ? 'format_list_numbered' : 'format_list_bulleted';
     html += `
     <div class="inspector-collapsible-section open">
       <div class="inspector-section-header">
