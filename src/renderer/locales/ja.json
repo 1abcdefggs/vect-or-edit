@@ -1214,7 +1214,7 @@
   "part_stp_format": "ファイルの形式",
   "part_stp_autosave": "自動保存",
   "part_stp_autosave-delay": "自動保存までの待ち時間",
-  "part_stp_embed": "Embedding のオン/オフボタン",
+  "part_stp_embed": "辞書の検索（EMBED）のオン/オフボタン",
   "part_stp_cloud-provider": "クラウド AI の提供元",
   "part_stp_cancel": "キャンセル",
   "part_stp_back": "戻る",
