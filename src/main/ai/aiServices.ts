@@ -93,7 +93,9 @@ export async function listGeminiModels(apiKey?: string) {
 
   // Fallback to direct official Google Generative Language API endpoint
   return new Promise((resolve, reject) => {
-    const request = net.request(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(token)}`);
+    // The key travels in a header, not the URL, so it stays out of URL logs and history
+    const request = net.request('https://generativelanguage.googleapis.com/v1beta/models');
+    request.setHeader('x-goog-api-key', token);
     let data = '';
 
     request.on('response', (response) => {
