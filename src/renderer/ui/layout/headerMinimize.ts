@@ -1,10 +1,12 @@
+import { readStorage } from '../../core/storage.js';
+
 const STORAGE_KEY = 'header_minimized';
 const HEADER_SELECTOR = '.app-header';
 const BUTTON_ID = 'btnHeaderMinimize';
 
 function readMinimized(): boolean {
   try {
-    return localStorage.getItem(STORAGE_KEY) === '1';
+    return readStorage(STORAGE_KEY) === '1';
   } catch {
     return false;
   }

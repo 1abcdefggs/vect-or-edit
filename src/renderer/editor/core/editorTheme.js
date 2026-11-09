@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from '../../core/constants.js';
+import { readStorage } from '../../core/storage.js';
 import { loadTheme, safeSetMonacoTheme, getStoredThemeSetting } from './themeLoader.js';
 
 export const TONE_COLORS = {
@@ -12,7 +13,7 @@ export const TONE_COLORS = {
 // loadTheme resets Monaco and the editor variables to the theme's own; a non-default canvas tone is applied again on top
 if (typeof window !== 'undefined') {
   window.addEventListener('app:themeApplied', () => {
-    const tone = localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
+    const tone = readStorage(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
     if (tone !== 'default') applyEditorCanvasTone(tone);
   });
 }
@@ -33,11 +34,11 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
   }
   if (!monaco || !monaco.editor) return;
 
-  const currentTone = tone || localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
+  const currentTone = tone || readStorage(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
 
   if (currentTone === 'custom') {
-    const bg = customBg || localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
-    const fg = customFg || localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
+    const bg = customBg || readStorage(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
+    const fg = customFg || readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
 
     const hex = bg.replace('#', '');
     const r = parseInt(hex.substr(0, 2), 16) || 0;

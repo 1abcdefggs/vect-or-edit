@@ -1,4 +1,5 @@
 import { removeContextMenu } from '../editor/ui/contextMenuManager.js';
+import { readStorage } from '../core/storage.js';
 import { getQuickMatches } from './dictionary.js';
 import { STORAGE_KEYS, TIMINGS, DEFAULTS } from '../core/constants.js';
 
@@ -55,7 +56,7 @@ export function triggerSearchAndRender(query) {
 
   const limit = getSearchLimit();
   const minScore = getMinScore();
-  const provider = localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
+  const provider = readStorage(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
 
   const quickResults = getQuickMatches(query, limit).filter(r => (r.score || 0) >= minScore);
   const resultsList = getResultsListEl();
@@ -68,7 +69,7 @@ export function triggerSearchAndRender(query) {
   if (backendTimer) clearTimeout(backendTimer);
   backendTimer = setTimeout(async () => {
     try {
-      const isAiSetup = localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
+      const isAiSetup = readStorage(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
       if (!isAiSetup) {
         renderResults(quickResults, false);
         return;
@@ -148,7 +149,7 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
 
   debounceTimer = setTimeout(async () => {
     try {
-      const isAiSetup = localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
+      const isAiSetup = readStorage(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
       if (!isAiSetup) return;
 
       // Gate (ADR-11): the widget's vector search follows the Embedding switch, not the LLM

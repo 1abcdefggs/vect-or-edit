@@ -1,5 +1,6 @@
 import { initAiSetup, showAiSetupModal, markSetupEditorReady } from '../ui/ai/aiSetupController.js';
 import { STORAGE_KEYS } from './constants';
+import { readStorage } from './storage.js';
 
 let isSetupShown = false;
 let isSetupDone = true;
@@ -15,7 +16,7 @@ export function initStartupFlow(): void {
   isSetupShown = true;
 
   // The key keeps its historic name; it now marks the whole first-run setup as done.
-  if (localStorage.getItem(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true') return;
+  if (readStorage(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true') return;
 
   isSetupDone = false;
   initAiSetup(() => {

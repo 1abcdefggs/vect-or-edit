@@ -1,5 +1,6 @@
 import { showSelectionPopoverMenu, removeContextMenu, removeSelectionPopover } from '../ui/contextMenuManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { readStorage } from '../../core/storage.js';
 
 export function setupEditorContextMenu(editor, container) {
   let selectionPopoverTimer = null;
@@ -19,7 +20,7 @@ export function setupEditorContextMenu(editor, container) {
   document.addEventListener('contextmenu', dismissSelectionMenus, { capture: true });
 
   const triggerSelectionPopover = (source = 'generic') => {
-    const mode = localStorage.getItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
+    const mode = readStorage(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
     if (mode !== 'selection') return;
 
     if (selectionPopoverTimer) clearTimeout(selectionPopoverTimer);

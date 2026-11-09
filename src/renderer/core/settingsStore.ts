@@ -34,7 +34,7 @@ export class SettingsStore {
 
   private loadInitial(): void {
     try {
-      const local = typeof localStorage !== 'undefined' ? localStorage.getItem('vect_settings_v3') : null;
+      const local = typeof localStorage !== 'undefined' ? readStorage('vect_settings_v3') : null;
       if (local) {
         const parsed = JSON.parse(local);
         this.settings = {

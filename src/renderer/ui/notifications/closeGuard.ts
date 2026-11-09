@@ -1,4 +1,5 @@
 import { t } from '../../core/i18n.js';
+import { readStorage } from '../../core/storage.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { showConfirmModal, showChoiceModalWithCheckbox } from './confirmModal.js';
 import { syncSettingsToBackend } from '../settings/settingsState.js';
@@ -11,7 +12,7 @@ export type CloseTarget = 'app' | 'tab' | 'chat' | 'settings' | 'update' | 'abou
 
 export function isCloseConfirmEnabled(): boolean {
   try {
-    return (localStorage.getItem(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE) ?? DEFAULTS.CONFIRM_BEFORE_CLOSE) !== 'off';
+    return (readStorage(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE) ?? DEFAULTS.CONFIRM_BEFORE_CLOSE) !== 'off';
   } catch {
     return true;
   }
@@ -27,7 +28,7 @@ export function shouldAskBeforeCleanTabClose(storedValue: string | null): boolea
 
 function readCleanTabCloseSetting(): string | null {
   try {
-    return localStorage.getItem(STORAGE_KEYS.CONFIRM_TAB_CLOSE);
+    return readStorage(STORAGE_KEYS.CONFIRM_TAB_CLOSE);
   } catch {
     return null;
   }

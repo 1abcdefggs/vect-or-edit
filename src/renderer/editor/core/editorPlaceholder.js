@@ -1,5 +1,6 @@
 import { t } from '../../core/i18n.js';
 import { aiManager } from '../../core/aiStateManager.js';
+import { readStorage } from '../../core/storage.js';
 
 export function updateCustomPlaceholder(monacoEditorInstance) {
   const model = monacoEditorInstance?.getModel();
@@ -50,7 +51,7 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     : `<span style="color: #94a3b8;">${t('placeholder_no_slots')}</span>`;
 
     // 4. Resolve Tone-aware Canvas Contrast (OLED dark, Snow light)
-    const currentTone = localStorage.getItem('editor_bg_tone') || 'default';
+    const currentTone = readStorage('editor_bg_tone') || 'default';
     const isLightTone = ['snow', 'light_snow'].includes(currentTone);
 
     let boxBg = 'rgba(255, 255, 255, 0.03)';

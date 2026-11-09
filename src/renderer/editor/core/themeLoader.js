@@ -1,4 +1,5 @@
 import { setLedStatus } from '../../core/statusManager.js';
+import { readStorage } from '../../core/storage.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
 import { applyThemeToDOM } from '../ui/themeRenderer.js';
 import { updateNativeTitleBarOverlay } from '../io/nativeTitleBar.js';
@@ -92,7 +93,7 @@ function parseThemeName(value) {
   return named ? { name: named, face: faceMatch[2].toLowerCase() } : null;
 }
 
-const readStoredTheme = () => localStorage.getItem(STORAGE_KEYS.THEME) || localStorage.getItem(STORAGE_KEYS.LEGACY_THEME);
+const readStoredTheme = () => readStorage(STORAGE_KEYS.THEME) || readStorage(STORAGE_KEYS.LEGACY_THEME);
 
 /** Stored theme family. The only place that reads the theme storage keys; anything unknown (or the old "auto") is the default. */
 export function getStoredThemeSetting() {
@@ -110,7 +111,7 @@ export function isSystemDarkMode() {
  * of the theme shows. Before a mode was stored, a pinned theme implied its own mode and the old "auto" meant 'system'.
  */
 export function getColorMode() {
-  const stored = localStorage.getItem(STORAGE_KEYS.COLOR_MODE);
+  const stored = readStorage(STORAGE_KEYS.COLOR_MODE);
   if (COLOR_MODES.includes(stored)) return stored;
   const legacy = parseThemeName(readStoredTheme());
   if (!legacy) return 'system';
@@ -122,7 +123,7 @@ export const OVERLAY_COLORS = ['invert', 'window'];
 
 export function getOverlayColor() {
   try {
-    const stored = localStorage.getItem(STORAGE_KEYS.OVERLAY_COLOR);
+    const stored = readStorage(STORAGE_KEYS.OVERLAY_COLOR);
     if (OVERLAY_COLORS.includes(stored)) return stored;
   } catch {
     // Storage unavailable: keep the default

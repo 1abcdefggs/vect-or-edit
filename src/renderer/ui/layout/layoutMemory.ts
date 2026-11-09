@@ -4,6 +4,8 @@
  * One switch ("Remember layout", System tab, default ON) decides whether sizes are stored and restored.
  * Sizes live in localStorage, which the settings dual-sync already copies to .settings.json.
  */
+
+import { readStorage } from '../../core/storage.js';
 const REMEMBER_KEY = 'layout_remember';
 
 export const LAYOUT_KEYS = {
@@ -16,7 +18,7 @@ export const LAYOUT_KEYS = {
 
 export function isLayoutRemembered(): boolean {
   try {
-    return localStorage.getItem(REMEMBER_KEY) !== 'off';
+    return readStorage(REMEMBER_KEY) !== 'off';
   } catch {
     return true;
   }
@@ -34,7 +36,7 @@ export function setLayoutRemembered(on: boolean): void {
 export function loadLayoutSize(key: string): number | null {
   if (!isLayoutRemembered()) return null;
   try {
-    const value = parseInt(localStorage.getItem(key) ?? '', 10);
+    const value = parseInt(readStorage(key) ?? '', 10);
     return Number.isFinite(value) ? value : null;
   } catch {
     return null;

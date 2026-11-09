@@ -97,7 +97,7 @@ class AdapterRegistry {
    * Default: 'local'
    */
   getActiveVectorizerId() {
-    return localStorage.getItem(STORAGE_KEYS.EMBEDDING_SOURCE) || DEFAULTS.EMBEDDING_SOURCE;
+    return readStorage(STORAGE_KEYS.EMBEDDING_SOURCE) || DEFAULTS.EMBEDDING_SOURCE;
   }
 
   /**
@@ -124,7 +124,7 @@ class AdapterRegistry {
    * Default: DEFAULTS.AI_PROVIDER
    */
   getActiveGeneratorId() {
-    return localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
+    return readStorage(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
   }
 
   /**

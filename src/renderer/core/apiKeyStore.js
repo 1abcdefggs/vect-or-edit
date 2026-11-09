@@ -86,7 +86,7 @@ export async function migratePlaintextApiKeys() {
   let removed = false;
   const failedProviders = [];
   for (const provider of API_KEY_PROVIDERS) {
-    const names = PLAINTEXT_NAMES[provider].filter((name) => localStorage.getItem(name) !== null);
+    const names = PLAINTEXT_NAMES[provider].filter((name) => readStorage(name) !== null);
     if (names.length === 0) continue;
     const value = names.map((name) => (readStorage(name) ?? '').trim()).filter(Boolean).pop();
     if (value) {

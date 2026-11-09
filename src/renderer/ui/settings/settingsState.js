@@ -4,7 +4,7 @@ import { isApiKeyConfigured, SECRET_STORAGE_KEYS } from '../../core/apiKeyStore.
 
 /** The LLM is configured when a cloud provider is chosen and its key is stored (ADR-11). */
 export function isLlmConfigured() {
-  const provider = localStorage.getItem(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
+  const provider = readStorage(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
   if (provider === 'claude' || provider === 'gemini' || provider === 'openai') return isApiKeyConfigured(provider);
   return false;
 }
@@ -26,7 +26,7 @@ export async function syncSettingsToBackend() {
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (SECRET_STORAGE_KEYS.includes(key) || LOCAL_ONLY_KEYS.includes(key)) continue;
-    settings[key] = localStorage.getItem(key);
+    settings[key] = readStorage(key);
   }
   
   await window.engineAPI.saveSettings(settings);

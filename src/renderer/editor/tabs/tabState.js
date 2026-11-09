@@ -1,4 +1,5 @@
 import { editorEvents } from '../core/editorEvents.js';
+import { readStorage } from '../../core/storage.js';
 import { getEditorInstance, getMonaco } from '../core/editorCore.js';
 import { triggerAdaptiveAutoSave } from '../ui/autoSaveManager.js';
 import { t } from '../../core/i18n.js';
@@ -32,7 +33,7 @@ export function getActiveTab() {
 
 /** The format new documents start in: the stored choice (first-run setup or Settings), Markdown when none. */
 export function getDefaultDocumentFormat() {
-  return toDocumentFormat(localStorage.getItem(STORAGE_KEYS.DOCUMENT_FORMAT));
+  return toDocumentFormat(readStorage(STORAGE_KEYS.DOCUMENT_FORMAT));
 }
 
 function generateDefaultDocumentTitle() {

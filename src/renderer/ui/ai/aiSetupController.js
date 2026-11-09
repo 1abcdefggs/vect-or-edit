@@ -383,8 +383,8 @@ const CUSTOM_CARD = 'custom';
 
 function customColors() {
   return {
-    bg: localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e',
-    fg: localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4',
+    bg: readStorage(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e',
+    fg: readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4',
   };
 }
 
@@ -395,7 +395,7 @@ function customSamplePreview() {
 }
 
 function isCustomToneOn() {
-  return localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) === 'custom';
+  return readStorage(STORAGE_KEYS.EDITOR_BG_TONE) === 'custom';
 }
 
 /** Keeps the editor tone selects of the settings in step with the setup cards. */

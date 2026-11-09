@@ -16,7 +16,7 @@ export function initZoomControls(): void {
 
   // Load from localStorage
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = readStorage(STORAGE_KEY);
     if (saved) {
       currentZoom = parseFloat(saved);
       if (isNaN(currentZoom) || currentZoom < MIN_ZOOM || currentZoom > MAX_ZOOM) {

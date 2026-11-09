@@ -119,7 +119,7 @@ export async function applyColorMode(mode) {
 export async function applyThemeSetting(themeName) {
   if (!themeName) return;
   // A mode implied by a setting from before modes existed is stored first, so changing the theme cannot change it
-  if (!localStorage.getItem(STORAGE_KEYS.COLOR_MODE)) setAndSync(STORAGE_KEYS.COLOR_MODE, getColorMode());
+  if (!readStorage(STORAGE_KEYS.COLOR_MODE)) setAndSync(STORAGE_KEYS.COLOR_MODE, getColorMode());
   THEME_SELECT_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = themeName;
@@ -140,7 +140,7 @@ export function initSettings(updateEditorCb) {
   updateEditorOptionsCallback = updateEditorCb;
 
   // The custom text color used to be stored under the key "undefined" (CUSTOM_EDITOR_FG was missing): move it
-  const legacyTextColor = localStorage.getItem('undefined');
+  const legacyTextColor = readStorage('undefined');
   if (legacyTextColor !== null) {
     // Best effort at startup: a failed move must not stop the rest of the settings from being wired up
     try {
@@ -182,7 +182,7 @@ export function initSettings(updateEditorCb) {
   // Whether × asks before closing; unsaved tabs are asked about either way
   const confirmCloseSelect = document.getElementById('modalConfirmCloseSelect');
   if (confirmCloseSelect) {
-    confirmCloseSelect.value = localStorage.getItem(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE) === 'off' ? 'off' : DEFAULTS.CONFIRM_BEFORE_CLOSE;
+    confirmCloseSelect.value = readStorage(STORAGE_KEYS.CONFIRM_BEFORE_CLOSE) === 'off' ? 'off' : DEFAULTS.CONFIRM_BEFORE_CLOSE;
     confirmCloseSelect.addEventListener('change', () => {
       // Turning the switch back on also brings back the clean-tab question that its checkbox turned off
       if (confirmCloseSelect.value === 'on') localStorage.removeItem(STORAGE_KEYS.CONFIRM_TAB_CLOSE);
@@ -372,40 +372,40 @@ export function initSettings(updateEditorCb) {
   const modalCustomBgPicker = document.getElementById('modalCustomBgPicker');
   const modalCustomFgPicker = document.getElementById('modalCustomFgPicker');
 
-  const savedBgTone = localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE);
+  const savedBgTone = readStorage(STORAGE_KEYS.EDITOR_BG_TONE);
   if (savedBgTone) {
     if (modalEditorBgSelect) modalEditorBgSelect.value = savedBgTone;
     if (quickEditorToneSelect) quickEditorToneSelect.value = savedBgTone;
   }
 
-  const savedCustomBg = localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
-  const savedCustomFg = localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
+  const savedCustomBg = readStorage(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
+  const savedCustomFg = readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
   if (quickCustomBgPicker) quickCustomBgPicker.value = savedCustomBg;
   if (modalCustomBgPicker) modalCustomBgPicker.value = savedCustomBg;
   if (quickCustomFgPicker) quickCustomFgPicker.value = savedCustomFg;
   if (modalCustomFgPicker) modalCustomFgPicker.value = savedCustomFg;
 
-  const savedFont = localStorage.getItem(STORAGE_KEYS.FONT_FAMILY);
+  const savedFont = readStorage(STORAGE_KEYS.FONT_FAMILY);
   if (savedFont) {
     if (fontFamilySelect) fontFamilySelect.value = savedFont;
     if (modalFontFamilySelect) modalFontFamilySelect.value = savedFont;
   }
-  const savedSize = localStorage.getItem(STORAGE_KEYS.FONT_SIZE);
+  const savedSize = readStorage(STORAGE_KEYS.FONT_SIZE);
   if (savedSize) {
     if (fontSizeSelect) fontSizeSelect.value = savedSize;
     if (modalFontSizeSelect) modalFontSizeSelect.value = savedSize;
   }
-  const savedLineHeight = localStorage.getItem(STORAGE_KEYS.LINE_HEIGHT);
+  const savedLineHeight = readStorage(STORAGE_KEYS.LINE_HEIGHT);
   if (savedLineHeight && modalLineHeightSelect) modalLineHeightSelect.value = savedLineHeight;
-  const savedWordWrap = localStorage.getItem(STORAGE_KEYS.WORD_WRAP);
+  const savedWordWrap = readStorage(STORAGE_KEYS.WORD_WRAP);
   if (savedWordWrap && modalWordWrapSelect) modalWordWrapSelect.value = savedWordWrap;
-  const savedLineNumbers = localStorage.getItem(STORAGE_KEYS.LINE_NUMBERS);
+  const savedLineNumbers = readStorage(STORAGE_KEYS.LINE_NUMBERS);
   if (savedLineNumbers && modalLineNumbersSelect) modalLineNumbersSelect.value = savedLineNumbers;
-  const savedLineHighlight = localStorage.getItem(STORAGE_KEYS.LINE_HIGHLIGHT);
+  const savedLineHighlight = readStorage(STORAGE_KEYS.LINE_HIGHLIGHT);
   if (savedLineHighlight && modalLineHighlightSelect) modalLineHighlightSelect.value = savedLineHighlight;
-  const savedStickyScroll = localStorage.getItem(STORAGE_KEYS.STICKY_SCROLL);
+  const savedStickyScroll = readStorage(STORAGE_KEYS.STICKY_SCROLL);
   if (savedStickyScroll !== null && modalStickyScrollSelect) modalStickyScrollSelect.value = savedStickyScroll === 'true' ? 'on' : 'off';
-  const savedWhitespace = localStorage.getItem(STORAGE_KEYS.RENDER_WHITESPACE);
+  const savedWhitespace = readStorage(STORAGE_KEYS.RENDER_WHITESPACE);
   if (savedWhitespace && modalWhitespaceSelect) modalWhitespaceSelect.value = savedWhitespace;
 
   // Custom Color Pickers 2-Way Event Listeners
@@ -483,13 +483,13 @@ export function initSettings(updateEditorCb) {
   }
 
   // Restore the score and limit on both the sidebar and the modal
-  const savedMinScore = localStorage.getItem(STORAGE_KEYS.MIN_SCORE_PCT);
-  const savedLimit = localStorage.getItem(STORAGE_KEYS.SEARCH_LIMIT);
+  const savedMinScore = readStorage(STORAGE_KEYS.MIN_SCORE_PCT);
+  const savedLimit = readStorage(STORAGE_KEYS.SEARCH_LIMIT);
   [numMinScore, modalMinScoreInput].forEach(el => { if (el && savedMinScore) el.value = savedMinScore; });
   [selSearchLimit, modalLimitSelect].forEach(el => { if (el && savedLimit) el.value = savedLimit; });
 
   if (modalTruncationSelect) {
-    modalTruncationSelect.value = localStorage.getItem(STORAGE_KEYS.EMBEDDING_TRUNCATION) === 'off' ? 'off' : 'on';
+    modalTruncationSelect.value = readStorage(STORAGE_KEYS.EMBEDDING_TRUNCATION) === 'off' ? 'off' : 'on';
     modalTruncationSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.EMBEDDING_TRUNCATION, modalTruncationSelect.value);
       window.dispatchEvent(new CustomEvent('app:embeddingTruncationChanged'));
@@ -497,7 +497,7 @@ export function initSettings(updateEditorCb) {
   }
 
   if (modalResultDescLinesSelect) {
-    modalResultDescLinesSelect.value = localStorage.getItem(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2';
+    modalResultDescLinesSelect.value = readStorage(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2';
     modalResultDescLinesSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.RESULT_DESC_LINES, modalResultDescLinesSelect.value);
       window.dispatchEvent(new CustomEvent('app:resultDescLinesChanged'));
@@ -505,7 +505,7 @@ export function initSettings(updateEditorCb) {
   }
 
   if (modalResultTitleLinesSelect) {
-    const savedTitleLines = localStorage.getItem(STORAGE_KEYS.RESULT_TITLE_LINES);
+    const savedTitleLines = readStorage(STORAGE_KEYS.RESULT_TITLE_LINES);
     modalResultTitleLinesSelect.value = ['1', '3', 'full'].includes(savedTitleLines) ? savedTitleLines : '2';
     modalResultTitleLinesSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.RESULT_TITLE_LINES, modalResultTitleLinesSelect.value);
@@ -514,7 +514,7 @@ export function initSettings(updateEditorCb) {
   }
 
   if (modalLinterSelect) {
-    modalLinterSelect.value = localStorage.getItem(STORAGE_KEYS.LINTER_ENABLED) === 'off' ? 'off' : 'on';
+    modalLinterSelect.value = readStorage(STORAGE_KEYS.LINTER_ENABLED) === 'off' ? 'off' : 'on';
     modalLinterSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.LINTER_ENABLED, modalLinterSelect.value);
       refreshLinter();
@@ -546,11 +546,11 @@ export function initSettings(updateEditorCb) {
 
   const modalAiScopeSelect = document.getElementById('modalAiScopeSelect');
 
-  const storedAiProvider = localStorage.getItem(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
-  const storedClaudeModel = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
-  const storedGeminiModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-  const storedOpenAiModel = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
-  const storedAiScope = localStorage.getItem(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
+  const storedAiProvider = readStorage(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
+  const storedClaudeModel = readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+  const storedGeminiModel = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+  const storedOpenAiModel = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
+  const storedAiScope = readStorage(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
 
   // Key inputs stay empty: stored keys are encrypted in the main process and never sent back to the page.
   const KEY_SET_PLACEHOLDER = '•••••••••••••••••••• (API Key Configured)';
@@ -645,7 +645,7 @@ export function initSettings(updateEditorCb) {
       const models = await window.engineAPI.listGeminiModels(keyToUse || undefined);
       if (Array.isArray(models) && models.length > 0) {
         modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+        const currentSavedModel = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
         let foundSaved = false;
 
         models.forEach((m) => {
@@ -687,12 +687,12 @@ export function initSettings(updateEditorCb) {
 
   // Restore cached models if available
   try {
-    const cached = localStorage.getItem('cached_gemini_models');
+    const cached = readStorage('cached_gemini_models');
     if (cached && modalGeminiModelSelect) {
       const models = JSON.parse(cached);
       if (Array.isArray(models) && models.length > 0) {
         modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+        const currentSavedModel = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
         models.forEach((m) => {
           const opt = document.createElement('option');
           opt.value = m.name;
@@ -810,7 +810,7 @@ export function initSettings(updateEditorCb) {
 
   if (btnInitLocalAi) {
     btnInitLocalAi.addEventListener('click', () => {
-      const targetModel = localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+      const targetModel = readStorage(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
       window.dispatchEvent(new CustomEvent('app:requestLocalAiInit', { detail: { model: targetModel } }));
     });
   }
@@ -875,11 +875,11 @@ export function initSettings(updateEditorCb) {
   }
 
   // Restore Search Settings
-  const savedFullMeta = localStorage.getItem(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true';
+  const savedFullMeta = readStorage(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true';
   if (chkShowFullMetadata) chkShowFullMetadata.checked = savedFullMeta;
   if (modalShowFullMetadataChk) modalShowFullMetadataChk.checked = savedFullMeta;
 
-  const savedTriggerMode = localStorage.getItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
+  const savedTriggerMode = readStorage(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
   if (modalSuggestTriggerSelect) {
     modalSuggestTriggerSelect.value = savedTriggerMode;
     modalSuggestTriggerSelect.addEventListener('change', (e) => {
@@ -1057,9 +1057,9 @@ export function getTheme() {
 
 export function getFontFamily() {
   const defaultFont = DEFAULTS.FONT_FAMILY;
-  return document.getElementById('fontFamilySelect')?.value || localStorage.getItem(STORAGE_KEYS.FONT_FAMILY) || defaultFont;
+  return document.getElementById('fontFamilySelect')?.value || readStorage(STORAGE_KEYS.FONT_FAMILY) || defaultFont;
 }
 
 export function getFontSize() {
-  return parseInt(document.getElementById('fontSizeSelect')?.value || localStorage.getItem(STORAGE_KEYS.FONT_SIZE) || String(DEFAULTS.FONT_SIZE), 10);
+  return parseInt(document.getElementById('fontSizeSelect')?.value || readStorage(STORAGE_KEYS.FONT_SIZE) || String(DEFAULTS.FONT_SIZE), 10);
 }

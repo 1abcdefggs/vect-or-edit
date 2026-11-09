@@ -15,7 +15,7 @@ const LOCALES: Record<string, Record<string, string>> = {
  * First-run setup starts with this language selected.
  */
 function resolveLang(): string {
-  const saved = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEYS.APP_LANG) : null;
+  const saved = typeof localStorage !== 'undefined' ? readStorage(STORAGE_KEYS.APP_LANG) : null;
   if (saved && LOCALES[saved]) return saved;
   const osLang = typeof navigator !== 'undefined' ? (navigator.language || '').split('-')[0] : '';
   return osLang === 'ja' ? 'ja' : DEFAULTS.APP_LANG;
