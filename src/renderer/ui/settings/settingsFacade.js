@@ -22,7 +22,6 @@ import { resetApp } from './resetApp.js';
 import { initWindowFeatureSettings } from './windowFeatureSettings.js';
 import { initChoiceControls } from './choiceControls.js';
 import { initSettingsHelpPane } from './settingsHelpPane.js';
-import { initSettingsAreaMap } from './settingsAreaMap.js';
 
 function setAndSync(key, value) {
   writeStorage(key, value);
@@ -155,7 +154,6 @@ export function initSettings(updateEditorCb) {
   initChoiceControls();
   // The generated guide beside the settings follows the open tab
   initSettingsHelpPane();
-  initSettingsAreaMap();
 
   // Autosave, AI assistants and the log panel: settings for features the window also has
   initWindowFeatureSettings();
