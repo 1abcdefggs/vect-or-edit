@@ -3,6 +3,7 @@ import { formatOfName } from '../../../shared/documentFormat';
 import { showConfirmModal } from '../../ui/notifications/confirmModal.js';
 import { editorEvents } from '../core/editorEvents.js';
 import { saveTextToFile } from '../io/fileIO.js';
+import { writeDraft } from '../io/draftStore.js';
 import { t } from '../../core/i18n.js';
 import { formatTipText } from '../../core/tipFormat';
 import { icons } from '../../core/icons.js';
@@ -181,16 +182,7 @@ export function renderTabs() {
             editorEvents.emit('onStatusBarUpdateNeeded', tab.title);
 
             // Auto-persist new name to local autosave cache
-            try {
-              const content = tab.model ? tab.model.getValue() : '';
-              localStorage.setItem(`autosave_${tab.id}`, JSON.stringify({
-                title: tab.title,
-                content,
-                timestamp: Date.now()
-              }));
-            } catch (err) {
-              console.error('Failed to update autosave on rename:', err);
-            }
+            writeDraft(tab);
           }
           renderTabs();
         };

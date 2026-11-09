@@ -8,6 +8,8 @@
  */
 import { i18n, t, currentLang } from '../../core/i18n.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
+import { el } from '../dom.js';
+import { readStorage } from '../../core/storage.js';
 import { EMBEDDING_MODELS, getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
 import { requestEmbeddingModelDownload } from '../../search/searchLocalAi.js';
 import {
@@ -31,7 +33,7 @@ const pickers = new WeakMap();
 
 function loadPrefs() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.EMBEDDING_PICKER_PREFS);
+    const raw = readStorage(STORAGE_KEYS.EMBEDDING_PICKER_PREFS);
     const parsed = raw ? JSON.parse(raw) : null;
     return parsed && typeof parsed === 'object' ? parsed : {};
   } catch {
@@ -70,13 +72,6 @@ function searchAliases() {
     if (key.startsWith('content_lang_')) aliases[key.slice('content_lang_'.length)] = [value];
   }
   return aliases;
-}
-
-function el(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
 }
 
 function button(label, onClick, className = 'ep-chip') {
