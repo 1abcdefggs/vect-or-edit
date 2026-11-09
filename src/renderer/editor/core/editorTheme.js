@@ -1,6 +1,7 @@
 import { STORAGE_KEYS } from '../../core/constants.js';
 import { readStorage } from '../../core/storage.js';
 import { loadTheme, safeSetMonacoTheme, getStoredThemeSetting } from './themeLoader.js';
+import { buildThemeFromPalette, SKELETON_ACCENT } from './themeSkeleton.js';
 
 export const TONE_COLORS = {
   default: null,
@@ -47,16 +48,15 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
     const isDark = (r * 299 + g * 587 + b * 114) / 1000 < 128;
 
     try {
+      // Custom is a full theme: every colour is derived from the two picked colours by the skeleton
+      const full = buildThemeFromPalette({ base: isDark ? 'vs-dark' : 'vs', background: bg, foreground: fg });
       monaco.editor.defineTheme('custom-user-colors', {
-        base: isDark ? 'vs-dark' : 'vs',
-        inherit: true,
+        ...full,
         rules: [{ token: '', foreground: fg.replace('#', '') }],
         colors: {
-          'editor.background': bg,
-          'editor.foreground': fg,
+          ...full.colors,
           'editorGutter.background': bg,
-          'editorLineNumber.foreground': isDark ? '#64748b' : '#94a3b8',
-          'editorLineNumber.activeForeground': '#38bdf8'
+          'editorLineNumber.activeForeground': SKELETON_ACCENT
         }
       });
       monaco.editor.setTheme('custom-user-colors');

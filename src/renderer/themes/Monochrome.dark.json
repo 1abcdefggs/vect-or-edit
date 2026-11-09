@@ -1,0 +1,94 @@
+{
+  "base": "vs-dark",
+  "inherit": true,
+  "rules": [
+    {
+      "token": "comment",
+      "foreground": "6b6b6b",
+      "fontStyle": "italic"
+    },
+    {
+      "token": "keyword",
+      "foreground": "ffffff",
+      "fontStyle": "bold"
+    },
+    {
+      "token": "keyword.operator",
+      "foreground": "d4d4d4"
+    },
+    {
+      "token": "string",
+      "foreground": "bdbdbd"
+    },
+    {
+      "token": "number",
+      "foreground": "d9d9d9"
+    },
+    {
+      "token": "constant",
+      "foreground": "d9d9d9"
+    },
+    {
+      "token": "type",
+      "foreground": "e0e0e0"
+    },
+    {
+      "token": "type.identifier",
+      "foreground": "e0e0e0"
+    },
+    {
+      "token": "function",
+      "foreground": "f2f2f2"
+    },
+    {
+      "token": "tag",
+      "foreground": "ffffff"
+    },
+    {
+      "token": "attribute.name",
+      "foreground": "cfcfcf"
+    },
+    {
+      "token": "invalid",
+      "foreground": "ffffff",
+      "fontStyle": "underline"
+    },
+    {
+      "token": "variable",
+      "foreground": "e5e5e5"
+    },
+    {
+      "token": "delimiter",
+      "foreground": "8a8a8a"
+    }
+  ],
+  "colors": {
+    "editor.foreground": "#e5e5e5",
+    "editor.background": "#111111",
+    "editor.selectionBackground": "#424242",
+    "editor.inactiveSelectionBackground": "#2a2a2a",
+    "editor.selectionHighlightBackground": "#2d2d2d",
+    "editor.findMatchHighlightBackground": "#494949",
+    "editor.lineHighlightBackground": "#1c1c1c",
+    "editor.lineHighlightBorder": "#00000000",
+    "editorCursor.foreground": "#e5e5e5",
+    "editorLineNumber.foreground": "#8a8a8a",
+    "editorWhitespace.foreground": "#464646",
+    "editorIndentGuide.background": "#2a2a2a",
+    "editorIndentGuide.activeBackground": "#585858",
+    "editor.selectionHighlightBorder": "#3b3b3b",
+    "sideBar.background": "#191919",
+    "titleBar.activeBackground": "#0c0c0c",
+    "editorWidget.background": "#191919",
+    "editorGroup.border": "#313131",
+    "button.background": "#9e9e9e",
+    "button.foreground": "#000000",
+    "dropdown.background": "#191919",
+    "dropdown.foreground": "#e5e5e5"
+  },
+  "attribution": {
+    "origin": "original",
+    "license": "MIT (this project)",
+    "note": "Original neutral greys only, dark and light faces. No hue is used anywhere, so the palette stays monochrome."
+  }
+}

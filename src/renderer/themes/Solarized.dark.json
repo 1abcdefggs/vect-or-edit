@@ -1082,5 +1082,12 @@
     "editor.lineHighlightBackground": "#073642",
     "editorCursor.foreground": "#819090",
     "editorWhitespace.foreground": "#073642"
+  },
+  "attribution": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (c) 2011 Ethan Schoonover",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "This dark face matches monaco-themes (Copyright (c) 2011 Ethan Schoonover, MIT)."
   }
 }

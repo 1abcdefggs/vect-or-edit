@@ -58,9 +58,17 @@ const parts = [
   ''
 ];
 
-// Editor themes come from one list (src/shared/themeAttribution.json), so a theme added there is always listed here
-const themeAttribution = readJson(path.join(root, 'src/shared/themeAttribution.json'));
-const themeAssets = Object.entries(themeAttribution).map(([name, a]) => ({
+// Editor themes: one entry per theme family, its licence read from the "attribution" object that every theme file carries.
+// A file without one fails the build, so a theme cannot ship unlisted.
+const themesDir = path.join(root, 'src/renderer/themes');
+const familyAttribution = new Map();
+for (const file of fs.readdirSync(themesDir).filter((f) => f.endsWith('.json')).sort()) {
+  const theme = readJson(path.join(themesDir, file));
+  if (!theme.attribution) throw new Error(`Theme file ${file} has no attribution object`);
+  const family = file.replace(/\.json$/, '').replace(/\.(light|dark)$/i, '');
+  if (!familyAttribution.has(family)) familyAttribution.set(family, theme.attribution);
+}
+const themeAssets = [...familyAttribution].map(([name, a]) => ({
   name: `Editor color theme ${name} (src/renderer/themes)`,
   license: a.license,
   source: a.source || 'Original to this project',

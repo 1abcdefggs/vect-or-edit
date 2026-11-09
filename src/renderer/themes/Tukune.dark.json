@@ -186,5 +186,10 @@
     "dropdown.foreground": "#ece8e1",
     "editor.selectionForeground": "#ffffff",
     "titleBar.activeForeground": "#ece8e1"
+  },
+  "attribution": {
+    "origin": "original",
+    "license": "MIT (this project)",
+    "note": "Original to this project."
   }
 }

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.59] - 2026-11-09
+
+### Changed
+- Cyberpink and Monochrome themes, each with a light and a dark face
+- Theme colour files generated from one skeleton, with derived editor colours
+
+
 ## [0.3.58] - 2026-11-08
 
 ### Added

@@ -177,5 +177,11 @@
     "button.foreground": "#ffffff",
     "dropdown.background": "#ffffff",
     "dropdown.foreground": "#24292e"
+  },
+  "attribution": {
+    "origin": "original",
+    "license": "MIT (this project)",
+    "source": "https://github.com/primer/primitives",
+    "note": "Original light and dark faces, styled after GitHub. The colors follow the public Primer palette (MIT)."
   }
 }
