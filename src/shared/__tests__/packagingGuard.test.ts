@@ -67,7 +67,9 @@ describe('packaging guard: unused weight stays out of the distributable', () => 
       /\/_ARCHIVES(\/|$)/.test(p)
     );
     expect(leaked).toEqual([]);
-    // The Windows runtime this guard must not take away
-    expect(listAsar(asar)).toContain('/node_modules/@huggingface/transformers/node_modules/onnxruntime-node/bin/napi-v3/win32');
+    // The Windows runtime this guard must not take away. electron-builder may place onnxruntime-node
+    // under transformers (as installed) or hoist it to the top level, so either location counts
+    const winRuntimes = ['/node_modules/@huggingface/transformers/node_modules/onnxruntime-node/bin/napi-v3/win32', '/node_modules/onnxruntime-node/bin/napi-v3/win32'];
+    expect(listAsar(asar).some((p) => winRuntimes.includes(p))).toBe(true);
   });
 });
