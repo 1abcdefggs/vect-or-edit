@@ -59,9 +59,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderStaticSettingsText();
   renderToggleSwitches();
   await loadLocales();
-  enhanceNumberSteppers();
   // Shown after the locale is loaded, so the message is in the user's language
   if (keyMigration.failedProviders.length > 0) showToast(t('api_key_migration_failed'), 'warning');
+  enhanceNumberSteppers();
 
   // 0.5. Initialize LED tooltips consistently
   initAllLedTooltips();
