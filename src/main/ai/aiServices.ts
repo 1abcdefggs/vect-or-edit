@@ -2,6 +2,9 @@ import { app, net, safeStorage } from 'electron';
 import { GoogleGenAI } from '@google/genai';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { isValidGeminiModelId, toGeminiModelInfo, type GeminiModelInfo } from '../../shared/geminiModels';
+
+export type { GeminiModelInfo };
 
 // Cloud LLM API keys are encrypted with the OS key store (safeStorage) and kept in userData, one file per provider.
 // They never go to localStorage or .settings.json; requests read them here in the main process.
@@ -62,29 +65,19 @@ export async function clearApiKey(provider: ApiKeyProvider): Promise<{ success: 
 
 const loadStoredGeminiApiKey = () => loadStoredApiKey('gemini');
 
-export async function listGeminiModels(apiKey?: string) {
-  const token = apiKey?.trim() || await loadStoredGeminiApiKey();
+// The full list is returned so the cache is complete; the settings UI hides models with canGenerate === false.
+// Both the SDK path and the REST path map entries through toGeminiModelInfo (id check, length caps, one keep rule).
+export async function listGeminiModels(apiKey?: string): Promise<GeminiModelInfo[]> {
+  const token = (typeof apiKey === 'string' ? apiKey.trim() : '') || await loadStoredGeminiApiKey();
   if (!token) throw new Error('Gemini API key is not set.');
 
   try {
     const ai = new GoogleGenAI({ apiKey: token });
-    const models: Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }> = [];
+    const models: GeminiModelInfo[] = [];
     const modelPager = await ai.models.list();
     for await (const model of modelPager as any) {
-      const actions = model.supportedActions || model.supportedGenerationMethods || [];
-      const isGenerateContent = Array.isArray(actions) && (actions.includes('generateContent') || actions.includes('generate_content'));
-      const cleanName = (model.name || '').replace(/^models\//, '');
-      
-      // Filter out non-gemini or non-text generation models (like embedding-only or imagen if not applicable)
-      if (cleanName.includes('gemini') || isGenerateContent) {
-        models.push({
-          name: cleanName,
-          displayName: model.displayName || cleanName,
-          description: model.description || '',
-          inputTokenLimit: model.inputTokenLimit,
-          outputTokenLimit: model.outputTokenLimit
-        });
-      }
+      const info = toGeminiModelInfo(model);
+      if (info) models.push(info);
     }
     if (models.length > 0) return models;
   } catch (sdkError) {
@@ -106,19 +99,10 @@ export async function listGeminiModels(apiKey?: string) {
           if (parsed.error) {
             return reject(new Error(parsed.error.message || 'Gemini API Error'));
           }
-          const rawModels = parsed.models || [];
+          const rawModels: unknown[] = Array.isArray(parsed.models) ? parsed.models : [];
           const models = rawModels
-            .filter((m: any) => {
-              const methods = m.supportedGenerationMethods || m.supportedActions || [];
-              return methods.includes('generateContent') && m.name.includes('gemini');
-            })
-            .map((m: any) => ({
-              name: m.name.replace(/^models\//, ''),
-              displayName: m.displayName || m.name.replace(/^models\//, ''),
-              description: m.description || '',
-              inputTokenLimit: m.inputTokenLimit,
-              outputTokenLimit: m.outputTokenLimit
-            }));
+            .map(toGeminiModelInfo)
+            .filter((m): m is GeminiModelInfo => m !== null);
           resolve(models);
         } catch (e: any) {
           reject(new Error(`Failed to parse models response: ${e.message}`));
@@ -202,7 +186,15 @@ export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string
     throw new Error('Gemini API key is not set. Please provide it in settings or GEMINI_API_KEY environment variable.');
   }
 
-  const modelName = model || 'gemini-3.1-flash-lite';
+  // The model id can come from localStorage; refuse anything that is not a plain id instead of sending it on
+  // The model is the user's choice: with none selected nothing is sent, and no other model is substituted
+  if (!model) {
+    return { success: false, error: 'No Gemini model is selected. Choose one in Settings.' };
+  }
+  if (!isValidGeminiModelId(model)) {
+    return { success: false, error: 'Invalid Gemini model id.' };
+  }
+  const modelName = model;
   console.log(`[Main] Calling Gemini API (${modelName})`);
   try {
     const ai = new GoogleGenAI({ apiKey: token });

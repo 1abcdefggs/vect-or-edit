@@ -349,11 +349,11 @@ function promptForPassword(filePath) {
     overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(2px);';
     
     const modal = document.createElement('div');
-    modal.style.cssText = 'background:var(--bg-panel);border:var(--border-width) solid var(--border-color);border-radius:8px;padding:20px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:15px;font-family:inherit;';
+    modal.style.cssText = 'background:var(--bg-card);border:var(--border-width) solid var(--border-color);border-radius:8px;padding:20px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:15px;font-family:inherit;';
     
     const title = document.createElement('div');
     title.textContent = t('dict_enc_title');
-    title.style.cssText = 'font-weight:600;color:var(--text-color);font-size:var(--fs-15);';
+    title.style.cssText = 'font-weight:600;color:var(--text-main);font-size:var(--fs-15);';
     
     const desc = document.createElement('div');
     desc.textContent = t('dict_enc_desc', { filename });
@@ -362,7 +362,7 @@ function promptForPassword(filePath) {
     const input = document.createElement('input');
     input.type = 'password';
     input.placeholder = t('dict_enc_placeholder');
-    input.style.cssText = 'padding:10px;border:var(--border-width) solid var(--border-color);border-radius:6px;background:var(--bg-input);color:var(--text-color);outline:none;font-size:var(--fs-14);';
+    input.style.cssText = 'padding:10px;border:var(--border-width) solid var(--border-color);border-radius:6px;background:var(--bg-primary);color:var(--text-main);outline:none;font-size:var(--fs-14);';
     
     const btnRow = document.createElement('div');
     btnRow.style.cssText = 'display:flex;justify-content:flex-end;gap:10px;margin-top:5px;';

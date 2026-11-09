@@ -1,5 +1,6 @@
+import fs from 'node:fs';
 import path from 'node:path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, nativeTheme, shell } from 'electron';
 import { bindLoggerToWindow, captureRendererConsole } from './logger';
 import { handleTrusted, isTrustedUrl, setTrustedRenderer } from './ipcSecurity';
 
@@ -10,7 +11,38 @@ export function getMainWindow(): BrowserWindow | null {
   return mainWindowInstance;
 }
 
+// Colours shown before the renderer paints. They follow the appearance mode the user chose (startup-appearance.json),
+// or the OS when that mode is 'system'. After startup the renderer updates the title bar from the active theme.
+const STARTUP_COLORS = {
+  dark: { background: '#080c16', overlay: '#09131d', symbol: '#94a3b8' },
+  light: { background: '#ffffff', overlay: '#f6f8fa', symbol: '#334155' }
+} as const;
+
+export type ColorMode = 'system' | 'light' | 'dark';
+const COLOR_MODES: readonly ColorMode[] = ['system', 'light', 'dark'];
+
+function startupFilePath(): string {
+  return path.join(app.getPath('userData'), 'startup-appearance.json');
+}
+
+/** The mode the user chose last time, written by the renderer. Unknown or missing means 'system'. */
+export function readStoredColorMode(): ColorMode {
+  try {
+    const mode = JSON.parse(fs.readFileSync(startupFilePath(), 'utf8')).mode;
+    return COLOR_MODES.includes(mode) ? mode : 'system';
+  } catch {
+    return 'system';
+  }
+}
+
+export function saveColorMode(mode: ColorMode): void {
+  fs.writeFileSync(startupFilePath(), JSON.stringify({ mode }), 'utf8');
+}
+
 export function createWindow(preloadPath: string, rendererUrl: string, indexPath: string): BrowserWindow {
+  const stored = readStoredColorMode();
+  const useDark = stored === 'dark' || (stored === 'system' && nativeTheme.shouldUseDarkColors);
+  const startup = useDark ? STARTUP_COLORS.dark : STARTUP_COLORS.light;
   const iconPath = app.isPackaged
     ? path.join(__dirname, '../renderer/assets/icon.png')
     : path.join(__dirname, '../../public/icon.png');
@@ -33,13 +65,13 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
     },
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#09131d',
-      symbolColor: '#94a3b8',
+      color: startup.overlay,
+      symbolColor: startup.symbol,
       height: 38
     },
     autoHideMenuBar: true,
     show: false,
-    backgroundColor: '#080c16'
+    backgroundColor: startup.background
   });
 
   bindLoggerToWindow(mainWindowInstance);

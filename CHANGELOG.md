@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.60] - 2026-11-09
+
+### Added
+- Shared model list arrangement used by the main process and the renderer
+
+### Changed
+- Gemini model list is fetched and shown through one picker
+
+
 ## [0.3.59] - 2026-11-09
 
 ### Changed

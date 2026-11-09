@@ -159,13 +159,14 @@ export interface EngineAPI {
   hasApiKey: (provider: ApiKeyProvider) => Promise<boolean>;
   clearApiKey: (provider: ApiKeyProvider) => Promise<{ success: boolean; error?: string }>;
   getCursorBaseSize: () => Promise<number>;
-  listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number }>>;
+  listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number; version?: string; thinking?: boolean; canGenerate: boolean }>>;
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
   /** LLM-as-Embedding: converts text to a pseudo-vector using an LLM provider. */
   llmEmbedding: (payload: { text: string; provider: 'gemini' | 'claude' | 'openai'; model?: string; apiKey?: string; dimensions?: number }) => Promise<{ success: boolean; vector?: number[]; error?: string }>;
   importKnowledgeBase: (customPaths?: string[]) => Promise<ImportKnowledgeBaseResponse>;
   getPathForFile: (file: File) => string;
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => Promise<{ success: boolean; error?: string }>;
+  setColorMode: (mode: 'system' | 'light' | 'dark') => Promise<{ success: boolean }>;
   clearCache: () => Promise<{ success: boolean; error?: string }>;
   restartApp: () => Promise<void>;
   getSemanticState: () => Promise<SemanticState>;

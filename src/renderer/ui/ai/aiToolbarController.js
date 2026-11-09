@@ -7,6 +7,8 @@ import { canUseLlm } from '../../core/aiAccess.js';
 import { withHelpContext } from '../help/helpKnowledge.js';
 import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../core/escape.js';
+import { rememberGeminiModels } from '../settings/geminiModelPicker.js';
+import { readGeminiModel } from '../../core/geminiModel.js';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
 import { confirmClose } from '../notifications/closeGuard.js';
@@ -239,8 +241,8 @@ function initLlmChatDock() {
     const provider = readStorage('llm_provider') || 'gemini';
     // The model the next request will use (same lookup as searchProviders.js)
     if (provider === 'gemini') {
-      const model = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-      modelBadge.textContent = `Gemini (${model.replace('gemini-', '')})`;
+      const model = readGeminiModel();
+      modelBadge.textContent = `Gemini (${model ? model.replace('gemini-', '') : t('gemini_model_unselected')})`;
     } else if (provider === 'openai') {
       const model = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
       modelBadge.textContent = `OpenAI (${model})`;
@@ -334,13 +336,11 @@ function initLlmChatDock() {
           // Automatically fetch and cache official Gemini models
           try {
             const models = await window.engineAPI.listGeminiModels(key);
-            if (Array.isArray(models) && models.length > 0) {
-              localStorage.setItem('cached_gemini_models', JSON.stringify(models));
-              if (!readStorage('gemini_model')) {
-                localStorage.setItem('gemini_model', models[0].name);
-              }
-              const msg = t('toast_models_loaded', { count: models.length }) || `Successfully loaded ${models.length} models from Google official API`;
-              showToast(msg, 'info');
+            // Only models that can generate text are counted or picked; the full list stays in the cache
+            const usable = rememberGeminiModels(models);
+            if (usable.length > 0) {
+              // The model is the user's choice: nothing is picked here
+              showToast(t(readGeminiModel() ? 'toast_models_loaded' : 'toast_models_loaded_choose', { count: usable.length }), 'info');
             }
           } catch (modelErr) {
             console.warn('[Gemini] Automatic model fetch warning:', modelErr);

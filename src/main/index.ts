@@ -30,7 +30,7 @@ import {
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { truncateAndNormalize } from '../shared/embeddingSpace';
 import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
-import { createWindow, getMainWindow } from './windowManager';
+import { createWindow, getMainWindow, saveColorMode } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, snapshotOpeningWorkspace, restoreDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 import { getCursorBaseSize } from './cursorSize';
 
@@ -546,6 +546,16 @@ if (!gotTheLock) {
       } catch (err: any) {
         console.warn("IME dict file not present:", err);
         return "";
+      }
+    });
+
+    handleTrusted('app:setColorMode', (_event, mode: unknown) => {
+      if (mode !== 'system' && mode !== 'light' && mode !== 'dark') return { success: false };
+      try {
+        saveColorMode(mode);
+        return { success: true };
+      } catch {
+        return { success: false };
       }
     });
 

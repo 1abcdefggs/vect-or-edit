@@ -3,6 +3,7 @@ import { isApiKeyConfigured } from '../core/apiKeyStore.js';
 import { canUseLlm } from '../core/aiAccess.js';
 import { t } from '../core/i18n.js';
 import { readStorage } from '../core/storage.js';
+import { readGeminiModel } from '../core/geminiModel.js';
 
 export async function fetchAiSuggestions(query, provider) {
   // The LLM switch is the power for every cloud call (ADR-11): off means no request leaves the app
@@ -13,8 +14,9 @@ export async function fetchAiSuggestions(query, provider) {
 
   try {
     if (provider === 'gemini') {
-      const model = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-      if (window.engineAPI && window.engineAPI.geminiSemanticSuggest) {
+      const model = readGeminiModel();
+      // No model chosen yet: no suggestion (the chat says why)
+      if (model && window.engineAPI && window.engineAPI.geminiSemanticSuggest) {
         const prompt = `Analyze this query/phrase and suggest the best matching domain definitions or structured draft:\nQuery: "${query}"`;
         const geminiRes = await window.engineAPI.geminiSemanticSuggest({ prompt, model });
         if (geminiRes && geminiRes.success && geminiRes.text) {
@@ -77,7 +79,8 @@ export async function queryLlmChat(prompt, userProvider = null) {
   try {
     // Keys stay in the main process; each request uses the stored key of its provider.
     if (provider === 'gemini') {
-      const model = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+      const model = readGeminiModel();
+      if (!model) return { error: t('gemini_model_required') };
       if (window.engineAPI?.geminiSemanticSuggest) {
         const res = await window.engineAPI.geminiSemanticSuggest({ prompt, model });
         if (res && res.success && res.text) return { text: res.text, model: `Gemini (${model})` };

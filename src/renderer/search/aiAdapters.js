@@ -22,6 +22,8 @@ import { STORAGE_KEYS, DEFAULTS, TIMINGS } from '../core/constants.js';
 import { getVectorFromWorker, isLocalAiReadyState } from './searchLocalAi.js';
 import { canUseLlm, canUseEmbedding } from '../core/aiAccess.js';
 import { readStorage } from '../core/storage.js';
+import { readGeminiModel } from '../core/geminiModel.js';
+import { t } from '../core/i18n.js';
 
 // ─────────────────────────────────────────────
 // 1. LocalEmbeddingAdapter  (Vectorizer)
@@ -103,7 +105,7 @@ export class LLMEmbeddingAdapter {
 
   _getModel() {
     const map = {
-      gemini: () => readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL,
+      gemini: () => readGeminiModel(), // empty until the user chooses: the main process then refuses the request
       claude: () => readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL,
       openai: () => readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL,
     };
@@ -127,7 +129,8 @@ export class GeminiLLMAdapter {
    */
   async generate(prompt) {
     if (!canUseLlm()) throw new Error('LLM is OFF');
-    const model = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+    const model = readGeminiModel();
+    if (!model) throw new Error(t('gemini_model_required'));
     if (!window.engineAPI?.geminiSemanticSuggest) {
       throw new Error('IPC channel "geminiSemanticSuggest" is not available.');
     }
