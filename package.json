@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.58",
+  "version": "0.3.61",
   "description": "Next-Generation Vector-Native Semantic Knowledge Editor & Real-Time Linter. Organizes knowledge in a 10-layer DIKWP-based semantic model.",
   "keywords": [
     "electron",
@@ -47,7 +47,7 @@
     "dev:debug": "node scripts/dev.js -- --inspect=5858 --remote-debugging-port=9222"
   },
   "dependencies": {
-    "@1abcdefggs/vect-or-engine": "file:../vect-or-engine",
+    "@1abcdefggs/vect-or-engine": "0.3.14",
     "@google/genai": "^2.21.0",
     "@huggingface/transformers": "^3.0.0",
     "dompurify": "3.4.17",
@@ -97,7 +97,7 @@
         "to": "THIRD_PARTY_NOTICES.txt"
       },
       {
-        "from": "../vect-or-engine",
+        "from": "node_modules/@1abcdefggs/vect-or-engine",
         "to": "vect-or-engine",
         "filter": [
           "*.node",

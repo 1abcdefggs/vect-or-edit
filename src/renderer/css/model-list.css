@@ -1,0 +1,408 @@
+/* Shared model list part (ui/components/modelList.js): one table row per model.
+   Buttons, inputs and badges reuse the ep-* classes of embedding-picker.css, and the active row follows selection.css,
+   so every model list in Settings reads the same. */
+
+/* modals.css centres and right-aligns the last child of a settings row; the list must fill the row and read from the left */
+.setting-item > .model-list-host:last-child,
+.model-list-host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.model-list {
+  position: relative;
+  /* A family heading is a darker grey band and its rows are a lighter grey: no hue, the accent color is only the bar at the left of the heading.
+     Both are opaque, because the heading is sticky. */
+  --ml-heading-bg: color-mix(in srgb, black 30%, var(--bg-primary));
+  --ml-row-bg: color-mix(in srgb, white 6%, var(--bg-secondary));
+  --ml-head-h: 38px;
+  /* Thinner than the table frame: the border color mixed with the surface */
+  --ml-rule: color-mix(in srgb, var(--border-color) 55%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  container-type: inline-size;
+}
+
+/* A note above the list, in the caller's words (for example the free-plan usage limit) */
+.ml-notice {
+  padding: 8px 12px;
+  font-size: var(--fs-13);
+  line-height: 1.5;
+  color: var(--text-main);
+  border: var(--border-width) solid var(--border-color);
+  border-left: 3px solid var(--accent-color);
+  border-radius: var(--radius-md);
+}
+
+.ml-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* One grid for the header, the group headings and the rows: each row takes the columns of the table (sub-grid),
+   so a column is as wide as its longest text and the columns line up. The table scrolls; the header stays on top. */
+.ml-table {
+  display: grid;
+  grid-template-columns: var(--ml-cols);
+  align-content: start;
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scroll-padding-top: calc(var(--ml-head-h) + 34px);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.ml-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: stretch;
+}
+
+.ml-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: var(--ml-head-h);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.ml-head .ml-cell {
+  gap: 6px;
+}
+
+.ml-item {
+  min-height: 46px;
+  font-size: var(--fs-14);
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.ml-item:hover {
+  background: var(--hover-bg);
+}
+
+/* The cells carry the padding, so a thin vertical rule on the left edge of each cell marks the column border
+   and runs the full height of the row */
+.ml-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 6px 14px;
+  overflow-wrap: anywhere;
+  border-left: var(--border-width) solid var(--ml-rule);
+}
+
+.ml-cell:first-child {
+  border-left: 0;
+}
+
+.ml-cell.is-end {
+  justify-content: flex-end;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Columns read from the left; a column asks for right alignment with align: 'end' */
+
+/* The name is the main text of a row */
+.ml-item .ml-col-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.ml-id {
+  font-family: var(--font-mono, ui-monospace, Consolas, monospace);
+  font-size: var(--fs-13);
+  color: var(--text-muted);
+}
+
+.ml-col-tags {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* The All button of a menu is a little quieter than the tag buttons */
+.ml-tag-all {
+  font-weight: 500;
+}
+
+.ml-clear-filters {
+  margin-left: 12px;
+}
+
+.ml-tag-filter {
+  min-height: 28px;
+  padding: 3px 12px;
+  font-weight: 500;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* A header that sorts is a plain button that looks like the header text */
+.ml-sort,
+.ml-filter-btn,
+.ml-eye-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ml-sort:hover,
+.ml-sort:focus-visible,
+.ml-filter-btn:hover,
+.ml-filter-btn:focus-visible,
+.ml-eye-btn:hover,
+.ml-eye-btn:focus-visible {
+  color: var(--text-main);
+}
+
+.ml-sort:focus-visible,
+.ml-filter-btn:focus-visible,
+.ml-eye-btn:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* The filter button of a column header; it turns to the accent color and shows a count while a choice is on */
+.ml-filter-btn.is-filtered {
+  color: var(--accent-text);
+}
+
+.ml-eye-label {
+  font-size: var(--fs-13);
+}
+
+.ml-eye-btn .material-symbols-outlined {
+  font-size: var(--fs-16);
+}
+
+.ml-filter-count {
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The filter menu hangs under its header button; it sits on the list, not in the scrolling table, so the table cannot clip it */
+.ml-menu {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 170px;
+  padding: 8px;
+  background: var(--bg-secondary);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.ml-menu[hidden] {
+  display: none;
+}
+
+.ml-sort-arrow {
+  font-size: var(--fs-11);
+  opacity: 0.55;
+}
+
+.ml-sort-arrow.is-active {
+  color: var(--accent-text);
+  opacity: 1;
+}
+
+.ml-item .ml-col-cost,
+.ml-item .ml-col-input {
+  color: var(--text-muted);
+}
+
+/* The favorite star and the Use button sit side by side at the right end */
+.ml-col-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.ml-use {
+  min-height: 30px;
+  padding: 3px 14px;
+  font-size: var(--fs-13);
+}
+
+.ml-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.ml-star:hover {
+  color: var(--text-main);
+  background: var(--hover-bg);
+}
+
+.ml-star:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+.ml-star-glyph {
+  font-size: var(--fs-18);
+  line-height: 1;
+}
+
+/* A favorite is a filled star (U+2605) in the accent color; the others are outlined (U+2606) */
+.ml-star[aria-pressed='true'] {
+  color: var(--accent-text);
+}
+
+.ml-mark {
+  padding: 1px 8px;
+  font-size: var(--fs-12);
+  line-height: 18px;
+  border-radius: 10px;
+  border: var(--border-width) solid var(--border-color);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.ml-mark.is-new {
+  color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.ml-mark.is-thinking {
+  color: var(--accent-text);
+  border-color: var(--accent-color);
+}
+
+/* Group headings span the table and stay under the header while their rows scroll */
+.ml-heading {
+  grid-column: 1 / -1;
+  /* The heading spans every column: its text must not count when the columns are sized (a long note would widen
+     the table and squeeze the other columns); it takes the table's width and wraps inside it */
+  contain: inline-size;
+  /* It shares the columns of the table: the title sits in the first column, the note starts where the second column
+     starts (so every note begins at the same place, under the same header) and the count is at the right end */
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: var(--ml-head-h);
+  z-index: 1;
+  font-size: var(--fs-14);
+  font-weight: 700;
+  color: var(--text-main);
+  /* Opaque: the rows scroll under a sticky heading and must not show through */
+  background: var(--ml-heading-bg);
+  /* An inset bar, not a border: a border would shift the shared columns */
+  box-shadow: inset 4px 0 0 var(--accent-color);
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.ml-heading > * {
+  padding: 8px 14px;
+}
+
+.ml-heading-title {
+  grid-column: 1 / 2;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-left: 18px;
+}
+
+.ml-heading:hover {
+  filter: brightness(1.08);
+}
+
+.ml-heading:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
+}
+
+.ml-heading-mark {
+  width: 1em;
+  color: var(--accent-text);
+}
+
+/* What the family is; it starts at the second column, runs to the one before the action column, and wraps when narrow */
+.ml-heading-note {
+  grid-column: 2 / -2;
+  min-width: 0;
+  font-size: var(--fs-13);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.ml-heading-count {
+  grid-column: -2 / -1;
+  justify-self: end;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* The rows under a heading are indented in the first column, so they read as its items */
+.ml-table.has-groups .ml-item > .ml-cell:first-child {
+  padding-left: 32px;
+}
+
+.ml-empty {
+  grid-column: 1 / -1;
+  margin: 12px;
+}
+
+/* The active row inverts its surface (selection.css): its text takes the surface's color, not the window's text tokens */
+.ml-item.is-active .ml-star,
+.ml-item.is-active .ml-id,
+.ml-item.is-active .ml-cell,
+.ml-item.is-active .ml-mark,
+.ml-item.is-active .ep-badge-active {
+  color: inherit;
+}
+
+.ml-item.is-active .ml-mark,
+.ml-item.is-active .ep-badge-active {
+  border-color: currentColor;
+}
+
+/* Narrow settings pane: the optional columns (cost guide) are dropped */
+@container (max-width: 620px) {
+  .ml-table {
+    grid-template-columns: var(--ml-cols-narrow);
+  }
+
+  .ml-cell.is-optional {
+    display: none;
+  }
+
+  .ml-controls .ep-search {
+    margin-left: 0;
+    width: 100%;
+  }
+}

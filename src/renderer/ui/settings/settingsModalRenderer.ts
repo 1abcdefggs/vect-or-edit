@@ -38,20 +38,32 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
   wrapper.setAttribute('data-vis-key', visKey);
   wrapper.style.cssText = 'display: inline-flex; align-items: center; flex-shrink: 0;';
 
+  // The row's name is the switch's name (aria-labelledby), so a screen reader says which part it is
+  const labelEl = targetRow.querySelector<HTMLElement>('.setting-label');
+  if (labelEl && !labelEl.id) labelEl.id = `vis-label-${visKey}`;
+
   if (item.isEssential) {
+    // A required part cannot be hidden: the reason is written out, not only shown as a grey lock
     const lock = document.createElement('span');
-    lock.className = 'vis-lock-icon';
-    lock.innerHTML = 'lock'; // material-symbols lock
+    lock.className = 'vis-state-required';
     lock.title = formatTipText('tip_vis_locked', t('tip_vis_locked'));
-    lock.style.cssText = 'font-family: "Material Symbols Outlined"; font-size: var(--fs-17); color: var(--text-muted); opacity: 0.6; cursor: not-allowed;';
+    const glyph = document.createElement('span');
+    glyph.className = 'material-symbols-outlined';
+    glyph.setAttribute('aria-hidden', 'true');
+    glyph.textContent = 'lock';
+    const text = document.createElement('span');
+    text.textContent = t('vis_state_required');
+    lock.append(glyph, text);
     wrapper.appendChild(lock);
   } else {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'vis-toggle-btn';
+    btn.setAttribute('role', 'switch');
     btn.setAttribute('data-ui-key', visKey);
+    if (labelEl) btn.setAttribute('aria-labelledby', labelEl.id);
     btn.title = t(settingsStore.isVisible(visKey) ? 'tip_vis_hide' : 'tip_vis_show');
-    
+
     updateEyeButtonState(btn, settingsStore.isVisible(visKey));
 
     btn.addEventListener('click', (e) => {
@@ -77,20 +89,29 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
   }
 }
 
+/** A switch with both states written out: the lit word is the current state (look in settings-ui.css). */
 function updateEyeButtonState(btn: HTMLButtonElement, isVisible: boolean): void {
-  btn.innerHTML = isVisible
-    ? '<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-text, #38bdf8);">visibility</span>'
-    : '<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--text-muted); opacity: 0.5;">visibility_off</span>';
-  btn.style.cssText = `background: transparent; border: 1px solid ${isVisible ? 'rgba(56, 189, 248, 0.3)' : 'var(--border-color)'}; border-radius: 4px; padding: 2px 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;`;
+  btn.replaceChildren(stateWord('vis_state_shown', isVisible), stateWord('vis_state_hidden', !isVisible));
+  btn.setAttribute('aria-checked', String(isVisible));
+}
+
+function stateWord(key: string, lit: boolean): HTMLElement {
+  const word = document.createElement('span');
+  word.className = lit ? 'vis-state-word is-lit' : 'vis-state-word';
+  word.textContent = t(key);
+  return word;
 }
 
 function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {
+  // A row written in the page itself (the menu bar card in the Header tab)
+  const ownRow = document.querySelector<HTMLElement>(`[data-vis-target="${item.id}"]`);
+  if (ownRow) return ownRow;
   // Try finding by select/input IDs
   if (item.id === 'h_color_mode') {
     return document.getElementById('modalColorModeSelect')?.closest('.setting-item') as HTMLElement;
   }
   if (item.id === 'h_theme') {
-    return document.getElementById('modalThemeSelect')?.closest('.setting-item') as HTMLElement;
+    return document.getElementById('modalThemeCards')?.closest('.setting-item') as HTMLElement;
   }
   if (item.id === 'h_locale') {
     return document.getElementById('modalLangSelect')?.closest('.setting-item') as HTMLElement;

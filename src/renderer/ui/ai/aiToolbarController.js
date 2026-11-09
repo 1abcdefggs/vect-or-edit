@@ -1,10 +1,14 @@
 import { aiManager } from '../../core/aiStateManager.js';
+import { readStorage, writeStorage } from '../../core/storage.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
 import { isLlmConfigured, isEmbedConfigured } from '../settings/settingsState.js';
 import { canUseLlm } from '../../core/aiAccess.js';
 import { withHelpContext } from '../help/helpKnowledge.js';
 import { t } from '../../core/i18n.js';
+import { escapeHtml } from '../../core/escape.js';
+import { rememberGeminiModels } from '../settings/geminiModelPicker.js';
+import { readGeminiModel } from '../../core/geminiModel.js';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
 import { confirmClose } from '../notifications/closeGuard.js';
@@ -39,8 +43,8 @@ export function initAiControls() {
     const knowledgeCard = knowledgeStatus?.closest('.ai-status-card');
     const structureEmbedding = document.getElementById('settingsStructureEmbedding');
     const structureKnowledge = document.getElementById('settingsStructureKnowledge');
-    const provider = localStorage.getItem('ai_provider') || 'local';
-    const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
+    const provider = readStorage('ai_provider') || 'local';
+    const localModel = (readStorage('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
 
     if (embeddingStatus) embeddingStatus.textContent = window.__isLocalAiModelReady ? t('ai_status_ready') : t('ai_status_not_ready');
     if (embeddingDetail) embeddingDetail.textContent = window.__isLocalAiModelReady ? localModel : t('ai_detail_install_model');
@@ -122,7 +126,7 @@ export function initAiControls() {
   function updateSidebarEmbeddingLabel() {
     const btnSidebarEmbeddingModel = document.getElementById('btnSidebarEmbeddingModel');
     if (btnSidebarEmbeddingModel) {
-      const localModel = (localStorage.getItem('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
+      const localModel = (readStorage('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
       btnSidebarEmbeddingModel.title = t('tip_embed_model_status', { model: window.__isLocalAiModelReady ? localModel : 'Ready' });
     }
   }
@@ -234,16 +238,16 @@ function initLlmChatDock() {
 
   function updateDockModelBadge() {
     if (!modelBadge) return;
-    const provider = localStorage.getItem('llm_provider') || 'gemini';
+    const provider = readStorage('llm_provider') || 'gemini';
     // The model the next request will use (same lookup as searchProviders.js)
     if (provider === 'gemini') {
-      const model = localStorage.getItem(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-      modelBadge.textContent = `Gemini (${model.replace('gemini-', '')})`;
+      const model = readGeminiModel();
+      modelBadge.textContent = `Gemini (${model ? model.replace('gemini-', '') : t('gemini_model_unselected')})`;
     } else if (provider === 'openai') {
-      const model = localStorage.getItem(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
+      const model = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
       modelBadge.textContent = `OpenAI (${model})`;
     } else if (provider === 'claude') {
-      const model = localStorage.getItem(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+      const model = readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
       modelBadge.textContent = `Claude (${model.replace('claude-', '')})`;
     } else {
       modelBadge.textContent = t('llm_badge_cloud');
@@ -279,7 +283,7 @@ function initLlmChatDock() {
       const isVisible = quickApiBanner.style.display === 'block';
       quickApiBanner.style.display = isVisible ? 'none' : 'block';
       if (!isVisible) {
-        const currentProvider = localStorage.getItem('llm_provider') || 'gemini';
+        const currentProvider = readStorage('llm_provider') || 'gemini';
         if (selQuickProvider) selQuickProvider.value = (currentProvider === 'none') ? 'gemini' : currentProvider;
         syncQuickApiKeyInput();
         setTimeout(() => quickApiKeyInput?.focus(), 50);
@@ -320,18 +324,23 @@ function initLlmChatDock() {
         showToast(res.error || `Failed to save the ${provider} key`, 'error');
         return;
       }
-      localStorage.setItem('llm_provider', provider);
+      try {
+        writeStorage('llm_provider', provider);
+      } catch (err) {
+        // The key is saved but the provider choice is not: report it instead of looking complete
+        console.error('[AI] Could not save the provider choice:', err);
+        showToast(t('save_failed'), 'error');
+        return;
+      }
       if (provider === 'gemini') {
           // Automatically fetch and cache official Gemini models
           try {
             const models = await window.engineAPI.listGeminiModels(key);
-            if (Array.isArray(models) && models.length > 0) {
-              localStorage.setItem('cached_gemini_models', JSON.stringify(models));
-              if (!localStorage.getItem('gemini_model')) {
-                localStorage.setItem('gemini_model', models[0].name);
-              }
-              const msg = t('toast_models_loaded', { count: models.length }) || `Successfully loaded ${models.length} models from Google official API`;
-              showToast(msg, 'info');
+            // Only models that can generate text are counted or picked; the full list stays in the cache
+            const usable = rememberGeminiModels(models);
+            if (usable.length > 0) {
+              // The model is the user's choice: nothing is picked here
+              showToast(t(readGeminiModel() ? 'toast_models_loaded' : 'toast_models_loaded_choose', { count: usable.length }), 'info');
             }
           } catch (modelErr) {
             console.warn('[Gemini] Automatic model fetch warning:', modelErr);
@@ -557,8 +566,3 @@ function initLlmChatDock() {
   });
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}

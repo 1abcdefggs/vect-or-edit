@@ -4,6 +4,7 @@
  * like every other localStorage setting. The catalog is loaded on demand, so a user without overrides pays nothing.
  */
 import { STORAGE_KEYS } from '../../core/constants.js';
+import { readStorage } from '../../core/storage.js';
 import { syncSettingsToBackend } from '../../ui/settings/settingsState.js';
 import { buildControls, indexControls, sanitizeOverrides, toEditorOptions, readPath } from './monacoOptionsModel.js';
 
@@ -53,7 +54,7 @@ export function getBaseline() {
 
 function readStored() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.MONACO_OPTIONS) || '{}');
+    const parsed = JSON.parse(readStorage(STORAGE_KEYS.MONACO_OPTIONS) || '{}');
     return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
   } catch {
     return {};
@@ -81,7 +82,7 @@ const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArr
  * the editor is created with. Members merge into the app's own object option instead of replacing it.
  */
 export async function withCreateOnlyOverrides(base) {
-  if (!localStorage.getItem(STORAGE_KEYS.MONACO_OPTIONS)) return base;
+  if (!readStorage(STORAGE_KEYS.MONACO_OPTIONS)) return base;
   try {
     const { index } = await loadControls();
     const own = {};
@@ -102,7 +103,7 @@ export async function withCreateOnlyOverrides(base) {
 
 /** Applies the stored overrides to a freshly created editor (the creation-time ones were passed to `create`). */
 export async function applyStoredOverrides(editor) {
-  if (!editor || !localStorage.getItem(STORAGE_KEYS.MONACO_OPTIONS)) return;
+  if (!editor || !readStorage(STORAGE_KEYS.MONACO_OPTIONS)) return;
   const { index } = await loadControls();
   const live = {};
   for (const [path, value] of Object.entries(await getOverrides())) {

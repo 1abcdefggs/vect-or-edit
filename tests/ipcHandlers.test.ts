@@ -91,18 +91,20 @@ describe('IPC Handlers (Vitest)', () => {
 
   describe('handleValidateDocument', () => {
     test('returns mapped markers on success', async () => {
-      const mockValidateSync = vi.fn().mockReturnValue({
+      const mockValidate = vi.fn().mockResolvedValue({
         isValid: false,
         markers: [{ message: 'bad', severity: 'ERROR', line: 1 }]
       });
-      vi.mocked(getEngine).mockReturnValue({ validateSync: mockValidateSync } as any);
-      
+      vi.mocked(getEngine).mockReturnValue({ validate: mockValidate } as any);
+
       const res = await handleValidateDocument({ text: 'some text' });
-      
+
+      expect(mockValidate).toHaveBeenCalledWith('some text');
       expect(res.is_valid).toBe(false);
+      // Severity passes through unchanged; the renderer compares it case-insensitively
       expect(res.markers[0].severity).toBe('ERROR');
       expect(res.markers[0].message).toBe('bad');
-      expect(res.markers[0].startLineNumber).toBe(1);
+      expect(res.markers[0].line).toBe(1);
     });
 
     test('invalid payload returns error', async () => {

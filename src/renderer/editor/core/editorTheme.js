@@ -1,5 +1,7 @@
 import { STORAGE_KEYS } from '../../core/constants.js';
+import { readStorage } from '../../core/storage.js';
 import { loadTheme, safeSetMonacoTheme, getStoredThemeSetting } from './themeLoader.js';
+import { buildThemeFromPalette, SKELETON_ACCENT } from './themeSkeleton.js';
 
 export const TONE_COLORS = {
   default: null,
@@ -12,7 +14,7 @@ export const TONE_COLORS = {
 // loadTheme resets Monaco and the editor variables to the theme's own; a non-default canvas tone is applied again on top
 if (typeof window !== 'undefined') {
   window.addEventListener('app:themeApplied', () => {
-    const tone = localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
+    const tone = readStorage(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
     if (tone !== 'default') applyEditorCanvasTone(tone);
   });
 }
@@ -33,11 +35,11 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
   }
   if (!monaco || !monaco.editor) return;
 
-  const currentTone = tone || localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
+  const currentTone = tone || readStorage(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
 
   if (currentTone === 'custom') {
-    const bg = customBg || localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
-    const fg = customFg || localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
+    const bg = customBg || readStorage(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
+    const fg = customFg || readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
 
     const hex = bg.replace('#', '');
     const r = parseInt(hex.substr(0, 2), 16) || 0;
@@ -46,16 +48,15 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
     const isDark = (r * 299 + g * 587 + b * 114) / 1000 < 128;
 
     try {
+      // Custom is a full theme: every colour is derived from the two picked colours by the skeleton
+      const full = buildThemeFromPalette({ base: isDark ? 'vs-dark' : 'vs', background: bg, foreground: fg });
       monaco.editor.defineTheme('custom-user-colors', {
-        base: isDark ? 'vs-dark' : 'vs',
-        inherit: true,
+        ...full,
         rules: [{ token: '', foreground: fg.replace('#', '') }],
         colors: {
-          'editor.background': bg,
-          'editor.foreground': fg,
+          ...full.colors,
           'editorGutter.background': bg,
-          'editorLineNumber.foreground': isDark ? '#64748b' : '#94a3b8',
-          'editorLineNumber.activeForeground': '#38bdf8'
+          'editorLineNumber.activeForeground': SKELETON_ACCENT
         }
       });
       monaco.editor.setTheme('custom-user-colors');

@@ -16,6 +16,7 @@
  */
 
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
+import { readStorage, writeStorage } from '../core/storage.js';
 import {
   LocalEmbeddingAdapter,
   LLMEmbeddingAdapter,
@@ -96,7 +97,7 @@ class AdapterRegistry {
    * Default: 'local'
    */
   getActiveVectorizerId() {
-    return localStorage.getItem(STORAGE_KEYS.EMBEDDING_SOURCE) || DEFAULTS.EMBEDDING_SOURCE;
+    return readStorage(STORAGE_KEYS.EMBEDDING_SOURCE) || DEFAULTS.EMBEDDING_SOURCE;
   }
 
   /**
@@ -104,7 +105,8 @@ class AdapterRegistry {
    * @param {string} id
    */
   setActiveVectorizerId(id) {
-    localStorage.setItem(STORAGE_KEYS.EMBEDDING_SOURCE, id);
+    // Throws when storage refuses the write, so the change event below is not sent for a change that did not happen
+    writeStorage(STORAGE_KEYS.EMBEDDING_SOURCE, id);
     window.dispatchEvent(new CustomEvent('app:embeddingSourceChanged', { detail: { id } }));
   }
 
@@ -122,7 +124,7 @@ class AdapterRegistry {
    * Default: DEFAULTS.AI_PROVIDER
    */
   getActiveGeneratorId() {
-    return localStorage.getItem(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
+    return readStorage(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;
   }
 
   /**
@@ -130,7 +132,8 @@ class AdapterRegistry {
    * @param {string} id
    */
   setActiveGeneratorId(id) {
-    localStorage.setItem(STORAGE_KEYS.AI_PROVIDER, id);
+    // Throws when storage refuses the write, so the change event below is not sent for a change that did not happen
+    writeStorage(STORAGE_KEYS.AI_PROVIDER, id);
     window.dispatchEvent(new CustomEvent('app:settingsChanged'));
   }
 

@@ -5,6 +5,7 @@
  * are moved into the encrypted store once at startup.
  */
 import { STORAGE_KEYS } from './constants.js';
+import { readStorage, removeStorage } from './storage.js';
 
 export const API_KEY_PROVIDERS = ['gemini', 'openai', 'claude'];
 
@@ -60,7 +61,13 @@ export async function clearAllApiKeys() {
       setConfigured(provider, false);
     }
   }
-  if (!error) SECRET_STORAGE_KEYS.forEach((name) => localStorage.removeItem(name));
+  if (!error) {
+    try {
+      SECRET_STORAGE_KEYS.forEach((name) => removeStorage(name));
+    } catch {
+      error = 'Could not remove the plain-text key copies from local storage.';
+    }
+  }
   return { success: !error, error };
 }
 
@@ -70,16 +77,18 @@ export async function clearAllApiKeys() {
  * (an old .settings.json backup), so it is only deleted. A key that cannot be encrypted (no OS key store) is left
  * in local storage, but nothing reads it: the main process only uses the encrypted store, so the key must be
  * entered again once encryption is available.
- * @returns {Promise<boolean>} true when plain-text keys were removed, so .settings.json should be rewritten
+ * @returns {Promise<{removed: boolean, failedProviders: string[]}>} removed: plain-text keys were removed, so
+ *   .settings.json should be rewritten. failedProviders: providers whose plain-text copy stays in local storage
  */
 export async function migratePlaintextApiKeys() {
   const api = window.engineAPI;
-  if (!api?.saveApiKey) return false;
+  if (!api?.saveApiKey) return { removed: false, failedProviders: [] };
   let removed = false;
+  const failedProviders = [];
   for (const provider of API_KEY_PROVIDERS) {
-    const names = PLAINTEXT_NAMES[provider].filter((name) => localStorage.getItem(name) !== null);
+    const names = PLAINTEXT_NAMES[provider].filter((name) => readStorage(name) !== null);
     if (names.length === 0) continue;
-    const value = names.map((name) => localStorage.getItem(name).trim()).filter(Boolean).pop();
+    const value = names.map((name) => (readStorage(name) ?? '').trim()).filter(Boolean).pop();
     if (value) {
       let alreadyStored = false;
       try {
@@ -91,12 +100,20 @@ export async function migratePlaintextApiKeys() {
         const res = await api.saveApiKey(provider, value);
         if (!res?.success) {
           console.warn(`[apiKeyStore] Could not encrypt the ${provider} key; it stays in local storage but is not used until encryption is available:`, res?.error);
+          failedProviders.push(provider);
           continue;
         }
       }
     }
-    names.forEach((name) => localStorage.removeItem(name));
+    try {
+      names.forEach((name) => removeStorage(name));
+    } catch (err) {
+      // The plain-text copy stays. It is not used (see above), but it must be removed; reported so it is not silent
+      console.warn(`[apiKeyStore] Could not remove the plain-text ${provider} key from local storage:`, err);
+      failedProviders.push(provider);
+      continue;
+    }
     removed = true;
   }
-  return removed;
+  return { removed, failedProviders };
 }

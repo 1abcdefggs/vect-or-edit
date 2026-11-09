@@ -184,5 +184,12 @@
     "button.foreground": "#ffffff",
     "dropdown.background": "#f0f0f0",
     "dropdown.foreground": "#403f53"
+  },
+  "attribution": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (c) Brijesh Bittu",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "This light face is made by this project in the style of the monaco-themes dark face. Its colours and syntax rules are this project's own; the copyright line is kept because the family follows that theme."
   }
 }

@@ -138,14 +138,14 @@
     "editor.inactiveSelectionBackground": "#383830",
     "editor.selectionHighlightBackground": "#49483E80",
     "editor.findMatchHighlightBackground": "#e6db7440",
-    "editor.lineHighlightBackground": "#00000000",
+    "editor.lineHighlightBackground": "#3E3D32",
     "editor.lineHighlightBorder": "#00000000",
     "editorCursor.foreground": "#F8F8F0",
     "editorLineNumber.foreground": "#75715e",
-    "editorWhitespace.foreground": "#75715e40",
+    "editorWhitespace.foreground": "#3B3A32",
     "editorIndentGuide.background": "#75715e30",
-    "editorIndentGuide.activeBackground": "#f9267280",
-    "editor.selectionHighlightBorder": "#49483E",
+    "editorIndentGuide.activeBackground": "#9D550FB0",
+    "editor.selectionHighlightBorder": "#222218",
     "sideBar.background": "#1e1f1c",
     "titleBar.activeBackground": "#171814",
     "editorWidget.background": "#1e1f1c",
@@ -154,5 +154,12 @@
     "button.foreground": "#ffffff",
     "dropdown.background": "#1e1f1c",
     "dropdown.foreground": "#F8F8F2"
+  },
+  "attribution": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (c) Brijesh Bittu",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "The 8 colour keys and all syntax rules match monaco-themes (Copyright (c) Brijesh Bittu, MIT). The other colour keys are added by this project."
   }
 }

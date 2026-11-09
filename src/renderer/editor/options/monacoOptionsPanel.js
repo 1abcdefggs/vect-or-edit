@@ -4,6 +4,8 @@
  */
 import { t, currentLang } from '../../core/i18n.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
+import { el } from '../../ui/dom.js';
+import { readStorage } from '../../core/storage.js';
 import {
   loadControls,
   getOverrides,
@@ -36,13 +38,6 @@ const state = {
 };
 
 const getEditor = () => window.__monacoEditorInstance || null;
-
-function el(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
 
 /** Description in the UI language, from the dictionary (settings.editor.<option path>). */
 function describe(control) {
@@ -304,7 +299,7 @@ export function initMonacoOptionsPanel() {
   resetAll?.addEventListener('click', resetEditorOptions);
   document.getElementById('btnEditorOptionsReset')?.addEventListener('click', resetEditorOptions);
   // Overrides from an earlier session: show the reset button without loading the whole catalog
-  if (resetAll && localStorage.getItem(STORAGE_KEYS.MONACO_OPTIONS)) resetAll.hidden = false;
+  if (resetAll && readStorage(STORAGE_KEYS.MONACO_OPTIONS)) resetAll.hidden = false;
 
   // The language changed or the editor was rebuilt: draw the list again from the current state
   window.addEventListener('app:languageChanged', () => {

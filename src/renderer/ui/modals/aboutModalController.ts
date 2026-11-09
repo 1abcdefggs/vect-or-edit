@@ -5,6 +5,7 @@
  */
 
 import { confirmClose } from '../notifications/closeGuard.js';
+import { readStorage } from '../../core/storage.js';
 import { t } from '../../core/i18n.js';
 import appLogoUrl from '../../assets/icon.png';
 import { STORAGE_KEYS } from '../../core/constants.js';
@@ -77,7 +78,7 @@ function fillComponentRows(div: HTMLElement): void {
   }));
 
   // A cloud provider is named only when one is chosen; a service has its own terms, not an open-source license
-  const cloudProvider = localStorage.getItem(STORAGE_KEYS.LLM_PROVIDER) ?? '';
+  const cloudProvider = readStorage(STORAGE_KEYS.LLM_PROVIDER) ?? '';
   const cloudName = CLOUD_PROVIDER_NAMES[cloudProvider];
   setLink('aboutCloudValue', cloudName ? `${cloudName} (API, provider terms apply)` : 'Not used', CLOUD_PROVIDER_URLS[cloudProvider]);
 }

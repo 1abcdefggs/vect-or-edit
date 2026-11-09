@@ -2,12 +2,14 @@
  * AutoSave Manager - Plan A (Clear SAVE vs AUTO)
  */
 import { STORAGE_KEYS, TIMINGS } from '../../core/constants.js';
+import { readStorage } from '../../core/storage.js';
 import { t } from '../../core/i18n.js';
 import { getWorkspaceRoot } from '../../core/workspaceRoot';
 import { editorEvents } from '../core/editorEvents.js';
 import { getActiveTab } from '../tabs/tabState.js';
 import { markSavedAsUtf8 } from './statusBarManager.js';
 import { commitTabToFile } from '../io/tabCommit.js';
+import { writeDraft } from '../io/draftStore.js';
 import { showToast } from '../../ui/notifications/toastManager.js';
 import { showConfirmModal } from '../../ui/notifications/confirmModal.js';
 import { syncSettingsToBackend } from '../../ui/settings/settingsState.js';
@@ -22,7 +24,7 @@ const adhap = {
 
 /** The pause after typing stops before the save, as the user set it (default 1.5 seconds). */
 export function getAutoSaveDelayMs() {
-  const stored = Number(localStorage.getItem(STORAGE_KEYS.AUTO_SAVE_DELAY));
+  const stored = Number(readStorage(STORAGE_KEYS.AUTO_SAVE_DELAY));
   const ms = Number.isFinite(stored) && stored > 0 ? stored : adhap.BASE_DELAY_MS;
   return Math.min(adhap.MAX_DELAY_MS, Math.max(adhap.MIN_DELAY_MS, ms));
 }
@@ -55,8 +57,8 @@ function getDomElements() {
 
 /** A trigger is on unless it was stored as off; a missing key follows the older single AutoSave flag. */
 function isTriggerOn(key) {
-  const stored = localStorage.getItem(key);
-  if (stored === null) return localStorage.getItem(STORAGE_KEYS.AUTO_SAVE) !== 'false';
+  const stored = readStorage(key);
+  if (stored === null) return readStorage(STORAGE_KEYS.AUTO_SAVE) !== 'false';
   return stored !== 'false';
 }
 
@@ -156,16 +158,7 @@ export function initAutoSaveControls() {
 
 async function executeSave(tab) {
   if (!tab || !tab.model) return;
-  try {
-    localStorage.setItem(`autosave_${tab.id}`, JSON.stringify({
-      title: tab.title,
-      content: tab.model.getValue(),
-      filePath: tab.filePath || null,
-      timestamp: Date.now()
-    }));
-  } catch (err) {
-    console.warn('[AutoSave] Draft write failed:', err);
-  }
+  writeDraft(tab);
 
   // A draft is not a save. Without a file path the tab stays dirty until the user picks a location.
   if (!tab.filePath) {
@@ -205,7 +198,7 @@ async function ensureAutoSaveTarget(tab) {
   try {
     const content = tab.model ? tab.model.getValue() : '';
     let firstRunDone = false;
-    try { firstRunDone = localStorage.getItem(LOCATION_CONFIRMED_KEY) === 'true'; } catch { /* storage unavailable */ }
+    try { firstRunDone = readStorage(LOCATION_CONFIRMED_KEY) === 'true'; } catch { /* storage unavailable */ }
 
     let useDefault = true;
     if (!firstRunDone) {

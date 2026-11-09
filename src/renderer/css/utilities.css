@@ -292,7 +292,7 @@ textarea {
 .app-startup-loader {
   --startup-logo-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --startup-logo-weight: 600;
-  --startup-logo-size: 3rem;
+  --startup-logo-size: 4rem;
   --startup-status-font: var(--font-ui);
   position: fixed;
   inset: 0;
@@ -305,19 +305,20 @@ textarea {
   transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 
-/* The logo stays centered; the version sits beside it without shifting it */
+/* The logo and the version share one column: the version sits right under the name, aligned to its right edge */
 .startup-logo-row {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 0;
 }
 
 .startup-loader-version {
-  position: absolute;
-  left: 100%;
-  bottom: 0.5em;
-  margin-left: 10px;
-  font-family: var(--startup-status-font);
-  font-size: var(--fs-12);
+  align-self: flex-end;
+  margin: -12px 0 12px;
+  font-family: var(--startup-logo-font);
+  font-size: var(--fs-18);
+  font-weight: 500;
   color: var(--text-muted, #94a3b8);
   white-space: nowrap;
   user-select: none;
@@ -329,7 +330,7 @@ textarea {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: var(--fs-12);
+  font-size: var(--fs-14);
   color: var(--text-muted, #94a3b8);
   user-select: none;
 }
@@ -348,7 +349,7 @@ textarea {
 }
 
 .startup-loader-line {
-  width: min(220px, 60vw);
+  width: min(300px, 60vw);
   margin-bottom: 14px;
 }
 

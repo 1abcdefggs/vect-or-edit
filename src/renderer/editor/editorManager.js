@@ -42,7 +42,7 @@ import {
 import { updateStatusBar } from './ui/statusBarManager.js';
 import { initMemoryMonitor } from './monitor/memoryMonitor.js';
 import { saveTextToFile } from './io/fileIO.js';
-import { exportWorkspaceBundle, importWorkspaceBundle } from './io/bundleManager.js';
+import { exportWorkspaceBundle, hasUnsavedTabs, importWorkspaceBundle } from './io/bundleManager.js';
 
 // Global Event Orchestration
 editorEvents.on('createNewTab', () => {
@@ -98,5 +98,6 @@ export {
   getCurrentContent,
   refreshLinter,
   exportWorkspaceBundle,
-  importWorkspaceBundle
+  importWorkspaceBundle,
+  hasUnsavedTabs
 };

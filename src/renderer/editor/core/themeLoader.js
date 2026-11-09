@@ -1,4 +1,5 @@
 import { setLedStatus } from '../../core/statusManager.js';
+import { readStorage } from '../../core/storage.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
 import { applyThemeToDOM } from '../ui/themeRenderer.js';
 import { updateNativeTitleBarOverlay } from '../io/nativeTitleBar.js';
@@ -67,9 +68,27 @@ function buildFamilies() {
 
 const families = buildFamilies();
 
-export const availableThemes = [...families.keys()].sort();
+// GitHub comes first (the default and the reference theme), then the rest A to Z
+export const availableThemes = [...families.keys()].sort((a, b) => {
+  if (a === 'GitHub') return -1;
+  if (b === 'GitHub') return 1;
+  return a.localeCompare(b, 'en', { sensitivity: 'base' });
+});
 
 export const DEFAULT_THEME = families.has('GitHub') ? 'GitHub' : (availableThemes[0] || 'GitHub');
+
+/**
+ * Licence and origin of a theme family, read from its theme files (the "attribution" object in each file).
+ * Both faces of a family carry the same record; the first one found is returned. null when no file has one.
+ */
+export function getThemeAttribution(name) {
+  const family = families.get(name);
+  if (!family) return null;
+  for (const face of Object.values(family.faces)) {
+    if (face.attribution) return face.attribution;
+  }
+  return null;
+}
 
 /** Whether a theme has both a light and a dark face (one with a single face looks the same in both modes). */
 export function hasBothFaces(name) {
@@ -92,7 +111,7 @@ function parseThemeName(value) {
   return named ? { name: named, face: faceMatch[2].toLowerCase() } : null;
 }
 
-const readStoredTheme = () => localStorage.getItem(STORAGE_KEYS.THEME) || localStorage.getItem(STORAGE_KEYS.LEGACY_THEME);
+const readStoredTheme = () => readStorage(STORAGE_KEYS.THEME) || readStorage(STORAGE_KEYS.LEGACY_THEME);
 
 /** Stored theme family. The only place that reads the theme storage keys; anything unknown (or the old "auto") is the default. */
 export function getStoredThemeSetting() {
@@ -110,7 +129,7 @@ export function isSystemDarkMode() {
  * of the theme shows. Before a mode was stored, a pinned theme implied its own mode and the old "auto" meant 'system'.
  */
 export function getColorMode() {
-  const stored = localStorage.getItem(STORAGE_KEYS.COLOR_MODE);
+  const stored = readStorage(STORAGE_KEYS.COLOR_MODE);
   if (COLOR_MODES.includes(stored)) return stored;
   const legacy = parseThemeName(readStoredTheme());
   if (!legacy) return 'system';
@@ -120,9 +139,22 @@ export function getColorMode() {
 /** Popups, context menus, tooltips: 'invert' (default, opposite of the mode) or 'window' (the window's own surface). */
 export const OVERLAY_COLORS = ['invert', 'window'];
 
+// The main process paints the window before the renderer runs, so it needs the mode the user chose (not only the OS).
+let lastSentColorMode = null;
+function syncStartupAppearance() {
+  const mode = getColorMode();
+  if (mode === lastSentColorMode) return;
+  lastSentColorMode = mode;
+  try {
+    window.engineAPI?.setColorMode?.(mode);
+  } catch {
+    // The bridge is unavailable (tests, preview): the window keeps the OS-based start colours
+  }
+}
+
 export function getOverlayColor() {
   try {
-    const stored = localStorage.getItem(STORAGE_KEYS.OVERLAY_COLOR);
+    const stored = readStorage(STORAGE_KEYS.OVERLAY_COLOR);
     if (OVERLAY_COLORS.includes(stored)) return stored;
   } catch {
     // Storage unavailable: keep the default
@@ -240,6 +272,7 @@ export async function loadTheme(themeName) {
   // 1b. Native window-controls strip: it only needs the header color just applied, so it must not wait for Monaco
   // (at startup that import takes long enough to leave the controls in the splash color next to a finished UI)
   updateNativeTitleBarOverlay(theme);
+  syncStartupAppearance();
 
   // Loads overlap (OS change, a picker, tone changes) and Monaco loads asynchronously: only the newest load may finish.
   const loadId = ++latestLoadId;

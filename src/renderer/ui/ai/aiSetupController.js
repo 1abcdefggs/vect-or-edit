@@ -5,10 +5,12 @@
  * The step bar (stepTabs.js) and the switches (toggleSwitch.js) are shared parts; this file only decides what they show.
  */
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { readStorage, writeStorage } from '../../core/storage.js';
 import { showToast } from '../notifications/toastManager.js';
 import { applyI18n, currentLang, t } from '../../core/i18n';
 import { applyColorMode, applyLanguageSetting, applyThemeSetting, getStoredThemeSetting, getThemeList, refreshColorModeControls } from '../settings/settingsFacade.js';
-import { getColorMode, getThemePreview, hasBothFaces, isDarkModeActive } from '../../editor/core/themeLoader.js';
+import { getColorMode } from '../../editor/core/themeLoader.js';
+import { renderThemeCards as drawThemeCards } from '../components/themeCards.js';
 import { applyEditorCanvasTone } from '../../editor/editorManager.js';
 import { AUTO_SAVE_DELAY_RANGE_MS, getAutoSaveDelayMs, isIdleAutoSaveEnabled, isNewlineAutoSaveEnabled, markAutoSaveLocationConfirmed, setAutoSaveDelayMs, setTriggers, updateAutoSaveUI } from '../../editor/ui/autoSaveManager.js';
 import { syncSettingsToBackend } from '../settings/settingsState.js';
@@ -363,27 +365,12 @@ function renderLocalNotice() {
   notice.classList.toggle('is-warning', !installing);
 }
 
-// --- Theme cards: a small editor sample in each theme's own colors ------------------------------------------------
-
-function sampleLine(widths, colors) {
-  const line = document.createElement('span');
-  line.className = 'first-run-theme-line';
-  widths.forEach((width, i) => {
-    const bar = document.createElement('i');
-    bar.style.width = width;
-    bar.style.background = colors[i];
-    line.append(bar);
-  });
-  return line;
-}
-
-/** The custom card is a background and text color pair, not a theme: it overrides the editor canvas of the selected theme. */
-const CUSTOM_CARD = 'custom';
+// --- Theme cards: drawn by ui/components/themeCards.js; this file keeps the custom colours and the clicks ----------
 
 function customColors() {
   return {
-    bg: localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e',
-    fg: localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4',
+    bg: readStorage(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e',
+    fg: readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4',
   };
 }
 
@@ -394,7 +381,7 @@ function customSamplePreview() {
 }
 
 function isCustomToneOn() {
-  return localStorage.getItem(STORAGE_KEYS.EDITOR_BG_TONE) === 'custom';
+  return readStorage(STORAGE_KEYS.EDITOR_BG_TONE) === 'custom';
 }
 
 /** Keeps the editor tone selects of the settings in step with the setup cards. */
@@ -425,51 +412,25 @@ async function selectThemeCard(name) {
   await applyThemeSetting(name);
 }
 
-function themeCard(name) {
-  const isCustom = name === CUSTOM_CARD;
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'first-run-theme-card';
-  button.dataset.theme = name;
+let setupThemeGrid = null;
 
-  // The sample shows the face the current mode uses; a theme with both faces gets the other face as a corner
-  const p = isCustom ? customSamplePreview() : getThemePreview(name);
-  const other = !isCustom && hasBothFaces(name) ? getThemePreview(name, isDarkModeActive() ? 'light' : 'dark') : null;
-  const sample = document.createElement('span');
-  sample.className = 'first-run-theme-sample';
-  sample.setAttribute('aria-hidden', 'true');
-  sample.style.background = other
-    ? `linear-gradient(135deg, ${p.background} 78%, ${other.background} 78%)`
-    : p.background;
-  sample.append(
-    sampleLine(['6px', '28%', '40%'], [p.lineNumber, p.keyword, p.foreground]),
-    sampleLine(['6px', '22%', '50%'], [p.lineNumber, p.foreground, p.string]),
-    sampleLine(['6px', '45%'], [p.lineNumber, p.keyword])
-  );
-
-  const label = document.createElement('span');
-  label.className = 'first-run-theme-name';
-  label.textContent = isCustom ? t('theme_custom') : name;
-  button.append(sample, label);
-  button.addEventListener('click', () => (isCustom ? selectCustomTone() : selectThemeCard(name)));
-  return button;
-}
-
+/** The setup cards are drawn by the shared part; the settings page uses the same cards. */
 function renderThemeCards() {
   const grid = $('setupThemeCards');
   if (!grid) return;
-  grid.replaceChildren(...[...getThemeList(), CUSTOM_CARD].map(themeCard));
-  updateThemeCardState();
+  setupThemeGrid = drawThemeCards(grid, {
+    themes: getThemeList(),
+    current: getStoredThemeSetting,
+    isCustomOn: isCustomToneOn,
+    customSample: customSamplePreview,
+    onPickTheme: selectThemeCard,
+    onPickCustom: selectCustomTone,
+  });
 }
 
 /** Exactly one card is pressed: the custom card while its canvas is on, otherwise the chosen theme or auto. */
 function updateThemeCardState() {
-  const customOn = isCustomToneOn();
-  const current = getStoredThemeSetting();
-  document.querySelectorAll('#setupThemeCards .first-run-theme-card').forEach((card) => {
-    const pressed = card.dataset.theme === CUSTOM_CARD ? customOn : !customOn && card.dataset.theme === current;
-    card.setAttribute('aria-pressed', String(pressed));
-  });
+  setupThemeGrid?.refresh();
 }
 
 // --- Finishing ----------------------------------------------------------------------------------------------------
@@ -559,7 +520,14 @@ async function finishSetup() {
 
   // New documents start in the chosen format; documents that were never saved (the welcome one) follow it now
   const format = toDocumentFormat(document.querySelector('input[name="setup_format"]:checked')?.value);
-  localStorage.setItem(STORAGE_KEYS.DOCUMENT_FORMAT, format);
+  try {
+    writeStorage(STORAGE_KEYS.DOCUMENT_FORMAT, format);
+  } catch (err) {
+    // Setup stays open so the user can press finish again; it is not marked complete
+    console.error('[Setup] Could not save the document format:', err);
+    isFinishing = false;
+    return;
+  }
   applyFormatToUnsavedTabs(format);
 
   setTriggers({
@@ -574,9 +542,16 @@ async function finishSetup() {
   } catch (err) {
     console.warn('[Setup] Could not store the API key:', err);
   }
+  try {
+    writeStorage(STORAGE_KEYS.AI_SETUP_COMPLETED, 'true');
+  } catch (err) {
+    // Not marked complete: the setup would show again on the next start, so keep it open for another try.
+    // The model install is started only after this write, so a retry cannot start it twice.
+    console.error('[Setup] Could not mark the setup as completed:', err);
+    isFinishing = false;
+    return;
+  }
   if (localAiSwitch?.isChecked()) queueLocalModelInstall();
-
-  localStorage.setItem(STORAGE_KEYS.AI_SETUP_COMPLETED, 'true');
   syncSettingsToBackend();
 
   const overlay = $('aiSetupModalOverlay');

@@ -54,4 +54,27 @@ export function renderStaticSettingsText(root = document) {
       descText: el.dataset.descText
     });
   });
+  nameRowControls(root);
+}
+
+let labelSeq = 0;
+/** The id of a row's label, given one when it has none. Controls point at it with aria-labelledby. */
+export function rowLabelId(label) {
+  if (!label.id) label.id = `setting-label-${++labelSeq}`;
+  return label.id;
+}
+
+/**
+ * Names the inputs of a row (number, password, checkbox, text) after the row's label, so a screen reader says what
+ * they set. Controls that already have a name (aria-label or aria-labelledby) are left as they are.
+ */
+export function nameRowControls(root = document) {
+  root.querySelectorAll('[data-setting-row]').forEach((row) => {
+    const label = row.querySelector('.setting-label');
+    if (!label) return;
+    row.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => {
+      if (el.hasAttribute('aria-label') || el.hasAttribute('aria-labelledby')) return;
+      el.setAttribute('aria-labelledby', rowLabelId(label));
+    });
+  });
 }

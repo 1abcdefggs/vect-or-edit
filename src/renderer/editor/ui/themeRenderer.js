@@ -1,6 +1,62 @@
 /**
  * Applies theme color mappings to document CSS variables.
  */
+import { mixColors, contrastRatio, readableOn, SKELETON_ACCENT } from '../core/themeSkeleton.js';
+import { TINT_ALPHA, deriveTextColours } from '../core/derivedColors.js';
+
+function rgbaOf(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+/**
+ * The colour variables that follow the theme (accent, text and border, log console, shared tints).
+ * Status colours, overlays, backdrop and shadows stay per mode on purpose (see variables.css).
+ * A value that would fall below the contrast limit is not set, so the stylesheet's mode default applies.
+ */
+function applyDerivedColors(theme, setVar) {
+  const colors = theme.colors;
+  const isLight = theme.base === 'vs';
+  const bg = sanitizeHexColor(colors['editor.background'], isLight ? '#ffffff' : '#1e1e1e');
+  const fg = sanitizeHexColor(colors['editor.foreground'], isLight ? '#111111' : '#ffffff');
+  const panel = sanitizeHexColor(colors['sideBar.background'], bg);
+  const accent = sanitizeHexColor(colors['button.background'], SKELETON_ACCENT);
+  const alpha = isLight ? TINT_ALPHA.light : TINT_ALPHA.dark;
+  const derived = deriveTextColours({ bg, fg, panel, accent, isLight });
+
+  // Accent and text on the accent
+  setVar('--accent-color', accent);
+  setVar('--accent-hover', mixColors(accent, '#000000', 0.15));
+  setVar('--text-on-accent', readableOn(accent));
+  setVar('--item-code-text', derived.itemCodeText);
+
+  // Muted text and control outline: kept only when they meet the contrast limit
+  const muted = mixColors(fg, bg, 0.25);
+  if (contrastRatio(muted, bg) >= 4.5) setVar('--text-muted', muted);
+  const border = sanitizeHexColor(colors['editorGroup.border'], '');
+  if (border && contrastRatio(border, bg) >= 3) setVar('--control-border', border);
+
+  // System log console, from the editor colours. The source and time sit on the log body, so they fit to it.
+  setVar('--log-bg', bg);
+  setVar('--log-header-bg', derived.logHeader);
+  setVar('--log-fg', fg);
+  setVar('--log-title', fg);
+  setVar('--log-msg', fg);
+  setVar('--log-time', derived.logMuted);
+  setVar('--log-source', derived.logMuted);
+
+  // Shared tints: the theme's text or accent colour at the mode's alpha
+  setVar('--hover-bg', rgbaOf(fg, alpha.hover));
+  setVar('--active-bg', rgbaOf(fg, alpha.active));
+  setVar('--result-bg', rgbaOf(fg, alpha.result));
+  setVar('--result-hover-bg', rgbaOf(accent, alpha.resultHover));
+  setVar('--item-code-bg', rgbaOf(accent, alpha.itemCode));
+  setVar('--select-bg', rgbaOf(panel, alpha.select));
+  setVar('--select-text', fg);
+  setVar('--select-border', rgbaOf(fg, alpha.selectBorder));
+}
 
 function sanitizeHexColor(color, defaultHex) {
   if (!color || typeof color !== 'string') return defaultHex;
@@ -65,15 +121,7 @@ export function applyThemeToDOM(theme) {
     if (theme.colors['editorGroup.border']) {
       setVar('--border-color', theme.colors['editorGroup.border']);
     }
-    if (theme.colors['button.background']) {
-      setVar('--button-bg', theme.colors['button.background']);
-    }
-    if (theme.colors['button.foreground']) {
-      setVar('--button-fg', theme.colors['button.foreground']);
-    }
-    if (theme.colors['dropdown.background']) {
-      setVar('--dropdown-bg', theme.colors['dropdown.background']);
-    }
+    applyDerivedColors(theme, setVar);
   }
 
   // Light/Dark root class toggle

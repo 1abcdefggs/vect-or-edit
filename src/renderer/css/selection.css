@@ -27,8 +27,7 @@
   color: var(--sel-on-surface);
 }
 
-/* Settings areas, provider-like list cards, dropdown items: the same boxed selection */
-.settings-area.active,
+/* Provider-like list cards, dropdown items: the same boxed selection */
 .ep-card.is-active,
 .ui-select-option.is-selected {
   background: var(--sel-surface);
@@ -37,7 +36,6 @@
   box-shadow: inset 0 0 0 var(--sel-edge-width) var(--sel-edge);
 }
 
-.settings-area.active:hover,
 .ep-card.is-active:hover,
 .ui-select-option.is-selected:hover {
   background: var(--sel-surface);

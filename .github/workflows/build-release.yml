@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  # Reads @1abcdefggs/vect-or-engine from GitHub Packages (npm install)
+  packages: read
 
 jobs:
   build-windows:
@@ -15,32 +17,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # package.json depends on file:../vect-or-engine, so the engine must sit next to this
-      # repository. checkout cannot write outside the workspace, so it goes to a subfolder first.
-      - name: Checkout engine source
-        uses: actions/checkout@v4
-        with:
-          repository: 1abcdefggs/vect-or-engine
-          ref: main
-          path: engine-src
-
-      - name: Setup Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup Node.js 24 (engine requires >= 24)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Build engine (.node)
-        shell: pwsh
-        run: |
-          Move-Item engine-src ..\vect-or-engine
-          Push-Location ..\vect-or-engine
-          npm ci
-          npm run build
-          Pop-Location
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
@@ -50,6 +26,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+        env:
+          # .npmrc reads this token for the @1abcdefggs scope on GitHub Packages
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Application Bundle
         run: npm run build

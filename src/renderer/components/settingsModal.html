@@ -1,71 +1,67 @@
 <!-- Comprehensive Application Settings Modal -->
 <div id="settingsModal" class="modal-backdrop" style="display: none;">
   <div class="modal-dialog settings-modal-dialog">
-    <div class="modal-header">
-      <div class="settings-header-left">
-        <button id="btnBackToEditor" class="toolbar-btn settings-back-btn" data-i18n-title="tip_back_to_editor">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          <span data-i18n="btn_back_to_editor">Back to Editor</span>
-        </button>
-        <h3 class="modal-title settings-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-            </path>
-          </svg>
-          <span data-i18n="settings_title">Application Settings</span>
-        </h3>
-      </div>
-      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
-        <span class="material-symbols-outlined">help</span><span data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
-      </button>
-      <button id="btnCloseSettingsModal" class="log-panel-btn settings-close-btn" data-i18n-title="tip_close_settings">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
+    <div class="settings-modal-tabs">
+      <h3 class="settings-nav-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+          </path>
         </svg>
-      </button>
+        <span class="settings-nav-title-label" data-i18n="settings_title">Application Settings</span>
+      </h3>
+      <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n-title="tip_tab_appearance"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">palette</span><span class="settings-tab-label" data-i18n="tab_appearance">Header</span></button>
+      <button class="settings-tab-btn" data-tab="tabEditor" data-i18n-title="tip_tab_editor"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">edit_note</span><span class="settings-tab-label" data-i18n="tab_editor">Editor</span></button>
+      <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n-title="tip_tab_ai"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">smart_toy</span><span class="settings-tab-label" data-i18n="tab_ai_search">Sidebar</span></button>
+      <button class="settings-tab-btn" data-tab="tabSystem" data-i18n-title="tip_tab_system"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">tune</span><span class="settings-tab-label" data-i18n="tab_system">System</span></button>
     </div>
-
-    <!-- Window map: the four areas of the settings laid out as in the window. A press selects the tab (settingsAreaMap.js) -->
-    <nav class="settings-area-map" aria-label="Settings areas" data-i18n-aria="aria_settings_areas">
-      <button type="button" class="settings-area" data-area-tab="tabAppearance" data-i18n-title="tip_tab_appearance" style="grid-area: hdr;">
-        <span class="settings-area-name" data-i18n="tab_appearance">Header</span>
-        <span class="settings-area-desc" data-i18n="tab_appearance_desc">The top of the window: title bar and menus</span>
+    <div class="settings-split">
+    <nav class="settings-nav" aria-label="Settings sections">
+      <ul class="settings-nav-items" id="settingsNavItems"></ul>
+      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
+        <span class="material-symbols-outlined">help</span><span class="settings-guide-label" data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
       </button>
-      <button type="button" class="settings-area" data-area-tab="tabEditor" data-i18n-title="tip_tab_editor" style="grid-area: edt;">
-        <span class="settings-area-name" data-i18n="tab_editor">Editor</span>
-        <span class="settings-area-desc" data-i18n="tab_editor_desc">The writing area: fonts, documents, AutoSave, LLM chat</span>
-      </button>
-      <button type="button" class="settings-area" data-area-tab="tabAiSearch" data-i18n-title="tip_tab_ai" style="grid-area: sbr;">
-        <span class="settings-area-name" data-i18n="tab_ai_search">Sidebar</span>
-        <span class="settings-area-desc" data-i18n="tab_ai_search_desc">The right panel: Embedding, knowledge search, validation</span>
-      </button>
-      <button type="button" class="settings-area" data-area-tab="tabSystem" data-i18n-title="tip_tab_system" style="grid-area: sys;">
-        <span class="settings-area-name" data-i18n="tab_system">System</span>
-        <span class="settings-area-desc" data-i18n="tab_system_desc">The bottom of the window: closing, log, window parts, maintenance</span>
+      <button id="btnBackToEditor" class="toolbar-btn settings-back-btn" data-i18n-title="tip_back_to_editor">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span class="settings-back-label" data-i18n="btn_back_to_editor">Back to Editor</span>
       </button>
     </nav>
 
-    <div class="settings-modal-tabs">
-      <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n="tab_appearance" data-i18n-title="tip_tab_appearance">Header</button>
-      <button class="settings-tab-btn" data-tab="tabEditor" data-i18n="tab_editor" data-i18n-title="tip_tab_editor">Editor</button>
-      <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n="tab_ai_search" data-i18n-title="tip_tab_ai">Sidebar</button>
-      <button class="settings-tab-btn" data-tab="tabSystem" data-i18n="tab_system" data-i18n-title="tip_tab_system">System</button>
-    </div>
-
-    <div class="settings-split">
     <div class="modal-body settings-modal-body">
 
       <!-- Tab 1: Header (hdr) - what the title bar and its menus control -->
       <div id="tabAppearance" class="settings-tab-content active">
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="format_list_bulleted" data-key="grp_menu_bar" data-text="Menu bar"></h4>
+          <div data-setting-row data-vis-target="h_menu_bar">
+            <div data-setting-text data-label-key="vis_h_menu_bar" data-label-text="Menu bar"></div>
+          </div>
+          <div data-setting-row data-vis-target="h_menu_file">
+            <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File menu"></div>
+          </div>
+          <div data-setting-row data-vis-target="h_menu_edit">
+            <div data-setting-text data-label-key="vis_h_menu_edit" data-label-text="Edit menu"></div>
+          </div>
+          <div data-setting-row data-vis-target="h_menu_view">
+            <div data-setting-text data-label-key="vis_h_menu_view" data-label-text="View menu"></div>
+          </div>
+          <div data-setting-row data-vis-target="h_menu_window">
+            <div data-setting-text data-label-key="vis_h_menu_window" data-label-text="Window menu"></div>
+          </div>
+          <div data-setting-row data-vis-target="h_menu_help">
+            <div data-setting-text data-label-key="vis_h_menu_help" data-label-text="Help menu"></div>
+          </div>
+          <div data-setting-row data-vis-target="h_logo">
+            <div data-setting-text data-label-key="vis_h_logo" data-label-text="Logo and app version"></div>
+          </div>
+        </div>
+
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="palette" data-key="common_theme" data-text="Theme"></h4>
           <div data-setting-row>
@@ -73,31 +69,24 @@
             <select id="modalColorModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_color_mode"></select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="overlay_color_label" data-label-text="Popup colour" data-desc-key="overlay_color_desc" data-desc-text="Colour of selection popups, context menus and tooltips. Invert shows them on a dark surface in light mode and a light surface in dark mode, so they stand out."></div>
-            <select id="modalOverlayColorSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_overlay_color">
-              <option value="invert" data-i18n="overlay_color_invert">Invert (default)</option>
-              <option value="window" data-i18n="overlay_color_window">Same as window</option>
-            </select>
-          </div>
-          <div data-setting-row>
             <div data-setting-text data-label-key="common_theme" data-label-text="Color Theme" data-desc-key="setting_theme_desc" data-desc-text="Switch color palette and titlebar theme."></div>
-            <select id="modalThemeSelect" class="toolbar-select" data-i18n-title="tip_set_theme"></select>
+            <div id="modalThemeCards" class="theme-card-grid settings-theme-cards" data-i18n-title="tip_set_theme"></div>
           </div>
-        </div>
-
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="translate" data-key="common_language" data-text="Language"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="common_language" data-label-text="UI Language" data-desc-key="setting_language_desc" data-desc-text="Switch application locale."></div>
-            <select id="modalLangSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_language">
-              <option value="en" data-i18n="lang_en">English (EN)</option>
-              <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
-            </select>
+            <div data-setting-text data-label-key="overlay_color_label" data-label-text="Popup colour" data-desc-key="overlay_color_desc" data-desc-text="Colour of selection popups, context menus and tooltips. Invert shows them on a dark surface in light mode and a light surface in dark mode, so they stand out."></div>
+            <div id="modalOverlayColorCards" class="settings-theme-cards popup-color-cards" role="group" data-i18n-aria="overlay_color_label"></div>
           </div>
         </div>
 
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="zoom_in" data-key="monaco_group_display" data-text="Display"></h4>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="common_language" data-label-text="Display language" data-desc-key="setting_language_desc" data-desc-text="Choose the display language. The screen switches at once."></div>
+            <select id="modalLangSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_language">
+              <option value="en" data-i18n="lang_en">English (EN)</option>
+              <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
+            </select>
+          </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_ui_scaling" data-label-text="UI Scaling (Zoom)" data-desc-key="setting_ui_scaling_desc" data-desc-text="Adjust the overall size of the application UI."></div>
             <select id="modalZoomSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_zoom">
@@ -150,7 +139,7 @@
       <!-- Tab 2: Editor (edt) - text, toolbar, documents and the LLM chat -->
       <div id="tabEditor" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="text_fields" data-key="grp_editor_text" data-text="Editor text"></h4>
+          <h4 data-card-heading data-icon="text_fields" data-key="grp_editor_text" data-text="Text"></h4>
           <div data-setting-row>
             <div data-setting-text data-label-key="font_family_label" data-label-text="Font Family" data-desc-key="setting_font_family_desc" data-desc-text="Select typeface for text rendering."></div>
             <select id="modalFontFamilySelect" class="toolbar-select" data-i18n-title="tip_editor_font_family">
@@ -160,7 +149,7 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="font_size_label" data-label-text="Font Size" data-desc-key="setting_font_size_desc" data-desc-text="Adjust editor font scaling."></div>
+            <div data-setting-text data-label-key="font_size_label" data-label-text="Font Size" data-desc-key="setting_font_size_desc" data-desc-text="Choose the editor font size in pixels."></div>
             <select id="modalFontSizeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_editor_font_size">
               <option value="14" data-i18n="font_small">14px</option>
               <option value="16" data-i18n="font_normal">16px</option>
@@ -169,7 +158,7 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_line_height" data-label-text="Line Height" data-desc-key="setting_line_height_desc" data-desc-text="Adjust vertical pitch between lines."></div>
+            <div data-setting-text data-label-key="setting_line_height" data-label-text="Line Height" data-desc-key="setting_line_height_desc" data-desc-text="Adjust the height of each line."></div>
             <select id="modalLineHeightSelect" class="toolbar-select" data-i18n-title="tip_set_line_height">
               <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
               <option value="26" data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
@@ -265,7 +254,7 @@
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="save" data-key="autosave_menu_item" data-text="Autosave"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="autosave_menu_item" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write."></div>
+            <div data-setting-text data-label-key="autosave_menu_item" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write. Save As still saves a copy under a new name."></div>
             <select id="modalAutoSaveSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_autosave_toggle">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
@@ -320,15 +309,15 @@
 
             <input type="hidden" id="modalAiProviderSelect" value="none">
             <div class="provider-cards-grid" role="group">
-              <div class="provider-card" data-provider="gemini" role="button" data-tip-exempt="the provider name on the card names it">
+              <div class="provider-card" data-provider="gemini" role="button" tabindex="0" data-tip-exempt="the provider name on the card names it">
                 <div class="provider-name">Google Gemini</div>
                 <div class="provider-sub" data-i18n="card_cloud_desc">Cloud API</div>
               </div>
-              <div class="provider-card" data-provider="openai" role="button" data-tip-exempt="the provider name on the card names it">
+              <div class="provider-card" data-provider="openai" role="button" tabindex="0" data-tip-exempt="the provider name on the card names it">
                 <div class="provider-name">OpenAI</div>
                 <div class="provider-sub" data-i18n="card_cloud_desc">Cloud API</div>
               </div>
-              <div class="provider-card" data-provider="claude" role="button" data-tip-exempt="the provider name on the card names it">
+              <div class="provider-card" data-provider="claude" role="button" tabindex="0" data-tip-exempt="the provider name on the card names it">
                 <div class="provider-name">Claude</div>
                 <div class="provider-sub" data-i18n="card_cloud_desc">Cloud API</div>
               </div>
@@ -361,10 +350,8 @@
                     <span class="material-symbols-outlined">sync</span><span data-i18n="btn_fetch_models">Fetch Models</span>
                   </button>
                 </div>
-                <select id="modalGeminiModelSelect" class="toolbar-select select-full" data-i18n-title="tip_set_gemini_model">
-                  <!-- Replaced by the list from the Gemini API once a key is set -->
-                  <option value="gemini-3.1-flash-lite" selected>gemini-3.1-flash-lite</option>
-                </select>
+                <!-- Two-line picker, filled from the Gemini API once a key is set (see geminiModelPicker.js) -->
+                <div id="modalGeminiModelList" data-i18n-title="tip_set_gemini_model"></div>
               </div>
             </div>
 
@@ -422,7 +409,7 @@
             </div>
 
             <div data-setting-row>
-              <div data-setting-text data-label-key="api_keys_clear_label" data-label-text="Clear Stored API Keys" data-desc-key="api_keys_clear_desc" data-desc-text="Remove locally cached Gemini, OpenAI and Claude API keys from this device. Keys are encrypted with Electron safeStorage."></div>
+              <div data-setting-text data-label-key="api_keys_clear_label" data-label-text="Clear Stored API Keys" data-desc-key="api_keys_clear_desc" data-desc-text="Remove locally cached Gemini, OpenAI and Claude API keys from this device. Keys are encrypted by the operating system through Electron safeStorage."></div>
               <button id="btnEditorClearApiKey" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n-title="tip_clear_api_keys">
                 <span class="material-symbols-outlined">delete_forever</span><span data-i18n="api_keys_clear_btn">Clear API Key</span>
               </button>
@@ -452,7 +439,7 @@
 
 <section class="ai-control-overview" aria-label="AI system status" data-i18n-aria="aria_ai_status">
           <div class="ai-overview-heading">
-            <div data-setting-text data-label-key="ai_overview_title" data-label-text="AI Control Center" data-desc-key="ai_overview_desc" data-desc-text="Live status for verification before configuring."></div>
+            <div data-setting-text data-label-key="ai_overview_title" data-label-text="AI Control Center" data-desc-key="ai_overview_desc" data-desc-text="Shows whether the embedding model (local search) and the LLM (cloud) are ready. Check here before you configure."></div>
             <span class="ai-overview-note" data-i18n="ai_overview_badge">Local-first</span>
           </div>
           <div class="ai-status-grid ai-status-grid--3">
@@ -675,17 +662,6 @@
 
       <!-- Tab 4: System (sys) - closing, log, parts of the window and maintenance -->
       <div id="tabSystem" class="settings-tab-content">
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="close" data-key="settings_group_closing" data-text="Closing"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_confirm_close" data-label-text="Confirm before closing" data-desc-key="setting_confirm_close_desc" data-desc-text="Ask first when you close something with ×, so a stray click cannot close it. Tabs with unsaved changes are always asked about."></div>
-            <select id="modalConfirmCloseSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_confirm_close">
-              <option value="on" selected data-i18n="opt_confirm_close_on">Ask first (recommended)</option>
-              <option value="off" data-i18n="opt_confirm_close_off">Close at once</option>
-            </select>
-          </div>
-        </div>
-
 <div class="settings-section-card">
           <h4>
             <span class="material-symbols-outlined">terminal</span>
@@ -705,7 +681,7 @@
           <div class="log-head" aria-hidden="true"><span data-i18n="log_head_time">Time</span><span data-i18n="log_head_level">Level</span><span data-i18n="log_head_source">Source</span><span data-i18n="log_head_message">Message</span></div>
           <div class="log-entries-container" data-log-mirror></div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_logs_on_start" data-label-text="Log panel at startup" data-desc-key="setting_logs_on_start_desc" data-desc-text="Whether the log panel is open when the app starts."></div>
+            <div data-setting-text data-label-key="setting_logs_on_start" data-label-text="Open log panel at startup" data-desc-key="setting_logs_on_start_desc" data-desc-text="Open the log panel when the app starts. Off keeps it closed until you open it."></div>
             <select id="modalLogsOnStartSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_logs_on_start">
               <option value="open" selected data-i18n="opt_logs_open">Open</option>
               <option value="closed" data-i18n="opt_logs_closed">Closed</option>
@@ -770,13 +746,24 @@
             <div data-setting-text data-label-key="maint_cache_label" data-label-text="Clear Application Cache" data-desc-key="maint_cache_desc" data-desc-text="Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys."></div>
             <button id="btnClearAppCache" class="settings-btn" type="button" data-i18n="maint_cache_btn" data-i18n-title="tip_clear_cache">Clear Cache</button>
           </div>
-          <div data-setting-row>
+          <div data-setting-row class="setting-item--danger">
             <div data-setting-text data-label-key="maint_reset_label" data-label-text="Restore Default Settings" data-desc-key="maint_reset_desc" data-desc-text="Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor."></div>
             <button id="btnResetSettings" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_btn" data-i18n-title="tip_reset_settings">Restore Defaults</button>
           </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="maint_reset_dev_btn" data-label-text="Dev reset" data-desc-key="maint_reset_dev_desc" data-desc-text="Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again."></div>
+          <div data-setting-row class="setting-item--danger">
+            <div data-setting-text data-label-key="maint_reset_dev_btn" data-label-text="Dev reset" data-desc-key="maint_reset_dev_desc" data-desc-text="Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again. A confirmation appears first."></div>
             <button id="btnResetSettingsDev" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_dev_btn" data-i18n-title="tip_reset_settings_dev">Dev reset</button>
+          </div>
+        </div>
+
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="close" data-key="settings_group_closing" data-text="Closing"></h4>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_confirm_close" data-label-text="Confirm before closing" data-desc-key="setting_confirm_close_desc" data-desc-text="Ask first when you close something with ×, so a stray click cannot close it. Tabs with unsaved changes are always asked about."></div>
+            <select id="modalConfirmCloseSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_confirm_close">
+              <option value="on" selected data-i18n="opt_confirm_close_on">Ask first (recommended)</option>
+              <option value="off" data-i18n="opt_confirm_close_off">Close at once</option>
+            </select>
           </div>
         </div>
       </div>

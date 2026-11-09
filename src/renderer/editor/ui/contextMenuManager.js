@@ -1,4 +1,5 @@
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { readStorage } from '../../core/storage.js';
 import { buildPillMenu, buildPatternAMenu } from './contextMenuBuilders.js';
 
 let activeContextMenu = null;
@@ -38,7 +39,7 @@ export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, t
   removeContextMenu();
   if (triggerType === 'selection' && (!selectedText || !selectedText.trim())) return;
 
-  const mode = localStorage.getItem(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
+  const mode = readStorage(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
   if (triggerType === 'selection' && mode === 'manual') return;
 
   let menu;

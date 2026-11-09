@@ -30,11 +30,24 @@ import {
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { truncateAndNormalize } from '../shared/embeddingSpace';
 import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
-import { createWindow, getMainWindow } from './windowManager';
+import { createWindow, getMainWindow, saveColorMode } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, snapshotOpeningWorkspace, restoreDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 import { getCursorBaseSize } from './cursorSize';
 
 let currentKbPath: string = ""; // Default empty
+
+/** Sends engine:status to the main window when it is alive. The only place that builds this payload. */
+function sendEngineStatus(fields: { count: number; fileName: string; profileName: string | null; kbReady?: boolean }): void {
+  const win = getMainWindow();
+  if (!win || win.isDestroyed()) return;
+  win.webContents.send('engine:status', {
+    binReady: isRustBinaryLoaded(),
+    kbReady: fields.kbReady ?? isRustEngineReady(),
+    count: fields.count,
+    fileName: fields.fileName,
+    profileName: fields.profileName
+  });
+}
 
 initLogger();
 if (app.isPackaged) {
@@ -258,15 +271,11 @@ if (!gotTheLock) {
 
         setActiveProfile(loaded);
 
-        if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send('engine:status', {
-            binReady: isRustBinaryLoaded(),
-            kbReady: isRustEngineReady(),
-            count: getRustEngineItemCount(),
-            fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
-            profileName: getActiveProfile()?.domain_name || getActiveProfile()?.profile_id || null
-          });
-        }
+        sendEngineStatus({
+          count: getRustEngineItemCount(),
+          fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
+          profileName: getActiveProfile()?.domain_name || getActiveProfile()?.profile_id || null
+        });
 
         return { success: true, goal: getActiveProfile(), filePath: targetPath };
       } catch (err: any) {
@@ -380,15 +389,11 @@ if (!gotTheLock) {
 
         const totalCount = await reloadCombinedKnowledgeIndex();
 
-        if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send('engine:status', {
-            binReady: isRustBinaryLoaded(),
-            kbReady: isRustEngineReady(),
-            count: totalCount,
-            fileName: knowledgeSlots.map(s => s.name).join(', '),
-            profileName: getActiveProfile()?.domain_name || null
-          });
-        }
+        sendEngineStatus({
+          count: totalCount,
+          fileName: knowledgeSlots.map(s => s.name).join(', '),
+          profileName: getActiveProfile()?.domain_name || null
+        });
 
         const allStripped: any[] = [];
         for (const items of slotItemsCache.values()) allStripped.push(...items);
@@ -417,31 +422,21 @@ if (!gotTheLock) {
     handleTrusted('engine:clearAllKnowledgeSlots', async () => {
       clearKnowledgeSlots();
       const totalCount = await reloadCombinedKnowledgeIndex();
-      const mainWindow = getMainWindow();
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.webContents.send('engine:status', {
-          binReady: isRustBinaryLoaded(),
-          kbReady: isRustEngineReady(),
-          count: totalCount,
-          fileName: 'No Knowledge Base',
-          profileName: getActiveProfile()?.domain_name || null
-        });
-      }
+      sendEngineStatus({
+        count: totalCount,
+        fileName: 'No Knowledge Base',
+        profileName: getActiveProfile()?.domain_name || null
+      });
       return { success: true, slots: [], totalCount: 0, data: [] };
     });
 
     handleTrusted('engine:resetGoalProfile', () => {
       resetActiveProfile();
-      const mainWindow = getMainWindow();
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.webContents.send('engine:status', {
-          binReady: isRustBinaryLoaded(),
-          kbReady: isRustEngineReady(),
-          count: getRustEngineItemCount(),
-          fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
-          profileName: null
-        });
-      }
+      sendEngineStatus({
+        count: getRustEngineItemCount(),
+        fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
+        profileName: null
+      });
       return { success: true, goal: null };
     });
 
@@ -520,15 +515,12 @@ if (!gotTheLock) {
         const allStripped: any[] = [];
         for (const items of slotItemsCache.values()) allStripped.push(...items);
 
-        if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send('engine:status', {
-            binReady: isRustBinaryLoaded(),
-            kbReady: true,
-            count: totalCount,
-            fileName: knowledgeSlots.map(s => s.name).join(', '),
-            profileName: getActiveProfile()?.domain_name || null
-          });
-        }
+        sendEngineStatus({
+          kbReady: true,
+          count: totalCount,
+          fileName: knowledgeSlots.map(s => s.name).join(', '),
+          profileName: getActiveProfile()?.domain_name || null
+        });
 
         return {
           success: true,
@@ -554,6 +546,16 @@ if (!gotTheLock) {
       } catch (err: any) {
         console.warn("IME dict file not present:", err);
         return "";
+      }
+    });
+
+    handleTrusted('app:setColorMode', (_event, mode: unknown) => {
+      if (mode !== 'system' && mode !== 'light' && mode !== 'dark') return { success: false };
+      try {
+        saveColorMode(mode);
+        return { success: true };
+      } catch {
+        return { success: false };
       }
     });
 

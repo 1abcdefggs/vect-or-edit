@@ -33,13 +33,28 @@ async function setLastSaveDir(dir: string): Promise<void> {
   }
 }
 
+/**
+ * Writes to a temporary file in the same folder, then renames it over the target. A crash while writing
+ * leaves the old file intact instead of a half-written one.
+ */
+async function writeFileAtomic(target: string, content: string) {
+  const tmp = path.join(path.dirname(target), `.${path.basename(target)}.${process.pid}.${Date.now()}.tmp`);
+  try {
+    await fsPromises.writeFile(tmp, content, 'utf-8');
+    await fsPromises.rename(tmp, target);
+  } catch (err) {
+    await fsPromises.rm(tmp, { force: true }).catch(() => {});
+    throw err;
+  }
+}
+
 export async function saveFile(content: string, defaultName?: string, forceDialog = false) {
   const mainWindow = getMainWindow();
   if (!mainWindow) return { success: false, error: 'No main window' };
   try {
     // Overwrite directly only a path the user already chose in a dialog this run; any other absolute path goes through the dialog
     if (!forceDialog && defaultName && path.isAbsolute(defaultName) && savePaths.isApproved(defaultName)) {
-      await fsPromises.writeFile(defaultName, content, 'utf-8');
+      await writeFileAtomic(defaultName, content);
       return { success: true, filePath: defaultName };
     }
 
@@ -64,7 +79,7 @@ export async function saveFile(content: string, defaultName?: string, forceDialo
     }
 
     savePaths.approveFile(filePath);
-    await fsPromises.writeFile(filePath, content, 'utf-8');
+    await writeFileAtomic(filePath, content);
     await setLastSaveDir(path.dirname(filePath));
     return { success: true, filePath };
   } catch (err: any) {

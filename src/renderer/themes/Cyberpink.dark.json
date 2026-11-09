@@ -1,0 +1,94 @@
+{
+  "base": "vs-dark",
+  "inherit": true,
+  "rules": [
+    {
+      "token": "comment",
+      "foreground": "4a5568",
+      "fontStyle": "italic"
+    },
+    {
+      "token": "keyword",
+      "foreground": "FF3399"
+    },
+    {
+      "token": "keyword.operator",
+      "foreground": "FF3399"
+    },
+    {
+      "token": "string",
+      "foreground": "ffb3d9"
+    },
+    {
+      "token": "number",
+      "foreground": "ffcce0"
+    },
+    {
+      "token": "constant",
+      "foreground": "ffcce0"
+    },
+    {
+      "token": "type",
+      "foreground": "00f0ff"
+    },
+    {
+      "token": "type.identifier",
+      "foreground": "00f0ff"
+    },
+    {
+      "token": "function",
+      "foreground": "00f0ff"
+    },
+    {
+      "token": "tag",
+      "foreground": "FF3399"
+    },
+    {
+      "token": "attribute.name",
+      "foreground": "ff94cf"
+    },
+    {
+      "token": "invalid",
+      "foreground": "ff6b6b"
+    },
+    {
+      "token": "variable",
+      "foreground": "c8d1da"
+    },
+    {
+      "token": "delimiter",
+      "foreground": "4a5568"
+    }
+  ],
+  "colors": {
+    "editor.foreground": "#c8d1da",
+    "editor.background": "#000000",
+    "editor.selectionBackground": "#591236",
+    "editor.inactiveSelectionBackground": "#18191a",
+    "editor.selectionHighlightBackground": "#330a1f",
+    "editor.findMatchHighlightBackground": "#005459",
+    "editor.lineHighlightBackground": "#0a0a0b",
+    "editor.lineHighlightBorder": "#00000000",
+    "editorCursor.foreground": "#c8d1da",
+    "editorLineNumber.foreground": "#7a8290",
+    "editorWhitespace.foreground": "#323437",
+    "editorIndentGuide.background": "#18191a",
+    "editorIndentGuide.activeBackground": "#801a4d",
+    "editor.selectionHighlightBorder": "#4d0f2e",
+    "sideBar.background": "#080809",
+    "titleBar.activeBackground": "#000000",
+    "editorWidget.background": "#080809",
+    "editorGroup.border": "#1e1f21",
+    "button.background": "#FF3399",
+    "button.foreground": "#000000",
+    "dropdown.background": "#080809",
+    "dropdown.foreground": "#c8d1da"
+  },
+  "attribution": {
+    "origin": "original",
+    "license": "MIT",
+    "copyright": "2026 1abcdefggs (takaer)",
+    "source": "https://github.com/cyber-pinks/cyber-pink-theme",
+    "note": "Pink #FF3399 and cyan #00f0ff from the neon variant of the owner's Cyber Pink Theme. Syntax keeps the source tones; function and type names are cyan. The light face is derived from the dark one, on a white background."
+  }
+}

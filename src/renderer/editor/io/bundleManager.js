@@ -39,6 +39,11 @@ export async function exportWorkspaceBundle() {
   }
 }
 
+/** True when any open tab has changes that are not saved. Loading a bundle replaces every tab, so this decides the warning. */
+export function hasUnsavedTabs() {
+  return tabs.some(t => t.isDirty);
+}
+
 /**
  * Imports and restores all tabs from a .vectorspace bundle file.
  */

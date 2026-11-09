@@ -59,7 +59,6 @@ tab_new_right
 terminal
 text_fields
 text_format
-translate
 tune
 visibility
 visibility_off

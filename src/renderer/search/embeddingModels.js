@@ -7,6 +7,7 @@
  * vect-or-generate/registry/facets.json still lists the generator-side embedding facets; keep modelId, dim and prefixes in sync.
  */
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
+import { readStorage } from '../core/storage.js';
 import { REGISTRY } from '../../shared/embeddingCatalog';
 
 const MULTILINGUAL_FROM = 10;
@@ -28,7 +29,7 @@ export function getEmbeddingModel(modelId) {
 
 export function getActiveModelId() {
   try {
-    return localStorage.getItem(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
+    return readStorage(STORAGE_KEYS.LOCAL_EMBEDDING_MODEL) || DEFAULTS.LOCAL_EMBEDDING_MODEL;
   } catch {
     return DEFAULTS.LOCAL_EMBEDDING_MODEL;
   }
@@ -37,7 +38,7 @@ export function getActiveModelId() {
 /** Set of model ids whose files were fetched successfully on this device. */
 export function getDownloadedModelIds() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.EMBEDDING_MODELS_DOWNLOADED);
+    const raw = readStorage(STORAGE_KEYS.EMBEDDING_MODELS_DOWNLOADED);
     const parsed = raw ? JSON.parse(raw) : [];
     return new Set(Array.isArray(parsed) ? parsed : []);
   } catch {

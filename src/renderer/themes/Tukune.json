@@ -60,5 +60,10 @@
     "button.foreground": "#ffffff",
     "dropdown.background": "#f4f4f4",
     "dropdown.foreground": "#111111"
+  },
+  "attribution": {
+    "origin": "original",
+    "license": "MIT (this project)",
+    "note": "Original to this project."
   }
 }

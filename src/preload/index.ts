@@ -66,6 +66,7 @@ const engineAPI: EngineAPI = {
   // Drag and drop: Electron no longer exposes File.path, so the real path comes from webUtils
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
   setTitleBarOverlay: (options: TitleBarOverlayOptions) => ipcRenderer.invoke('app:setTitleBarOverlay', options),
+  setColorMode: (mode: 'system' | 'light' | 'dark') => ipcRenderer.invoke('app:setColorMode', mode),
   clearCache: () => ipcRenderer.invoke('app:clearCache'),
   restartApp: () => ipcRenderer.invoke('app:restart'),
   getSemanticState: () => ipcRenderer.invoke('engine:getSemanticState'),

@@ -240,5 +240,12 @@
     "editor.lineHighlightBackground": "#282A2E",
     "editorCursor.foreground": "#AEAFAD",
     "editorWhitespace.foreground": "#4B4E55"
+  },
+  "attribution": {
+    "origin": "third-party",
+    "license": "MIT",
+    "copyright": "Copyright (C) 2011 Chris Kempson",
+    "source": "https://github.com/brijeshb42/monaco-themes",
+    "note": "This dark face matches monaco-themes (Copyright (C) 2011 Chris Kempson, MIT)."
   }
 }
