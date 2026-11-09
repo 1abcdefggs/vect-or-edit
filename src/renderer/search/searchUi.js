@@ -1,8 +1,10 @@
 import { icons } from '../core/icons.js';
+import { readStorage } from '../core/storage.js';
 import { i18n, t } from '../core/i18n.js';
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
 import { insertTextIntoEditor } from '../editor/editorManager.js';
-import { resolveItemCode, resolveItemTitle, resolveItemDescription, escapeHtml } from './searchUtils.js';
+import { resolveItemCode, resolveItemTitle, resolveItemDescription } from './searchUtils.js';
+import { escapeHtml } from '../core/escape.js';
 import { removeContextMenu } from '../editor/ui/contextMenuManager.js';
 import { aiManager } from '../core/aiStateManager.js';
 
@@ -95,11 +97,11 @@ export function resetVectorSearchResultsUi(debounceTimer, backendTimer) {
   removeContextMenu();
 }
 
-let showFullMetadata = typeof localStorage !== 'undefined' ? (localStorage.getItem(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true') : false;
+let showFullMetadata = typeof localStorage !== 'undefined' ? (readStorage(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true') : false;
 
 // Field names ticked in the field list (shown on every card even when Full Meta is off)
 const selectedMetaFields = new Set((() => {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.META_FIELDS) || '[]'); } catch { return []; }
+  try { return JSON.parse(readStorage(STORAGE_KEYS.META_FIELDS) || '[]'); } catch { return []; }
 })());
 
 export function reRenderWithCurrentResults() {
@@ -223,13 +225,13 @@ function resolveKindLabel(code) {
 
 // 'vect_result_desc_lines': 1 or 2 lines of description on a card (2 by default)
 function getResultDescLines() {
-  try { return localStorage.getItem(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2'; } catch { return '2'; }
+  try { return readStorage(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2'; } catch { return '2'; }
 }
 
 // 'vect_result_title_lines': '1' | '2' | '3' | 'full' (2 by default); 'full' shows the whole heading
 function getResultTitleLines() {
   try {
-    const v = localStorage.getItem(STORAGE_KEYS.RESULT_TITLE_LINES);
+    const v = readStorage(STORAGE_KEYS.RESULT_TITLE_LINES);
     return ['1', '3', 'full'].includes(v) ? v : '2';
   } catch { return '2'; }
 }

@@ -4,8 +4,7 @@
  */
 import { MENU_DROPDOWNS } from './menuDefinitions.js';
 import { t } from '../../core/i18n.js';
-
-const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+import { escapeHtml } from '../../core/escape.js';
 
 /** One item as the markup the menu bar controller expects (role, type, command and the tooltip key). */
 export function menuItemMarkup(item, translate = t) {

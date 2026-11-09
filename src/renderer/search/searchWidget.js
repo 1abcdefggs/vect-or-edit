@@ -1,6 +1,7 @@
 import { icons } from '../core/icons.js';
 import { i18n, t } from '../core/i18n.js';
-import { resolveItemCode, resolveItemTitle, escapeHtml } from './searchUtils.js';
+import { resolveItemCode, resolveItemTitle } from './searchUtils.js';
+import { escapeHtml } from '../core/escape.js';
 
 let monacoContentWidget = null;
 
