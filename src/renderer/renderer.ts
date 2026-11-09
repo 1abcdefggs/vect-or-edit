@@ -34,6 +34,7 @@ import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
 import { initDocumentFormatControl } from './editor/ui/documentFormatControl.js';
 import { initMonacoOptionsPanel } from './editor/options/monacoOptionsPanel.js';
 import { initHeaderMinimize } from './ui/layout/headerMinimize.js';
+import { showToast } from './ui/notifications/toastManager';
 
 export { setLedStatus };
 
@@ -49,7 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadSettingsFromBackend();
 
   // 0.15. API keys: move plain-text keys from older versions into the encrypted store, then drop them from .settings.json
-  if (await migratePlaintextApiKeys()) await syncSettingsToBackend();
+  const keyMigration = await migratePlaintextApiKeys();
+  if (keyMigration.removed) await syncSettingsToBackend();
   await refreshApiKeyStatus();
 
   // 0.2. Immediately apply Locale (Ensures 3. LOCALE is ready and UI text is localized instantly)
@@ -58,6 +60,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderToggleSwitches();
   await loadLocales();
   enhanceNumberSteppers();
+  // Shown after the locale is loaded, so the message is in the user's language
+  if (keyMigration.failedProviders.length > 0) showToast(t('api_key_migration_failed'), 'warning');
 
   // 0.5. Initialize LED tooltips consistently
   initAllLedTooltips();

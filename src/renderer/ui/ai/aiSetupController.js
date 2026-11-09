@@ -5,6 +5,7 @@
  * The step bar (stepTabs.js) and the switches (toggleSwitch.js) are shared parts; this file only decides what they show.
  */
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { readStorage, writeStorage } from '../../core/storage.js';
 import { showToast } from '../notifications/toastManager.js';
 import { applyI18n, currentLang, t } from '../../core/i18n';
 import { applyColorMode, applyLanguageSetting, applyThemeSetting, getStoredThemeSetting, getThemeList, refreshColorModeControls } from '../settings/settingsFacade.js';
@@ -559,7 +560,14 @@ async function finishSetup() {
 
   // New documents start in the chosen format; documents that were never saved (the welcome one) follow it now
   const format = toDocumentFormat(document.querySelector('input[name="setup_format"]:checked')?.value);
-  localStorage.setItem(STORAGE_KEYS.DOCUMENT_FORMAT, format);
+  try {
+    writeStorage(STORAGE_KEYS.DOCUMENT_FORMAT, format);
+  } catch (err) {
+    // Setup stays open so the user can press finish again; it is not marked complete
+    console.error('[Setup] Could not save the document format:', err);
+    isFinishing = false;
+    return;
+  }
   applyFormatToUnsavedTabs(format);
 
   setTriggers({
@@ -574,9 +582,16 @@ async function finishSetup() {
   } catch (err) {
     console.warn('[Setup] Could not store the API key:', err);
   }
+  try {
+    writeStorage(STORAGE_KEYS.AI_SETUP_COMPLETED, 'true');
+  } catch (err) {
+    // Not marked complete: the setup would show again on the next start, so keep it open for another try.
+    // The model install is started only after this write, so a retry cannot start it twice.
+    console.error('[Setup] Could not mark the setup as completed:', err);
+    isFinishing = false;
+    return;
+  }
   if (localAiSwitch?.isChecked()) queueLocalModelInstall();
-
-  localStorage.setItem(STORAGE_KEYS.AI_SETUP_COMPLETED, 'true');
   syncSettingsToBackend();
 
   const overlay = $('aiSetupModalOverlay');

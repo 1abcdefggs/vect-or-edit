@@ -1,4 +1,5 @@
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { readStorage, writeStorage } from '../../core/storage.js';
 import { isApiKeyConfigured, SECRET_STORAGE_KEYS } from '../../core/apiKeyStore.js';
 
 /** The LLM is configured when a cloud provider is chosen and its key is stored (ADR-11). */
@@ -39,7 +40,12 @@ export async function loadSettingsFromBackend() {
     const s = res.settings;
     for (const k of Object.keys(s)) {
       if (LOCAL_ONLY_KEYS.includes(k)) continue;
-      localStorage.setItem(k, s[k]);
+      try {
+        writeStorage(k, s[k]);
+      } catch (err) {
+        // One refused key must not stop the others from being restored
+        console.warn(`[Settings] Could not restore "${k}":`, err);
+      }
     }
     return true; // Indicates settings were loaded and applied
   }

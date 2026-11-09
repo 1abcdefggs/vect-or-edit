@@ -1,4 +1,5 @@
 import { t } from '../core/i18n';
+import { readStorage, writeStorage } from '../core/storage.js';
 import { showToast } from './notifications/toastManager';
 
 export function initZoomControls(): void {
@@ -34,7 +35,12 @@ export function initZoomControls(): void {
     if (factor > MAX_ZOOM) factor = MAX_ZOOM;
     currentZoom = Math.round(factor * 100) / 100;
     window.engineAPI?.setZoomFactor(currentZoom);
-    localStorage.setItem(STORAGE_KEY, currentZoom.toString());
+    try {
+      writeStorage(STORAGE_KEY, currentZoom.toString());
+    } catch (e) {
+      // The zoom is applied already; only its memory for the next start is lost
+      console.warn('Failed to save the zoom factor', e);
+    }
 
     const percentEl = document.getElementById('headerZoomPercent');
     if (percentEl) {

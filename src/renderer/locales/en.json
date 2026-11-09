@@ -520,6 +520,7 @@
   "setting_save_location": "Save location",
   "setting_save_location_desc": "Folder for new documents and the settings file (.settings.json).",
   "setup_key_failed": "Could not store the API key securely.",
+  "api_key_migration_failed": "Some API keys could not be moved to secure storage. Please enter them again in Settings.",
   "ep_source_note": "Download fetches the model files from Hugging Face (huggingface.co), from the repository named in each model id. Use switches the active model.",
   "ep_content_languages": "Content languages",
   "ep_change": "Change",

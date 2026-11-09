@@ -1,4 +1,5 @@
 import { aiManager } from '../../core/aiStateManager.js';
+import { readStorage, writeStorage } from '../../core/storage.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
 import { isLlmConfigured, isEmbedConfigured } from '../settings/settingsState.js';
@@ -320,7 +321,14 @@ function initLlmChatDock() {
         showToast(res.error || `Failed to save the ${provider} key`, 'error');
         return;
       }
-      localStorage.setItem('llm_provider', provider);
+      try {
+        writeStorage('llm_provider', provider);
+      } catch (err) {
+        // The key is saved but the provider choice is not: report it instead of looking complete
+        console.error('[AI] Could not save the provider choice:', err);
+        showToast(t('save_failed'), 'error');
+        return;
+      }
       if (provider === 'gemini') {
           // Automatically fetch and cache official Gemini models
           try {

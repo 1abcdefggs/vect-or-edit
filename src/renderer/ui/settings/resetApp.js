@@ -2,6 +2,7 @@ import { STORAGE_KEYS } from '../../core/constants.js';
 import { clearAllApiKeys } from '../../core/apiKeyStore.js';
 import { clearAllKnowledgeSlots, resetGoalProfile } from '../../search/dictionary.js';
 import { syncSettingsToBackend } from './settingsState.js';
+import { removeStorage } from '../../core/storage.js';
 
 /**
  * Reset (ADR-11 section 2.9).
@@ -51,7 +52,8 @@ export async function resetApp({ dev }) {
   const keep = new Set(dev ? KEPT_BY_DEV_RESET : []);
   Object.keys(localStorage)
     .filter((key) => !key.startsWith('autosave_') && !keep.has(key))
-    .forEach((key) => localStorage.removeItem(key));
+    // Throws if storage refuses a removal: the reload below is then skipped, so a half-reset is not shown as complete
+    .forEach((key) => removeStorage(key));
 
   // .settings.json would otherwise put the removed values back when the window reloads
   await syncSettingsToBackend();

@@ -1,5 +1,6 @@
 import { AppSettings, AppPreferences, AppVisibility, UiKey } from '../types/settings';
 import { DEFAULT_SETTINGS, SETTINGS_REGISTRY } from './settingsRegistry';
+import { readStorage, writeStorage } from './storage.js';
 
 type Listener<T> = (val: T) => void;
 
@@ -166,7 +167,12 @@ export class SettingsStore {
     clearTimeout(this.saveDebounceTimer);
     this.saveDebounceTimer = setTimeout(() => {
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('vect_settings_v3', JSON.stringify(this.settings));
+        try {
+          writeStorage('vect_settings_v3', JSON.stringify(this.settings));
+        } catch (err) {
+          // The file save below must still run, so a full or blocked local storage does not drop the settings
+          console.warn('[SettingsStore] Could not save to local storage:', err);
+        }
       }
       if (typeof window !== 'undefined' && (window as any).engineAPI?.saveSettings) {
         (window as any).engineAPI.saveSettings(this.settings).catch((err: any) => {

@@ -1,4 +1,5 @@
 import { setLedStatus } from './statusManager';
+import { readStorage, writeStorage } from './storage.js';
 import { STORAGE_KEYS, DEFAULTS } from './constants';
 import { formatTipText } from './tipFormat';
 import jaLocale from '../locales/ja.json';
@@ -56,7 +57,12 @@ export async function loadLocales(): Promise<void> {
 }
 
 export async function changeLanguage(langCode: string): Promise<void> {
-  localStorage.setItem(STORAGE_KEYS.APP_LANG, langCode);
+  try {
+    writeStorage(STORAGE_KEYS.APP_LANG, langCode);
+  } catch (err) {
+    // The language still applies for this session; only the choice for the next start is lost
+    console.warn('[i18n] Could not save the language choice:', err);
+  }
   await loadLocales();
 }
 

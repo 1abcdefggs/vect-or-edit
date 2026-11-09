@@ -1,4 +1,5 @@
 import { icons } from '../../core/icons.js';
+import { readStorage, removeStorage, writeStorage } from '../../core/storage.js';
 import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
 import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode, OVERLAY_COLORS, getOverlayColor } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
@@ -24,7 +25,7 @@ import { initSettingsHelpPane } from './settingsHelpPane.js';
 import { initSettingsAreaMap } from './settingsAreaMap.js';
 
 function setAndSync(key, value) {
-  localStorage.setItem(key, value);
+  writeStorage(key, value);
   syncSettingsToBackend();
 }
 
@@ -141,8 +142,13 @@ export function initSettings(updateEditorCb) {
   // The custom text color used to be stored under the key "undefined" (CUSTOM_EDITOR_FG was missing): move it
   const legacyTextColor = localStorage.getItem('undefined');
   if (legacyTextColor !== null) {
-    if (!localStorage.getItem(STORAGE_KEYS.CUSTOM_EDITOR_FG)) setAndSync(STORAGE_KEYS.CUSTOM_EDITOR_FG, legacyTextColor);
-    localStorage.removeItem('undefined');
+    // Best effort at startup: a failed move must not stop the rest of the settings from being wired up
+    try {
+      if (!readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG)) setAndSync(STORAGE_KEYS.CUSTOM_EDITOR_FG, legacyTextColor);
+      removeStorage('undefined');
+    } catch (err) {
+      console.warn('[Settings] Could not move the legacy custom text color:', err);
+    }
   }
 
   // Switches and segmented buttons wrap the selects first, so later `.value = ...` calls update them

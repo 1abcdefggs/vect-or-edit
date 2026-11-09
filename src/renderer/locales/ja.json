@@ -501,6 +501,7 @@
   "setting_save_location": "保存先",
   "setting_save_location_desc": "新しい文書と設定ファイル（.settings.json）を保存するフォルダです",
   "setup_key_failed": "API キーを安全に保存できませんでした",
+  "api_key_migration_failed": "一部の API キーを安全な保存先へ移せませんでした。設定画面でキーを入力し直してください",
   "ep_source_note": "ダウンロードは、Hugging Face（huggingface.co）の、モデル ID が示すリポジトリからファイルを取得します。「使う」で有効なモデルを切り替えます",
   "ep_content_languages": "文書の言語",
   "ep_change": "変更",

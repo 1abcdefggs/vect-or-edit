@@ -31,7 +31,7 @@ describe('apiKeyStore (encrypted API keys)', () => {
   it('moves plain-text keys into the encrypted store and deletes them from localStorage', async () => {
     const store = mockLocalStorage({ openai_api_key: 'sk-openai', vect_claude_api_key: 'sk-old', claude_api_key: 'sk-new', app_lang: 'ja' });
 
-    expect(await migratePlaintextApiKeys()).toBe(true);
+    expect(await migratePlaintextApiKeys()).toEqual({ removed: true, failedProviders: [] });
 
     expect(saved).toEqual({ openai: 'sk-openai', claude: 'sk-new' });
     expect(Object.keys(store)).toEqual(['app_lang']);
@@ -41,7 +41,7 @@ describe('apiKeyStore (encrypted API keys)', () => {
     saved.openai = 'sk-rotated';
     const store = mockLocalStorage({ openai_api_key: 'sk-stale' });
 
-    expect(await migratePlaintextApiKeys()).toBe(true);
+    expect(await migratePlaintextApiKeys()).toEqual({ removed: true, failedProviders: [] });
 
     expect(saved.openai).toBe('sk-rotated');
     expect(engineAPI.saveApiKey).not.toHaveBeenCalled();
@@ -52,7 +52,15 @@ describe('apiKeyStore (encrypted API keys)', () => {
     engineAPI.saveApiKey = vi.fn(async () => ({ success: false, error: 'OS secure storage is unavailable.' }));
     const store = mockLocalStorage({ openai_api_key: 'sk-openai' });
 
-    expect(await migratePlaintextApiKeys()).toBe(false);
+    expect(await migratePlaintextApiKeys()).toEqual({ removed: false, failedProviders: ['openai'] });
+    expect(store.openai_api_key).toBe('sk-openai');
+  });
+
+  it('reports a provider whose plain-text copy cannot be removed, and keeps that copy', async () => {
+    const store = mockLocalStorage({ openai_api_key: 'sk-openai' });
+    (global as any).localStorage.removeItem = () => { throw new Error('denied'); };
+
+    expect(await migratePlaintextApiKeys()).toEqual({ removed: false, failedProviders: ['openai'] });
     expect(store.openai_api_key).toBe('sk-openai');
   });
 
