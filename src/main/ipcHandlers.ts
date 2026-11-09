@@ -1,6 +1,5 @@
 import { mainT } from './i18n';
 import { getEngine } from './engine/rustEngine';
-import { monitorEventLoopDelay } from 'node:perf_hooks';
 
 // Helper: timeout wrapper
 export function withTimeout<T>(p: Promise<T>, ms = 5000): Promise<T> {
@@ -57,34 +56,24 @@ export async function handleSearchVector(payload: any, opts?: { timeoutMs?: numb
 export async function handleValidateDocument(payload: any) {
   try {
     const engine = getEngine();
-    if (!engine || typeof engine.validateSync !== 'function') {
+    if (!engine || typeof engine.validate !== 'function') {
       return { is_valid: true, markers: [] };
     }
     const { text } = payload ?? {};
     if (typeof text !== 'string') {
       throw new TypeError('validateDocument requires text string');
     }
-    
-    const monitor = monitorEventLoopDelay({ resolution: 10 });
-    monitor.enable();
-    
-    const result = engine.validateSync(text);
-    
-    monitor.disable();
-    // Monitor returns nanoseconds. 200,000,000 ns = 200ms
-    if (monitor.mean > 200_000_000) {
-      console.warn(`[Main] ALERT: validateSync blocked the event loop for ${Math.round(monitor.mean / 1_000_000)}ms`);
-    }
-    
+
+    // The async binding runs off the Node main thread, so a long document does not freeze the app.
+    // The engine reports line numbers only; the renderer decides the column range from the model.
+    const result = await engine.validate(text);
+
     return {
       is_valid: result.isValid ?? (result as any).is_valid,
       markers: (result.markers || []).map((m: any) => ({
+        line: m.line || 1,
         message: m.message,
-        severity: m.severity || 'error',
-        startLineNumber: m.line || 1,
-        startColumn: 1,
-        endLineNumber: m.line || 1,
-        endColumn: 50,
+        severity: m.severity,
       }))
     };
   } catch (err: any) {
