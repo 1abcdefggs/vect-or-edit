@@ -1,13 +1,14 @@
 import { allDictEntries } from '../../search/dictionary.js';
 import { i18n } from '../../core/i18n.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
+import { readStorage } from '../../core/storage.js';
 
 let linterTimeout = null;
 
 /** Real-time validation is on unless Settings switched it off */
 function isLinterEnabled() {
   try {
-    return localStorage.getItem(STORAGE_KEYS.LINTER_ENABLED) !== 'off';
+    return readStorage(STORAGE_KEYS.LINTER_ENABLED) !== 'off';
   } catch {
     return true;
   }
@@ -23,19 +24,29 @@ export function runEngineLinter(editor, monacoRef) {
   }
 
   linterTimeout = setTimeout(async () => {
-    const text = editor.getValue();
+    const model = editor.getModel();
+    if (!model) return;
+    const text = model.getValue();
     if (window.engineAPI && typeof window.engineAPI.validateDocument === 'function') {
       try {
         const response = await window.engineAPI.validateDocument(text);
-        const markers = (response.markers || []).map(m => ({
-          severity: m.severity === 'error' ? monacoRef.MarkerSeverity.Error : monacoRef.MarkerSeverity.Warning,
-          message: m.message || 'Validation alert',
-          startLineNumber: m.line || 1,
-          startColumn: 1,
-          endLineNumber: m.line || 1,
-          endColumn: 50
-        }));
-        monacoRef.editor.setModelMarkers(editor.getModel(), "engine-linter", markers);
+        // The user may have switched tabs while the engine ran: drop the result for the old model
+        if (model.isDisposed() || editor.getModel() !== model) return;
+        const lineCount = model.getLineCount();
+        const markers = (response.markers || []).map(m => {
+          const line = Math.min(Math.max(m.line || 1, 1), lineCount);
+          // The engine's severity is "Error" / "Warning" (capitalised); compare case-insensitively
+          const isError = String(m.severity || '').toLowerCase() === 'error';
+          return {
+            severity: isError ? monacoRef.MarkerSeverity.Error : monacoRef.MarkerSeverity.Warning,
+            message: m.message || 'Validation alert',
+            startLineNumber: line,
+            startColumn: 1,
+            endLineNumber: line,
+            endColumn: model.getLineMaxColumn(line)
+          };
+        });
+        monacoRef.editor.setModelMarkers(model, "engine-linter", markers);
       } catch (error) {
         console.error(i18n.linter_error || "Linter execution error:", error);
       }
