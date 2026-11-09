@@ -45,7 +45,7 @@
   "embed_off_hint": "辞書検索をするモデルはオフです。ヘッダーの EMBED をオンにすると使えます。",
   "embed_not_ready_hint": "辞書検索をするモデルが、まだ準備できていません。",
   "slots_all_excluded_hint": "セット中の辞書は、どれも選択中の埋め込みモデルと合わないため、ベクトル検索に使えません。理由は Knowledge の各辞書の行に出ています。設定でモデルを選び直すか、そのモデルで作った辞書をセットしてください。",
-  "common_language": "言語",
+  "common_language": "表示言語",
   "font_family_label": "フォント",
   "font_serif": "Source Serif 4",
   "font_sans_serif": "Source Sans 3",

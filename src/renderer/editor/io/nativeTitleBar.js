@@ -38,8 +38,7 @@ export function updateNativeTitleBarOverlay(theme) {
 
   const defaultHex = theme.base === 'vs' ? '#f6f8fa' : '#171a1d';
   // The caption buttons sit on the app header strip (--header-bg), so they read as part of
-  // the header while --window-border stays a thin frame. applyThemeToDOM() toggles
-  // .light-theme before this runs, so the value is current.
+  // the header. applyThemeToDOM() toggles .light-theme before this runs, so the value is current.
   const headerBg = getComputedStyle(document.documentElement).getPropertyValue('--header-bg');
 
   const headerColor = sanitizeHexColor(headerBg, defaultHex);

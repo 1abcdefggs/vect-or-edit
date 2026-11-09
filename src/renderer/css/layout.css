@@ -11,16 +11,6 @@ body {
   height: 100vh;
 }
 
-/* Window frame: drawn above all content so it stays visible on same-colored backgrounds */
-.app-container::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  border: var(--window-border-width) solid var(--window-border);
-  pointer-events: none;
-  z-index: 9999;
-}
-
 .app-header {
   height: var(--header-height);
   background-color: var(--header-bg, #080c16);

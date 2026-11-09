@@ -45,7 +45,7 @@
   "embed_off_hint": "The model for dictionary search is off. Turn on EMBED in the header to use it.",
   "embed_not_ready_hint": "The model for dictionary search is not ready yet.",
   "slots_all_excluded_hint": "None of the set dictionaries fits the selected embedding model, so vector search cannot use them. Each dictionary row in Knowledge says why. Choose another model in Settings, or set a dictionary made with this model.",
-  "common_language": "Language",
+  "common_language": "Display language",
   "font_family_label": "Font Family",
   "font_serif": "Source Serif 4",
   "font_sans_serif": "Source Sans 3",

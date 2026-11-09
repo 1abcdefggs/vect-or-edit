@@ -10,14 +10,11 @@
   --accent-hover: #1d4ed8;
   --text-main: #edf5ff;
   --text-muted: #b7c6dc;
-  --window-border-width: 2px;
   --border-width: 1px;
   --border-color: #64748b;
   /* Outline of an operable control: at least 3:1 against the background (style_rules: control-border) */
   --control-border: #64748b;
   --border-primary: var(--border-color);
-  /* Window frame (layout.css .app-container::after): white in dark mode, black in light mode */
-  --window-border: #f8fafc;
   --success-color: #10b981;
   --warn-color: #f59e0b;
   --error-color: #f87171;
@@ -91,7 +88,6 @@
   --border-color: #94a3b8;
   --control-border: #64748b;
   --border-primary: var(--border-color);
-  --window-border: #0f172a;
   --app-backdrop: #d6dde6;
   --success-color: #047857;
   /* Darker on a light background, so the warning and error text stay readable */
