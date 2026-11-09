@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "tabs": [
+    {
+      "tab": "tabAppearance",
+      "icon": "palette",
+      "labelKey": "tab_appearance",
+      "titleKey": "tip_tab_appearance",
+      "cards": ["grp_menu_bar", "common_theme", "monaco_group_display", "grp_workspace_files"]
+    },
+    {
+      "tab": "tabEditor",
+      "icon": "edit_note",
+      "labelKey": "tab_editor",
+      "titleKey": "tip_tab_editor",
+      "cards": ["grp_editor_text", "grp_editor_display", "grp_documents", "autosave_menu_item", "grp_llm_assistant"]
+    },
+    {
+      "tab": "tabAiSearch",
+      "icon": "smart_toy",
+      "labelKey": "tab_ai_search",
+      "titleKey": "tip_tab_ai",
+      "cards": ["setting_embedding_assistant", "vector_search_ui_title"]
+    },
+    {
+      "tab": "tabSystem",
+      "icon": "tune",
+      "labelKey": "tab_system",
+      "titleKey": "tip_tab_system",
+      "cards": ["vis_group_title", "maint_title", "settings_group_closing"]
+    }
+  ]
+}

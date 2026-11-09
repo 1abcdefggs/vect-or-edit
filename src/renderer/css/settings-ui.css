@@ -22,10 +22,10 @@
 
 .settings-section-card > h4 .material-symbols-outlined {
   font-size: var(--fs-18);
-  color: var(--accent-text, #38bdf8);
+  color: var(--text-main);
 }
 
-.settings-section-card > .setting-desc { margin-bottom: 10px; }
+.settings-section-card > .setting-desc { margin-bottom: 8px; }
 
 .settings-section-card > .setting-item:last-child,
 .settings-section-card > .setting-item:last-of-type {
@@ -35,8 +35,8 @@
 .settings-subpanel {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px;
+  gap: 8px;
+  padding: var(--spacing-md);
   border-radius: 8px;
   border: var(--border-width) solid var(--border-color);
   background: var(--bg-card, rgba(255, 255, 255, 0.02));
@@ -71,7 +71,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 6px 12px;
+  padding: 4px var(--spacing-md);
   font-size: var(--fs-12);
   border-radius: 6px;
   cursor: pointer;
@@ -91,10 +91,42 @@
   font-weight: 600;
 }
 
-.settings-btn--danger {
+/* Two classes, so it wins over .semantic-btn-clear (grey text) whatever the stylesheet order */
+.settings-btn.settings-btn--danger {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.08);
   border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Popup colour cards: the sample is a small popup in the card's own overlay tokens (variables.css) */
+.popup-color-sample {
+  background: var(--overlay-bg);
+  color: var(--overlay-fg);
+  border-color: var(--overlay-border);
+  min-height: 4.5rem;
+  justify-content: center;
+}
+.popup-color-item {
+  font-size: var(--fs-12);
+  color: var(--overlay-fg);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.popup-color-item.is-hover {
+  background: var(--overlay-hover);
+  color: var(--overlay-accent);
+}
+
+/* Every theme card is as wide as the widest name (set by fitThemeCards); equal columns, as many per row as fit */
+.settings-theme-cards {
+  grid-template-columns: repeat(auto-fill, minmax(var(--theme-card-w, 7rem), 1fr));
+}
+
+/* A row whose action cannot be undone (reset): the red frame marks the whole row, not only the button */
+.setting-item--danger {
+  border: var(--border-width) solid #ef4444;
+  border-radius: 8px;
+  padding: var(--spacing-sm);
 }
 
 .settings-btn .material-symbols-outlined { font-size: var(--fs-15); }
@@ -117,11 +149,11 @@
   background: var(--bg-primary, rgba(0, 0, 0, 0.25));
   border: var(--border-width) solid var(--border-color);
   border-radius: 6px;
-  padding: 2px 4px 2px 10px;
+  padding: 2px 4px 2px 8px;
 }
 
 .api-key-field:focus-within { border-color: var(--accent-color, #38bdf8); }
-.api-key-field > .material-symbols-outlined { font-size: var(--fs-18); color: var(--text-muted); margin-right: 6px; flex-shrink: 0; }
+.api-key-field > .material-symbols-outlined { font-size: var(--fs-18); color: var(--text-muted); margin-right: 4px; flex-shrink: 0; }
 
 .api-key-field input {
   flex: 1;
@@ -153,7 +185,7 @@
 .provider-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
@@ -200,6 +232,28 @@
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
+/* OFF | track | ON: the lit word is the current state, the same rule as the shared toggle switch (controls.css) */
+.ui-switch-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ui-switch-word {
+  font-size: var(--fs-12);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  opacity: 0.55;
+  user-select: none;
+}
+
+.ui-switch-word.is-lit {
+  color: var(--text-main);
+  opacity: 1;
+}
+
 .ui-switch.is-on { background: var(--accent-color, #38bdf8); border-color: transparent; }
 .ui-switch.is-on::after { transform: translateX(16px); background: #fff; }
 .ui-switch:focus-visible, .ui-segmented button:focus-visible { outline: 2px solid var(--accent-color, #38bdf8); outline-offset: 2px; }
@@ -239,10 +293,10 @@
   cursor: pointer;
   font-size: var(--fs-12);
   color: var(--accent-text, #38bdf8);
-  padding: 4px 0;
+  padding: var(--spacing-xs) 0;
 }
 
-.settings-details[open] > summary { margin-bottom: 8px; }
+.settings-details[open] > summary { margin-bottom: var(--spacing-sm); }
 
 /* Selected provider: filled with a check so it reads without color */
 .provider-card { position: relative; }
@@ -257,7 +311,7 @@
   font-weight: 700;
 }
 
-.color-pick { display: flex; align-items: center; gap: 6px; font-size: var(--fs-12); min-height: 0; }
+.color-pick { display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); min-height: 0; }
 
 .color-pick input[type="color"] {
   width: 28px;
@@ -272,7 +326,7 @@
 .settings-log-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-xs);
   font-size: var(--fs-12);
   border-radius: 4px;
 }
@@ -281,33 +335,38 @@
 
 .settings-section-card > h4 .settings-log-btn .material-symbols-outlined { color: inherit; font-size: var(--fs-14); }
 
-/* Header of the settings page */
-.settings-header-left { display: flex; align-items: center; gap: 12px; }
-.settings-title { display: flex; align-items: center; gap: 8px; margin: 0; }
+/* Title of the settings page: the top of the left column */
+.settings-nav-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: 14px var(--spacing-md) var(--spacing-md);
+  font-size: var(--fs-15);
+  font-weight: 600;
+  color: var(--text-main);
+  border-bottom: var(--border-width) solid var(--border-color);
+}
 
+/* Back to the editor: the foot of the left column, below the Guide */
 .settings-back-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  font-size: var(--fs-12);
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  color: var(--accent-text, #38bdf8);
-  background: color-mix(in srgb, var(--accent-color, #38bdf8) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent-color, #38bdf8) 30%, transparent);
-}
-
-.settings-close-btn {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 4px 10px;
-  font-size: var(--fs-14);
-  border-radius: 4px;
+  margin: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm);
+  gap: 6px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--fs-18);
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-on-accent, #ffffff);
+  background: var(--accent-color, #38bdf8);
+  border: 1px solid var(--accent-color, #38bdf8);
 }
+.settings-back-btn:hover { filter: brightness(1.08); }
+.settings-back-btn:focus-visible { outline: 2px solid var(--text-main); outline-offset: 2px; }
+
 
 /* Sizes of controls and small parts */
 .setting-text--shrink { min-width: 0; }
@@ -315,6 +374,7 @@
 .select-scope { max-width: 280px; }
 .select-model { min-width: 220px; }
 .select-full { width: 100%; font-family: var(--font-mono, monospace); font-size: var(--fs-12); }
+/* Two-line model picker: id on the first line, display name below. Scrolls inside its own box. */
 .setting-desc--accent { color: var(--accent-text, #38bdf8); }
 .status-ok { margin: 0; color: var(--success-color, #10b981); }
 .ai-status-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -338,19 +398,61 @@
 /* A settings row: [eye | heading] on one line, the description below it as bullets, indented under the heading */
 .settings-modal-body .has-eye {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  column-gap: 10px;
+  /* The switch column has a fixed width, so the item names start at a known x (see the card heading indent below) */
+  grid-template-columns: var(--vis-switch-w) minmax(0, 1fr);
+  column-gap: 8px;
   align-items: center;
 }
 
-.settings-modal-body .has-eye > .vis-toggle-wrapper { grid-column: 1; grid-row: 1; }
+.settings-modal-body .has-eye > .vis-toggle-wrapper { grid-column: 1; grid-row: 1; justify-content: center; width: var(--vis-switch-w); }
+.settings-modal-body .has-eye > .vis-toggle-wrapper .vis-toggle-btn { width: 100%; }
+
+/* "Shown / Hidden" switch of a part of the window: both words are visible, the current one is lit */
+.settings-modal-body { --vis-switch-w: 8.5rem; }
+.settings-modal-body .vis-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 2px 8px;
+  font: inherit;
+  background: transparent;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.settings-modal-body .vis-toggle-btn[aria-checked="true"] { border-color: var(--accent-color); }
+.settings-modal-body .vis-state-word {
+  font-size: var(--fs-12);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--text-muted);
+  opacity: 0.55;
+}
+.settings-modal-body .vis-state-word.is-lit { color: var(--text-main); opacity: 1; }
+.settings-modal-body .vis-state-required {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-12);
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: help;
+}
+.settings-modal-body .vis-state-required .material-symbols-outlined { font-size: var(--fs-15); }
+
+/* The items under a heading are indented to the heading's text: heading icon (--icon-text-size) + heading gap (4px).
+   The heading itself stays at the card edge. */
+.settings-modal-body .settings-section-card > :not(h4) {
+  margin-left: calc(var(--icon-text-size) + 4px);
+}
 
 .settings-modal-body .has-eye > .setting-label {
   grid-column: 2;
   grid-row: 1;
   min-height: 0;
   margin: 0;
-  padding: 2px 0 2px 10px;
+  padding: 2px 0 2px 8px;
   border-left: var(--border-width) solid var(--border-color);
 }
 
@@ -383,6 +485,43 @@
   overflow-y: auto;
 }
 
+.settings-tab-btn.active { border-left-color: var(--sel-edge); }
+
+/* Settings page text sizes: card headings and item names are 18px (--fs-18); descriptions are 16px (--fs-16).
+   Scoped to the settings body, because .setting-label is shared with other screens. */
+.settings-modal-body .settings-section-card h4 { font-size: var(--fs-18); }
+.settings-modal-body .setting-label { font-size: var(--fs-18); }
+
+/* Depth on the settings page: the outer surface is the darkest, the inner content sits one step in.
+   Light: the nav is a little darker than the content. Dark: the content is a little lighter than the nav.
+   Mixed from --bg-primary so every theme keeps its own hue. */
+.settings-nav { background: var(--bg-primary); }
+.settings-split > .settings-modal-body { background: color-mix(in srgb, var(--bg-primary) 94%, #fff); }
+:root.light-theme .settings-nav { background: color-mix(in srgb, var(--bg-primary) 95%, #000); }
+:root.light-theme .settings-split > .settings-modal-body { background: var(--bg-primary); }
+
+/* Icons only: the labels move to the title tooltip. Used on a narrow page, or with the Guide open
+   (the Guide takes 22.85rem to 33.6rem, so the list column would leave too little room for the rows). */
+@container settings-page (width < 40rem) {
+  .settings-nav { flex-basis: 3rem; }
+  .settings-nav .settings-tab-label,
+  .settings-nav .settings-nav-items,
+  .settings-nav .settings-guide-label,
+  .settings-nav .settings-back-label,
+  .settings-nav .settings-nav-title-label { display: none; }
+  .settings-nav .settings-tab-btn { justify-content: center; padding: var(--spacing-sm) 0; border-left-width: 2px; }
+}
+
+@container settings-page (width < 62rem) {
+  #settingsModal.guide-open .settings-nav { flex-basis: 3rem; }
+  #settingsModal.guide-open .settings-nav .settings-tab-label,
+  #settingsModal.guide-open .settings-nav .settings-nav-items,
+  #settingsModal.guide-open .settings-nav .settings-guide-label,
+  #settingsModal.guide-open .settings-nav .settings-back-label,
+  #settingsModal.guide-open .settings-nav .settings-nav-title-label { display: none; }
+  #settingsModal.guide-open .settings-nav .settings-tab-btn { justify-content: center; padding: var(--spacing-sm) 0; border-left-width: 2px; }
+}
+
 .settings-help-pane { display: none; }
 
 #settingsModal.guide-open .settings-help-pane {
@@ -401,10 +540,10 @@
 /* Side by side: the description lives in the guide, so the rows on the left shrink to heading and control */
 @container settings-page (width >= 52.85rem) {
   #settingsModal.guide-open .setting-item .setting-desc { display: none; }
-  #settingsModal.guide-open .setting-item { padding: 6px 0; min-height: 0; }
+  #settingsModal.guide-open .setting-item { padding: 4px 0; min-height: 0; }
   #settingsModal.guide-open .settings-modal-body .has-eye > .setting-label { padding-top: 0; padding-bottom: 0; }
-  #settingsModal.guide-open .settings-section-card { padding-top: 10px; padding-bottom: 10px; margin-bottom: 10px; }
-  #settingsModal.guide-open .settings-section-card > h4 { margin-bottom: 6px; padding-bottom: 6px; }
+  #settingsModal.guide-open .settings-section-card { padding-top: 8px; padding-bottom: 8px; margin-bottom: 8px; }
+  #settingsModal.guide-open .settings-section-card > h4 { margin-bottom: 4px; padding-bottom: 4px; }
 }
 
 /* Narrow page: the guide is a drawer over the settings, with a scrim behind it */
@@ -427,14 +566,15 @@
   .settings-help-pane .panel-resizer { display: none; }
 }
 
-/* The Guide button in the settings header */
+/* The Guide button sits at the foot of the left column (it is a page-level action, not a header one) */
 .settings-guide-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  margin-right: 8px;
-  font-size: var(--fs-13);
+  gap: var(--spacing-xs);
+  margin: auto var(--spacing-sm) var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  justify-content: center;
+  font-size: var(--fs-16);
   color: var(--text-main);
   background: var(--log-btn-bg, transparent);
   border: 1px solid var(--border-color);
@@ -454,7 +594,7 @@
 .setting-info-btn {
   display: inline-flex;
   align-items: center;
-  margin-left: 6px;
+  margin-left: 4px;
   padding: 0;
   border: none;
   background: transparent;
@@ -465,11 +605,11 @@
 .setting-info-btn[hidden] { display: none; }
 .setting-info-btn .material-symbols-outlined { font-size: var(--fs-16); }
 
-.help-title { margin: 0 0 10px; font-size: var(--fs-18); font-weight: 700; }
-:is(.settings-help-pane, .help-doc) h3 { margin: 18px 0 8px; font-size: var(--fs-15); color: var(--accent-text); }
-:is(.settings-help-pane, .help-doc) h4 { margin: 14px 0 6px; font-size: var(--fs-14); font-weight: 600; }
-:is(.settings-help-pane, .help-doc) p { margin: 6px 0; font-size: var(--fs-14); line-height: 1.6; color: var(--text-muted); max-width: 34.93em; }
-:is(.settings-help-pane, .help-doc) .help-note { padding: 6px 10px; border-left: 3px solid var(--border-color); }
+.help-title { margin: 0 0 8px; font-size: var(--fs-18); font-weight: 700; }
+:is(.settings-help-pane, .help-doc) h3 { margin: 18px 0 var(--spacing-sm); font-size: var(--fs-15); color: var(--accent-text); }
+:is(.settings-help-pane, .help-doc) h4 { margin: 14px 0 4px; font-size: var(--fs-14); font-weight: 600; }
+:is(.settings-help-pane, .help-doc) p { margin: 4px 0; font-size: var(--fs-14); line-height: 1.6; color: var(--text-muted); max-width: 34.93em; }
+:is(.settings-help-pane, .help-doc) .help-note { padding: 4px 8px; border-left: 3px solid var(--border-color); }
 :is(.settings-help-pane, .help-doc) code { font-family: var(--font-mono, monospace); font-size: 0.92em; }
 
 .help-about { margin-bottom: 8px; font-size: var(--fs-13); }
@@ -485,7 +625,7 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 3px;
   margin: 8px 0;
-  padding: 10px 12px;
+  padding: 8px 12px;
   border: var(--border-width) solid var(--border-color);
   border-radius: var(--radius-md, 8px);
   background: var(--result-bg, transparent);
@@ -522,7 +662,7 @@
   min-width: 10rem;
   max-width: 28rem;
   margin-left: auto;
-  padding: 4px 10px;
+  padding: 4px 8px;
   color: var(--text-main);
   background: var(--result-bg, transparent);
   border: var(--border-width) solid var(--border-color);
@@ -542,7 +682,7 @@
 }
 .help-page__nav-item {
   text-align: left;
-  padding: 6px 10px;
+  padding: 4px 8px;
   border: none;
   border-radius: 6px;
   background: transparent;
@@ -558,3 +698,6 @@
 .help-page__empty { color: var(--text-muted); }
 .help-page__section[hidden], .help-page tr[hidden] { display: none; }
 @media (max-width: 760px) { .help-page__nav { display: none; } }
+
+/* The theme cards take the full width of their row, under the label (the 4-column grid needs the room) */
+[data-setting-row]:has(> #modalThemeCards) { flex-direction: column; align-items: stretch; gap: var(--spacing-sm); }

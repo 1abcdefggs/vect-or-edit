@@ -16,7 +16,7 @@
       <!-- Step 1: language and theme (applied immediately) -->
       <section class="first-run-step first-run-step--fill" data-setup-step="1" data-ui="stp:step-appearance">
         <div class="first-run-section first-run-section--row" role="group" aria-labelledby="setupLangLabel">
-          <h2 class="first-run-heading"><span id="setupLangLabel" data-i18n="common_language">Display language</span><span data-info-tip="setup_info_lang"></span></h2>
+          <h2 class="first-run-heading"><span id="setupLangLabel" data-i18n="common_language">Display language</span><span data-info-tip="setting_language_desc"></span></h2>
           <!-- A two-position switch: the thumb slides to the chosen side (English left, Japanese right) -->
           <div class="first-run-segment" role="radiogroup" aria-labelledby="setupLangLabel" data-ui="stp:lang">
             <label class="first-run-segment-option" data-i18n-title="tip_setup_lang_en"><input data-tip-exempt="its label carries the tip" type="radio" name="setup_lang" value="en" checked><span data-i18n="lang_name_en">English</span></label>
@@ -43,7 +43,7 @@
         <div class="first-run-section" role="group" aria-labelledby="setupThemeLabel">
           <h2 class="first-run-heading"><span id="setupThemeLabel" data-i18n="common_theme">Theme</span><span data-info-tip="setup_info_theme"></span></h2>
           <!-- One card per theme, drawn from the theme files (setupThemeCards in aiSetupController.js) -->
-          <div id="setupThemeCards" class="first-run-theme-grid" data-ui="stp:theme"></div>
+          <div id="setupThemeCards" class="theme-card-grid" data-ui="stp:theme"></div>
         </div>
       </section>
 

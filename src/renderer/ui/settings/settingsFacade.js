@@ -1,4 +1,5 @@
 import { icons } from '../../core/icons.js';
+import { readGeminiModel } from '../../core/geminiModel.js';
 import { readStorage, removeStorage, writeStorage } from '../../core/storage.js';
 import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
 import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode, OVERLAY_COLORS, getOverlayColor } from '../../editor/core/themeLoader.js';
@@ -6,13 +7,16 @@ import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { EDITOR_DEFAULTS } from '../../editor/options/editorDefaults.js';
 import { importDictionary } from '../../search/dictionary.js';
-import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, refreshLinter, updateAutoSaveUI } from '../../editor/editorManager.js';
+import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, hasUnsavedTabs, refreshLinter, updateAutoSaveUI } from '../../editor/editorManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
 import { showToast } from '../notifications/toastManager.js';
 import { notifyEmbeddingModelsChanged } from '../../search/searchLocalAi.js';
 import { getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
 import { bindEmbeddingModelEvents, renderEmbeddingModelList } from './embeddingModelList.js';
 import { initEmbeddingSourceController } from './embeddingSourceController.js';
+import settingsLayout from './settings-layout.json';
+import { renderThemeCards, fitThemeCards } from '../components/themeCards.js';
+import { pickCurrentCard } from './settingsNavCurrent.js';
 import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
 import { bindSaveLocationControls } from './saveLocation.js';
 import { getDefaultDocumentFormat } from '../../editor/tabs/tabState.js';
@@ -22,6 +26,7 @@ import { resetApp } from './resetApp.js';
 import { initWindowFeatureSettings } from './windowFeatureSettings.js';
 import { initChoiceControls } from './choiceControls.js';
 import { initSettingsHelpPane } from './settingsHelpPane.js';
+import { createGeminiModelPicker, usableGeminiModels, isValidGeminiModelId, rememberGeminiModels } from './geminiModelPicker.js';
 
 function setAndSync(key, value) {
   writeStorage(key, value);
@@ -30,8 +35,8 @@ function setAndSync(key, value) {
 
 let updateEditorOptionsCallback = null;
 
-const FALLBACK_THEMES = ['Dracula', 'GitHub', 'Monokai', 'Night Owl', 'Tukune'];
-const THEME_SELECT_IDS = ['themeSelect', 'modalThemeSelect'];
+const FALLBACK_THEMES = ['GitHub', 'Cyberpink', 'Dracula', 'Monochrome', 'Monokai', 'Night Owl', 'Solarized', 'Tomorrow', 'Tukune'];
+const THEME_SELECT_IDS = ['themeSelect'];
 
 /** Every theme the app can apply, in the order the pickers show them (the first-run theme cards use it too). */
 export function getThemeList() {
@@ -92,9 +97,40 @@ export function refreshColorModeControls() {
 /** Shows the stored popup colour choice and sets the class that switches the overlay tokens (variables.css). */
 export function refreshOverlayColorControl() {
   const value = getOverlayColor();
-  const sel = document.getElementById('modalOverlayColorSelect');
-  if (sel) sel.value = value;
+  document.querySelectorAll('#modalOverlayColorCards [data-overlay]').forEach((card) => {
+    card.setAttribute('aria-pressed', String(card.dataset.overlay === value));
+  });
   document.documentElement.classList.toggle('overlay-match-window', value === 'window');
+}
+
+/** One card per popup colour, each showing a small popup in that colour (the same tokens the real popups use). */
+export function renderOverlayColorCards() {
+  const box = document.getElementById('modalOverlayColorCards');
+  if (!box) return;
+  box.replaceChildren(...OVERLAY_COLORS.map((value) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `theme-card popup-color-card popup-color-card--${value}`;
+    button.dataset.overlay = value;
+    const sample = document.createElement('span');
+    sample.className = 'theme-card-sample popup-color-sample';
+    sample.setAttribute('aria-hidden', 'true');
+    const copy = document.createElement('span');
+    copy.className = 'popup-color-item';
+    copy.textContent = t('overlay_sample_copy');
+    const paste = document.createElement('span');
+    paste.className = 'popup-color-item is-hover';
+    paste.textContent = t('overlay_sample_paste');
+    sample.append(copy, paste);
+    const name = document.createElement('span');
+    name.className = 'theme-card-name';
+    name.textContent = t(value === 'invert' ? 'overlay_color_invert' : 'overlay_color_window');
+    button.append(sample, name);
+    button.addEventListener('click', () => applyOverlayColor(value));
+    return button;
+  }));
+  fitThemeCards(box);
+  refreshOverlayColorControl();
 }
 
 export function applyOverlayColor(value) {
@@ -200,14 +236,12 @@ export function initSettings(updateEditorCb) {
   // Modal UI Elements
   const btnSettings = document.getElementById('btnSettings');
   const settingsModal = document.getElementById('settingsModal');
-  const btnCloseSettingsModal = document.getElementById('btnCloseSettingsModal');
   const modalTabs = document.querySelectorAll('.settings-tab-btn');
   const modalTabContents = document.querySelectorAll('.settings-tab-content');
 
   const modalFontFamilySelect = document.getElementById('modalFontFamilySelect');
   const modalFontSizeSelect = document.getElementById('modalFontSizeSelect');
   const modalLineHeightSelect = document.getElementById('modalLineHeightSelect');
-  const modalThemeSelect = document.getElementById('modalThemeSelect');
   const modalLangSelect = document.getElementById('modalLangSelect');
 
   const modalLineHighlightSelect = document.getElementById('modalLineHighlightSelect');
@@ -228,11 +262,9 @@ export function initSettings(updateEditorCb) {
 
 
   populateThemeDropdown(themeSelect);
-  populateThemeDropdown(modalThemeSelect);
 
   const initialTheme = getStoredThemeSetting();
   if (themeSelect) themeSelect.value = initialTheme;
-  if (modalThemeSelect) modalThemeSelect.value = initialTheme;
   loadTheme(initialTheme);
 
   if (themeSelect) {
@@ -240,16 +272,44 @@ export function initSettings(updateEditorCb) {
       await applyThemeSetting(themeSelect.value);
     });
   }
-  if (modalThemeSelect) {
-    modalThemeSelect.addEventListener('change', async () => {
-      await applyThemeSetting(modalThemeSelect.value);
+
+  // Settings theme: the same sample cards as the first-run setup. The custom card uses the editor background
+  // control, so both places run one code path for the custom colours.
+  const modalThemeCards = document.getElementById('modalThemeCards');
+  if (modalThemeCards) {
+    const setEditorTone = (tone) => {
+      const el = document.getElementById('modalEditorBgSelect');
+      if (!el || el.value === tone) return;
+      el.value = tone;
+      el.dispatchEvent(new Event('change'));
+    };
+    const cards = renderThemeCards(modalThemeCards, {
+      themes: getThemeList(),
+      current: getStoredThemeSetting,
+      isCustomOn: () => readStorage(STORAGE_KEYS.EDITOR_BG_TONE) === 'custom',
+      customSample: () => {
+        const bg = readStorage(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
+        const fg = readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
+        return { background: bg, lineNumber: fg, keyword: fg, foreground: fg, string: fg };
+      },
+      onPickTheme: async (name) => {
+        setEditorTone('default');
+        await applyThemeSetting(name);
+        cards.refresh();
+      },
+      onPickCustom: () => {
+        setEditorTone('custom');
+        cards.refresh();
+      },
     });
+    window.addEventListener('app:themeChanged', cards.refresh);
   }
   refreshColorModeControls();
   document.getElementById('modalColorModeSelect')?.addEventListener('change', (e) => applyColorMode(e.target.value));
   document.querySelectorAll('#colorModeSwitch [data-mode]').forEach((seg) => seg.addEventListener('click', () => applyColorMode(seg.dataset.mode)));
   refreshOverlayColorControl();
-  document.getElementById('modalOverlayColorSelect')?.addEventListener('change', (e) => applyOverlayColor(e.target.value));
+  renderOverlayColorCards();
+  window.addEventListener('app:languageChanged', renderOverlayColorCards);
 
   // Language toggle & 2-way sync. Any language change (header, settings, first-run setup) ends in app:languageChanged.
   const applyLanguage = (lang) => applyLanguageSetting(lang);
@@ -536,7 +596,7 @@ export function initSettings(updateEditorCb) {
 
   const geminiSettingsBlock = document.getElementById('geminiSettingsBlock');
   const modalGeminiKeyInput = document.getElementById('modalGeminiKeyInput');
-  const modalGeminiModelSelect = document.getElementById('modalGeminiModelSelect');
+  const modalGeminiModelList = document.getElementById('modalGeminiModelList');
 
   const openaiSettingsBlock = document.getElementById('openaiSettingsBlock');
   const modalOpenAiKeyInput = document.getElementById('modalOpenAiKeyInput');
@@ -546,7 +606,7 @@ export function initSettings(updateEditorCb) {
 
   const storedAiProvider = readStorage(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
   const storedClaudeModel = readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
-  const storedGeminiModel = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
+  const storedGeminiModel = readGeminiModel();
   const storedOpenAiModel = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
   const storedAiScope = readStorage(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
 
@@ -606,9 +666,17 @@ export function initSettings(updateEditorCb) {
     updateActiveProviderCard(storedAiProvider);
 
     providerCards.forEach(card => {
-      card.addEventListener('click', () => {
+      const choose = () => {
         modalAiProviderSelect.value = card.dataset.provider;
         modalAiProviderSelect.dispatchEvent(new Event('change'));
+      };
+      card.addEventListener('click', choose);
+      // The cards are focusable (tabindex) so they must answer the keys a button answers
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          choose();
+        }
       });
     });
 
@@ -630,8 +698,34 @@ export function initSettings(updateEditorCb) {
   const btnFetchGeminiModels = document.getElementById('btnFetchGeminiModels');
   const geminiModelsFetchStatus = document.getElementById('geminiModelsFetchStatus');
 
+  // The picker shows only models that can generate content; the full list stays in the cache.
+  const geminiModelPicker = modalGeminiModelList ? createGeminiModelPicker(modalGeminiModelList, {
+    onChange: (name) => {
+      setAndSync(STORAGE_KEYS.GEMINI_MODEL, name);
+      window.dispatchEvent(new Event('app:settingsChanged'));
+    }
+  }) : null;
+
+  /**
+   * Draws the usable models and marks the model the user chose. Nothing is chosen for the user: with no choice no row is in use.
+   * A fresh list (persist) that no longer has the chosen model clears the choice, so the user chooses again.
+   */
+  function showGeminiModels(models, { persist }) {
+    if (!geminiModelPicker) return 0;
+    const usable = usableGeminiModels(models);
+    const saved = readGeminiModel();
+    geminiModelPicker.setModels(models);
+    if (usable.some((m) => m.name === saved)) {
+      geminiModelPicker.setValue(saved);
+    } else if (persist && saved && usable.length > 0) {
+      setAndSync(STORAGE_KEYS.GEMINI_MODEL, '');
+      window.dispatchEvent(new Event('app:settingsChanged'));
+    }
+    return usable.length;
+  }
+
   async function fetchAndPopulateGeminiModels(explicitKey) {
-    if (!modalGeminiModelSelect) return;
+    if (!geminiModelPicker) return;
     const keyToUse = explicitKey || modalGeminiKeyInput?.value?.trim();
 
     if (geminiModelsFetchStatus) {
@@ -642,33 +736,12 @@ export function initSettings(updateEditorCb) {
     try {
       const models = await window.engineAPI.listGeminiModels(keyToUse || undefined);
       if (Array.isArray(models) && models.length > 0) {
-        modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-        let foundSaved = false;
-
-        models.forEach((m) => {
-          const opt = document.createElement('option');
-          opt.value = m.name;
-          const label = m.displayName ? `${m.name} (${m.displayName})` : m.name;
-          opt.textContent = label;
-          if (m.name === currentSavedModel) {
-            opt.selected = true;
-            foundSaved = true;
-          }
-          modalGeminiModelSelect.appendChild(opt);
-        });
-
-        if (!foundSaved && modalGeminiModelSelect.options.length > 0) {
-          modalGeminiModelSelect.selectedIndex = 0;
-          setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
-          window.dispatchEvent(new Event('app:settingsChanged'));
-        }
-
-        // Cache for offline/quick load
-        localStorage.setItem('cached_gemini_models', JSON.stringify(models));
+        // Draw first, then cache the full list; a blocked storage must not leave the picker empty
+        const visible = showGeminiModels(models, { persist: true });
+        rememberGeminiModels(models);
 
         if (geminiModelsFetchStatus) {
-          geminiModelsFetchStatus.textContent = t('gemini_keys_loaded', { count: models.length });
+          geminiModelsFetchStatus.textContent = t(readGeminiModel() ? 'gemini_keys_loaded' : 'gemini_keys_loaded_choose', { count: visible });
           geminiModelsFetchStatus.style.color = 'var(--success-color, #10b981)';
         }
       } else {
@@ -683,22 +756,16 @@ export function initSettings(updateEditorCb) {
     }
   }
 
-  // Restore cached models if available
+  // Until a list is fetched, show the saved model; then the cached list if there is one
+  if (isValidGeminiModelId(storedGeminiModel)) {
+    geminiModelPicker?.setModels([{ name: storedGeminiModel, canGenerate: true }]);
+    geminiModelPicker?.setValue(storedGeminiModel);
+  }
   try {
     const cached = readStorage('cached_gemini_models');
-    if (cached && modalGeminiModelSelect) {
+    if (cached && geminiModelPicker) {
       const models = JSON.parse(cached);
-      if (Array.isArray(models) && models.length > 0) {
-        modalGeminiModelSelect.innerHTML = '';
-        const currentSavedModel = readStorage(STORAGE_KEYS.GEMINI_MODEL) || DEFAULTS.GEMINI_MODEL;
-        models.forEach((m) => {
-          const opt = document.createElement('option');
-          opt.value = m.name;
-          opt.textContent = m.displayName ? `${m.name} (${m.displayName})` : m.name;
-          if (m.name === currentSavedModel) opt.selected = true;
-          modalGeminiModelSelect.appendChild(opt);
-        });
-      }
+      if (Array.isArray(models) && models.length > 0) showGeminiModels(models, { persist: false });
     }
   } catch (_) { }
 
@@ -713,14 +780,6 @@ export function initSettings(updateEditorCb) {
   if (btnFetchGeminiModels) {
     btnFetchGeminiModels.addEventListener('click', () => {
       fetchAndPopulateGeminiModels();
-    });
-  }
-
-  if (modalGeminiModelSelect) {
-    modalGeminiModelSelect.value = storedGeminiModel;
-    modalGeminiModelSelect.addEventListener('change', () => {
-      setAndSync(STORAGE_KEYS.GEMINI_MODEL, modalGeminiModelSelect.value);
-      window.dispatchEvent(new Event('app:settingsChanged'));
     });
   }
 
@@ -761,10 +820,17 @@ export function initSettings(updateEditorCb) {
     if (!input || !btn) return;
     const icon = btn.querySelector('.material-symbols-outlined');
 
+    // Pressing the eye must only show or hide the text. A key field saves when it loses focus (its change event),
+    // so keep the focus in the field while the eye is pressed with the mouse.
+    btn.addEventListener('mousedown', (e) => e.preventDefault());
+    // A toggle: the name is fixed, and aria-pressed says whether the key is shown
+    btn.setAttribute('aria-label', t('show_api_key'));
+    btn.setAttribute('aria-pressed', 'false');
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const isPassword = input.type === 'password';
       input.type = isPassword ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', String(isPassword));
       if (icon) {
         icon.textContent = isPassword ? 'visibility' : 'visibility_off';
       }
@@ -887,6 +953,116 @@ export function initSettings(updateEditorCb) {
 
 
 
+  // Left nav under the tabs: one entry per visible card of the active tab, so the whole tab is seen at once
+  // and a click scrolls the body to that card.
+  let navCards = [];
+  let navButtons = [];
+  let navScrollBound = false;
+  let navSpyPausedUntil = 0; // the current-item check waits while a nav click scrolls smoothly
+  let navFrame = 0;
+
+  function setNavCurrent(index) {
+    navButtons.forEach((button, i) => {
+      const current = i === index;
+      button.classList.toggle('is-current', current);
+      if (current) button.setAttribute('aria-current', 'location');
+      else button.removeAttribute('aria-current');
+    });
+  }
+
+  function updateNavCurrent() {
+    const body = settingsModal?.querySelector('.settings-modal-body');
+    if (!body || !navCards.length || Date.now() < navSpyPausedUntil) return;
+    const bodyTop = body.getBoundingClientRect().top;
+    const tops = navCards.map(card => card.getBoundingClientRect().top - bodyTop);
+    const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
+    setNavCurrent(pickCurrentCard(tops, 24, atBottom));
+  }
+
+  // One scroll listener for the page, however often the nav is rebuilt
+  function bindNavScrollOnce() {
+    const body = settingsModal?.querySelector('.settings-modal-body');
+    if (!body || navScrollBound) return;
+    navScrollBound = true;
+    body.addEventListener('scroll', () => {
+      if (navFrame) return;
+      navFrame = requestAnimationFrame(() => {
+        navFrame = 0;
+        updateNavCurrent();
+      });
+    }, { passive: true });
+  }
+
+  function renderSettingsNav() {
+    const navList = document.getElementById('settingsNavItems');
+    const body = settingsModal?.querySelector('.settings-modal-body');
+    const active = settingsModal?.querySelector('.settings-tab-content.active');
+    if (!navList || !body || !active) return;
+    // Order and membership come from settings-layout.json; the card itself is found by its heading key
+    const tabLayout = settingsLayout.tabs.find(t => t.tab === active.id);
+    navCards = (tabLayout?.cards ?? [])
+      .map(key => active.querySelector(`.settings-section-card > h4[data-key="${key}"]`)?.parentElement)
+      .filter(card => card && card.offsetParent !== null);
+    navButtons = [];
+    navList.replaceChildren(...navCards.map(card => {
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'settings-nav-item';
+      // The card heading holds the icon glyph and the label; the nav item shows the same two, copied from it
+      const heading = card.querySelector(':scope > h4');
+      const glyph = document.createElement('span');
+      glyph.className = 'material-symbols-outlined settings-nav-icon';
+      glyph.setAttribute('aria-hidden', 'true');
+      glyph.textContent = heading.querySelector('.material-symbols-outlined')?.textContent.trim() ?? '';
+      const labelSource = heading.cloneNode(true);
+      labelSource.querySelectorAll('.material-symbols-outlined').forEach((el) => el.remove());
+      const label = document.createElement('span');
+      label.className = 'settings-nav-label';
+      label.textContent = labelSource.textContent.trim();
+      button.append(glyph, label);
+      button.addEventListener('click', () => {
+        navSpyPausedUntil = Date.now() + 700;
+        const offset = card.getBoundingClientRect().top - body.getBoundingClientRect().top;
+        body.scrollBy({ top: offset - 12, behavior: 'smooth' });
+        setNavCurrent(navButtons.indexOf(button));
+        // Once the smooth scroll has settled, the current item follows the scroll position again
+        setTimeout(updateNavCurrent, 750);
+      });
+      navButtons.push(button);
+      item.appendChild(button);
+      // The settings of the card, one entry each, under the card's own entry (they scroll to the setting's row)
+      const rows = [...card.querySelectorAll('[data-setting-row]')].filter(r => r.querySelector('.setting-label'));
+      if (rows.length) {
+        const sub = document.createElement('ul');
+        sub.className = 'settings-nav-items settings-nav-rows';
+        for (const row of rows) {
+          const subItem = document.createElement('li');
+          const subButton = document.createElement('button');
+          subButton.type = 'button';
+          subButton.className = 'settings-nav-item settings-nav-row';
+          // The label only: the info button and the icon glyphs inside it are not part of the name
+          const labelOnly = row.querySelector('.setting-label').cloneNode(true);
+          labelOnly.querySelectorAll('.material-symbols-outlined, .setting-info-btn').forEach((el) => el.remove());
+          subButton.textContent = labelOnly.textContent.trim();
+          subButton.addEventListener('click', () => {
+            navSpyPausedUntil = Date.now() + 700;
+            const offset = row.getBoundingClientRect().top - body.getBoundingClientRect().top;
+            body.scrollBy({ top: offset - 12, behavior: 'smooth' });
+            setTimeout(updateNavCurrent, 750);
+          });
+          subItem.append(subButton);
+          sub.append(subItem);
+        }
+        item.append(sub);
+      }
+      return item;
+    }));
+    // The list stays in the left nav (under its title); the tabs are a row above the layout
+    bindNavScrollOnce();
+    updateNavCurrent();
+  }
+
   function openSettingsTab(tabId) {
     if (!settingsModal) return;
     settingsModal.style.display = 'flex';
@@ -907,6 +1083,10 @@ export function initSettings(updateEditorCb) {
         c.classList.remove('active');
       }
     });
+    // The cards can only be measured once their tab is shown
+    fitThemeCards(document.getElementById('modalThemeCards'));
+    fitThemeCards(document.getElementById('modalOverlayColorCards'));
+    renderSettingsNav();
   }
 
   window.addEventListener('app:openSettings', (e) => {
@@ -931,20 +1111,26 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  if (btnCloseSettingsModal) {
-    btnCloseSettingsModal.addEventListener('click', async () => {
+  // The one way out of settings (the back button and Esc): same confirmation as before
+  let closeRequestPending = false;
+  const requestCloseSettings = async () => {
+    if (closeRequestPending) return; // a second Esc or click while the question is open must not ask again
+    closeRequestPending = true;
+    try {
       if (await confirmClose('settings')) closeSettingsView();
-    });
-  }
+    } finally {
+      closeRequestPending = false;
+    }
+  };
 
   if (btnBackToEditor) {
-    btnBackToEditor.addEventListener('click', closeSettingsView);
+    btnBackToEditor.addEventListener('click', requestCloseSettings);
   }
 
-  // Keyboard shortcut Esc to return to editor
+  // Keyboard shortcut Esc to return to editor (same confirmation as the back button)
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && settingsModal && (settingsModal.style.display === 'flex' || settingsModal.style.display === 'block')) {
-      closeSettingsView();
+      requestCloseSettings();
     }
   });
 
@@ -957,6 +1143,11 @@ export function initSettings(updateEditorCb) {
       const target = btn.getAttribute('data-tab');
       const content = document.getElementById(target);
       if (content) content.classList.add('active');
+      const body = settingsModal?.querySelector('.settings-modal-body');
+      if (body) body.scrollTop = 0;
+      fitThemeCards(document.getElementById('modalThemeCards'));
+    fitThemeCards(document.getElementById('modalOverlayColorCards'));
+      renderSettingsNav();
     });
   });
 
@@ -971,6 +1162,17 @@ export function initSettings(updateEditorCb) {
   const btnImportWorkspace = document.getElementById('btnImportWorkspace');
   if (btnImportWorkspace) {
     btnImportWorkspace.addEventListener('click', async () => {
+      // Loading replaces every tab, so unsaved changes are asked about before the file is chosen
+      if (hasUnsavedTabs()) {
+        const proceed = await showConfirmModal({
+          title: t('import_workspace_unsaved'),
+          message: '',
+          confirmText: t('btn_replace_tabs'),
+          cancelText: t('btn_keep_open'),
+          type: 'warning'
+        });
+        if (!proceed) return;
+      }
       if (window.engineAPI?.openFile) {
         const res = await window.engineAPI.openFile();
         if (res && res.success && res.content) {

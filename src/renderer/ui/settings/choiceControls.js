@@ -7,6 +7,7 @@
  *   <select data-ui-control="segmented">  a few options, one button each
  */
 import { t } from '../../core/i18n.js';
+import { rowLabelId } from './settingsStaticMarkup.js';
 
 /** The option written as selected in the page is the default and is marked here; option texts must not carry the mark themselves. */
 function labelOf(option) {
@@ -18,6 +19,22 @@ function renderSwitch(select, host) {
   const on = select.value === 'on';
   host.setAttribute('aria-checked', String(on));
   host.classList.toggle('is-on', on);
+}
+
+/** The words are the option texts exactly as the page states them (already translated). The lit word is the current state. */
+function renderSwitchWords(select, offWord, onWord) {
+  const on = select.value === 'on';
+  const textOf = (value) => select.querySelector(`option[value="${value}"]`)?.textContent.trim() ?? '';
+  offWord.textContent = textOf('off');
+  onWord.textContent = textOf('on');
+  offWord.classList.toggle('is-lit', !on);
+  onWord.classList.toggle('is-lit', on);
+}
+
+/** The row's label names the switch (aria-labelledby), so a screen reader says what it switches. */
+function nameSwitch(select, host) {
+  const label = select.closest('[data-setting-row]')?.querySelector('.setting-label');
+  if (label) host.setAttribute('aria-labelledby', rowLabelId(label));
 }
 
 function renderSegments(select, host) {
@@ -55,11 +72,27 @@ function enhance(select) {
   const kind = select.dataset.uiControl;
   const host = document.createElement(kind === 'switch' ? 'button' : 'div');
 
+  // A switch shows its two states in words (OFF | track | ON), so the state never depends on the knob's position or colour alone
+  let group = null;
+  let offWord = null;
+  let onWord = null;
   if (kind === 'switch') {
     host.type = 'button';
     host.className = 'ui-switch';
     host.setAttribute('role', 'switch');
     host.addEventListener('click', () => choose(select, select.value === 'on' ? 'off' : 'on'));
+    const wordFor = (side) => {
+      const el = document.createElement('span');
+      el.className = 'ui-switch-word';
+      el.dataset.side = side;
+      el.setAttribute('aria-hidden', 'true');
+      return el;
+    };
+    offWord = wordFor('off');
+    onWord = wordFor('on');
+    group = document.createElement('span');
+    group.className = 'ui-switch-group';
+    group.append(offWord, host, onWord);
   } else {
     host.className = 'ui-segmented';
     host.setAttribute('role', 'radiogroup');
@@ -71,8 +104,13 @@ function enhance(select) {
 
   const refresh = () => {
     host.title = select.title;
-    if (kind === 'switch') renderSwitch(select, host);
-    else renderSegments(select, host);
+    if (kind === 'switch') {
+      renderSwitch(select, host);
+      nameSwitch(select, host);
+      renderSwitchWords(select, offWord, onWord);
+    } else {
+      renderSegments(select, host);
+    }
   };
 
   // Code sets `select.value = 'on'` without firing an event: follow it
@@ -88,7 +126,7 @@ function enhance(select) {
   select.classList.add('ui-control-source');
   select.setAttribute('aria-hidden', 'true');
   select.tabIndex = -1;
-  select.after(host);
+  select.after(group ?? host);
   refresh();
 }
 

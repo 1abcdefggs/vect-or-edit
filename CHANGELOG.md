@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.61] - 2026-11-09
+
+### Added
+- Menu bar card in the Header tab with a visibility switch for each menu
+- Popup colour setting shown as sample cards in the real popup colours
+- Current section highlight in the settings navigation
+
+### Changed
+- Display language and Display are one card in the Header tab
+- Editor text card named Text; font size row explained in pixels
+- Visibility switch shows Shown and Hidden states and names its part
+- Back to editor is the only close control and asks before discarding changes
+
+
 ## [0.3.60] - 2026-11-09
 
 ### Added
