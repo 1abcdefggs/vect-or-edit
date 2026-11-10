@@ -3,6 +3,7 @@ import { GoogleGenAI } from '@google/genai';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { isValidGeminiModelId, toGeminiModelInfo, type GeminiModelInfo } from '../../shared/geminiModels';
+import { AI_HOSTS, withAiEgress } from '../net/egressPolicy';
 
 export type { GeminiModelInfo };
 
@@ -65,14 +66,25 @@ export async function clearApiKey(provider: ApiKeyProvider): Promise<{ success: 
 
 const loadStoredGeminiApiKey = () => loadStoredApiKey('gemini');
 
+// The SDK defaults to Node's own fetch, which bypasses Chromium and so the egress policy; net.fetch goes through it
+const electronFetch = (input: RequestInfo | URL, init?: RequestInit): Promise<Response> =>
+  net.fetch(input instanceof URL ? input.href : input, init);
+
+function geminiClient(apiKey: string): GoogleGenAI {
+  return new GoogleGenAI({ apiKey, httpOptions: { fetch: electronFetch } });
+}
+
 // The full list is returned so the cache is complete; the settings UI hides models with canGenerate === false.
 // Both the SDK path and the REST path map entries through toGeminiModelInfo (id check, length caps, one keep rule).
 export async function listGeminiModels(apiKey?: string): Promise<GeminiModelInfo[]> {
   const token = (typeof apiKey === 'string' ? apiKey.trim() : '') || await loadStoredGeminiApiKey();
   if (!token) throw new Error('Gemini API key is not set.');
+  return withAiEgress(AI_HOSTS.gemini, () => listGeminiModelsWith(token));
+}
 
+async function listGeminiModelsWith(token: string): Promise<GeminiModelInfo[]> {
   try {
-    const ai = new GoogleGenAI({ apiKey: token });
+    const ai = geminiClient(token);
     const models: GeminiModelInfo[] = [];
     const modelPager = await ai.models.list();
     for await (const model of modelPager as any) {
@@ -126,7 +138,7 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
   const useFallback = modelName === 'claude-opus-5-5' || modelName === 'claude-sonnet-5-5';
   console.log(`[Main] Calling Claude API (${modelName})`);
 
-  return new Promise<{ success: boolean; text?: string; error?: string }>((resolve) => {
+  return withAiEgress(AI_HOSTS.claude, () => new Promise<{ success: boolean; text?: string; error?: string }>((resolve) => {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'x-api-key': token,
@@ -177,7 +189,7 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
       ...(useFallback ? { fallbacks: 'default' } : {})
     }));
     request.end();
-  });
+  }));
 }
 
 export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string, model?: string) {
@@ -197,12 +209,12 @@ export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string
   const modelName = model;
   console.log(`[Main] Calling Gemini API (${modelName})`);
   try {
-    const ai = new GoogleGenAI({ apiKey: token });
+    const ai = geminiClient(token);
     // Use proper request format: an array of content objects with role and text parts
-    const response = await ai.models.generateContent({
+    const response = await withAiEgress(AI_HOSTS.gemini, () => ai.models.generateContent({
       model: modelName,
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
-    });
+    }));
     // Extract text from response, handling possible missing fields
     const text = (response && (response.text || (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts && response.candidates[0].content.parts[0] && response.candidates[0].content.parts[0].text))) || '';
     if (!text) {
@@ -224,7 +236,7 @@ export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string
   const modelName = model || 'gpt-4o-mini';
   console.log(`[Main] Calling OpenAI API (${modelName})`);
 
-  return new Promise<{ success: boolean; text?: string; error?: string }>((resolve) => {
+  return withAiEgress(AI_HOSTS.openai, () => new Promise<{ success: boolean; text?: string; error?: string }>((resolve) => {
     const request = net.request({
       method: 'POST',
       url: 'https://api.openai.com/v1/chat/completions',
@@ -261,7 +273,7 @@ export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string
       messages: [{ role: 'user', content: prompt }]
     }));
     request.end();
-  });
+  }));
 }
 
 // ---------------------------------------------------------------------------

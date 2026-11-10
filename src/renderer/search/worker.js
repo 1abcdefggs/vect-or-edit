@@ -10,6 +10,9 @@ if (env.backends?.onnx?.wasm) {
     env.backends.onnx.wasm.numThreads = 1;
     env.backends.onnx.wasm.simd = true;
     env.backends.onnx.wasm.proxy = false;
+    // Transformers.js points wasmPaths at cdn.jsdelivr.net when it is unset. Clearing it makes onnxruntime-web
+    // load the wasm bundled with the app (new URL(..., import.meta.url), emitted by Vite), so nothing comes from a CDN
+    env.backends.onnx.wasm.wasmPaths = undefined;
 }
 
 class PipelineSingleton {

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.62] - 2026-11-10
+
+### Added
+- Outbound requests are checked against one allowlist in the main process and blocked by default
+- Cloud AI hosts are reachable only from the main process, and only while an AI request is being sent
+
+### Changed
+- Gemini requests go through Electron's network stack, so the allowlist also applies to them
+- The ONNX runtime loads the WebAssembly file bundled with the app instead of fetching it from a CDN
+
+### Removed
+- api.github.com from the renderer content security policy (nothing calls it any more)
+
 ## [0.3.61] - 2026-11-09
 
 ### Added

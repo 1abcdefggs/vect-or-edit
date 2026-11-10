@@ -33,6 +33,7 @@ import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISema
 import { createWindow, getMainWindow, saveColorMode } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, snapshotOpeningWorkspace, restoreDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 import { getCursorBaseSize } from './cursorSize';
+import { installEgressPolicy } from './net/egressPolicy';
 
 let currentKbPath: string = ""; // Default empty
 
@@ -68,6 +69,8 @@ if (!gotTheLock) {
   });
 
   app.whenReady().then(async () => {
+    // First, so no window, worker or main-process request can go out before the allowlist is in place
+    installEgressPolicy();
     if (app.isPackaged) {
       app.setAppUserModelId('com.vectoredit.app');
     }
