@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.63] - 2026-11-10
+
+### Changed
+- Back to editor moved to the right end of the settings title row, where the other windows keep their close control
+- Colour mode is named Appearance, and its system option reads Match system (Japanese: 外観, システムに合わせる)
+
+
 ## [0.3.61] - 2026-11-09
 
 ### Added
