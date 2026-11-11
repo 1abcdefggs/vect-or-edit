@@ -22,7 +22,7 @@ export type ColorMode = 'system' | 'light' | 'dark';
 const COLOR_MODES: readonly ColorMode[] = ['system', 'light', 'dark'];
 
 function startupFilePath(): string {
-  return path.join(app.getPath('userData'), 'startup-appearance.json');
+  return path.join(app.getPath('userData'), 'config', 'startup-appearance.json');
 }
 
 /** The mode the user chose last time, written by the renderer. Unknown or missing means 'system'. */
@@ -36,7 +36,14 @@ export function readStoredColorMode(): ColorMode {
 }
 
 export function saveColorMode(mode: ColorMode): void {
-  fs.writeFileSync(startupFilePath(), JSON.stringify({ mode }), 'utf8');
+  const filePath = startupFilePath();
+  const dir = path.dirname(filePath);
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    console.warn('[ColorMode] Could not create config directory:', err);
+  }
+  fs.writeFileSync(filePath, JSON.stringify({ mode }), 'utf8');
 }
 
 export function createWindow(preloadPath: string, rendererUrl: string, indexPath: string): BrowserWindow {
