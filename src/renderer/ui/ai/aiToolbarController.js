@@ -470,7 +470,7 @@ function initLlmChatDock() {
       chatMessages.innerHTML = `
         <div class="llm-msg llm-msg-system">
           <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
-          <span>Conversation cleared. Type a prompt, question, or select text in Monaco Editor and right-click "LLM Chat" to converse or rewrite here.</span>
+          <span>${t('llm_clear_chat_msg')}</span>
         </div>
       `;
     });
@@ -547,15 +547,15 @@ function initLlmChatDock() {
           <div class="llm-msg-actions">
             <button class="llm-action-btn btn-action-insert" title="${t('llm_action_insert_tip')}">
               <span class="material-symbols-outlined" style="font-size: var(--fs-12);">input</span>
-              <span>Insert</span>
+              <span>${t('llm_action_insert')}</span>
             </button>
             <button class="llm-action-btn btn-action-rewrite" title="${t('llm_action_rewrite_tip')}">
               <span class="material-symbols-outlined" style="font-size: var(--fs-12);">auto_awesome</span>
-              <span>Replace (Rewrite)</span>
+              <span>${t('llm_action_rewrite')}</span>
             </button>
             <button class="llm-action-btn btn-action-copy" title="${t('llm_action_copy_tip')}">
               <span class="material-symbols-outlined" style="font-size: var(--fs-12);">content_copy</span>
-              <span>Copy</span>
+              <span>${t('llm_action_copy')}</span>
             </button>
           </div>
         `;
@@ -585,11 +585,11 @@ function initLlmChatDock() {
           });
         }
       } else {
-        const err = response?.error || 'No response from AI model. Please verify API key in Settings.';
+        const err = response?.error || t('llm_error_default');
         aiMsgEl.innerHTML = `
           <div class="llm-msg-ai-header" style="color: #ef4444;">
             <span class="material-symbols-outlined" style="font-size: var(--fs-14);">error</span>
-            <span>Error</span>
+            <span>${t('common_error')}</span>
           </div>
           <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(err)}</div>
         `;
@@ -598,9 +598,9 @@ function initLlmChatDock() {
       aiMsgEl.innerHTML = `
         <div class="llm-msg-ai-header" style="color: #ef4444;">
           <span class="material-symbols-outlined" style="font-size: var(--fs-14);">error</span>
-          <span>Error</span>
+          <span>${t('common_error')}</span>
         </div>
-        <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(e.message || 'Request failed')}</div>
+        <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(e.message || t('llm_request_failed'))}</div>
       `;
     } finally {
       btnSend.disabled = false;
