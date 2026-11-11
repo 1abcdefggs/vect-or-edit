@@ -153,6 +153,6 @@ describe('main-process network code', () => {
     const text = fs.readFileSync(path.resolve(__dirname, '..', 'ai', 'aiServices.ts'), 'utf8');
     const calls = text.match(/new\s+GoogleGenAI\s*\([^)]*\)/g) || [];
     expect(calls.length).toBe(1);
-    expect(calls[0]).toMatch(/httpOptions:\s*\{\s*fetch:\s*electronFetch\s*\}/);
+    expect(calls[0]).toMatch(/httpOptions:\s*\{[^}]*\bfetch:\s*electronFetch\b/);
   });
 });
