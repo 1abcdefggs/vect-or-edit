@@ -707,6 +707,8 @@
   "ai_suggest_reason_no_model": "モデルが未設定です（設定で選択）",
   "llm_chat_dock_title": "LLM チャットとアシスタント",
   "llm_chat_welcome": "エディタ上部での執筆と並行して、ここで会話や文章の手直しができます。エディタ内で Ctrl+K を押すと、AI に直接指示することもできます",
+  "llm_setup_required": "LLM プロバイダーまたは API キーが設定されていません。[API Key] をクリックして設定してください。",
+  "llm_provider_not_set": "LLM プロバイダーが選択されていません。[API Key] をクリックして選択してください。",
   "llm_chat_placeholder": "LLM への質問や書き換えの指示（Shift+Enter で改行、Enter で送信）...",
   "btn_send": "送信",
   "btn_back_to_editor": "エディタに戻る",

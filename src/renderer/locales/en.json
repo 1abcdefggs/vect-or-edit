@@ -591,6 +591,8 @@
   "ep_selected_not_installed": "Selected, not installed",
   "llm_chat_dock_title": "LLM Chat & Assistant",
   "llm_chat_welcome": "You can chat or refine your text here in conjunction with the writing process at the top of the editor. You can also issue AI instructions directly from within the editor by pressing Ctrl+K.",
+  "llm_setup_required": "LLM provider or API key not configured. Click API Key to set up.",
+  "llm_provider_not_set": "No LLM provider selected. Click API Key to choose one.",
   "llm_chat_placeholder": "Ask LLM or command rewrite (Shift+Enter for newline, Enter to send)...",
   "btn_send": "Send",
   "btn_back_to_editor": "Back to Editor",

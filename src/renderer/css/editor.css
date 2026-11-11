@@ -355,6 +355,23 @@
   border-radius: 4px;
 }
 
+.llm-model-badge--button {
+  background: transparent;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.llm-model-badge--button:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+}
+
+.llm-model-badge--button:active {
+  background: rgba(56, 189, 248, 0.3);
+}
+
 .llm-dock-actions {
   display: flex;
   align-items: center;

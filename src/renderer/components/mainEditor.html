@@ -167,11 +167,11 @@
       <div class="llm-dock-title" data-i18n-title="tip_llm_dock">
         <span class="material-symbols-outlined llm-dock-icon" style="color: var(--accent-color, #38bdf8);">cloud</span>
         <span class="llm-dock-label" data-i18n="llm_chat_dock_title">LLM Chat & Assistant</span>
-        <span id="llmDockModelBadge" class="llm-model-badge" data-i18n-title="tip_llm_model_badge">Gemini</span>
+        <button id="llmDockModelBadge" class="llm-model-badge llm-model-badge--button" type="button" data-i18n-title="tip_llm_model_badge">Gemini</button>
       </div>
       <div class="llm-dock-actions">
-        <button id="btnLlmKeyConfig" data-ui="edt:llm-key-config" class="toolbar-btn llm-dock-btn" data-i18n-title="btn_llm_key_config_title" style="display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); padding: 2px 8px;">
-          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">key</span>
+        <button id="btnLlmKeyConfig" data-ui="edt:llm-key-config" class="toolbar-btn llm-dock-btn llm-key-btn" data-i18n-title="btn_llm_key_config_title" style="display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); padding: 2px 8px;">
+          <span id="llmKeyStatusIcon" class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">key</span>
           <span data-i18n="setup_ai_key_label">API Key</span>
         </button>
         <button id="btnLlmClearChat" data-ui="edt:llm-clear-chat" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_clear_chat">
@@ -215,6 +215,10 @@
         <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
         <span data-i18n="llm_chat_welcome">You can chat or refine your text here in conjunction with the writing process at the top of the editor. You can also issue AI instructions directly from within the editor by pressing Ctrl+K.</span>
       </div>
+    </div>
+    <div id="llmChatStatus" class="llm-chat-status" style="display: none; padding: 8px 12px; background: rgba(255, 165, 0, 0.1); border-left: 2px solid var(--warning-color, #ffa500); font-size: var(--fs-12); color: var(--text-muted); margin: 0 8px 8px;">
+      <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); vertical-align: middle; margin-right: 4px;">warning</span>
+      <span id="llmChatStatusText" data-i18n="llm_setup_required">LLM provider or API key not configured. Click API Key to set up.</span>
     </div>
     <div class="llm-chat-input-bar">
       <textarea id="llmChatInput" class="llm-chat-input" rows="1" placeholder="Ask LLM or command rewrite (Shift+Enter for newline, Enter to send)..." data-i18n-placeholder="llm_chat_placeholder" data-i18n-title="tip_llm_chat_input"></textarea>

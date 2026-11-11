@@ -233,6 +233,8 @@ function initLlmChatDock() {
   const quickApiKeyInput = document.getElementById('llmQuickApiKeyInput');
   const btnToggleQuickVisibility = document.getElementById('btnToggleQuickKeyVisibility');
   const btnSaveQuickKey = document.getElementById('btnSaveQuickApiKey');
+  const chatStatus = document.getElementById('llmChatStatus');
+  const chatStatusText = document.getElementById('llmChatStatusText');
 
   if (!dock || !chatInput) return;
 
@@ -258,6 +260,32 @@ function initLlmChatDock() {
   updateDockModelBadge();
   window.addEventListener('app:settingsChanged', updateDockModelBadge);
 
+  // Model badge click: open settings LLM tab
+  if (modelBadge) {
+    modelBadge.addEventListener('click', () => {
+      openAiSettingsTab('tabAiChat');
+    });
+  }
+
+  // Update API Key button status icon (configured/unconfigured)
+  function updateApiKeyButtonStatus() {
+    if (!btnKeyConfig) return;
+    const statusIcon = btnKeyConfig.querySelector('#llmKeyStatusIcon');
+    if (!statusIcon) return;
+
+    const currentProvider = readStorage('llm_provider') || 'gemini';
+    const isConfigured = currentProvider !== 'none' && isApiKeyConfigured(currentProvider);
+
+    // Change icon: configured = check_circle, unconfigured = key
+    if (isConfigured) {
+      statusIcon.textContent = 'check_circle';
+      statusIcon.style.color = 'var(--success-color, #10b981)';
+    } else {
+      statusIcon.textContent = 'key';
+      statusIcon.style.color = 'var(--accent-color, #38bdf8)';
+    }
+  }
+
   // The eye shows what was typed; with an empty field there is nothing to show (a saved key is never sent back to the window)
   function syncQuickKeyEye() {
     if (!btnToggleQuickVisibility || !quickApiKeyInput) return;
@@ -265,6 +293,37 @@ function initLlmChatDock() {
     btnToggleQuickVisibility.style.opacity = quickApiKeyInput.value ? '1' : '0.4';
   }
   quickApiKeyInput?.addEventListener('input', syncQuickKeyEye);
+
+  // Update API key button status on startup and when settings change
+  updateApiKeyButtonStatus();
+  window.addEventListener('app:settingsChanged', updateApiKeyButtonStatus);
+
+  // Update chat status bar (shows warning if provider/key not set)
+  function updateChatStatusBar() {
+    if (!chatStatus) return;
+    const currentProvider = readStorage('llm_provider') || 'none';
+    const isConfigured = currentProvider !== 'none' && isApiKeyConfigured(currentProvider);
+
+    if (isConfigured) {
+      chatStatus.style.display = 'none';
+      chatInput.disabled = false;
+      btnSend.disabled = false;
+    } else {
+      chatStatus.style.display = 'flex';
+      chatInput.disabled = true;
+      btnSend.disabled = true;
+      if (chatStatusText) {
+        if (currentProvider === 'none') {
+          chatStatusText.textContent = t('llm_provider_not_set');
+        } else {
+          chatStatusText.textContent = t('llm_setup_required');
+        }
+      }
+    }
+  }
+
+  updateChatStatusBar();
+  window.addEventListener('app:settingsChanged', updateChatStatusBar);
 
   // Quick API Key Banner Logic
   function syncQuickApiKeyInput() {
