@@ -197,13 +197,26 @@ function bindSetup() {
     input.classList.toggle('is-invalid', seconds === null);
     if (seconds !== null) input.value = String(seconds);
   });
-  localAiSwitch = bindToggleSwitch($('toggleSetupInstallLocal'), {
-    checked: true,
-    onChange: () => {
-      renderLocalNotice();
-      renderStep();
-    }
-  });
+  // Embedding model choice: Y/N radio buttons (replaces the old toggle switch)
+  const embedRadios = document.querySelectorAll('input[name="setup_embed"]');
+  if (embedRadios.length > 0) {
+    // Initialize with "yes" checked
+    embedRadios.forEach(radio => {
+      radio.checked = radio.value === 'yes';
+      radio.addEventListener('change', () => {
+        renderLocalNotice();
+        renderStep();
+      });
+    });
+    // Provide a switch-like interface for compatibility with existing code
+    localAiSwitch = {
+      isChecked: () => document.querySelector('input[name="setup_embed"]:checked')?.value === 'yes',
+      set: (checked) => {
+        const radio = document.querySelector(`input[name="setup_embed"][value="${checked ? 'yes' : 'no'}"]`);
+        if (radio) radio.checked = true;
+      }
+    };
+  }
 
   // The format cards: a click anywhere on a card chooses it (the buttons inside keep their own job)
   document.querySelectorAll('#setupFormatCardMarkdown, #setupFormatCardText').forEach((card) => {
