@@ -428,6 +428,7 @@
   "setup_step_appearance": "言語とテーマ",
   "setup_step_ai": "辞書設定",
   "setup_save_location_label": "保存先とフォルダ名",
+  "setup_save_location_desc": "VectOrEditで作成したファイルが保存されるフォルダです。",
   "setup_save_location_browser": "ブラウザ版: 文書はこのブラウザに下書きとして保存されます",
   "setup_autosave_label": "書いている間、自動で保存する",
   "setup_autosave_hint": "バックグラウンドで自動保存します。",
