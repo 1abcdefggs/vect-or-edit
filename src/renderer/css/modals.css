@@ -1040,6 +1040,55 @@
   }
 }
 
+/* Y/N choice buttons (simplified radio options) */
+.first-run-choice-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.first-run-choice-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  min-height: 40px;
+  padding: 10px 24px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary, transparent);
+  font-size: var(--fs-15);
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.first-run-choice-button:hover {
+  border-color: color-mix(in srgb, var(--accent-color) 60%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 8%, var(--bg-primary));
+}
+
+.first-run-choice-button:has(input:focus-visible) {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.first-run-choice-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.first-run-choice-button:has(input:checked) {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 15%, var(--bg-primary));
+  color: var(--accent-color);
+}
+
 /* Language: a two-position switch. The thumb slides to the chosen side; the radios stay for keyboard and screen readers */
 .first-run-segment {
   position: relative;
@@ -2000,9 +2049,9 @@
 .first-run-later {
   display: block;
   margin: 0;
-  font-size: var(--fs-13);
+  font-size: var(--fs-14);
   line-height: 1.5;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .first-run-later .material-symbols-outlined {
@@ -2034,7 +2083,7 @@
   min-height: 44px;
   padding: 0 18px;
   border-radius: 8px;
-  font-size: var(--fs-14);
+  font-size: var(--fs-15);
   cursor: pointer;
 }
 

@@ -146,6 +146,14 @@
       <!-- Step 3: AI (the embedding model installs in the background after setup) -->
       <section class="first-run-step" data-setup-step="3" hidden data-ui="stp:step-dictionary">
         <div class="first-run-section first-run-section--spaced">
+          <!-- Dictionary section with description -->
+          <div class="first-run-section">
+            <h2 class="first-run-heading">
+              <span data-i18n="setup_ai_dictionary_label">Dictionary</span>
+            </h2>
+            <p class="first-run-hint" data-i18n="setup_ai_dictionary_desc">Shows dictionary items that match the text you write in the right panel as you type.</p>
+          </div>
+
           <h2 class="first-run-heading">
             <span data-i18n="setup_ai_embedding_heading">Embedding AI</span>
             <span class="first-run-badge" data-i18n="setup_ai_core_badge">Core feature</span>
@@ -216,11 +224,22 @@
                   <span id="setupPaneDictTitle" class="setup-ai-pane-title" data-i18n="setup_ai_pane_dict">Dictionary</span>
                 </header>
                 <div class="first-run-setting">
-                  <span id="setupLocalAiLabel" class="first-run-setting-text">
-                    <span class="first-run-check-title" data-i18n="setup_ai_local_label">Install the embedding model (recommended)</span>
-                    <span class="first-run-hint" data-i18n="setup_ai_local_hint">Finds knowledge related to the selected text offline. The download runs in the background.</span>
-                  </span>
-                  <span class="toggle-switch-group" data-toggle-switch data-ui="stp:embed" data-id="toggleSetupInstallLocal" data-labelledby="setupLocalAiLabel" data-tip="tip_setup_install_local"></span>
+                  <div class="first-run-choice-row" role="radiogroup" aria-labelledby="setupEmbedLabel">
+                    <span id="setupEmbedLabel" class="first-run-setting-text">
+                      <span class="first-run-check-title" data-i18n="setup_ai_embed_question">Install the embedding model?</span>
+                      <span class="first-run-hint" data-i18n="setup_ai_embed_hint">Required for dictionary suggestions. Downloads once; runs on this PC.</span>
+                    </span>
+                    <div class="first-run-choice-buttons" data-ui="stp:embed">
+                      <label class="first-run-choice-button">
+                        <input type="radio" name="setup_embed" value="yes" checked data-tip-exempt="true">
+                        <span data-i18n="setup_ai_embed_yes">Yes</span>
+                      </label>
+                      <label class="first-run-choice-button">
+                        <input type="radio" name="setup_embed" value="no" data-tip-exempt="true">
+                        <span data-i18n="setup_ai_embed_no">No</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
                 <dl class="first-run-facts">
                   <dt data-i18n="setup_ai_fact_model">Model</dt>
