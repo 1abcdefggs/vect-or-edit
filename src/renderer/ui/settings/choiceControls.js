@@ -95,6 +95,10 @@ function enhance(select) {
     group.append(offWord, host, onWord);
   } else {
     host.className = 'ui-segmented';
+    // Apply size variant if specified (e.g., data-segmented-size="lg")
+    if (select.dataset.segmentedSize) {
+      host.classList.add(`ui-segmented--${select.dataset.segmentedSize}`);
+    }
     host.setAttribute('role', 'radiogroup');
     host.addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-value]');

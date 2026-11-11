@@ -7,6 +7,7 @@ build
 cached
 chat
 check
+check_circle
 chevron_left
 chevron_right
 close
@@ -40,7 +41,6 @@ memory
 menu_book
 monitor_heart
 neurology
-open_in_new
 palette
 preview
 restart_alt

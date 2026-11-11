@@ -11,8 +11,7 @@
 }
 
 .first-run-choice:has(input:checked),
-.first-run-theme-card[aria-pressed="true"],
-.provider-card.active {
+.theme-card[aria-pressed="true"] {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
   border-color: var(--sel-edge);
@@ -21,14 +20,14 @@
 
 /* Hover keeps the selected surface instead of the plain hover tint */
 .first-run-choice:has(input:checked):hover,
-.first-run-theme-card[aria-pressed="true"]:hover,
-.provider-card.active:hover {
+.theme-card[aria-pressed="true"]:hover {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
 }
 
 /* Provider-like list cards, dropdown items: the same boxed selection */
 .ep-card.is-active,
+.ml-item.is-active,
 .ui-select-option.is-selected {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
@@ -37,6 +36,7 @@
 }
 
 .ep-card.is-active:hover,
+.ml-item.is-active:hover,
 .ui-select-option.is-selected:hover {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
@@ -60,7 +60,7 @@
 /* Text inside a selected surface takes its color from the surface, not from the muted text tokens of the window */
 .first-run-choice:has(input:checked) .first-run-hint,
 .first-run-choice:has(input:checked) .first-run-md-marker,
-.first-run-theme-card[aria-pressed="true"] .first-run-theme-name {
+.theme-card[aria-pressed="true"] .theme-card-name {
   color: inherit;
   opacity: 0.8;
 }
@@ -68,8 +68,4 @@
 .first-run-choice:has(input:checked) .first-run-choice-mark {
   background: var(--sel-on-surface);
   color: var(--sel-surface);
-}
-
-.provider-card.active::after {
-  color: var(--sel-on-surface);
 }

@@ -12,7 +12,7 @@
  * The caller hands over ready items (see shared/modelListArrange.ts); this part only draws them and keeps the
  * search, sort and filter state. Domain rules (what a model is, how it ranks) stay with the caller.
  * The look reuses the ep-* classes of css/embedding-picker.css, so the model lists of Settings read the same.
- * Public surface: createModelList(container, { columns, sorts, onUse, noticeKeys, favorites, columnPrefs, defaultTags })
+ * Public surface: createModelList(container, { columns, sorts, onUse, onClear, noticeKeys, favorites, columnPrefs, defaultTags })
  *   -> { setItems(items, activeId), setActive(id) }.
  *   columns: [{ key, labelKey, width, optional?, toggle?, sort?, align?, filter? }]
  *     width is a CSS grid track; key "id" shows item.id; key "tags" shows item.tags; other keys show item.cells[key];
@@ -21,6 +21,7 @@
  *     several selected buttons match any of them); { prefix, mode? } takes every tag whose kind starts with the prefix, in the order the models come
  *     (for a set that grows, like the name series)
  *   sorts: [{ key, labelKey?, grouped?, direction? }]  (an entry with labelKey also gets a chip; grouped keeps the caller's order)
+ *   onClear: () => void  (optional; the row in use gets a button that takes the choice back, and the caller is told)
  *   noticeKeys: i18n keys of the notes shown above the list, in order (the caller's own words; the part adds no domain text)
  *   favorites: { ids: string[], onChange(ids: string[]) }  (optional; the caller keeps them)
  *   columnPrefs: { shown: string[], onChange(keys: string[]) }  (optional; the toggle columns that are shown)
@@ -31,7 +32,7 @@ import { t } from '../../core/i18n.js';
 import { el } from '../dom.js';
 import { arrangeModelItems, filterModelItems } from '../../../shared/modelListArrange';
 
-export function createModelList(container, { columns, sorts, onUse, noticeKeys = [], favorites, columnPrefs, defaultTags = [] } = {}) {
+export function createModelList(container, { columns, sorts, onUse, noticeKeys = [], favorites, columnPrefs, defaultTags = [], onClear } = {}) {
   let items = [];
   let activeId = '';
   const favoriteIds = new Set(favorites?.ids ?? []);
@@ -214,6 +215,18 @@ export function createModelList(container, { columns, sorts, onUse, noticeKeys =
     if (favorites) node.append(starButton(item));
     if (item.id === activeId) {
       node.append(el('span', 'ep-badge ep-badge-active', t('model_list_active')));
+      if (onClear) {
+        // Takes the choice back: nothing is in use until another model is chosen
+        const off = el('button', 'ep-chip ml-unuse', t('model_list_unuse'));
+        off.type = 'button';
+        off.setAttribute('aria-label', `${t('model_list_unuse')}: ${item.id}`);
+        off.addEventListener('click', () => {
+          activeId = '';
+          redraw();
+          onClear();
+        });
+        node.append(off);
+      }
     } else {
       const btn = el('button', 'ep-chip ep-action ml-use', t('model_list_use'));
       btn.type = 'button';

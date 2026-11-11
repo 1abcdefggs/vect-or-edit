@@ -7,20 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.64] - 2026-11-10
-
-### Fixed
-- Cloud AI requests stop after 10 minutes without a reply, so a stalled request no longer keeps its host open
-
-## [0.3.62] - 2026-11-10
-
 ### Added
+- LLM chat panel with provider unification and shared API key input component
 - Outbound requests are checked against one allowlist in the main process and blocked by default
 - Cloud AI hosts are reachable only from the main process, and only while an AI request is being sent
 
 ### Changed
+- Back to editor moved to the right end of the settings title row, where the other windows keep their close control
+- Colour mode is named Appearance, and its system option reads Match system (Japanese: 外観, システムに合わせる)
 - Gemini requests go through Electron's network stack, so the allowlist also applies to them
 - The ONNX runtime loads the WebAssembly file bundled with the app instead of fetching it from a CDN
+- All LLM chat UI labels and messages now support both Japanese and English
+
+### Fixed
+- Workspace setup Cancel button now reads Open a file in open mode and Cancel in save mode, matching its actual action
+- First-run setup Cancel button renamed to Quit because it exits the app
+- Cloud AI requests stop after 10 minutes without a reply, so a stalled request no longer keeps its host open
 
 ### Removed
 - api.github.com from the renderer content security policy (nothing calls it any more)

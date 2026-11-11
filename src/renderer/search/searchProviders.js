@@ -75,7 +75,7 @@ export async function fetchAiSuggestions(query, provider) {
 
 export async function queryLlmChat(prompt, userProvider = null) {
   if (!canUseLlm()) return { error: t('llm_off_hint') };
-  const provider = userProvider || readStorage(STORAGE_KEYS.AI_PROVIDER) || 'gemini';
+  const provider = userProvider || readStorage(STORAGE_KEYS.LLM_PROVIDER) || 'none';
   try {
     // Keys stay in the main process; each request uses the stored key of its provider.
     if (provider === 'gemini') {

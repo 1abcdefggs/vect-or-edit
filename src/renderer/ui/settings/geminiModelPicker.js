@@ -141,6 +141,11 @@ export function createGeminiModelPicker(container, { onChange } = {}) {
     onUse: (name) => {
       selected = name;
       if (onChange) onChange(name);
+    },
+    // The choice is taken back: nothing is in use until the user chooses again
+    onClear: () => {
+      selected = '';
+      if (onChange) onChange('');
     }
   });
 

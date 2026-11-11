@@ -19,13 +19,23 @@
 
 .card-badge--ok { color: var(--success-color, #10b981); background: color-mix(in srgb, var(--success-color, #10b981) 12%, transparent); }
 .card-badge--warn { color: #c084fc; background: rgba(168, 85, 247, 0.12); }
+.card-badge--inline { margin-left: 8px; }
 
 .settings-section-card > h4 .material-symbols-outlined {
   font-size: var(--fs-18);
   color: var(--text-main);
 }
 
-.settings-section-card > .setting-desc { margin-bottom: 8px; }
+/* Separator between heading and badge */
+.heading-badge-sep {
+  margin: 0 6px;
+  opacity: 0.6;
+}
+
+.settings-section-card > .setting-desc {
+  margin-bottom: 12px;
+  font-size: var(--fs-16);
+}
 
 .settings-section-card > .setting-item:last-child,
 .settings-section-card > .setting-item:last-of-type {
@@ -142,6 +152,18 @@
 
 .settings-link .material-symbols-outlined { font-size: var(--fs-13); }
 
+/* Inline links in descriptions */
+.settings-link--inline {
+  color: var(--accent-text, #38bdf8);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-text, #38bdf8) 40%, transparent);
+  cursor: pointer;
+}
+
+.settings-link--inline:hover {
+  text-decoration-color: var(--accent-text, #38bdf8);
+}
+
 .api-key-field {
   width: 100%;
   display: flex;
@@ -182,6 +204,7 @@
   cursor: pointer;
 }
 
+/* DEPRECATED: Provider cards replaced with .ui-segmented--lg; kept for one release cycle */
 .provider-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -288,6 +311,12 @@
   font-weight: 600;
 }
 
+/* Large segmented: for prominent multi-choice selectors like provider picker */
+.ui-segmented--lg button {
+  padding: 8px 20px;
+  font-size: var(--fs-14);
+}
+
 /* Help that stays closed until asked for */
 .settings-details > summary {
   cursor: pointer;
@@ -348,12 +377,12 @@
   border-bottom: var(--border-width) solid var(--border-color);
 }
 
-/* Back to the editor: the foot of the left column, below the Guide */
+/* Back to the editor: the right end of the title and tab row, where the other windows put their close control */
 .settings-back-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm);
+  margin: 0 0 var(--spacing-xs) auto;
   gap: 6px;
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--fs-18);

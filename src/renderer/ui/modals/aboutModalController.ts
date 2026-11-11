@@ -9,10 +9,9 @@ import { readStorage } from '../../core/storage.js';
 import { t } from '../../core/i18n.js';
 import appLogoUrl from '../../assets/icon.png';
 import { STORAGE_KEYS } from '../../core/constants.js';
-import { getStoredThemeSetting } from '../../editor/core/themeLoader.js';
+import { getStoredThemeSetting, getThemeAttribution } from '../../editor/core/themeLoader.js';
 import { getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
 import { REGISTRY } from '../../../shared/embeddingCatalog';
-import themeAttribution from '../../../shared/themeAttribution.json';
 import { AUTHOR, AUTHOR_URL, ELECTRON_URL, ENGINE_URL, MONACO_URL, REPOSITORY_URL } from '../../../shared/projectLinks';
 
 interface ThemeAttribution {
@@ -59,7 +58,7 @@ function fillComponentRows(div: HTMLElement): void {
   set('aboutElectronValue', `Electron ${electron}`);
 
   const themeName = getStoredThemeSetting();
-  const theme = (themeAttribution as Record<string, ThemeAttribution>)[themeName];
+  const theme = getThemeAttribution(themeName) as ThemeAttribution | null;
   setLink('aboutThemeValue', theme ? `${themeName} (${theme.license})` : themeName, theme?.source);
 
   // Every downloaded model is listed; the one in use is marked. Each model links to its Hugging Face page.

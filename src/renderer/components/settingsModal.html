@@ -16,13 +16,6 @@
       <button class="settings-tab-btn" data-tab="tabEditor" data-i18n-title="tip_tab_editor"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">edit_note</span><span class="settings-tab-label" data-i18n="tab_editor">Editor</span></button>
       <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n-title="tip_tab_ai"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">smart_toy</span><span class="settings-tab-label" data-i18n="tab_ai_search">Sidebar</span></button>
       <button class="settings-tab-btn" data-tab="tabSystem" data-i18n-title="tip_tab_system"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">tune</span><span class="settings-tab-label" data-i18n="tab_system">System</span></button>
-    </div>
-    <div class="settings-split">
-    <nav class="settings-nav" aria-label="Settings sections">
-      <ul class="settings-nav-items" id="settingsNavItems"></ul>
-      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
-        <span class="material-symbols-outlined">help</span><span class="settings-guide-label" data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
-      </button>
       <button id="btnBackToEditor" class="toolbar-btn settings-back-btn" data-i18n-title="tip_back_to_editor">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -30,6 +23,14 @@
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
         <span class="settings-back-label" data-i18n="btn_back_to_editor">Back to Editor</span>
+      </button>
+    </div>
+    <p id="settingsTabDesc" class="settings-tab-desc" data-i18n="tab_desc_appearance">Menu bar, theme and appearance mode, display language and zoom, save location and workspace.</p>
+    <div class="settings-split">
+    <nav class="settings-nav" aria-label="Settings sections">
+      <ul class="settings-nav-items" id="settingsNavItems"></ul>
+      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
+        <span class="material-symbols-outlined">help</span><span class="settings-guide-label" data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
       </button>
     </nav>
 
@@ -302,35 +303,24 @@
 <div id="llmConfigCard" class="settings-section-card">
             <h4>
               <span class="material-symbols-outlined">chat</span>
-              <span data-i18n="heading_llm_catalog">LLM Catalog (CHAT / Text Correction & Rewriting / Conversation Support)</span>
-              <span class="card-badge card-badge--warn" data-i18n="llm_card_badge">Paid API</span>
+              <span data-i18n="heading_llm_catalog">AI Chat</span>
+              <span class="heading-badge-sep" aria-hidden="true">—</span>
+              <span class="card-badge card-badge--warn card-badge--inline" data-i18n="heading_llm_catalog_sub">Paid API</span>
             </h4>
             <div class="setting-desc" data-i18n="llm_card_desc">Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.</div>
 
-            <input type="hidden" id="modalAiProviderSelect" value="none">
-            <div class="provider-cards-grid" role="group">
-              <div class="provider-card" data-provider="gemini" role="button" tabindex="0" data-tip-exempt="the provider name on the card names it">
-                <div class="provider-name">Google Gemini</div>
-                <div class="provider-sub" data-i18n="card_cloud_desc">Cloud API</div>
-              </div>
-              <div class="provider-card" data-provider="openai" role="button" tabindex="0" data-tip-exempt="the provider name on the card names it">
-                <div class="provider-name">OpenAI</div>
-                <div class="provider-sub" data-i18n="card_cloud_desc">Cloud API</div>
-              </div>
-              <div class="provider-card" data-provider="claude" role="button" tabindex="0" data-tip-exempt="the provider name on the card names it">
-                <div class="provider-name">Claude</div>
-                <div class="provider-sub" data-i18n="card_cloud_desc">Cloud API</div>
-              </div>
-            </div>
+            <select id="modalAiProviderSelect" data-ui-control="segmented" data-segmented-size="lg" data-i18n-title="tip_select_llm_provider">
+              <option value="none" hidden>—</option>
+              <option value="gemini">Google Gemini</option>
+              <option value="openai">OpenAI</option>
+              <option value="claude">Claude</option>
+            </select>
 
             <!-- Google Gemini -->
             <div id="geminiSettingsBlock" class="provider-block">
               <div data-setting-row="stack">
                 <div class="setting-item-head">
                   <div data-setting-text data-label-key="setting_gemini_key" data-label-text="Gemini API Key" data-desc-key="setting_gemini_key_desc" data-desc-text="Will be saved securely to your local device."></div>
-                  <a class="settings-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" data-i18n-title="tip_get_api_key">
-                    <span data-i18n="btn_get_key">Get Key</span><span class="material-symbols-outlined">open_in_new</span>
-                  </a>
                 </div>
                 <div class="api-key-field">
                   <span class="material-symbols-outlined">key</span>
@@ -360,9 +350,6 @@
               <div data-setting-row="stack">
                 <div class="setting-item-head">
                   <div data-setting-text data-label-key="setting_openai_key" data-label-text="OpenAI API Key" data-desc-key="setting_openai_key_desc" data-desc-text="Will be saved securely to your local device."></div>
-                  <a class="settings-link" href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" data-i18n-title="tip_get_api_key">
-                    <span data-i18n="btn_get_key">Get Key</span><span class="material-symbols-outlined">open_in_new</span>
-                  </a>
                 </div>
                 <div class="api-key-field">
                   <span class="material-symbols-outlined">key</span>
@@ -386,9 +373,6 @@
               <div data-setting-row="stack">
                 <div class="setting-item-head">
                   <div data-setting-text data-label-key="setting_claude_key" data-label-text="Anthropic API Key" data-desc-key="setting_claude_key_desc" data-desc-text="Will be saved securely to your local device."></div>
-                  <a class="settings-link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" data-i18n-title="tip_get_api_key">
-                    <span data-i18n="btn_get_key">Get Key</span><span class="material-symbols-outlined">open_in_new</span>
-                  </a>
                 </div>
                 <div class="api-key-field">
                   <span class="material-symbols-outlined">key</span>
