@@ -1051,7 +1051,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 80px;
+  min-width: 120px;
   min-height: 40px;
   padding: 10px 24px;
   border: 1.5px solid var(--border-color);
@@ -1062,6 +1062,7 @@
   color: var(--text-main);
   cursor: pointer;
   transition: border-color 140ms ease, background 140ms ease;
+  white-space: nowrap;
 }
 
 .first-run-choice-button:hover {
