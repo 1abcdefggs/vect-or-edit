@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.64] - 2026-11-10
+
+### Fixed
+- Cloud AI requests stop after 10 minutes without a reply, so a stalled request no longer keeps its host open
+
 ## [0.3.62] - 2026-11-10
 
 ### Added

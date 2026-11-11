@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { isValidGeminiModelId, toGeminiModelInfo, type GeminiModelInfo } from '../../shared/geminiModels';
 import { AI_HOSTS, withAiEgress } from '../net/egressPolicy';
+import { AI_SEND_TIMEOUT_MS, abortAfterTimeout, timeoutMessage } from './sendTimeout';
 
 export type { GeminiModelInfo };
 
@@ -71,7 +72,7 @@ const electronFetch = (input: RequestInfo | URL, init?: RequestInit): Promise<Re
   net.fetch(input instanceof URL ? input.href : input, init);
 
 function geminiClient(apiKey: string): GoogleGenAI {
-  return new GoogleGenAI({ apiKey, httpOptions: { fetch: electronFetch } });
+  return new GoogleGenAI({ apiKey, httpOptions: { fetch: electronFetch, timeout: AI_SEND_TIMEOUT_MS } });
 }
 
 // The full list is returned so the cache is complete; the settings UI hides models with canGenerate === false.
@@ -101,11 +102,13 @@ async function listGeminiModelsWith(token: string): Promise<GeminiModelInfo[]> {
     // The key travels in a header, not the URL, so it stays out of URL logs and history
     const request = net.request('https://generativelanguage.googleapis.com/v1beta/models');
     request.setHeader('x-goog-api-key', token);
+    const stopTimer = abortAfterTimeout(request, () => reject(new Error(timeoutMessage('Gemini API'))));
     let data = '';
 
     request.on('response', (response) => {
       response.on('data', (chunk) => { data += chunk.toString(); });
       response.on('end', () => {
+        stopTimer();
         try {
           const parsed = JSON.parse(data);
           if (parsed.error) {
@@ -122,7 +125,7 @@ async function listGeminiModelsWith(token: string): Promise<GeminiModelInfo[]> {
       });
     });
 
-    request.on('error', (err) => reject(err));
+    request.on('error', (err) => { stopTimer(); reject(err); });
     request.end();
   });
 }
@@ -150,11 +153,13 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
       url: 'https://api.anthropic.com/v1/messages',
       headers
     });
+    const stopTimer = abortAfterTimeout(request, () => resolve({ success: false, error: timeoutMessage('Anthropic API') }));
 
     request.on('response', (response) => {
       let data = '';
       response.on('data', (chunk) => { data += chunk.toString(); });
       response.on('end', () => {
+        stopTimer();
         if (response.statusCode === 200) {
           try {
             const parsed = JSON.parse(data);
@@ -178,6 +183,7 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
     });
 
     request.on('error', (err) => {
+      stopTimer();
       resolve({ success: false, error: err.message });
     });
 
@@ -245,11 +251,13 @@ export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string
         'Authorization': `Bearer ${token}`
       }
     });
+    const stopTimer = abortAfterTimeout(request, () => resolve({ success: false, error: timeoutMessage('OpenAI API') }));
 
     request.on('response', (response) => {
       let data = '';
       response.on('data', (chunk) => { data += chunk.toString(); });
       response.on('end', () => {
+        stopTimer();
         if (response.statusCode === 200) {
           try {
             const parsed = JSON.parse(data);
@@ -265,6 +273,7 @@ export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string
     });
 
     request.on('error', (err) => {
+      stopTimer();
       resolve({ success: false, error: err.message });
     });
 
