@@ -27,6 +27,7 @@ import { initWindowFeatureSettings } from './windowFeatureSettings.js';
 import { initChoiceControls } from './choiceControls.js';
 import { initSettingsHelpPane } from './settingsHelpPane.js';
 import { createGeminiModelPicker, usableGeminiModels, isValidGeminiModelId, rememberGeminiModels } from './geminiModelPicker.js';
+import { initApiKeyInput } from './apiKeyInputBase.js';
 
 function setAndSync(key, value) {
   writeStorage(key, value);
@@ -818,9 +819,10 @@ export function initSettings(updateEditorCb) {
     });
   }
 
-  setupPasswordToggle('modalGeminiKeyInput', 'btnToggleGeminiKeyVisibility');
-  setupPasswordToggle('modalOpenAiKeyInput', 'btnToggleOpenAiKeyVisibility');
-  setupPasswordToggle('modalClaudeKeyInput', 'btnToggleClaudeKeyVisibility');
+  // Initialize API key inputs using shared component
+  initApiKeyInput('.api-key-field', 'modalGeminiKeyInput', 'btnToggleGeminiKeyVisibility');
+  initApiKeyInput('.api-key-field', 'modalOpenAiKeyInput', 'btnToggleOpenAiKeyVisibility');
+  initApiKeyInput('.api-key-field', 'modalClaudeKeyInput', 'btnToggleClaudeKeyVisibility');
 
   // Clear API Keys from Editor Settings Tab
   const btnEditorClearApiKey = document.getElementById('btnEditorClearApiKey');

@@ -741,6 +741,7 @@
   "tip_setup_autosave_newline": "改行するたびに保存します",
   "tip_setup_install_local": "オフラインで意味検索の提案を使うため、埋め込みモデルをダウンロードします",
   "tip_setup_cloud_provider": "利用するクラウドAIサービスを選びます",
+  "tip_select_llm_provider": "チャット欄で利用するAIプロバイダーを選びます",
   "tip_api_key_input": "APIキーをここに貼り付けます",
   "tip_toggle_key_visibility": "APIキーの表示／非表示を切り替えます",
   "tip_setup_back": "前の手順に戻ります",

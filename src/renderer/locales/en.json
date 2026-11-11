@@ -625,6 +625,7 @@
   "tip_setup_autosave_newline": "Save each time you start a new line",
   "tip_setup_install_local": "Download the embedding model for offline semantic suggestions",
   "tip_setup_cloud_provider": "Choose which cloud AI service to use",
+  "tip_select_llm_provider": "Choose which AI provider to use for chat",
   "tip_api_key_input": "Paste your API key here",
   "tip_toggle_key_visibility": "Show or hide the API key",
   "tip_setup_back": "Go back to the previous step",

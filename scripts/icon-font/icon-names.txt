@@ -40,7 +40,6 @@ memory
 menu_book
 monitor_heart
 neurology
-open_in_new
 palette
 preview
 restart_alt

@@ -58,10 +58,10 @@ describe('nameRowControls', () => {
 });
 
 describe('settings markup', () => {
-  it('makes the provider cards reachable with the keyboard', () => {
+  it('makes the provider select accessible', () => {
     const html = readFileSync(join(__dirname, '../components/settingsModal.html'), 'utf8');
-    const cards = html.match(/<div class="provider-card"[^>]*>/g) ?? [];
-    expect(cards).toHaveLength(3);
-    for (const card of cards) expect(card).toContain('tabindex="0"');
+    const select = html.match(/<select id="modalAiProviderSelect"[^>]*>/);
+    expect(select).not.toBeNull();
+    if (select) expect(select[0]).toContain('data-ui-control="segmented"');
   });
 });
