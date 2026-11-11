@@ -238,6 +238,13 @@ export function initSettings(updateEditorCb) {
   const settingsModal = document.getElementById('settingsModal');
   const modalTabs = document.querySelectorAll('.settings-tab-btn');
   const modalTabContents = document.querySelectorAll('.settings-tab-content');
+  const settingsTabDesc = document.getElementById('settingsTabDesc');
+  const TAB_DESC_KEYS = {
+    tabAppearance: 'tab_desc_appearance',
+    tabEditor: 'tab_desc_editor',
+    tabAiSearch: 'tab_desc_sidebar',
+    tabSystem: 'tab_desc_system'
+  };
 
   const modalFontFamilySelect = document.getElementById('modalFontFamilySelect');
   const modalFontSizeSelect = document.getElementById('modalFontSizeSelect');
@@ -653,38 +660,11 @@ export function initSettings(updateEditorCb) {
     modalAiProviderSelect.value = storedAiProvider;
     updateAiProviderVisibility(storedAiProvider);
 
-    const providerCards = document.querySelectorAll('.provider-card');
-
-    function updateActiveProviderCard(val) {
-      providerCards.forEach(card => {
-        const selected = card.dataset.provider === val;
-        card.classList.toggle('active', selected);
-        card.setAttribute('aria-pressed', String(selected));
-      });
-    }
-
-    updateActiveProviderCard(storedAiProvider);
-
-    providerCards.forEach(card => {
-      const choose = () => {
-        modalAiProviderSelect.value = card.dataset.provider;
-        modalAiProviderSelect.dispatchEvent(new Event('change'));
-      };
-      card.addEventListener('click', choose);
-      // The cards are focusable (tabindex) so they must answer the keys a button answers
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          choose();
-        }
-      });
-    });
-
     modalAiProviderSelect.addEventListener('change', () => {
       const val = modalAiProviderSelect.value;
       setAndSync(STORAGE_KEYS.LLM_PROVIDER, val);
       updateAiProviderVisibility(val);
-      updateActiveProviderCard(val);
+      // choiceControls.js handles .active class and button rendering
     });
   }
 
@@ -1083,6 +1063,10 @@ export function initSettings(updateEditorCb) {
         c.classList.remove('active');
       }
     });
+    if (settingsTabDesc && TAB_DESC_KEYS[tabId]) {
+      settingsTabDesc.textContent = t(TAB_DESC_KEYS[tabId]);
+      settingsTabDesc.setAttribute('data-i18n', TAB_DESC_KEYS[tabId]);
+    }
     // The cards can only be measured once their tab is shown
     fitThemeCards(document.getElementById('modalThemeCards'));
     fitThemeCards(document.getElementById('modalOverlayColorCards'));
@@ -1143,6 +1127,10 @@ export function initSettings(updateEditorCb) {
       const target = btn.getAttribute('data-tab');
       const content = document.getElementById(target);
       if (content) content.classList.add('active');
+      if (settingsTabDesc && TAB_DESC_KEYS[target]) {
+        settingsTabDesc.textContent = t(TAB_DESC_KEYS[target]);
+        settingsTabDesc.setAttribute('data-i18n', TAB_DESC_KEYS[target]);
+      }
       const body = settingsModal?.querySelector('.settings-modal-body');
       if (body) body.scrollTop = 0;
       fitThemeCards(document.getElementById('modalThemeCards'));

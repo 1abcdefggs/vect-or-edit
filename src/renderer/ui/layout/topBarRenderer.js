@@ -3,6 +3,7 @@ import { getWorkspaceRoot } from '../../core/workspaceRoot';
 import { setEditorContent } from '../../editor/editorManager.js';
 import { setDocumentFormat, announceOpenedEncoding } from '../../editor/ui/statusBarManager.js';
 import appLogoUrl from '../../assets/icon.png';
+import { applyI18n } from '../../core/i18n';
 
 export function initTopBarRenderer() {
   const appLogoEl = document.getElementById('appLogoIcon');
@@ -34,6 +35,13 @@ export function showWorkspaceModal(mode = 'open', saveCallback = null) {
   const btnSaveNormally = document.getElementById('btnSaveNormally');
   if (btnSaveNormally) {
     btnSaveNormally.style.display = mode === 'save' ? 'block' : 'none';
+  }
+  // The third button does what the mode needs: open mode goes on to the file dialog, save mode drops the save.
+  const btnCancelWorkspace = document.getElementById('btnCancelWorkspace');
+  if (btnCancelWorkspace) {
+    btnCancelWorkspace.setAttribute('data-i18n', mode === 'open' ? 'btn_ws_open_file' : 'common_cancel');
+    btnCancelWorkspace.setAttribute('data-i18n-title', mode === 'open' ? 'tip_ws_open_file' : 'tip_ws_cancel');
+    applyI18n();
   }
   if (modal) modal.style.display = 'flex';
 }

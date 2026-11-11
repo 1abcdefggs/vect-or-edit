@@ -212,6 +212,15 @@
   flex-shrink: 0;
 }
 
+.settings-tab-desc {
+  display: none;
+  margin: 0;
+  padding: 6px var(--spacing-md, 16px) 8px;
+  font-size: var(--fs-13);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
 .settings-tab-btn {
   display: flex;
   align-items: center;
@@ -337,6 +346,7 @@
   line-height: 1.4;
 }
 
+/* DEPRECATED: Provider cards replaced with segmented buttons; kept for one release cycle */
 .provider-card {
   border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.1));
   border-radius: 8px;

@@ -160,14 +160,7 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     category: 'header',
     prefPath: 'header.theme',
     visibilityKey: 'hdr:theme-select',
-    controlType: 'select',
-    options: [
-      { value: 'Dracula' },
-      { value: 'GitHub' },
-      { value: 'Monokai' },
-      { value: 'Night Owl' },
-      { value: 'Tukune' }
-    ]
+    controlType: 'select'
   },
   {
     id: 'h_locale',

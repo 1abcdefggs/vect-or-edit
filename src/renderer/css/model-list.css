@@ -244,6 +244,14 @@
   font-size: var(--fs-13);
 }
 
+/* The button that takes the choice back, beside the Active mark: quieter than Use */
+.ml-unuse {
+  min-height: 30px;
+  padding: 3px 12px;
+  font-size: var(--fs-13);
+  font-weight: 500;
+}
+
 .ml-star {
   display: inline-flex;
   align-items: center;
@@ -321,7 +329,8 @@
   background: var(--ml-heading-bg);
   /* An inset bar, not a border: a border would shift the shared columns */
   box-shadow: inset 4px 0 0 var(--accent-color);
-  border-bottom: var(--border-width) solid var(--border-color);
+  /* A line above the heading separates one group from the next; the first heading sits right under the header row */
+  border-top: var(--border-width) solid var(--border-color);
 }
 
 .ml-heading > * {
@@ -389,6 +398,13 @@
 .ml-item.is-active .ml-mark,
 .ml-item.is-active .ep-badge-active {
   border-color: currentColor;
+}
+
+/* The unuse button keeps its own contrast on the active row so its text stays readable */
+.ml-item.is-active .ml-unuse {
+  color: var(--text-main);
+  border-color: var(--border-color);
+  background: var(--bg-secondary);
 }
 
 /* Narrow settings pane: the optional columns (cost guide) are dropped */

@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All LLM chat UI labels and messages now support both Japanese and English
 
 ### Fixed
+- Workspace setup Cancel button now reads Open a file in open mode and Cancel in save mode, matching its actual action
+- First-run setup Cancel button renamed to Quit because it exits the app
 - Cloud AI requests stop after 10 minutes without a reply, so a stalled request no longer keeps its host open
 
 ### Removed

@@ -3,6 +3,7 @@
  * Eliminates magic strings, numbers, and hardcoded values across the renderer process.
  */
 
+
 export const STORAGE_KEYS = {
   THEME: 'vect_theme',
   LEGACY_THEME: 'themeName',
@@ -27,6 +28,8 @@ export const STORAGE_KEYS = {
   CLAUDE_MODEL: 'claude_model',
   GEMINI_API_KEY: 'gemini_api_key',
   GEMINI_MODEL: 'gemini_model',
+  GEMINI_FAVORITE_MODELS: 'gemini_favorite_models',
+  GEMINI_MODEL_LIST_COLUMNS: 'gemini_model_list_columns',
   OPENAI_API_KEY: 'openai_api_key',
   OPENAI_MODEL: 'openai_model',
   SHOW_FULL_METADATA: 'vect_show_full_metadata',
@@ -85,7 +88,6 @@ export const DEFAULTS = {
   FONT_FAMILY: "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif",
   LOCAL_EMBEDDING_MODEL: 'Xenova/multilingual-e5-small',
   CLAUDE_MODEL: 'claude-opus-5-5',
-  GEMINI_MODEL: 'gemini-3.1-flash-lite',
   OPENAI_MODEL: 'gpt-4o-mini',
   AI_INFERENCE_SCOPE: 'suggestion_only',
   SUGGEST_TRIGGER_MODE: 'selection',

@@ -74,6 +74,42 @@ export function t(key: string, params: Record<string, any> = {}): string {
 }
 
 /**
+ * Parses [link text](https://...) into safe <a> elements.
+ * Returns a DocumentFragment containing text and links.
+ */
+function linkify(text: string): DocumentFragment {
+  const frag = document.createDocumentFragment();
+  const re = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
+  let last = 0;
+  let match;
+
+  while ((match = re.exec(text)) !== null) {
+    // Append text before the link
+    if (match.index > last) {
+      frag.append(text.slice(last, match.index));
+    }
+
+    // Create and append the link
+    const a = document.createElement('a');
+    a.href = match[2];
+    a.textContent = match[1];
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.className = 'settings-link--inline';
+    frag.append(a);
+
+    last = re.lastIndex;
+  }
+
+  // Append remaining text
+  if (last < text.length) {
+    frag.append(text.slice(last));
+  }
+
+  return frag;
+}
+
+/**
  * Shows a settings row's description as a bullet list, one bullet per sentence.
  * Sentences end with "。" (ja) or ". " (en); a bullet drops the full stop at its end.
  */
@@ -83,7 +119,7 @@ function renderAsList(el: HTMLElement, text: string): void {
   list.className = 'desc-list';
   for (const sentence of sentences.length ? sentences : [text]) {
     const item = document.createElement('li');
-    item.textContent = sentence;
+    item.append(linkify(sentence));
     list.appendChild(item);
   }
   el.replaceChildren(list);
