@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.65] - 2026-11-13
+
 ### Added
+- The settings page header shows the app version
 - LLM chat panel with provider unification and shared API key input component
 - Outbound requests are checked against one allowlist in the main process and blocked by default
 - Cloud AI hosts are reachable only from the main process, and only while an AI request is being sent
 
 ### Changed
+- User data is organized into config/, secrets/ and data/ subfolders under userData
+- First-run setup STEP 3 asks the embedding model question as a Y/N choice
 - Back to editor moved to the right end of the settings title row, where the other windows keep their close control
 - Colour mode is named Appearance, and its system option reads Match system (Japanese: 外観, システムに合わせる)
 - Gemini requests go through Electron's network stack, so the allowlist also applies to them
@@ -20,12 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All LLM chat UI labels and messages now support both Japanese and English
 
 ### Fixed
+- Embedding model Y/N buttons in first-run setup are bound to their radio inputs
+- Embedding model Y/N buttons are wide enough that their text does not wrap
 - Workspace setup Cancel button now reads Open a file in open mode and Cancel in save mode, matching its actual action
 - First-run setup Cancel button renamed to Quit because it exits the app
 - Cloud AI requests stop after 10 minutes without a reply, so a stalled request no longer keeps its host open
 
 ### Removed
 - api.github.com from the renderer content security policy (nothing calls it any more)
+- Hide notice key of the menu bar setting in the settings registry (the menu bar row has no control to hide)
 
 ## [0.3.61] - 2026-11-09
 

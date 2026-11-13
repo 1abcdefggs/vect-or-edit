@@ -521,6 +521,51 @@
 .settings-modal-body .settings-section-card h4 { font-size: var(--fs-18); }
 .settings-modal-body .setting-label { font-size: var(--fs-18); }
 
+/* Logo and Version Header */
+.settings-logo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px var(--spacing-md) 12px;
+  border-bottom: var(--border-width) solid var(--border-color);
+  background: var(--bg-card, rgba(255, 255, 255, 0.02));
+}
+
+.settings-logo-icon {
+  flex-shrink: 0;
+  color: var(--accent-color, #38bdf8);
+}
+
+.settings-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-app-name {
+  margin: 0;
+  font-size: var(--fs-20);
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.settings-app-version {
+  margin: 0;
+  font-size: var(--fs-13);
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+/* Card Section Description */
+.card-section-desc {
+  margin: 0 0 12px;
+  font-size: var(--fs-15);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
 /* Depth on the settings page: the outer surface is the darkest, the inner content sits one step in.
    Light: the nav is a little darker than the content. Dark: the content is a little lighter than the nav.
    Mixed from --bg-primary so every theme keeps its own hue. */

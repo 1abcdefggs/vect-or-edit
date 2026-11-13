@@ -1381,6 +1381,7 @@
 .first-run-path {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 14px;
   padding: 10px 14px;
   border: var(--border-width) solid var(--border-color);
@@ -1398,7 +1399,7 @@
 }
 
 .first-run-path-text {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -1975,6 +1976,24 @@
   padding: 10px 12px;
   border: 0;
   background: var(--bg-primary, rgba(0, 0, 0, 0.2));
+}
+
+/* In the dictionary pane, stack the question and buttons vertically due to limited width */
+.setup-ai-pane--dict .first-run-choice-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.setup-ai-pane--dict .first-run-choice-buttons {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.setup-ai-pane--dict .first-run-choice-button {
+  flex: 1;
+  max-width: 160px;
 }
 
 .setup-ai-pane .first-run-facts {

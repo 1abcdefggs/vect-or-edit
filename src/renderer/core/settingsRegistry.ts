@@ -105,7 +105,6 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     id: 'h_menu_bar',
     category: 'header',
     visibilityKey: 'hdr:menu-bar',
-    hideNoticeKey: 'hide_notice_menu_bar',
     controlType: 'none'
   },
   {

@@ -59,7 +59,7 @@
               <label class="first-run-visually-hidden" for="setupFolderName" data-i18n="setup_folder_name_label">Folder name</label>
               <span class="first-run-name-box">
                 <span class="material-symbols-outlined first-run-field-icon" aria-hidden="true">edit</span>
-                <input data-ui="stp:folder-name" id="setupFolderName"class="first-run-input" type="text" spellcheck="false" autocomplete="off" aria-describedby="setupFolderNameHint" data-i18n-title="tip_save_folder_name">
+                <input data-ui="stp:folder-name" id="setupFolderName" class="first-run-input" type="text" spellcheck="false" autocomplete="off" aria-describedby="setupFolderNameHint" data-i18n-title="tip_save_folder_name">
               </span>
               <button id="btnSetupChangeLocation" class="btn first-run-btn first-run-path-btn" type="button" hidden data-i18n-title="tip_change_save_location"><span class="material-symbols-outlined" aria-hidden="true">folder_open</span><span data-i18n="save_location_change">Change save location...</span></button>
             </div>
@@ -147,20 +147,16 @@
       <!-- Step 3: AI (the embedding model installs in the background after setup) -->
       <section class="first-run-step" data-setup-step="3" hidden data-ui="stp:step-dictionary">
         <div class="first-run-section first-run-section--spaced">
-          <!-- Dictionary section with description -->
+          <!-- Main heading: Embedding Model with description -->
           <div class="first-run-section">
             <h2 class="first-run-heading">
-              <span data-i18n="setup_ai_dictionary_label">Dictionary</span>
+              <span data-i18n="setup_ai_embedding_heading">Embedding Model</span>
+              <span class="first-run-badge" data-i18n="setup_ai_core_badge">Core feature</span>
+              <span class="first-run-heading-note" data-i18n="setup_ai_local_note">Runs on this PC</span>
+              <span data-info-tip="setup_info_embedding"></span>
             </h2>
             <p class="first-run-hint" data-i18n="setup_ai_dictionary_desc">Shows dictionary items that match the text you write in the right panel as you type.</p>
           </div>
-
-          <h2 class="first-run-heading">
-            <span data-i18n="setup_ai_embedding_heading">Embedding AI</span>
-            <span class="first-run-badge" data-i18n="setup_ai_core_badge">Core feature</span>
-            <span class="first-run-heading-note" data-i18n="setup_ai_local_note">Runs on this PC</span>
-            <span data-info-tip="setup_info_embedding"></span>
-          </h2>
 
           <!-- A picture of the editor, not a form. The left pane is what the user writes, with optional writing assist from a
                cloud AI under it; the right pane is the dictionary that the embedding model reads inside the editor. -->

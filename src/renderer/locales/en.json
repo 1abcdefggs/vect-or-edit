@@ -487,7 +487,13 @@
   "folder_name_problem_dots": "A name cannot be only dots or end with a dot.",
   "folder_name_problem_reserved": "Windows reserves this name. Choose another one.",
   "folder_name_problem_long": "Use a name of 100 characters or fewer.",
-  "setup_ai_embedding_heading": "Dictionary setup",
+  "setup_ai_embedding_heading": "Embedding Model",
+  "setup_ai_dictionary_label": "Dictionary",
+  "setup_ai_dictionary_desc": "Shows dictionary items that match the text you write in the right panel as you type.",
+  "setup_ai_embed_question": "Install the embedding model?",
+  "setup_ai_embed_hint": "Required for dictionary suggestions. Downloads once; runs on this PC.",
+  "setup_ai_embed_yes": "Yes",
+  "setup_ai_embed_no": "No",
   "setup_ai_core_badge": "Core feature",
   "setup_ai_local_note": "Runs on this PC",
   "setup_ai_notice_on": "Without the model, no dictionary candidates appear. It does not write text.",
@@ -1001,7 +1007,6 @@
   "hide_notice_sidebar": "The sidebar is hidden. Suggestions, knowledge slots and guidelines are not shown.",
   "hide_notice_save": "The save button is hidden. The autosave LED and the save menu are not shown.",
   "hide_notice_tab_bar": "The document tabs are hidden. You cannot switch between open documents.",
-  "hide_notice_menu_bar": "The menu bar is hidden. The File, Edit, View, Window and Help menus are not shown.",
   "hide_notice_bottom_bar": "The bottom bar is hidden. The log button, status and the System settings gear are not shown.",
   "tip_editor_ai_toggle": "LLM assistant: click to switch on or off.\nWhen off: click turns it on and opens the chat dock.\nNo model: opens Settings",
   "tip_console_toggle": "Open or close the log panel",
@@ -1537,5 +1542,9 @@
   "log_save_exit_btn": "Save and exit",
   "log_save_exit_skip": "Exit without saving",
   "tip_open_log_session": "Open the selected saved session",
-  "log_save_enabled_toast": "Logs will be asked to save when you exit."
+  "log_save_enabled_toast": "Logs will be asked to save when you exit.",
+  "grp_menu_bar_desc": "Select which menus to display. Hidden menu functions remain accessible via keyboard shortcuts and toolbar buttons.",
+  "common_theme_section_desc": "Configure the colour scheme and theme. The theme shows its light or dark face depending on the appearance mode.",
+  "monaco_group_display_desc": "Adjust display language and overall UI size.",
+  "grp_workspace_files_desc": "Manage save location for documents and workspaces."
 }

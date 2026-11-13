@@ -428,7 +428,7 @@
   "setup_step_appearance": "言語とテーマ",
   "setup_step_ai": "辞書設定",
   "setup_save_location_label": "保存先とフォルダ名",
-  "setup_save_location_desc": "VectOrEditで作成したファイルが保存されるフォルダです。",
+  "setup_save_location_desc": "作成したファイルが保存されるフォルダです。",
   "setup_save_location_browser": "ブラウザ版: 文書はこのブラウザに下書きとして保存されます",
   "setup_autosave_label": "書いている間、自動で保存する",
   "setup_autosave_hint": "バックグラウンドで自動保存します。",
@@ -1124,7 +1124,6 @@
   "hide_notice_sidebar": "サイドバーを隠しました。提案、ナレッジスロット、ガイドラインが表示されなくなります。",
   "hide_notice_save": "保存ボタンを隠しました。自動保存の状態表示と保存メニューが表示されなくなります。",
   "hide_notice_tab_bar": "文書のタブを隠しました。開いている文書を切り替えられなくなります。",
-  "hide_notice_menu_bar": "メニューバーを隠しました。File、Edit、View、Window、Help のメニューが表示されなくなります。",
   "hide_notice_bottom_bar": "下部バーを隠しました。ログのボタン、ステータス、システム設定の歯車が表示されなくなります。",
   "tip_editor_ai_toggle": "LLM アシスタント: クリックでオン／オフを切り替える\nオフのとき: クリックでオンにし、チャットドックを開く\nモデル未設定: 設定を開く",
   "tip_console_toggle": "ログパネルを開閉します",
@@ -1662,5 +1661,9 @@
   "log_save_exit_btn": "保存して終了",
   "log_save_exit_skip": "保存せずに終了",
   "tip_open_log_session": "選んだ保存済みセッションを開く",
-  "log_save_enabled_toast": "終了時にログを保存するか確認するように設定しました。"
+  "log_save_enabled_toast": "終了時にログを保存するか確認するように設定しました。",
+  "grp_menu_bar_desc": "表示するメニューを選択します。非表示にしたメニューの機能は、ショートカットキーやツールバーから利用できます。",
+  "common_theme_section_desc": "アプリ全体の色合いとテーマを設定します。テーマはそのまま、明るい面か暗い面で表示されます。",
+  "monaco_group_display_desc": "表示言語とUI全体のサイズを調整します。",
+  "grp_workspace_files_desc": "ドキュメントの保存先とワークスペースを管理します。"
 }
