@@ -46,6 +46,19 @@ export function getThemeList() {
 
 export { getStoredThemeSetting, getColorMode };
 
+/** Updates the version display in the settings modal header. */
+async function updateVersionDisplay() {
+  try {
+    const version = await window.ipc?.invoke('app:getVersion');
+    const versionEl = document.getElementById('settingsAppVersion');
+    if (versionEl && version) {
+      versionEl.textContent = `Version ${version}`;
+    }
+  } catch (err) {
+    console.error('Failed to fetch app version:', err);
+  }
+}
+
 /** Fills a theme select with every theme, keeping its current value. A theme's light or dark face follows the mode. */
 export function populateThemeDropdown(selectEl) {
   if (!selectEl) return;
@@ -174,6 +187,9 @@ export async function applyLanguageSetting(lang) {
 
 export function initSettings(updateEditorCb) {
   updateEditorOptionsCallback = updateEditorCb;
+
+  // Update the version display in the settings header
+  updateVersionDisplay();
 
   // The custom text color used to be stored under the key "undefined" (CUSTOM_EDITOR_FG was missing): move it
   const legacyTextColor = readStorage('undefined');

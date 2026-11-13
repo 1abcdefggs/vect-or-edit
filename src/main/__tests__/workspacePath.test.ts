@@ -48,20 +48,20 @@ describe('save folder (built-in name and rename)', () => {
     expect(res.path).toBe(path.join(documents, 'MyNotes'));
     expect(res.isBuiltIn).toBe(false);
     expect(fs.existsSync(path.join(documents, 'MyNotes'))).toBe(true);
-    expect(JSON.parse(fs.readFileSync(path.join(userData, 'workspace-location.json'), 'utf8')).path).toBe(path.join(documents, 'MyNotes'));
+    expect(JSON.parse(fs.readFileSync(path.join(userData, 'config', 'workspace-location.json'), 'utf8')).path).toBe(path.join(documents, 'MyNotes'));
   });
 
   it('refuses a name with a problem and stores nothing', async () => {
     const res = await renameDefaultWorkspace('a/b');
     expect(res).toEqual({ success: false, problem: 'chars' });
-    expect(fs.existsSync(path.join(userData, 'workspace-location.json'))).toBe(false);
+    expect(fs.existsSync(path.join(userData, 'config', 'workspace-location.json'))).toBe(false);
   });
 
   it('renaming back to the built-in name clears the pointer; reset also returns to the built-in folder', async () => {
     await renameDefaultWorkspace('MyNotes');
     const back = await renameDefaultWorkspace('VectOrEdit');
     expect(back.isBuiltIn).toBe(true);
-    expect(fs.existsSync(path.join(userData, 'workspace-location.json'))).toBe(false);
+    expect(fs.existsSync(path.join(userData, 'config', 'workspace-location.json'))).toBe(false);
 
     await renameDefaultWorkspace('Other');
     const reset = await resetDefaultWorkspace();
@@ -91,7 +91,7 @@ describe('save folder restore (first-run setup cancel)', () => {
     const res = await restoreDefaultWorkspace();
     expect(res.success).toBe(true);
     expect(res.path).toBe(path.join(documents, 'MyNotes'));
-    expect(JSON.parse(fs.readFileSync(path.join(userData, 'workspace-location.json'), 'utf8')).path).toBe(path.join(documents, 'MyNotes'));
+    expect(JSON.parse(fs.readFileSync(path.join(userData, 'config', 'workspace-location.json'), 'utf8')).path).toBe(path.join(documents, 'MyNotes'));
   });
 
   it('clears the pointer when the held choice was the built-in folder', async () => {
@@ -100,13 +100,13 @@ describe('save folder restore (first-run setup cancel)', () => {
 
     const res = await restoreDefaultWorkspace();
     expect(res.isBuiltIn).toBe(true);
-    expect(fs.existsSync(path.join(userData, 'workspace-location.json'))).toBe(false);
+    expect(fs.existsSync(path.join(userData, 'config', 'workspace-location.json'))).toBe(false);
   });
 
   it('refuses to restore when no snapshot was taken, and stores nothing', async () => {
     const res = await restoreDefaultWorkspace();
     expect(res.success).toBe(false);
-    expect(fs.existsSync(path.join(userData, 'workspace-location.json'))).toBe(false);
+    expect(fs.existsSync(path.join(userData, 'config', 'workspace-location.json'))).toBe(false);
   });
 
   it('a snapshot is used once: a second restore is refused', async () => {

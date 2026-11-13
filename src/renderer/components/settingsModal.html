@@ -2,6 +2,18 @@
 <div id="settingsModal" class="modal-backdrop" style="display: none;">
   <div class="modal-dialog settings-modal-dialog">
     <div class="settings-modal-tabs">
+      <!-- Logo and Version at the top -->
+      <div class="settings-logo-header">
+        <svg class="settings-logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+          <path d="M2 17l10 5 10-5"></path>
+          <path d="M2 12l10 5 10-5"></path>
+        </svg>
+        <div class="settings-logo-text">
+          <h2 class="settings-app-name" data-i18n="app_title">VectOrEdit</h2>
+          <p class="settings-app-version" id="settingsAppVersion">Version 0.3.64</p>
+        </div>
+      </div>
       <h3 class="settings-nav-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -40,9 +52,7 @@
       <div id="tabAppearance" class="settings-tab-content active">
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="format_list_bulleted" data-key="grp_menu_bar" data-text="Menu bar"></h4>
-          <div data-setting-row data-vis-target="h_menu_bar">
-            <div data-setting-text data-label-key="vis_h_menu_bar" data-label-text="Menu bar"></div>
-          </div>
+          <p class="card-section-desc" data-i18n="grp_menu_bar_desc">Select which menus to display. Hidden menu functions remain accessible via keyboard shortcuts and toolbar buttons.</p>
           <div data-setting-row data-vis-target="h_menu_file">
             <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File menu"></div>
           </div>
@@ -65,6 +75,7 @@
 
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="palette" data-key="common_theme" data-text="Theme"></h4>
+          <p class="card-section-desc" data-i18n="common_theme_section_desc">Configure the colour scheme and theme. The theme shows its light or dark face depending on the appearance mode.</p>
           <div data-setting-row>
             <div data-setting-text data-label-key="color_mode_label" data-label-text="Appearance" data-desc-key="color_mode_desc" data-desc-text="Light, dark, or follow the system. The theme shows its light or dark face."></div>
             <select id="modalColorModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_color_mode"></select>
@@ -81,6 +92,7 @@
 
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="zoom_in" data-key="monaco_group_display" data-text="Display"></h4>
+          <p class="card-section-desc" data-i18n="monaco_group_display_desc">Adjust display language and overall UI size.</p>
           <div data-setting-row>
             <div data-setting-text data-label-key="common_language" data-label-text="Display language" data-desc-key="setting_language_desc" data-desc-text="Choose the display language. The screen switches at once."></div>
             <select id="modalLangSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_language">
@@ -102,6 +114,7 @@
 
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="folder" data-key="grp_workspace_files" data-text="Workspace &amp; files"></h4>
+          <p class="card-section-desc" data-i18n="grp_workspace_files_desc">Manage save location for documents and workspaces.</p>
           <div data-setting-row>
             <div class="setting-text--shrink">
               <div class="setting-label" data-i18n="setting_save_location">Save location</div>

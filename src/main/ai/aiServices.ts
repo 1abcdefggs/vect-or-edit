@@ -8,7 +8,7 @@ import { AI_SEND_TIMEOUT_MS, abortAfterTimeout, timeoutMessage } from './sendTim
 
 export type { GeminiModelInfo };
 
-// Cloud LLM API keys are encrypted with the OS key store (safeStorage) and kept in userData, one file per provider.
+// Cloud LLM API keys are encrypted with the OS key store (safeStorage) and kept in userData/secrets/, one file per provider.
 // They never go to localStorage or .settings.json; requests read them here in the main process.
 export type ApiKeyProvider = 'gemini' | 'openai' | 'claude';
 
@@ -22,8 +22,12 @@ export function isApiKeyProvider(value: unknown): value is ApiKeyProvider {
   return typeof value === 'string' && Object.prototype.hasOwnProperty.call(API_KEY_FILES, value);
 }
 
+function secretsDir(): string {
+  return path.join(app.getPath('userData'), 'secrets');
+}
+
 function apiKeyPath(provider: ApiKeyProvider): string {
-  return path.join(app.getPath('userData'), API_KEY_FILES[provider]);
+  return path.join(secretsDir(), API_KEY_FILES[provider]);
 }
 
 async function loadStoredApiKey(provider: ApiKeyProvider): Promise<string | undefined> {
@@ -49,6 +53,7 @@ export async function saveApiKey(provider: ApiKeyProvider, apiKey: string): Prom
   }
 
   try {
+    await fs.mkdir(secretsDir(), { recursive: true });
     await fs.writeFile(apiKeyPath(provider), safeStorage.encryptString(trimmedKey));
     return { success: true };
   } catch (error: any) {

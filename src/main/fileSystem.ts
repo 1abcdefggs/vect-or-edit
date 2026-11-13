@@ -11,9 +11,9 @@ import { createSavePathAllowlist } from './savePathAllowlist';
 // Paths the user chose in a dialog during this run; only these may be overwritten without asking again (see savePathAllowlist.ts)
 const savePaths = createSavePathAllowlist();
 
-// The folder of the last successful save. Kept in userData so it survives a restart.
+// The folder of the last successful save. Kept in config/ so it survives a restart.
 function lastSaveDirFile(): string {
-  return path.join(app.getPath('userData'), 'last-save-dir.json');
+  return path.join(configDir(), 'last-save-dir.json');
 }
 
 async function getLastSaveDir(): Promise<string | null> {
@@ -170,6 +170,32 @@ export interface WorkspaceResult {
   error?: string;
 }
 
+// AppData subdirectories for organized storage
+function configDir(): string {
+  return path.join(app.getPath('userData'), 'config');
+}
+
+function secretsDir(): string {
+  return path.join(app.getPath('userData'), 'secrets');
+}
+
+function dataDir(): string {
+  return path.join(app.getPath('userData'), 'data');
+}
+
+// Ensure AppData subdirectories exist
+async function ensureAppDataDirs(): Promise<void> {
+  await fsPromises.mkdir(configDir(), { recursive: true }).catch(err => {
+    console.warn('[AppData] Could not create config dir:', err);
+  });
+  await fsPromises.mkdir(secretsDir(), { recursive: true }).catch(err => {
+    console.warn('[AppData] Could not create secrets dir:', err);
+  });
+  await fsPromises.mkdir(dataDir(), { recursive: true }).catch(err => {
+    console.warn('[AppData] Could not create data dir:', err);
+  });
+}
+
 // The chosen save folder lives in userData, not in the folder itself: .settings.json is read from that folder.
 const WORKSPACE_LOCATION_FILE = 'workspace-location.json';
 
@@ -182,13 +208,51 @@ function builtInWorkspacePath(): string {
 
 async function readChosenWorkspacePath(): Promise<string | null> {
   try {
-    const raw = await fsPromises.readFile(path.join(app.getPath('userData'), WORKSPACE_LOCATION_FILE), 'utf-8');
+    const raw = await fsPromises.readFile(path.join(configDir(), WORKSPACE_LOCATION_FILE), 'utf-8');
     const chosen = JSON.parse(raw)?.path;
     return typeof chosen === 'string' && path.isAbsolute(chosen) ? chosen : null;
   } catch {
     return null;
   }
 }
+
+/**
+ * Migrate old files from userData root to new subdirectories on first run.
+ * Old locations:
+ *   - userData/workspace-location.json → config/workspace-location.json
+ *   - userData/last-save-dir.json → config/last-save-dir.json
+ *   - userData/startup-appearance.json → config/startup-appearance.json
+ *   - userData/.settings.json → config/.settings.json (in workspace folder, stays)
+ */
+async function migrateOldAppDataLayout(): Promise<void> {
+  const userDataPath = app.getPath('userData');
+  const oldFiles = [
+    { old: path.join(userDataPath, WORKSPACE_LOCATION_FILE), newDir: configDir() },
+    { old: path.join(userDataPath, 'last-save-dir.json'), newDir: configDir() },
+    { old: path.join(userDataPath, 'startup-appearance.json'), newDir: configDir() }
+  ];
+
+  for (const { old, newDir } of oldFiles) {
+    try {
+      if (fs.existsSync(old)) {
+        await fsPromises.mkdir(newDir, { recursive: true });
+        const fileName = path.basename(old);
+        const newPath = path.join(newDir, fileName);
+        if (!fs.existsSync(newPath)) {
+          await fsPromises.rename(old, newPath);
+          console.log(`[Migration] Moved ${fileName} to ${path.relative(userDataPath, newDir)}/`);
+        }
+      }
+    } catch (err) {
+      console.warn(`[Migration] Could not move ${path.basename(old)}:`, err);
+    }
+  }
+}
+
+// Run migration on startup
+ensureAppDataDirs().then(() => migrateOldAppDataLayout()).catch(err => {
+  console.warn('[AppData] Migration or directory creation failed:', err);
+});
 
 /** Save folder for new documents and .settings.json: the folder the user chose, else Documents/VectOrEdit. */
 export async function getDefaultWorkspace(createIfMissing?: boolean): Promise<WorkspaceResult> {
@@ -228,10 +292,11 @@ async function persistWorkspacePath(dir: string) {
   await fsPromises.mkdir(dir, { recursive: true });
   await fsPromises.access(dir, fs.constants.W_OK);
 
-  const pointer = path.join(app.getPath('userData'), WORKSPACE_LOCATION_FILE);
+  const pointer = path.join(configDir(), WORKSPACE_LOCATION_FILE);
   if (path.resolve(dir).toLowerCase() === path.resolve(builtInWorkspacePath()).toLowerCase()) {
     await fsPromises.rm(pointer, { force: true });
   } else {
+    await fsPromises.mkdir(configDir(), { recursive: true });
     await fsPromises.writeFile(pointer, JSON.stringify({ path: dir }, null, 2), 'utf-8');
   }
 }
@@ -276,7 +341,7 @@ export async function renameDefaultWorkspace(rawName: unknown): Promise<Workspac
 /** Returns to the built-in folder (Documents/VectOrEdit). */
 export async function resetDefaultWorkspace(): Promise<WorkspaceResult> {
   try {
-    await fsPromises.rm(path.join(app.getPath('userData'), WORKSPACE_LOCATION_FILE), { force: true });
+    await fsPromises.rm(path.join(configDir(), WORKSPACE_LOCATION_FILE), { force: true });
     return getDefaultWorkspace(true);
   } catch (err: any) {
     return { success: false, error: err.message };
