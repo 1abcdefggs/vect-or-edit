@@ -1076,7 +1076,7 @@
   "api_clear_failed": "保存されたキーを削除できませんでした",
   "api_keys_clear_btn": "キーを削除",
   "ai_overview_title": "AI コントロールセンター",
-  "ai_overview_badge": "ローカル優先",
+  "ai_overview_processing": "ローカルの埋め込みモデルによる検索は、この端末の中で処理します。LLM やクラウドの埋め込みを使うときは、文章をクラウドへ送ります。",
   "ai_overview_caption": "端末内のベクトル検索とクラウド LLM は、設定に応じて別々に動作します。",
   "maint_title": "アプリのメンテナンス",
   "maint_cache_label": "アプリのキャッシュを削除",

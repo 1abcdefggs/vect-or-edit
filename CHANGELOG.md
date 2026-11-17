@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.67] - 2026-11-17
+
+### Changed
+- The AI Control Center replaces its "Local-first" badge with a sentence below the heading: search with a local embedding model runs on this device, and text goes to the cloud when the LLM or a cloud embedding is used
+
 ## [0.3.66] - 2026-11-17
 
 ### Changed

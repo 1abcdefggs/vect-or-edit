@@ -438,17 +438,6 @@
   margin-bottom: 14px;
 }
 
-.ai-overview-note {
-  padding: 4px 8px;
-  border: var(--border-width) solid var(--border-color);
-  border-radius: 999px;
-  color: var(--accent-text);
-  font-size: var(--fs-11);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
 .ai-status-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

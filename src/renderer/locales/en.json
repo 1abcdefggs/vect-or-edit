@@ -959,7 +959,7 @@
   "api_clear_failed": "A stored key could not be removed",
   "api_keys_clear_btn": "Clear API Key",
   "ai_overview_title": "AI Control Center",
-  "ai_overview_badge": "Local-first",
+  "ai_overview_processing": "Search with a local embedding model runs on this device. When you use the LLM or a cloud embedding, text is sent to the cloud.",
   "ai_overview_caption": "Local vector search and Cloud LLM features operate independently based on your active configuration.",
   "maint_title": "Application Maintenance",
   "maint_cache_label": "Clear Application Cache",
