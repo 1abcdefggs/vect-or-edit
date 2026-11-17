@@ -626,13 +626,10 @@ export function initSettings(updateEditorCb) {
   const modalOpenAiKeyInput = document.getElementById('modalOpenAiKeyInput');
   const modalOpenAiModelSelect = document.getElementById('modalOpenAiModelSelect');
 
-  const modalAiScopeSelect = document.getElementById('modalAiScopeSelect');
-
   const storedAiProvider = readStorage(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
   const storedClaudeModel = readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
   const storedGeminiModel = readGeminiModel();
   const storedOpenAiModel = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
-  const storedAiScope = readStorage(STORAGE_KEYS.AI_INFERENCE_SCOPE) || DEFAULTS.AI_INFERENCE_SCOPE;
 
   // Key inputs stay empty: stored keys are encrypted in the main process and never sent back to the page.
   const KEY_SET_PLACEHOLDER = '•••••••••••••••••••• (API Key Configured)';
@@ -664,13 +661,6 @@ export function initSettings(updateEditorCb) {
     showKeyState();
     window.dispatchEvent(new Event('app:settingsChanged'));
     return true;
-  }
-
-  if (modalAiScopeSelect) {
-    modalAiScopeSelect.value = storedAiScope;
-    modalAiScopeSelect.addEventListener('change', () => {
-      setAndSync(STORAGE_KEYS.AI_INFERENCE_SCOPE, modalAiScopeSelect.value);
-    });
   }
 
   if (modalAiProviderSelect) {
@@ -1128,6 +1118,14 @@ export function initSettings(updateEditorCb) {
   if (btnBackToEditor) {
     btnBackToEditor.addEventListener('click', requestCloseSettings);
   }
+
+  // Editor options row: leave the settings and turn the right panel to Editor Options.
+  // No close confirmation (owner decision 2026-11-17): the button says where it goes, unlike a stray click on × or Back
+  document.getElementById('btnOpenEditorOptions')?.addEventListener('click', () => {
+    closeSettingsView();
+    const toggle = document.getElementById('btnEditorOptionsToggle');
+    if (toggle && toggle.getAttribute('aria-pressed') !== 'true') toggle.click();
+  });
 
   // Keyboard shortcut Esc to return to editor (same confirmation as the back button)
   window.addEventListener('keydown', (e) => {

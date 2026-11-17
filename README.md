@@ -51,6 +51,7 @@
 
 - **Open Settings**: Press <kbd>Ctrl</kbd>+<kbd>,</kbd> or click the gear icon (`⚙️`) in the header or area toolbars.
 - **Granular UI Visibility**: In the Settings modal, click the eye icon (**`👁️` / `🚫`**) next to any UI item to instantly show or hide that button/menu on the main interface.
+- **Editor Options**: The **Editor Options** button in the editor toolbar turns the right panel into the full list of Monaco options, applied to the editor at once. In the settings, **Open panel** in the Editor options row goes there directly, and **Restore Defaults** puts every changed option back.
 - **Reset Layout**: If essential controls are hidden, right-click the bottom status bar or editor margin and select **`Reset Layout (UI Display)`** to restore all defaults.
 
 ### 4. File Operations & Multi-Tab Drafting
@@ -63,6 +64,15 @@
 ---
 
 ## What's New
+
+### v0.3.66 – v0.3.72 (2026-11-17)
+
+- First-run setup and the settings list the cloud LLM providers the same way everywhere: Google Gemini, OpenAI and Claude. OpenAI and Claude are no longer marked "coming soon".
+- The AI Control Center says where processing happens: search with a local embedding model runs on this device, and text goes to the cloud when the LLM or a cloud embedding is used.
+- The Editor options row in the settings has an **Open panel** button that goes straight to the Editor Options panel on the right.
+- An embedding model download is written to the system log with a time stamp (start, then one line per file), so Copy and Save include it.
+- The right panel's guideline section is called **Guidelines** in every place.
+- Removed the "AI role / inference scope" setting: its value was saved but never used.
 
 ### v0.3.56 (2026-11-02)
 
@@ -78,10 +88,6 @@
 - Closing the window with the × button asks first, the same as File > Exit.
 - Empty search results say why: the search model is off or not ready, or nothing matched.
 
-### v0.3.53 (2026-10-26)
-
-- The minimum score and the auto-save delay fields have − and + buttons.
-
 See the full release history in [CHANGELOG.md](CHANGELOG.md).
 
 ## Core Features & Capabilities
@@ -90,7 +96,7 @@ See the full release history in [CHANGELOG.md](CHANGELOG.md).
 
 - **Native Rust HNSW Engine**: Blazing-fast vector similarity search and semantic linting powered by native Rust N-API bindings (`@1abcdefggs/vect-or-engine`).
 - **100% Offline & Private (Local Mode)**: Zero external telemetry required. Vector embeddings (`multilingual-e5-small`) run entirely locally on CPU with WebAssembly SIMD & ONNX Runtime.
-- **Hybrid AI Provider Integration**: Switch between Local Offline Embeddings and cloud LLMs. Google Gemini (`@google/genai`) is verified with `gemini-3.1-flash-lite` and Flash models; the OpenAI and Anthropic Claude connectors are included but not yet verified.
+- **Hybrid AI Provider Integration**: Switch between Local Offline Embeddings and cloud LLMs. Google Gemini, OpenAI and Claude can be chosen in first-run setup and in the settings. Google Gemini (`@google/genai`) is verified with `gemini-3.1-flash-lite` and Flash models; the OpenAI and Claude connectors are included but not yet verified.
 - **Monaco IntelliSense & Semantic Linter**: Multi-dimensional auto-completion matching Kanji, Hiragana, Katakana, and international terminology with instant documentation hover previews.
 - **Command-Driven Navigation & Header Extras**: Centralized `CommandManager` architecture with streamlined header controls (theme selector, zoom, language switcher, window actions).
 - **Streamlined Selection Popover & Widget**: Select any text to immediately trigger semantic vector matching or external queries with intelligent context-menu exclusion.

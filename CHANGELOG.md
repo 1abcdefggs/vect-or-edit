@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.72] - 2026-11-17
+
+### Changed
+- The Open panel button on the settings page goes to the Editor Options panel without the close confirmation; the confirmation stays on × and Back
+
+## [0.3.71] - 2026-11-17
+
+### Changed
+- The right panel calls its guideline section "Guidelines" everywhere: the heading in English, the section tooltip, the Editor Options button tooltip and the part name in the settings
+
+## [0.3.70] - 2026-11-17
+
+### Changed
+- Claude and OpenAI can be chosen in first-run setup; every place lists the cloud providers as Google Gemini, OpenAI and Claude
+- The LLM card of the AI Control Center shows the chosen cloud LLM provider by name, or "Not configured", instead of an upper-case value from the search generator setting
+- Texts that named only Gemini (setup prompt, Sidebar tab description, LLM switch, embedding assistant, restart) name the three providers or "API keys"
+
+### Removed
+- Seven dictionary entries for provider options that are no longer shown
+
+## [0.3.69] - 2026-11-17
+
+### Changed
+- An embedding model download is written to the system log as normal lines with a time stamp (start, then one line per file), so Copy and Save include it; the percentage stays on the status lamp and the settings bar
+- The Japanese dictionary shows the download progress label in Japanese
+
+### Removed
+- The separate download progress row in the log panel, which had no time stamp, always named the same model and was left out of Copy and Save
+
+## [0.3.68] - 2026-11-17
+
+### Added
+- The Editor options row on the settings page has an Open panel button: it closes the settings and shows the Editor Options panel on the right, and the row's description says where those options are
+
+## [0.3.67] - 2026-11-17
+
+### Changed
+- The AI Control Center replaces its "Local-first" badge with a sentence below the heading: search with a local embedding model runs on this device, and text goes to the cloud when the LLM or a cloud embedding is used
+
+## [0.3.66] - 2026-11-17
+
+### Changed
+- Settings help text is regenerated from the current settings page (labels, descriptions and order)
+
+### Removed
+- The "AI role / inference scope" select on the settings page, its stored key and its dictionary entries: the value was saved but never read, so every choice behaved the same
+
 ## [0.3.65] - 2026-11-13
 
 ### Added

@@ -249,8 +249,11 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="monaco_reset_row_label" data-label-text="Editor options" data-desc-key="monaco_reset_row_desc" data-desc-text="Puts back every value you changed in the Editor Options panel to its default."></div>
-            <button id="btnEditorOptionsReset" class="settings-btn" type="button" data-i18n="monaco_reset_row_btn" data-i18n-title="tip_monaco_reset_row">Restore Defaults</button>
+            <div data-setting-text data-label-key="monaco_reset_row_label" data-label-text="Editor options" data-desc-key="monaco_reset_row_desc" data-desc-text="More display options are in the Editor Options panel on the right. Open panel closes the settings and shows that panel. Restore Defaults puts back every value you changed there."></div>
+            <div class="setting-actions">
+              <button id="btnOpenEditorOptions" class="settings-btn settings-btn--primary" type="button" data-i18n="monaco_open_panel_btn" data-i18n-title="tip_monaco_open_panel">Open panel</button>
+              <button id="btnEditorOptionsReset" class="settings-btn" type="button" data-i18n="monaco_reset_row_btn" data-i18n-title="tip_monaco_reset_row">Restore Defaults</button>
+            </div>
           </div>
         </div>
 
@@ -301,14 +304,6 @@
             <select id="modalLlmSwitchSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_ai_scope" data-label-text="AI Role / Inference Scope" data-desc-key="setting_ai_scope_desc" data-desc-text="Fine-tune the scope of AI assistance during writing (prioritizing human input when necessary)."></div>
-            <select id="modalAiScopeSelect" class="toolbar-select select-scope" data-i18n-title="tip_set_ai_scope">
-              <option value="suggestion_only" selected data-i18n="opt_scope_suggestion_only">Suggestions Only (Human Writes Text)</option>
-              <option value="lint_assist" data-i18n="opt_scope_lint_assist">Suggestions + Lint Rule Assistance</option>
-              <option value="full_assist" data-i18n="opt_scope_full_assist">Full Assistance (Suggestions + Lint + Drafting)</option>
             </select>
           </div>
         </div>
@@ -437,8 +432,8 @@
 <section class="ai-control-overview" aria-label="AI system status" data-i18n-aria="aria_ai_status">
           <div class="ai-overview-heading">
             <div data-setting-text data-label-key="ai_overview_title" data-label-text="AI Control Center" data-desc-key="ai_overview_desc" data-desc-text="Shows whether the embedding model (local search) and the LLM (cloud) are ready. Check here before you configure."></div>
-            <span class="ai-overview-note" data-i18n="ai_overview_badge">Local-first</span>
           </div>
+          <p class="card-section-desc" data-i18n="ai_overview_processing">Search with a local embedding model runs on this device. When you use the LLM or a cloud embedding, text is sent to the cloud.</p>
           <div class="ai-status-grid ai-status-grid--3">
             <div class="ai-status-card" data-status-tone="neutral">
               <span class="ai-status-kicker" data-i18n="ai_kicker_embedding">EMBEDDING</span>

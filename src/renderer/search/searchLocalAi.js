@@ -11,6 +11,10 @@ let isLocalAiDownloading = false;
 // The model that last reported ready. transformers.js sends "done" once per downloaded file and "ready" more than once,
 // so the ready line (and the pipeline log) is written once per model, not once per message (ADR-11 section 2.10)
 let lastReadyModel = null;
+// The model asked for in the last init request, and the files already written to the log for it.
+// The log keeps milestones only (start, each file, then ready or error from setLedStatus); the percentage stays on the LED and the settings bar
+let loadingModel = null;
+const loggedModelFiles = new Set();
 let embeddingWorker = null;
 let isWorkerInitialized = false;
 
@@ -46,6 +50,8 @@ export function initLocalAiWorker(getCurrentResults) {
     announceModel(modelToLoad);
     if (isLocalAiDownloading) return;
     isLocalAiDownloading = true;
+    loadingModel = modelToLoad;
+    loggedModelFiles.clear();
     if (embeddingWorker) {
       embeddingWorker.postMessage({ type: 'init', model: modelToLoad });
     }
@@ -98,10 +104,21 @@ export function initLocalAiWorker(getCurrentResults) {
 
       if (status === 'initiate' || status === 'download' || status === 'progress') {
         const pct = data.progress !== undefined ? Math.round(data.progress) : 0;
-        const fileName = data.file || 'AI Model Weights';
+        const fileName = data.file || t('model_files_fallback');
+        const modelId = data.name || data.model || loadingModel || getActiveModelId();
         setLedStatus('ai', 'loading', t('led_ai_downloading', { pct }));
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct, fileName, status } }));
-        
+
+        // Milestones go through the shared log (time stamp, Copy and Save); a cached model sends no progress, so nothing is logged
+        if (loggedModelFiles.size === 0) {
+          window.appendSystemLog?.(t('log_model_download_start', { model: modelId }), 'info');
+        }
+        const fileKey = `${modelId}|${fileName}`;
+        if (!loggedModelFiles.has(fileKey)) {
+          loggedModelFiles.add(fileKey);
+          window.appendSystemLog?.(t('log_model_file_fetch', { model: modelId, file: fileName }), 'info');
+        }
+
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'block';
         if (modalDownloadFile) modalDownloadFile.textContent = `${i18n.downloading_progress || 'Downloading...'} (${fileName})`;
         if (modalDownloadPct) modalDownloadPct.textContent = `${pct}%`;
@@ -114,34 +131,6 @@ export function initLocalAiWorker(getCurrentResults) {
         const systemLogPanel = document.getElementById('systemLogPanel');
         if (systemLogPanel && systemLogPanel.style.display === 'none') {
           systemLogPanel.style.display = 'flex';
-        }
-
-        const logContainer = document.getElementById('logEntriesContainer');
-        if (logContainer) {
-          let logProgressRow = document.getElementById('logDownloadProgressRow');
-          if (!logProgressRow) {
-            logProgressRow = document.createElement('div');
-            logProgressRow.id = 'logDownloadProgressRow';
-            logProgressRow.style.cssText = 'background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.35); border-radius: 6px; padding: 8px 12px; margin: 6px 0; font-family: var(--font-mono, monospace); font-size: var(--fs-12); box-shadow: 0 2px 8px rgba(0,0,0,0.2);';
-            logContainer.appendChild(logProgressRow);
-          }
-          logProgressRow.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; color: var(--accent-color, #38bdf8);">
-              <div style="display: flex; align-items: center; gap: 6px; ">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; animation: pulse 1.5s infinite;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>[AI Model Download] ${fileName}</span>
-              </div>
-              <span style=" color: #fff; background: rgba(56,189,248,0.25); padding: 1px 8px; border-radius: 10px;">${pct}%</span>
-            </div>
-            <div style="height: 6px; background: rgba(255,255,255,0.12); border-radius: 3px; overflow: hidden;">
-              <div style="width: ${pct}%; height: 100%; background: linear-gradient(90deg, var(--accent-color, #38bdf8), #818cf8); transition: width 0.2s ease;"></div>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: var(--fs-11); color: var(--text-muted, #94a3b8); margin-top: 4px;">
-              <span>Transformers.js (Xenova/multilingual-e5-small)</span>
-              <span>${pct === 100 ? 'Finalizing...' : 'Streaming weights & tokenizer...'}</span>
-            </div>
-          `;
-          logContainer.scrollTop = logContainer.scrollHeight;
         }
       } else if (status === 'done') {
         // One file finished downloading. The model is not ready until the worker reports "ready", so say nothing here
@@ -161,15 +150,6 @@ export function initLocalAiWorker(getCurrentResults) {
         notifyEmbeddingModelsChanged();
         
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'none';
-        const logProgressRow = document.getElementById('logDownloadProgressRow');
-        if (logProgressRow) {
-          logProgressRow.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; color: var(--success-color, #10b981); ">
-              <span>[AI Model Download] Complete ✓ (${modelShortName} initialized offline)</span>
-              <span style="background: rgba(16,185,129,0.2); padding: 1px 8px; border-radius: 10px; font-size: var(--fs-11);">100% READY</span>
-            </div>
-          `;
-        }
         if (localAiStatusBadge) {
           localAiStatusBadge.textContent = `${i18n.local_ai_ready || 'Local AI: Ready'} (${modelShortName})`;
           localAiStatusBadge.style.color = 'var(--success-color, #10b981)';

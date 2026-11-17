@@ -13,6 +13,7 @@ import { getStoredThemeSetting, getThemeAttribution } from '../../editor/core/th
 import { getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
 import { REGISTRY } from '../../../shared/embeddingCatalog';
 import { AUTHOR, AUTHOR_URL, ELECTRON_URL, ENGINE_URL, MONACO_URL, REPOSITORY_URL } from '../../../shared/projectLinks';
+import { llmProviderName } from '../../../shared/llmProviders';
 
 interface ThemeAttribution {
   origin: string;
@@ -78,7 +79,7 @@ function fillComponentRows(div: HTMLElement): void {
 
   // A cloud provider is named only when one is chosen; a service has its own terms, not an open-source license
   const cloudProvider = readStorage(STORAGE_KEYS.LLM_PROVIDER) ?? '';
-  const cloudName = CLOUD_PROVIDER_NAMES[cloudProvider];
+  const cloudName = cloudProvider in CLOUD_PROVIDER_URLS ? llmProviderName(cloudProvider) : '';
   setLink('aboutCloudValue', cloudName ? `${cloudName} (API, provider terms apply)` : 'Not used', CLOUD_PROVIDER_URLS[cloudProvider]);
 }
 
@@ -87,12 +88,6 @@ let modalInstance: HTMLElement | null = null;
 /** A small heading that splits the info box into groups: what is built in, and what is in use now. */
 const groupLabel = (text: string) =>
   `<div style="margin-top: 4px; font-size: var(--fs-11); font-weight: 600; letter-spacing: 0.06em; color: var(--accent-text);">${text}</div>`;
-
-const CLOUD_PROVIDER_NAMES: Record<string, string> = {
-  gemini: 'Gemini (Google)',
-  claude: 'Claude (Anthropic)',
-  openai: 'OpenAI (GPT)'
-};
 
 // The provider's own site, where its terms are published
 const CLOUD_PROVIDER_URLS: Record<string, string> = {

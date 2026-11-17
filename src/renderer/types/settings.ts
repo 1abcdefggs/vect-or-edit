@@ -14,7 +14,6 @@ export interface EditorPreferences {
   aiAssistEnabled: boolean;
   llmProvider: 'gemini' | 'openai' | 'claude';
   llmModel: string;
-  inferenceScope: 'suggestion_only' | 'lint_assist' | 'full_assist';
 }
 
 export interface SidebarPreferences {

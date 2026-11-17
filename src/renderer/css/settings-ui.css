@@ -400,7 +400,6 @@
 /* Sizes of controls and small parts */
 .setting-text--shrink { min-width: 0; }
 .input-num { width: 5.5rem; }
-.select-scope { max-width: 280px; }
 .select-model { min-width: 220px; }
 .select-full { width: 100%; font-family: var(--font-mono, monospace); font-size: var(--fs-12); }
 /* Two-line model picker: id on the first line, display name below. Scrolls inside its own box. */
