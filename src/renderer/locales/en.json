@@ -1441,7 +1441,7 @@
   "settings.editor.pasteAs.enabled": "Enable paste as functionality in editors. Defaults to true.",
   "settings.editor.pasteAs.showPasteSelector": "Controls if a widget is shown after a drop. Defaults to 'afterPaste'.",
   "monaco_reset_row_label": "Editor options",
-  "monaco_reset_row_desc": "More display options are in the Editor Options panel on the right. Open panel closes the settings and shows that panel. Restore Defaults puts back every value you changed there.",
+  "monaco_reset_row_desc": "More display options are in the Editor Options panel on the right. Open panel closes the settings without asking and shows that panel. Restore Defaults puts back every value you changed there.",
   "monaco_reset_row_btn": "Restore Defaults",
   "monaco_open_panel_btn": "Open panel",
   "tip_monaco_reset_row": "Puts back every value you changed in the Editor Options panel to its default",

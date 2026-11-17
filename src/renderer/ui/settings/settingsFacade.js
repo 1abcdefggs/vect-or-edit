@@ -1119,10 +1119,10 @@ export function initSettings(updateEditorCb) {
     btnBackToEditor.addEventListener('click', requestCloseSettings);
   }
 
-  // Editor options row: leave the settings (same confirmation as the back button) and turn the right panel to Editor Options
-  document.getElementById('btnOpenEditorOptions')?.addEventListener('click', async () => {
-    await requestCloseSettings();
-    if (settingsModal && settingsModal.style.display !== 'none') return; // the user chose to stay
+  // Editor options row: leave the settings and turn the right panel to Editor Options.
+  // No close confirmation (owner decision 2026-11-17): the button says where it goes, unlike a stray click on × or Back
+  document.getElementById('btnOpenEditorOptions')?.addEventListener('click', () => {
+    closeSettingsView();
     const toggle = document.getElementById('btnEditorOptionsToggle');
     if (toggle && toggle.getAttribute('aria-pressed') !== 'true') toggle.click();
   });

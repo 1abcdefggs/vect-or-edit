@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.72] - 2026-11-17
+
+### Changed
+- The Open panel button on the settings page goes to the Editor Options panel without the close confirmation; the confirmation stays on × and Back
+
 ## [0.3.71] - 2026-11-17
 
 ### Changed
