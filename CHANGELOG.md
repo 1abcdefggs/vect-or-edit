@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.68] - 2026-11-17
+
+### Added
+- The Editor options row on the settings page has an Open panel button: it closes the settings and shows the Editor Options panel on the right, and the row's description says where those options are
+
 ## [0.3.67] - 2026-11-17
 
 ### Changed

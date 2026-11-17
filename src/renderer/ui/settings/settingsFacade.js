@@ -1119,6 +1119,14 @@ export function initSettings(updateEditorCb) {
     btnBackToEditor.addEventListener('click', requestCloseSettings);
   }
 
+  // Editor options row: leave the settings (same confirmation as the back button) and turn the right panel to Editor Options
+  document.getElementById('btnOpenEditorOptions')?.addEventListener('click', async () => {
+    await requestCloseSettings();
+    if (settingsModal && settingsModal.style.display !== 'none') return; // the user chose to stay
+    const toggle = document.getElementById('btnEditorOptionsToggle');
+    if (toggle && toggle.getAttribute('aria-pressed') !== 'true') toggle.click();
+  });
+
   // Keyboard shortcut Esc to return to editor (same confirmation as the back button)
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && settingsModal && (settingsModal.style.display === 'flex' || settingsModal.style.display === 'block')) {
