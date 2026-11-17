@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.69] - 2026-11-17
+
+### Changed
+- An embedding model download is written to the system log as normal lines with a time stamp (start, then one line per file), so Copy and Save include it; the percentage stays on the status lamp and the settings bar
+- The Japanese dictionary shows the download progress label in Japanese
+
+### Removed
+- The separate download progress row in the log panel, which had no time stamp, always named the same model and was left out of Copy and Save
+
 ## [0.3.68] - 2026-11-17
 
 ### Added
