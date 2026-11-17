@@ -9,6 +9,7 @@ import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../core/escape.js';
 import { rememberGeminiModels } from '../settings/geminiModelPicker.js';
 import { readGeminiModel } from '../../core/geminiModel.js';
+import { llmProviderName } from '../../../shared/llmProviders';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
 import { confirmClose } from '../notifications/closeGuard.js';
@@ -43,15 +44,17 @@ export function initAiControls() {
     const knowledgeCard = knowledgeStatus?.closest('.ai-status-card');
     const structureEmbedding = document.getElementById('settingsStructureEmbedding');
     const structureKnowledge = document.getElementById('settingsStructureKnowledge');
-    const provider = readStorage('ai_provider') || 'local';
+    // The LLM card shows the cloud LLM provider (llm_provider), not the search generator key (ai_provider)
+    const llmProvider = readStorage(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
+    const hasLlmProvider = llmProvider !== 'none';
     const localModel = (readStorage('vect_local_embedding_model') || 'Xenova/multilingual-e5-small').split('/').pop();
 
     if (embeddingStatus) embeddingStatus.textContent = window.__isLocalAiModelReady ? t('ai_status_ready') : t('ai_status_not_ready');
     if (embeddingDetail) embeddingDetail.textContent = window.__isLocalAiModelReady ? localModel : t('ai_detail_install_model');
     if (embeddingCard) embeddingCard.dataset.statusTone = window.__isLocalAiModelReady ? 'ready' : 'neutral';
     if (structureEmbedding) structureEmbedding.textContent = window.__isLocalAiModelReady ? localModel : t('ai_structure_model_not_ready');
-    if (generationStatus) generationStatus.textContent = provider === 'local' ? t('ai_status_local_ai') : provider.toUpperCase();
-    if (generationDetail) generationDetail.textContent = provider === 'local' ? t('ai_detail_local_suggest') : t('ai_status_cloud_suggest');
+    if (generationStatus) generationStatus.textContent = hasLlmProvider ? llmProviderName(llmProvider) : t('ai_status_not_configured');
+    if (generationDetail) generationDetail.textContent = hasLlmProvider ? t('ai_status_cloud_suggest') : t('ai_detail_local_suggest');
     if (knowledgeStatus && window.engineAPI?.getEngineStatus) {
       window.engineAPI.getEngineStatus().then((result) => {
         const count = Number(result?.count || 0);
@@ -409,7 +412,7 @@ function initLlmChatDock() {
 
       updateDockModelBadge();
       window.dispatchEvent(new Event('app:settingsChanged'));
-      showToast(t('toast_api_key_saved', { provider: provider.toUpperCase() }), 'success');
+      showToast(t('toast_api_key_saved', { provider: llmProviderName(provider) }), 'success');
       if (quickApiBanner) quickApiBanner.style.display = 'none';
     });
   }

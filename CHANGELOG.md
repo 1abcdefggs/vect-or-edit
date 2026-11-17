@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.70] - 2026-11-17
+
+### Changed
+- Claude and OpenAI can be chosen in first-run setup; every place lists the cloud providers as Google Gemini, OpenAI and Claude
+- The LLM card of the AI Control Center shows the chosen cloud LLM provider by name, or "Not configured", instead of an upper-case value from the search generator setting
+- Texts that named only Gemini (setup prompt, Sidebar tab description, LLM switch, embedding assistant, restart) name the three providers or "API keys"
+
+### Removed
+- Seven dictionary entries for provider options that are no longer shown
+
 ## [0.3.69] - 2026-11-17
 
 ### Changed
