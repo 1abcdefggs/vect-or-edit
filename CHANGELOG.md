@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.71] - 2026-11-17
+
+### Changed
+- The right panel calls its guideline section "Guidelines" everywhere: the heading in English, the section tooltip, the Editor Options button tooltip and the part name in the settings
+
 ## [0.3.70] - 2026-11-17
 
 ### Changed
