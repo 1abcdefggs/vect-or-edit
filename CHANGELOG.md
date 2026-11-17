@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.66] - 2026-11-17
+
+### Changed
+- Settings help text is regenerated from the current settings page (labels, descriptions and order)
+
+### Removed
+- The "AI role / inference scope" select on the settings page, its stored key and its dictionary entries: the value was saved but never read, so every choice behaved the same
+
 ## [0.3.65] - 2026-11-13
 
 ### Added

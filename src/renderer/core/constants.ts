@@ -22,7 +22,6 @@ export const STORAGE_KEYS = {
   SUGGEST_TRIGGER_MODE: 'vect_suggest_trigger_mode',
   AI_PROVIDER: 'ai_provider',
   LLM_PROVIDER: 'llm_provider',
-  AI_INFERENCE_SCOPE: 'ai_inference_scope',
   // *_API_KEY: plain-text names from older versions, read only to migrate them (core/apiKeyStore.js)
   CLAUDE_API_KEY: 'claude_api_key',
   CLAUDE_MODEL: 'claude_model',
@@ -89,7 +88,6 @@ export const DEFAULTS = {
   LOCAL_EMBEDDING_MODEL: 'Xenova/multilingual-e5-small',
   CLAUDE_MODEL: 'claude-opus-5-5',
   OPENAI_MODEL: 'gpt-4o-mini',
-  AI_INFERENCE_SCOPE: 'suggestion_only',
   SUGGEST_TRIGGER_MODE: 'selection',
   AI_PROVIDER: 'local',
   LLM_PROVIDER: 'none',

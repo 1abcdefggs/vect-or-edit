@@ -18,8 +18,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
       minimap: false,
       aiAssistEnabled: false,
       llmProvider: 'gemini',
-      llmModel: 'gemini-3.1-flash-lite',
-      inferenceScope: 'suggestion_only'
+      llmModel: 'gemini-3.1-flash-lite'
     },
     sidebar: {
       embeddingSource: 'local',
@@ -255,18 +254,6 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
       { value: 'openai' }
     ]
   },
-  {
-    id: 'ed_inference_scope',
-    category: 'editor',
-    prefPath: 'editor.inferenceScope',
-    controlType: 'select',
-    options: [
-      { value: 'suggestion_only' },
-      { value: 'lint_assist' },
-      { value: 'full_assist' }
-    ]
-  },
-
   {
     id: 'ed_save',
     category: 'editor',
