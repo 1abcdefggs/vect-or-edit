@@ -159,48 +159,57 @@
       <!-- Tab 2: Editor (edt) - text, toolbar, documents and the LLM chat -->
       <div id="tabEditor" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="text_fields" data-key="grp_editor_text" data-text="Text"></h4>
+          <h4 data-card-heading data-icon="save" data-key="autosave_menu_item" data-text="Autosave"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="font_family_label" data-label-text="Font Family" data-desc-key="setting_font_family_desc" data-desc-text="Select typeface for text rendering."></div>
-            <select id="modalFontFamilySelect" class="toolbar-select" data-i18n-title="tip_editor_font_family">
-              <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">Source Serif 4</option>
-              <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
-              <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">Source Code Pro (Monospace)</option>
+            <div data-setting-text data-label-key="autosave_menu_item" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write. Save As still saves a copy under a new name."></div>
+            <select id="modalAutoSaveSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_autosave_toggle">
+              <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="font_size_label" data-label-text="Font Size" data-desc-key="setting_font_size_desc" data-desc-text="Choose the editor font size in pixels."></div>
-            <select id="modalFontSizeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_editor_font_size">
-              <option value="14" data-i18n="font_small">14px</option>
-              <option value="16" data-i18n="font_normal">16px</option>
-              <option value="18" data-i18n="font_large">18px</option>
-              <option value="20" data-i18n="font_xlarge">20px</option>
+            <div data-setting-text data-label-key="setting_autosave_idle" data-label-text="Save when typing pauses" data-desc-key="setting_autosave_idle_desc" data-desc-text="Saves after the pause set below."></div>
+            <select id="modalAutoSaveIdleSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_setup_autosave_idle">
+              <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_line_height" data-label-text="Line Height" data-desc-key="setting_line_height_desc" data-desc-text="Adjust the height of each line."></div>
-            <select id="modalLineHeightSelect" class="toolbar-select" data-i18n-title="tip_set_line_height">
-              <option value="22" data-i18n="opt_lh_compact">1.4 Compact (22px)</option>
-              <option value="26" data-i18n="opt_lh_normal">1.6 Normal (26px)</option>
-              <option value="30" selected data-i18n="opt_lh_relaxed">1.8 Relaxed (30px)</option>
-              <option value="34" data-i18n="opt_lh_spacious">2.0 Spacious (34px)</option>
+            <div data-setting-text data-label-key="setting_autosave_delay" data-label-text="Pause before saving" data-desc-key="setting_autosave_delay_desc" data-desc-text="How long to wait after you stop typing. Choose a preset or set your own, from 0.5 seconds to 60 minutes."></div>
+            <div class="setting-actions">
+              <select id="modalAutoSaveDelaySelect" class="toolbar-select" data-i18n-title="tip_set_autosave_delay"></select>
+              <span id="autoSaveDelayCustom" class="autosave-delay-custom" hidden>
+                <input type="number" id="modalAutoSaveDelayInput" data-stepper class="toolbar-select input-num" min="0.5" max="3600" step="0.5" value="1.5" data-i18n-title="tip_set_autosave_delay">
+                <select id="modalAutoSaveDelayUnit" class="toolbar-select" data-i18n-title="tip_set_autosave_delay_unit">
+                  <option value="sec" data-i18n="autosave_unit_sec_long">seconds</option>
+                  <option value="min" data-i18n="autosave_unit_min_long">minutes</option>
+                </select>
+              </span>
+            </div>
+          </div>
+          <div class="setting-desc autosave-delay-reason" id="autoSaveDelayReason" hidden data-i18n="setting_autosave_delay_off_reason">Not available while "Save when typing pauses" is off. Turn it on to set the wait.</div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_autosave_newline" data-label-text="Save at each new line" data-desc-key="setting_autosave_newline_desc" data-desc-text="Saves every time you start a new line."></div>
+            <select id="modalAutoSaveNewlineSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_setup_autosave_newline">
+              <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
+        </div>
+
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="text_fields" data-key="grp_editor_text" data-text="Text tools"></h4>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_editor_bg" data-label-text="Editor Canvas BG/FG Theme (Dark &amp; Light Variations)" data-desc-key="setting_editor_bg_desc" data-desc-text="Customize background and foreground text color inside Monaco editor independently."></div>
-            <select id="modalEditorBgSelect" class="toolbar-select" data-i18n-title="tip_editor_bg_theme">
+            <!-- The state holder of the choice: the cards below set it (ui/settings/editorTonePicker.js); the rest of the settings code reads it -->
+            <select id="modalEditorBgSelect" class="toolbar-select" hidden data-i18n-title="tip_editor_bg_theme">
               <option value="default" selected data-i18n="opt_bg_default">Theme Match (Default)</option>
-              <optgroup label="Dark Variations">
-                <option value="oled" data-i18n="opt_bg_oled">OLED Pitch Black (#000000)</option>
-              </optgroup>
-              <optgroup label="Light Variations">
-                <option value="snow" data-i18n="opt_bg_snow">Pure Snow White (#FFFFFF)</option>
-              </optgroup>
-              <option value="custom" data-i18n="opt_bg_custom">Arbitrary Custom Colors</option>
             </select>
+            <p id="editorToneStatus" class="setting-desc tone-status" aria-live="polite"></p>
+            <div id="modalToneCards" class="tone-groups"></div>
           </div>
           <div id="modalCustomColorSettings" class="settings-subpanel" data-setting-row style="display: none;">
-            <div data-setting-text data-label-key="setting_custom_colors" data-label-text="Custom Background &amp; Text Color" data-desc-key="setting_custom_colors_desc" data-desc-text="Pick any custom HEX color for the Monaco canvas background and font text."></div>
+            <div data-setting-text data-label-key="setting_custom_colors" data-label-text="Custom colors" data-desc-key="setting_custom_colors_desc" data-desc-text="Pick any custom HEX color for the Monaco canvas background and font text."></div>
             <div class="setting-actions">
               <label class="color-pick">
                 <span data-i18n="label_bg">Background:</span>
@@ -212,16 +221,210 @@
               </label>
             </div>
           </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="font_family_label" data-label-text="Font Family" data-desc-key="setting_font_family_desc" data-desc-text="Select typeface for text rendering."></div>
+            <!-- The state holder of the choice: the cards below set it (ui/settings/fontFamilyPicker.js) -->
+            <select id="modalFontFamilySelect" class="toolbar-select" hidden data-i18n-title="tip_editor_font_family">
+              <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">Source Serif 4</option>
+              <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
+              <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">Source Code Pro (Monospace)</option>
+            </select>
+            <div id="modalFontCards" class="font-card-row"></div>
+            <div class="font-add-row">
+              <button type="button" id="btnAddFonts" class="settings-btn" data-i18n-title="tip_font_add"><span class="material-symbols-outlined" aria-hidden="true">folder_open</span><span data-i18n="font_add_btn">Add fonts from this PC</span></button>
+              <span class="setting-desc" data-i18n="font_add_hint">.ttf, .otf, .woff and .woff2 files. The files are copied into the data folder of the app and never leave this PC. Check the licence of each font yourself.</span>
+            </div>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="font_size_label" data-label-text="Font Size" data-desc-key="setting_font_size_desc" data-desc-text="Choose the editor font size in pixels."></div>
+            <div class="setting-actions">
+              <!-- Presets (the same numbers as ui/settings/fontSizeOptions.js); an own value is typed in the box beside them -->
+              <select id="modalFontSizeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_editor_font_size">
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="14">14</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+                <option value="20">20</option>
+                <option value="24">24</option>
+                <option value="32">32</option>
+              </select>
+              <input type="number" id="modalFontSizeInput" data-stepper class="toolbar-select input-num" min="8" max="72" step="1" value="16" data-i18n-title="tip_font_size_custom">
+              <span class="setting-desc">px</span>
+            </div>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="monaco_reset_row_label" data-label-text="Editor options" data-desc-key="monaco_reset_row_desc" data-desc-text="This editor is built on Monaco, the editor part of Visual Studio Code, and its options can be changed. They are listed in the Editor Options panel on the right."></div>
+            <div class="setting-actions">
+              <button id="btnOpenEditorOptions" class="settings-btn settings-btn--primary" type="button" data-i18n="monaco_open_panel_btn" data-i18n-title="tip_monaco_open_panel">Open panel</button>
+              <button id="btnEditorOptionsReset" class="settings-btn" type="button" data-i18n="monaco_reset_row_btn" data-i18n-title="tip_monaco_reset_row">Restore Defaults</button>
+            </div>
+          </div>
         </div>
 
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="edit_note" data-key="grp_editor_display" data-text="Writing view"></h4>
+          <h4 data-card-heading data-icon="cloud" data-key="grp_llm_assistant" data-text="LLM assistant"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="writing_panel_row_label" data-label-text="Editor options panel" data-desc-key="writing_panel_row_desc" data-desc-text="Opens the Editor Options panel on the right, where the Monaco options are listed."></div>
-            <div class="setting-actions">
-              <button id="btnWritingOptionPanel" class="settings-btn settings-btn--primary" type="button" data-i18n-title="tip_monaco_open_panel">OPTION</button>
-              <button id="btnWritingMonacoPanel" class="settings-btn" type="button" data-i18n-title="tip_monaco_open_panel">Monaco</button>
+            <div data-setting-text data-label-key="setting_master_ai" data-label-text="LLM (cloud AI)" data-desc-key="setting_master_ai_desc" data-desc-text="Turns the cloud LLM assistant and the suggestion sidebar on or off. A model must be set up first."></div>
+            <select id="modalLlmSwitchSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
+              <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
+
+          <!-- The AI chat belongs to the LLM switch above, so it sits inside the same card -->
+          <div id="llmConfigCard" class="llm-chat-block">
+            <div class="llm-chat-title">
+              <span class="material-symbols-outlined" aria-hidden="true">key</span>
+              <span data-i18n="heading_llm_catalog">API key setup</span>
             </div>
+            <div class="setting-desc" data-i18n="llm_card_desc">Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.</div>
+
+            <div class="llm-provider-title" data-i18n="heading_provider">Provider</div>
+            <div class="provider-choice-row">
+              <!-- No segment pressed means no service is chosen yet (the hidden "none" option) -->
+              <select id="modalAiProviderSelect" data-ui-control="segmented" data-segmented-size="lg" data-i18n-title="tip_select_llm_provider">
+                <option value="none" hidden></option>
+                <option value="gemini">Gemini</option>
+                <option value="openai">OpenAI</option>
+                <option value="claude">Claude</option>
+              </select>
+              <button type="button" id="btnClearAiProvider" class="settings-btn" hidden data-i18n="btn_ai_provider_clear" data-i18n-title="tip_ai_provider_clear">Clear choice</button>
+            </div>
+            <p id="aiProviderHint" class="setting-desc" hidden data-i18n="ai_provider_none_hint">No service is chosen yet. Choose one to use the AI chat.</p>
+
+            <!-- Gemini -->
+            <div id="geminiSettingsBlock" class="provider-block">
+              <div data-setting-row="stack">
+                <div class="setting-item-head">
+                  <div data-setting-text data-label-key="setting_gemini_key" data-label-text="Gemini API Key" data-desc-key="setting_gemini_key_desc" data-desc-text="Will be saved securely to your local device."></div>
+                </div>
+                <div class="api-key-field">
+                  <span class="material-symbols-outlined">key</span>
+                  <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." autocomplete="off" spellcheck="false" data-i18n-title="tip_api_key_input">
+                  <button type="button" id="btnToggleGeminiKeyVisibility" data-i18n-title="tip_toggle_key_visibility">
+                    <span class="material-symbols-outlined">visibility_off</span>
+                  </button>
+                </div>
+                <div class="api-key-clear">
+                  <span class="setting-desc" data-key-clear-reason="gemini"></span>
+                  <button type="button" class="settings-btn settings-btn--danger" data-key-clear="gemini" data-i18n-title="tip_key_clear_one"><span class="material-symbols-outlined" aria-hidden="true">delete_forever</span><span data-i18n="btn_key_clear_one">Delete this key</span></button>
+                </div>
+              </div>
+              <div data-setting-row="stack">
+                <div class="setting-item-head">
+                  <div>
+                    <div class="setting-label" data-i18n="setting_gemini_model">Gemini Model</div>
+                    <div id="geminiModelsFetchStatus" class="setting-desc setting-desc--accent" data-no-list data-i18n="gemini_models_hint">Set the API key, then click "Fetch Models" to get the latest list of Gemini models.</div>
+                  </div>
+                  <button type="button" id="btnFetchGeminiModels" class="settings-btn" data-i18n-title="tip_fetch_gemini_models">
+                    <span class="material-symbols-outlined">sync</span><span data-i18n="btn_fetch_models">Fetch Models</span>
+                  </button>
+                </div>
+                <!-- Two-line picker, filled from the Gemini API once a key is set (see geminiModelPicker.js) -->
+                <div id="modalGeminiModelList" data-i18n-title="tip_set_gemini_model"></div>
+              </div>
+            </div>
+
+            <!-- OpenAI -->
+            <div id="openaiSettingsBlock" class="provider-block">
+              <div data-setting-row="stack">
+                <div class="setting-item-head">
+                  <div data-setting-text data-label-key="setting_openai_key" data-label-text="OpenAI API Key" data-desc-key="setting_openai_key_desc" data-desc-text="Will be saved securely to your local device."></div>
+                </div>
+                <div class="api-key-field">
+                  <span class="material-symbols-outlined">key</span>
+                  <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." autocomplete="off" spellcheck="false" data-i18n-title="tip_api_key_input">
+                  <button type="button" id="btnToggleOpenAiKeyVisibility" data-i18n-title="tip_toggle_key_visibility">
+                    <span class="material-symbols-outlined">visibility_off</span>
+                  </button>
+                </div>
+                <div class="api-key-clear">
+                  <span class="setting-desc" data-key-clear-reason="openai"></span>
+                  <button type="button" class="settings-btn settings-btn--danger" data-key-clear="openai" data-i18n-title="tip_key_clear_one"><span class="material-symbols-outlined" aria-hidden="true">delete_forever</span><span data-i18n="btn_key_clear_one">Delete this key</span></button>
+                </div>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_openai_model" data-label-text="OpenAI Model" data-desc-key="setting_openai_model_desc" data-desc-text="Model used for OpenAI chat and rewriting."></div>
+                <select id="modalOpenAiModelSelect" class="toolbar-select select-model" data-i18n-title="tip_set_openai_model">
+                  <option value="gpt-4o-mini" selected>GPT-4o Mini (Recommended)</option>
+                  <option value="gpt-4o">GPT-4o</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Claude -->
+            <div id="claudeSettingsBlock" class="provider-block">
+              <div data-setting-row="stack">
+                <div class="setting-item-head">
+                  <div data-setting-text data-label-key="setting_claude_key" data-label-text="Anthropic API Key" data-desc-key="setting_claude_key_desc" data-desc-text="Will be saved securely to your local device."></div>
+                </div>
+                <div class="api-key-field">
+                  <span class="material-symbols-outlined">key</span>
+                  <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" data-i18n-title="tip_api_key_input">
+                  <button type="button" id="btnToggleClaudeKeyVisibility" data-i18n-title="tip_toggle_key_visibility">
+                    <span class="material-symbols-outlined">visibility_off</span>
+                  </button>
+                </div>
+                <div class="api-key-clear">
+                  <span class="setting-desc" data-key-clear-reason="claude"></span>
+                  <button type="button" class="settings-btn settings-btn--danger" data-key-clear="claude" data-i18n-title="tip_key_clear_one"><span class="material-symbols-outlined" aria-hidden="true">delete_forever</span><span data-i18n="btn_key_clear_one">Delete this key</span></button>
+                </div>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_claude_model" data-label-text="Claude Model" data-desc-key="setting_claude_model_desc" data-desc-text="Model used for Claude chat and rewriting."></div>
+                <select id="modalClaudeModelSelect" class="toolbar-select select-model" data-i18n-title="tip_set_claude_model">
+                  <option value="claude-opus-5-5" selected>Claude Opus 5.5</option>
+                  <option value="claude-sonnet-5-5">Claude Sonnet 5.5</option>
+                  <option value="claude-haiku-5-5">Claude Haiku 5.5</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="description" data-key="grp_documents" data-text="New documents"></h4>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_tab_usage" data-label-text="Using the tabs" data-desc-key="setting_tab_usage_desc" data-desc-text="The X on the left closes the tab. Double-click the tab name to rename the file. The duplicate button on the right copies the document in this tab. + New opens a new tab with a new document."></div>
+          </div>
+          <!-- A still picture of the tab row (renderTabSample in tabRenderer.js) -->
+          <div class="editor-tabs-list tab-usage-sample" data-tab-sample aria-hidden="true"></div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_document_name" data-label-text="Name of new documents" data-desc-key="setting_document_name_desc" data-desc-text="The name of documents made with + New. It is used for the tab and the file name."></div>
+            <select id="modalDocumentNameSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_document_name">
+              <option value="doc" data-i18n="doc_name_doc">Doc</option>
+              <option value="untitled" data-i18n="doc_name_untitled">Untitled</option>
+              <option value="memo" data-i18n="doc_name_memo">Memo</option>
+            </select>
+          </div>
+          <div id="documentNameTokens" class="doc-name-tokens"></div>
+          <div class="doc-name-text" id="documentNameTextRow" hidden>
+            <label class="setting-desc" for="documentNameText" data-i18n="name_text_label">Text added to the name</label>
+            <input id="documentNameText" class="first-run-input" type="text" maxlength="40" spellcheck="false" autocomplete="off" data-i18n-title="name_text_label">
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_document_format" data-label-text="Format of new documents" data-desc-key="setting_document_format_desc" data-desc-text="Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar. A Markdown document can be shown formatted (preview) with the eye button at the right end of the tab row."></div>
+            <select id="modalDocumentFormatSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_document_format">
+              <option value="markdown" data-i18n="format_option_markdown">Markdown (.md)</option>
+              <option value="text" data-i18n="format_option_text">Text (.txt)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="edit_note" data-key="grp_editor_display" data-text="Editor view (Monaco)"></h4>
+          <p class="card-section-desc" data-i18n="grp_editor_display_desc">Basic display settings for Monaco, the editor component (the same editor as in VS Code). For finer control, use Editor Options in the right panel.</p>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_line_height" data-label-text="Line Height" data-desc-key="setting_line_height_desc" data-desc-text="Adjust the height of each line."></div>
+            <!-- The state holder of the choice: the cards below set it (ui/settings/lineHeightPicker.js) -->
+            <select id="modalLineHeightSelect" class="toolbar-select" hidden data-i18n-title="tip_set_line_height">
+              <option value="1.4" data-i18n="opt_lh_compact">1.4 Compact</option>
+              <option value="1.6" data-i18n="opt_lh_normal">1.6 Normal</option>
+              <option value="1.8" selected data-i18n="opt_lh_relaxed">1.8 Relaxed</option>
+              <option value="2" data-i18n="opt_lh_spacious">2.0 Spacious</option>
+            </select>
+            <div id="modalLineHeightCards" class="line-height-card-row"></div>
           </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_word_wrap" data-label-text="Word Wrap" data-desc-key="setting_word_wrap_desc" data-desc-text="Toggle automatic text wrapping."></div>
@@ -261,179 +464,7 @@
               <option value="all" data-i18n="opt_ws_all">All (Show everywhere)</option>
             </select>
           </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="monaco_reset_row_label" data-label-text="Editor options" data-desc-key="monaco_reset_row_desc" data-desc-text="More display options are in the Editor Options panel on the right. Open panel closes the settings and shows that panel. Restore Defaults puts back every value you changed there."></div>
-            <div class="setting-actions">
-              <button id="btnOpenEditorOptions" class="settings-btn settings-btn--primary" type="button" data-i18n="monaco_open_panel_btn" data-i18n-title="tip_monaco_open_panel">Open panel</button>
-              <button id="btnEditorOptionsReset" class="settings-btn" type="button" data-i18n="monaco_reset_row_btn" data-i18n-title="tip_monaco_reset_row">Restore Defaults</button>
-            </div>
-          </div>
         </div>
-
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="description" data-key="grp_documents" data-text="New documents"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_document_name" data-label-text="Name of new documents" data-desc-key="setting_document_name_desc" data-desc-text="The name new documents start with. The number goes after it."></div>
-            <select id="modalDocumentNameSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_document_name">
-              <option value="doc" data-i18n="doc_name_doc">Doc</option>
-              <option value="untitled" data-i18n="doc_name_untitled">Untitled</option>
-              <option value="memo" data-i18n="doc_name_memo">Memo</option>
-            </select>
-          </div>
-          <div id="documentNameTokens" class="doc-name-tokens"></div>
-          <div class="doc-name-text" id="documentNameTextRow" hidden>
-            <label class="setting-desc" for="documentNameText" data-i18n="name_text_label">Text added to the name</label>
-            <input id="documentNameText" class="first-run-input" type="text" maxlength="40" spellcheck="false" autocomplete="off" data-i18n-title="name_text_label">
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_document_format" data-label-text="Format of new documents" data-desc-key="setting_document_format_desc" data-desc-text="Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar."></div>
-            <select id="modalDocumentFormatSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_document_format">
-              <option value="markdown" data-i18n="format_option_markdown">Markdown (.md)</option>
-              <option value="text" data-i18n="format_option_text">Text (.txt)</option>
-            </select>
-          </div>
-          <div class="setting-desc doc-name-example" data-doc-name-example></div>
-        </div>
-
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="save" data-key="autosave_menu_item" data-text="Autosave"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="autosave_menu_item" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write. Save As still saves a copy under a new name."></div>
-            <select id="modalAutoSaveSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_autosave_toggle">
-              <option value="on" data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_autosave_idle" data-label-text="Save when typing pauses" data-desc-key="setting_autosave_idle_desc" data-desc-text="Saves after the pause set below."></div>
-            <select id="modalAutoSaveIdleSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_setup_autosave_idle">
-              <option value="on" data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_autosave_newline" data-label-text="Save at each new line" data-desc-key="setting_autosave_newline_desc" data-desc-text="Saves every time you start a new line."></div>
-            <select id="modalAutoSaveNewlineSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_setup_autosave_newline">
-              <option value="on" data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_autosave_delay" data-label-text="Pause before saving (seconds)" data-desc-key="setting_autosave_delay_desc" data-desc-text="How long to wait after you stop typing, from 0.5 to 10 seconds."></div>
-            <input type="number" id="modalAutoSaveDelayInput" data-stepper class="toolbar-select input-num" min="0.5" max="10" step="0.5" value="1.5" data-i18n-title="tip_set_autosave_delay">
-          </div>
-        </div>
-
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="cloud" data-key="grp_llm_assistant" data-text="LLM assistant"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_master_ai" data-label-text="LLM (cloud AI)" data-desc-key="setting_master_ai_desc" data-desc-text="Turns the cloud LLM assistant and the suggestion sidebar on or off. A model must be set up first."></div>
-            <select id="modalLlmSwitchSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
-              <option value="on" data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
-            </select>
-          </div>
-        </div>
-
-<div id="llmConfigCard" class="settings-section-card">
-            <h4>
-              <span class="material-symbols-outlined">chat</span>
-              <span data-i18n="heading_llm_catalog">AI Chat</span>
-              <span class="heading-badge-sep" aria-hidden="true">—</span>
-              <span class="card-badge card-badge--warn card-badge--inline" data-i18n="heading_llm_catalog_sub">Paid API</span>
-            </h4>
-            <div class="setting-desc" data-i18n="llm_card_desc">Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.</div>
-
-            <select id="modalAiProviderSelect" data-ui-control="segmented" data-segmented-size="lg" data-i18n-title="tip_select_llm_provider">
-              <option value="none" hidden>—</option>
-              <option value="gemini">Google Gemini</option>
-              <option value="openai">OpenAI</option>
-              <option value="claude">Claude</option>
-            </select>
-
-            <!-- Google Gemini -->
-            <div id="geminiSettingsBlock" class="provider-block">
-              <div data-setting-row="stack">
-                <div class="setting-item-head">
-                  <div data-setting-text data-label-key="setting_gemini_key" data-label-text="Gemini API Key" data-desc-key="setting_gemini_key_desc" data-desc-text="Will be saved securely to your local device."></div>
-                </div>
-                <div class="api-key-field">
-                  <span class="material-symbols-outlined">key</span>
-                  <input type="password" id="modalGeminiKeyInput" placeholder="AIzaSy..." autocomplete="off" spellcheck="false" data-i18n-title="tip_api_key_input">
-                  <button type="button" id="btnToggleGeminiKeyVisibility" data-i18n-title="tip_toggle_key_visibility">
-                    <span class="material-symbols-outlined">visibility_off</span>
-                  </button>
-                </div>
-              </div>
-              <div data-setting-row="stack">
-                <div class="setting-item-head">
-                  <div>
-                    <div class="setting-label" data-i18n="setting_gemini_model">Gemini Model</div>
-                    <div id="geminiModelsFetchStatus" class="setting-desc setting-desc--accent" data-no-list data-i18n="gemini_models_hint">Set the API key, then click "Fetch Models" to get the latest list of Gemini models.</div>
-                  </div>
-                  <button type="button" id="btnFetchGeminiModels" class="settings-btn" data-i18n-title="tip_fetch_gemini_models">
-                    <span class="material-symbols-outlined">sync</span><span data-i18n="btn_fetch_models">Fetch Models</span>
-                  </button>
-                </div>
-                <!-- Two-line picker, filled from the Gemini API once a key is set (see geminiModelPicker.js) -->
-                <div id="modalGeminiModelList" data-i18n-title="tip_set_gemini_model"></div>
-              </div>
-            </div>
-
-            <!-- OpenAI -->
-            <div id="openaiSettingsBlock" class="provider-block">
-              <div data-setting-row="stack">
-                <div class="setting-item-head">
-                  <div data-setting-text data-label-key="setting_openai_key" data-label-text="OpenAI API Key" data-desc-key="setting_openai_key_desc" data-desc-text="Will be saved securely to your local device."></div>
-                </div>
-                <div class="api-key-field">
-                  <span class="material-symbols-outlined">key</span>
-                  <input type="password" id="modalOpenAiKeyInput" placeholder="sk-proj-..." autocomplete="off" spellcheck="false" data-i18n-title="tip_api_key_input">
-                  <button type="button" id="btnToggleOpenAiKeyVisibility" data-i18n-title="tip_toggle_key_visibility">
-                    <span class="material-symbols-outlined">visibility_off</span>
-                  </button>
-                </div>
-              </div>
-              <div data-setting-row>
-                <div data-setting-text data-label-key="setting_openai_model" data-label-text="OpenAI Model" data-desc-key="setting_openai_model_desc" data-desc-text="Model used for OpenAI chat and rewriting."></div>
-                <select id="modalOpenAiModelSelect" class="toolbar-select select-model" data-i18n-title="tip_set_openai_model">
-                  <option value="gpt-4o-mini" selected>GPT-4o Mini (Recommended)</option>
-                  <option value="gpt-4o">GPT-4o</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Claude -->
-            <div id="claudeSettingsBlock" class="provider-block">
-              <div data-setting-row="stack">
-                <div class="setting-item-head">
-                  <div data-setting-text data-label-key="setting_claude_key" data-label-text="Anthropic API Key" data-desc-key="setting_claude_key_desc" data-desc-text="Will be saved securely to your local device."></div>
-                </div>
-                <div class="api-key-field">
-                  <span class="material-symbols-outlined">key</span>
-                  <input type="password" id="modalClaudeKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" data-i18n-title="tip_api_key_input">
-                  <button type="button" id="btnToggleClaudeKeyVisibility" data-i18n-title="tip_toggle_key_visibility">
-                    <span class="material-symbols-outlined">visibility_off</span>
-                  </button>
-                </div>
-              </div>
-              <div data-setting-row>
-                <div data-setting-text data-label-key="setting_claude_model" data-label-text="Claude Model" data-desc-key="setting_claude_model_desc" data-desc-text="Model used for Claude chat and rewriting."></div>
-                <select id="modalClaudeModelSelect" class="toolbar-select select-model" data-i18n-title="tip_set_claude_model">
-                  <option value="claude-opus-5-5" selected>Claude Opus 5.5</option>
-                  <option value="claude-sonnet-5-5">Claude Sonnet 5.5</option>
-                  <option value="claude-haiku-5-5">Claude Haiku 5.5</option>
-                </select>
-              </div>
-            </div>
-
-            <div data-setting-row>
-              <div data-setting-text data-label-key="api_keys_clear_label" data-label-text="Clear Stored API Keys" data-desc-key="api_keys_clear_desc" data-desc-text="Remove locally cached Gemini, OpenAI and Claude API keys from this device. Keys are encrypted by the operating system through Electron safeStorage."></div>
-              <button id="btnEditorClearApiKey" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n-title="tip_clear_api_keys">
-                <span class="material-symbols-outlined">delete_forever</span><span data-i18n="api_keys_clear_btn">Clear API Key</span>
-              </button>
-            </div>
-          </div>
       </div>
 
       <!-- Tab 3: Sidebar (sbr) - embedding, knowledge search and validation -->

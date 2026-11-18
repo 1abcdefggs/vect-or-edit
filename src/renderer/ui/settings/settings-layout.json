@@ -13,7 +13,7 @@
       "icon": "edit_note",
       "labelKey": "tab_editor",
       "titleKey": "tip_tab_editor",
-      "cards": ["grp_editor_text", "grp_editor_display", "grp_documents", "autosave_menu_item", "grp_llm_assistant"]
+      "cards": ["autosave_menu_item", "grp_editor_text", "grp_llm_assistant", "grp_documents", "grp_editor_display"]
     },
     {
       "tab": "tabAiSearch",

@@ -26,6 +26,12 @@
   margin-right: 18px !important;
 }
 
+/* "Underline only" (renderLineHighlight 'line') is the one mode where Monaco draws the line without the
+   current-line-both class; it paints the theme's line background there too, so take it off. "Full line" ('all') keeps it. */
+.monaco-editor .view-overlays .current-line:not(.current-line-both) {
+  background-color: transparent !important;
+}
+
 .monaco-editor .margin-view-overlays .current-line-margin {
   border: 0 !important;
 }
@@ -593,4 +599,14 @@
 .monaco-ai-glyph-margin {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'%3E%3Cpath d='M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5h-2v-2h2zm0-4h-2V7h2z'/%3E%3C/svg%3E") no-repeat center center;
   background-size: 12px 12px;
-}
+}
+/* The tab row's sample in the settings page ("Using the tabs"): the real classes on the tab bar's surface, not interactive */
+.tab-usage-sample {
+  flex: none;
+  padding: 6px 8px 0;
+  margin-bottom: 8px;
+  background: var(--bg-card);
+  border-bottom: var(--border-width) solid var(--border-color);
+  border-radius: 6px 6px 0 0;
+  pointer-events: none;
+}

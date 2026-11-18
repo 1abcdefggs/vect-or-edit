@@ -126,6 +126,9 @@ function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {
   if (item.id === 'ed_font_size') {
     return document.getElementById('modalFontSizeSelect')?.closest('.setting-item') as HTMLElement;
   }
+  if (item.id === 'ed_bg_tone') {
+    return document.getElementById('modalEditorBgSelect')?.closest('.setting-item') as HTMLElement;
+  }
   if (item.id === 'sb_score_filter') {
     return document.getElementById('modalMinScoreInput')?.closest('.setting-item') as HTMLElement;
   }

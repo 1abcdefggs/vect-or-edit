@@ -29,6 +29,7 @@ import {
 } from './engine/knowledgeManager';
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { truncateAndNormalize } from '../shared/embeddingSpace';
+import { addUserFonts, listUserFonts, readUserFont, removeUserFont } from './userFonts';
 import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow, saveColorMode } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, snapshotOpeningWorkspace, restoreDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
@@ -154,6 +155,10 @@ if (!gotTheLock) {
     handleTrusted('app:hasApiKey', (_event, provider: unknown) => isApiKeyProvider(provider) ? hasStoredApiKey(provider) : false);
     handleTrusted('app:clearApiKey', (_event, provider: unknown) =>
       isApiKeyProvider(provider) ? clearApiKey(provider) : { success: false, error: 'Unknown provider.' });
+    handleTrusted('fonts:list', () => listUserFonts());
+    handleTrusted('fonts:add', () => addUserFonts());
+    handleTrusted('fonts:read', (_event, file: unknown) => readUserFont(file));
+    handleTrusted('fonts:remove', (_event, file: unknown) => removeUserFont(file));
     handleTrusted('app:getCursorBaseSize', () => getCursorBaseSize());
     handleTrusted('app:listGeminiModels', (_event, apiKey?: string) => listGeminiModels(apiKey));
     handleTrusted('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, undefined, payload.model));

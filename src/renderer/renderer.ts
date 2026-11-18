@@ -1,5 +1,6 @@
 import { t } from './core/i18n';
 import { icons } from './core/icons';
+import { renderTabSample } from './editor/tabs/tabRenderer.js';
 import { initStartupFlow, completeStartup, hideStartupLoader } from './core/startupManager';
 import { loadLocales } from './core/i18n';
 import { initSettings, loadSettingsFromBackend } from './ui/settings.js';
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 0.2. Immediately apply Locale (Ensures 3. LOCALE is ready and UI text is localized instantly)
   // Settings text placeholders first: loadLocales applies the locale to them as well
   renderStaticSettingsText();
+  renderTabSample();
   renderToggleSwitches();
   await loadLocales();
   // Shown after the locale is loaded, so the message is in the user's language

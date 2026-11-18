@@ -7,6 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.75] - 2026-11-19
+
+### Added
+- The line height in the settings is a row of four cards, each showing a few lines of sample text at its own ratio, so the spacing can be judged before choosing
+- The "Editor view (Monaco)" card in the settings has a description: it holds the basic display settings of Monaco, and the finer ones are in Editor Options in the right panel
+- A "Using the tabs" row in the settings' New documents card: how to close, rename, duplicate and create tabs, with a still picture of the tab row drawn from its own classes
+- The Gemini model table shows the output token limit next to the input limit ("1M / 64K") in a column named "IN / OUT" (its tooltip says IN is the input and OUT the output)
+- The Gemini model table has a Video purpose and a Gemini Omni series: the gemini-omni models were listed as text models under Other
+- The Gemini model table has a Music purpose for the Lyria models, which were listed as text models
+- The headings of the Gemini Omni, Lyria, Nano Banana and Deep Research series say what the models make, in one line under the name
+- Each column header of the Gemini model table has a tooltip that says what the column means (for example, that input / output are token limits)
+- A Latest mark in the notes column of the Gemini model table for the -latest aliases, and a filter on the notes column (NEW, Thinking, Latest)
+- The Deep Research models form a Deep Research series in the Gemini model table, instead of a series named after the first word "Deep"; its heading and the Gemini Omni heading do not say "(other)"
+
+### Fixed
+- The current line highlight "Underline only" no longer fills the line with the theme's line background; "Full line" keeps it
+- Three literal font sizes (the icon font, the settings tab icon and the settings nav icon) use the type-scale tokens, so the type-scale guard passes
+- A test of the Markdown preview line break and of the editor defaults no longer holds Japanese literals (written as escapes), so the English-invariants guard passes
+- Nano Banana models whose id has no "image" word are listed as image models, not text models, and their heading does not say "(other)"
+- Gemini models without a generation number (gemini-omni-1.1-flash, gemini-pro-latest) show their cost guide from the tier word in their id
+
+### Changed
+- The settings card "Writing view" (ja: 執筆画面) is named "Editor view (Monaco)" (ja: エディタ表示 (Monaco)) in the card, the Editor tab description and the tab tooltip, because its options are Monaco's
+- The settings' format of new documents says that a Markdown document can be previewed with the eye button in the tab row
+- The settings' new document name has one row of parts instead of a chip row and an order row: the row is the file name itself (each part shows its value, joined by - and followed by the extension) and replaces the example box; parts have a remove button and are moved by dragging (or Left/Right on a focused part), and the other parts have + buttons
+- The new-tab button in the editor tab row is labelled "New" (ja: 新規作成), and its tooltip says it creates a new document in a new tab
+- The settings' new document name explains that the name is used for the tab and the file name of documents made with + New
+- The Markdown preview button in the editor tab row shows only its icon and has no frame at rest, like + New in the same row; the label stays for screen readers
+- The Gemini model table's search field sits in the Model name column header, and the Model name column is about twice as wide
+- The Gemini model table's Tier column is renamed Cost and shows only High, Standard or Low (the tier name is already in the model name)
+- The model in use shows one In use button (使用中) in the place of Use; pressing it takes the choice back, so the action column keeps the width of one button
+- The model in use shows a check left of its name, where the eye reads first; the Use and In use button is narrower
+- The row of the model in use is tinted with the accent color and has an accent bar at the left, instead of the inverted (dark) surface that read as a group heading
+- GitHub light theme: the accent and button color is the darker green #1a7f37 (was #2ea44f), so a selected button shows white text at a contrast of 5.08 instead of black text on a bright green
+- Favorites only in the model table is a star button with the count in the header of the action column, above the stars of the rows, instead of a chip above the table
+- A model's own description from the Gemini API (English, as given) is the tooltip of its name in the model table
+- The cost column of the model table moves to the right end, next to the star and Use, so the cost is in sight when a model is chosen; the notes column comes before it
+- The expand button of the model table shows a diagonal double arrow (to the top right and the bottom left) instead of four corner brackets; the collapse mark points the arrows in
+- The Show model ID button moves from above the model table to the right of the search field in the name header, labelled "ID" (its tooltip gives the full name); the search placeholder reads "モデル名検索" / "Search model name"
+- The model ID is a smaller second line under the model name instead of a column of its own, so showing it adds no column; the list can no longer be sorted by ID (the name order is nearly the same)
+- The expand button fills the top right corner of the model table (the full height of the header row, flush with its right edge) instead of a small chip inside the cell padding
+- Group headings of the model table stick right under the header row at its measured height; the fixed 38px let a heading slide a few pixels under the taller header with the search field
+- Group headings in the model table start closer to the left edge (10px instead of 18px); the title and the note line up with the model names
+- The family headings of the model table use a light tint instead of a dark grey, so they are not mistaken for the inverted row in use
+- The model table text is larger in the same 46px rows: cells 16px, model ids and column labels 15px, buttons and the header search 14px, marks 13px, family titles 16px
+- The Purpose, limits and Cost columns of the model table are exactly as wide as their longest text, so their words do not wrap and the spare room goes to the name and notes
+- A model name in the model table breaks between words with even lines, and a bracketed part such as "(Apr-21-2026)" or "[Rerouted]" is never broken inside
+- The column header of the model table has bold labels in the text color and a 2px dark rule under it, so it reads apart from the family headings
+
+### Removed
+- The Remove button beside the In use mark in the model table (pressing In use does the same)
+- The Preview mark in the notes column of the Gemini model table ("preview" is already in the model id and name)
+
 ## [0.3.74] - 2026-11-18
 
 ### Added
@@ -28,6 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The system log panel fades out for a moment before it closes automatically, 5 seconds after start (not for a close by the user; reduced motion skips the fade)
 - The System log section in Settings explains that it is the same log as the log panel at the bottom of the window, and that its lines are real recorded events
 - The Settings left nav lights the setting row at the top of the page as well as its card, and an entry with its settings listed below has square bottom corners
+- The entries under a Settings left nav card line up with the card's right edge (no inset on the right)
 - The Settings left nav is one step darker than the page body, so the index and the content read as separate areas
 - The card headings of the Settings page use the same tone as the left nav, as a band across the top of each card
 - The logo, app name and version block at the top of the Settings page is removed, since the window already shows them

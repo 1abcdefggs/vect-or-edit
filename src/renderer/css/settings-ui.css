@@ -26,12 +26,6 @@
   color: var(--text-main);
 }
 
-/* Separator between heading and badge */
-.heading-badge-sep {
-  margin: 0 6px;
-  opacity: 0.6;
-}
-
 .settings-section-card > .setting-desc {
   margin-bottom: 12px;
   font-size: var(--fs-16);
@@ -215,14 +209,12 @@
 .provider-card { padding: 12px 8px; }
 .provider-card .provider-sub { font-size: var(--fs-10); color: var(--text-muted); }
 
+/* No frame of its own: a frame inside the card would narrow the model table by its padding and read as a card in a card */
 .provider-block {
   display: none;
   flex-direction: column;
   gap: 12px;
-  padding: 14px;
-  border-radius: 8px;
-  border: var(--border-width) solid var(--border-color);
-  background: var(--bg-card, rgba(255, 255, 255, 0.02));
+  margin-top: var(--spacing-md);
 }
 
 .provider-block .setting-item { border: none; padding: 0; }
@@ -807,7 +799,15 @@
 @media (max-width: 760px) { .help-page__nav { display: none; } }
 
 /* The theme cards take the full width of their row, under the label (the 4-column grid needs the room) */
-[data-setting-row]:has(> #modalThemeCards) { flex-direction: column; align-items: stretch; gap: var(--spacing-sm); }
+/* An inactive row dims its control; the reason is written in the text row after it, never by grey alone */
+[data-setting-row].is-inactive > :not([data-setting-text]) { opacity: 0.45; }
+.autosave-delay-custom { display: inline-flex; align-items: center; gap: var(--spacing-sm); }
+.autosave-delay-custom[hidden] { display: none; }
+.autosave-delay-reason { margin-top: calc(-1 * var(--spacing-sm)); color: var(--text-muted); }
+[data-setting-row]:has(> #modalThemeCards),
+[data-setting-row]:has(> #modalFontCards),
+[data-setting-row]:has(> #modalLineHeightCards),
+[data-setting-row]:has(> #modalToneCards) { flex-direction: column; align-items: stretch; gap: var(--spacing-sm); }
 
 /* Danger Zone: one red frame around the developer reset; the row inside has no frame of its own, so the frame is not cut */
 .danger-zone { margin-top: var(--spacing-sm); }
@@ -828,39 +828,101 @@
 
 /* New document name: the parts as chips, the chosen order below them, the free text and the example line */
 .doc-name-tokens { display: flex; flex-direction: column; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
-.doc-name-chips,
-.doc-name-order { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs); }
-.doc-name-order-item { display: inline-flex; align-items: center; gap: var(--spacing-xs); }
+.doc-name-parts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.doc-name-parts__label { font-size: var(--fs-12); }
 .doc-name-text { display: flex; flex-direction: column; gap: var(--spacing-xs); margin-top: var(--spacing-sm); }
 .doc-name-text[hidden] { display: none; }
 
-/* The sample file name: the largest text in the new document block, in a box, so the result is read first */
-.doc-name-example {
+/* New document name, drawn as the file name itself: chosen parts (value over the part's name) joined by "-", then the
+   extension. A piece is dragged onto another to move it; a part not chosen is a dashed + button under the box */
+.doc-name-file {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-md);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
   padding: var(--spacing-sm) var(--spacing-md);
   border: var(--border-width) solid var(--border-color);
   border-radius: 8px;
-}
-.doc-name-example__label { font-size: var(--fs-12); color: var(--text-muted); }
-.doc-name-example__name {
   font-family: var(--font-mono, ui-monospace, Consolas, monospace);
   font-size: var(--fs-16);
   font-weight: 600;
   color: var(--text-main);
-  overflow-wrap: anywhere;
 }
-
-/* New document name, tuned: the order row reads as one sequence (name, number, ...) with compact move arrows */
-.doc-name-order { gap: 6px; margin-top: 2px; }
-.doc-name-order > .setting-desc { font-size: var(--fs-12); }
-.doc-name-order-item {
-  padding: 2px 4px;
+.doc-name-file__sep,
+.doc-name-file__ext { color: var(--text-muted); }
+.doc-name-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 4px 2px 8px;
   border: var(--border-width) solid var(--border-color);
   border-radius: 6px;
-  font-size: var(--fs-13);
+  cursor: grab;
 }
-.doc-name-order-item button { min-width: 1.6rem; padding: 0 4px; }
+.doc-name-part__body { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.doc-name-part__value { overflow-wrap: anywhere; }
+.doc-name-part__value.is-empty { color: var(--text-muted); }
+.doc-name-part__name { font-family: var(--font-ui, inherit); font-size: var(--fs-12); font-weight: 400; color: var(--text-muted); }
+.doc-name-part button { min-width: 1.6rem; padding: 0 4px; font-family: var(--font-ui, inherit); }
+.doc-name-part:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 1px; }
+.doc-name-part.is-dragging { opacity: 0.5; }
+/* Where the dragged piece will land: the shared selection edge */
+.doc-name-part.is-drop-target { border-color: var(--sel-edge); box-shadow: inset 0 0 0 1px var(--sel-edge); }
+.doc-name-part-add { border-style: dashed; }
 
+/* Editor canvas choice: a Theme row, a Dark row and a Light row of cards (editorTonePicker.js). Cards reuse .theme-card, so the selected look comes from selection.css */
+.tone-groups { display: flex; flex-direction: column; gap: var(--spacing-md); }
+/* The generic row-control rule (.settings-modal-body .setting-row > :last-child) centres the control and pushes it to the end, which moved the legend and the rows off the label edge; the id outranks it */
+#modalToneCards { align-items: stretch; justify-content: flex-start; }
+.tone-group { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); align-items: start; gap: var(--spacing-sm); }
+.tone-group-title { padding-top: 8px; font-size: var(--fs-12); font-weight: 600; color: var(--text-muted); }
+.tone-card-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.tone-card { position: relative; }
+.tone-card-sample { align-items: center; justify-content: center; min-height: 2.6rem; font-size: var(--fs-14); text-align: center; }
+.tone-card-name { white-space: normal; }
+.tone-card-contrast { font-size: var(--fs-12); font-variant-numeric: tabular-nums; opacity: 0.85; }
+.tone-card-state { display: none; font-size: var(--fs-12); font-weight: 700; }
+.tone-card[aria-pressed="true"] .tone-card-state { display: inline; }
+.tone-legend { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--spacing-sm); }
+.tone-legend p { margin: 0; }
+.tone-status.is-override { color: var(--text-main); font-weight: 600; }
+#modalEditorBgSelect[hidden],
+#modalFontFamilySelect[hidden],
+#modalLineHeightSelect[hidden] { display: none; }
+
+/* Font family cards (fontFamilyPicker.js): each card draws its own typeface; the selected look comes from selection.css */
+.font-card-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.font-card { position: relative; }
+.font-card-sample { align-items: center; justify-content: center; min-height: 3.2rem; font-size: var(--fs-20); text-align: center; }
+.font-card-name { white-space: normal; }
+/* Line height cards (lineHeightPicker.js): each card sets its sample at its own ratio; the selected look comes from selection.css */
+.line-height-card-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.line-height-card-sample { display: block; padding: 8px; font-size: var(--fs-12); white-space: pre-line; }
+.line-height-card-name { white-space: normal; }
+@media (max-width: 720px) { .line-height-card-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.font-card-desc { font-size: var(--fs-12); color: var(--text-muted); white-space: normal; }
+@media (max-width: 720px) {
+  .tone-group { grid-template-columns: minmax(0, 1fr); }
+  .tone-card-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* AI chat inside the LLM assistant card: a sub-block under the LLM switch, set apart by a rule and its own title */
+.llm-chat-block { margin-top: var(--spacing-lg); padding-top: var(--spacing-md); border-top: var(--border-width) solid var(--border-color); }
+.llm-chat-title { display: flex; align-items: center; gap: var(--spacing-xs); margin-bottom: var(--spacing-sm); font-size: var(--fs-16); font-weight: 700; color: var(--text-main); }
+.provider-choice-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; margin-top: var(--spacing-sm); }
+.provider-choice-row[hidden], #aiProviderHint[hidden], #btnClearAiProvider[hidden] { display: none; }
+
+/* Added fonts: the card with its remove button below, and the add row under the cards */
+.font-card-cell { display: flex; flex-direction: column; gap: var(--spacing-xs); min-width: 0; }
+.font-card-cell > .font-card { flex: 1; }
+.font-card-remove { align-self: flex-start; }
+.font-add-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
+.font-add-row > .setting-desc { flex: 1 1 18rem; min-width: 0; }
+
+/* Delete the saved key: on its own line at the right end, set apart from the check button so the two are not pressed by mistake */
+.api-key-clear { display: flex; align-items: center; justify-content: flex-end; gap: var(--spacing-sm); margin-top: var(--spacing-md); padding-top: var(--spacing-sm); border-top: var(--border-width) solid var(--border-color); }
+.api-key-clear > .setting-desc { flex: 1 1 auto; min-width: 0; }
+.api-key-clear > .settings-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* The small heading above the provider choice */
+.llm-provider-title { margin-top: var(--spacing-sm); font-size: var(--fs-14); font-weight: 600; color: var(--text-main); }

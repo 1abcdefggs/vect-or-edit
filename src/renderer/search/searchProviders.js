@@ -26,7 +26,7 @@ export async function fetchAiSuggestions(query, provider) {
             score: 0.99,
             description: geminiRes.text,
             insertText: geminiRes.text,
-            provider: 'Google Gemini'
+            provider: 'Gemini'
           };
         }
       }

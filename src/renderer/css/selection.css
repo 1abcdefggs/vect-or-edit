@@ -25,9 +25,9 @@
   color: var(--sel-on-surface);
 }
 
-/* Provider-like list cards, catalogue rows, dropdown items: the same boxed selection */
+/* Provider-like list cards, catalogue rows, dropdown items: the same boxed selection.
+   The model table's row in use is not inverted: a dark row read as a group heading (model-list.css, owner 2026-11-19) */
 .ep-model-row.is-active > td,
-.ml-item.is-active,
 .ui-select-option.is-selected {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
@@ -36,7 +36,6 @@
 }
 
 .ep-model-row.is-active:hover > td,
-.ml-item.is-active:hover,
 .ui-select-option.is-selected:hover {
   background: var(--sel-surface);
   color: var(--sel-on-surface);

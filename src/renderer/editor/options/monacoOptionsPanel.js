@@ -69,6 +69,21 @@ function updateSummary() {
   let shown = 0;
   for (const row of state.rows.values()) if (!row.element.hidden) shown++;
   const changed = Object.keys(state.overrides).length;
+  // Each group heading shows its own count in the same form as the total: shown / all, and the changed ones when there are any
+  for (const { controls, countEl } of state.groups) {
+    if (!countEl) continue;
+    let groupShown = 0;
+    let groupChanged = 0;
+    for (const c of controls) {
+      if (!state.rows.get(c.path)?.element.hidden) groupShown++;
+      if (c.path in state.overrides) groupChanged++;
+    }
+    // Numbers in their own right-aligned cells, so the digits of every heading line up in columns
+    const parts = [];
+    if (groupChanged) parts.push(el('span', 'mo-group-changed', t('monaco_group_changed', { changed: groupChanged })));
+    parts.push(el('span', 'mo-group-num', String(groupShown)), el('span', 'mo-group-slash', '/'), el('span', 'mo-group-num', String(controls.length)));
+    countEl.replaceChildren(...parts);
+  }
   const count = document.getElementById('monacoOptionsCount');
   if (count) count.textContent = shown ? t('monaco_opts_count', { shown, total, changed }) : t('monaco_opts_empty');
   const resetAll = document.getElementById('btnMonacoOptionsResetAll');
@@ -200,6 +215,8 @@ function render() {
   for (const { group, controls } of groupControls(state.controls)) {
     const details = el('details', 'mo-group');
     const summary = el('summary', 'mo-group-title', t(`monaco_group_${group}`));
+    const countEl = el('span', 'mo-group-count', '');
+    summary.appendChild(countEl);
     details.appendChild(summary);
     const body = el('div', 'mo-group-body');
     for (const control of controls) {
@@ -210,7 +227,7 @@ function render() {
     }
     details.appendChild(body);
     list.appendChild(details);
-    state.groups.push({ details, controls });
+    state.groups.push({ details, controls, countEl });
   }
   applyFilter();
 }

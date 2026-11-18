@@ -137,6 +137,34 @@ describe('groupGeminiModels', () => {
     expect(all['gemini-3-argon']).toMatchObject({ tier: null, costGuide: null });
   });
 
+  it('groups Gemini Omni as its own video series, numbered or not, with the tier from the id', () => {
+    const groups = groupGeminiModels([M('gemini-omni-1.1-flash'), M('gemini-omni-flash-preview'), M('gemini-3-flash')]);
+    expect(groups.map((g) => g.key)).toEqual(['gemini-3', 'other-omni']);
+    const omni = groups[1];
+    expect(omni.brand).toEqual({ key: 'omni', label: 'Gemini Omni' });
+    expect(omni.models.map((m) => [m.name, m.purpose, m.costGuide])).toEqual([
+      ['gemini-omni-1.1-flash', 'video', 'standard'],
+      ['gemini-omni-flash-preview', 'video', 'standard']
+    ]);
+  });
+
+  it('treats Lyria as a music model in its own series', () => {
+    const [g] = groupGeminiModels([M('lyria-3-pro-preview', { displayName: 'Lyria 3 Pro Preview' })]);
+    expect(g.key).toBe('other-lyria');
+    expect(g.models[0]).toMatchObject({ purpose: 'music' });
+  });
+
+  it('treats Nano Banana as an image model also when its id has no "image" word', () => {
+    const [g] = groupGeminiModels([M('nano-banana-pro-preview', { displayName: 'Nano Banana Pro' })]);
+    expect(g.models[0]).toMatchObject({ brand: { key: 'nano-banana' }, purpose: 'image' });
+  });
+
+  it('reads the tier of an alias without a generation from its id, and marks it latest', () => {
+    const [g] = groupGeminiModels([M('gemini-pro-latest')]);
+    expect(g.models[0]).toMatchObject({ tier: 'pro', costGuide: 'high', latest: true });
+    expect(groupGeminiModels([M('gemini-3-flash')])[0].models[0].latest).toBe(false);
+  });
+
   it('treats transcription models as speech, not text', () => {
     const [g] = groupGeminiModels([M('gemini-3.5-transcribe'), M('gemini-3.5-flash')]);
     expect(g.models.map((m) => [m.name, m.purpose])).toEqual([['gemini-3.5-flash', 'text'], ['gemini-3.5-transcribe', 'speech']]);
@@ -168,7 +196,20 @@ describe('brandOf', () => {
 
   it('takes the first word of an unknown series and keeps the key to plain characters', () => {
     expect(brandOf('imagen-4', 'Imagen 4')).toEqual({ key: 'imagen', label: 'Imagen' });
+    expect(brandOf('deep-research-pro-preview', 'Deep Research Pro Preview')).toEqual({ key: 'deep-research', label: 'Deep Research' });
+    expect(brandOf('x-agent', 'Deep Research Agent')).toEqual({ key: 'deep-research', label: 'Deep Research' });
     expect(brandOf('x', '<b>Hack</b> 1').key).toMatch(/^[a-z0-9-]+$/);
     expect(brandOf('x', '')).toEqual({ key: 'other', label: '' });
+  });
+});
+
+describe('model description', () => {
+  it('keeps the API description on the view, trimmed, and leaves it empty when there is none', () => {
+    const views = groupGeminiModels([
+      { name: 'gemini-3.8-flash', displayName: 'Gemini 3.8 Flash', description: '  Fast model.  ', canGenerate: true },
+      { name: 'gemini-3.8-pro', displayName: 'Gemini 3.8 Pro', canGenerate: true }
+    ]).flatMap((g) => g.models);
+    expect(views.find((v) => v.name === 'gemini-3.8-flash')?.description).toBe('Fast model.');
+    expect(views.find((v) => v.name === 'gemini-3.8-pro')?.description).toBe('');
   });
 });

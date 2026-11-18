@@ -3,13 +3,17 @@ import { readStorage } from '../../core/storage.js';
 import { loadTheme, safeSetMonacoTheme, getStoredThemeSetting } from './themeLoader.js';
 import { buildThemeFromPalette, SKELETON_ACCENT } from './themeSkeleton.js';
 
+import { TONE_PAIRS, LEGACY_TONES, pairFor } from './editorTonePairs.js';
+
+const toneOf = ({ bg, fg, gutter, lineNo, isDark }) => ({ bg, fg, gutter, lineNo, isDark });
+
+// One entry per tone, built from the pair table (editorTonePairs.js). The old OLED and Snow values stay as names of the crisp / crisp pairs.
 export const TONE_COLORS = {
   default: null,
-  oled: { bg: '#000000', fg: '#f8fafc', gutter: '#000000', lineNo: '#475569', isDark: true },
-  dark_oled: { bg: '#000000', fg: '#f8fafc', gutter: '#000000', lineNo: '#475569', isDark: true },
-  snow: { bg: '#FFFFFF', fg: '#0f172a', gutter: '#f8fafc', lineNo: '#94a3b8', isDark: false },
-  light_snow: { bg: '#FFFFFF', fg: '#0f172a', gutter: '#f8fafc', lineNo: '#94a3b8', isDark: false },
+  ...Object.fromEntries(TONE_PAIRS.map((pair) => [pair.key, toneOf(pair)])),
+  ...Object.fromEntries(Object.keys(LEGACY_TONES).map((legacy) => [legacy, toneOf(pairFor(legacy))]))
 };
+
 
 // loadTheme resets Monaco and the editor variables to the theme's own; a non-default canvas tone is applied again on top
 if (typeof window !== 'undefined') {

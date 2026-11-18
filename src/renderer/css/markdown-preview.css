@@ -5,6 +5,24 @@
   flex-shrink: 0;
   white-space: nowrap;
   line-height: 1;
+  /* No frame at rest, like + New in the same row (owner 2026-11-19); hover tints it; while the preview is shown .toolbar-btn-active marks it */
+  border-color: transparent;
+  position: relative;
+}
+
+.markdown-preview-toggle:not(.is-unavailable):hover {
+  background: var(--tab-btn-hover-bg);
+  color: var(--tab-btn-hover-fg);
+}
+
+/* Icon only (owner 2026-11-19): the label stays for screen readers; the tooltip names the button */
+.markdown-preview-toggle .markdown-preview-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 /* Icon and label share one line height, so they sit on the same centre line; the icon uses the shared icon size */

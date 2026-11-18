@@ -19,7 +19,14 @@ import { initEmbeddingSourceController } from './embeddingSourceController.js';
 import settingsLayout from './settings-layout.json';
 import { renderThemeCards, fitThemeCards } from '../components/themeCards.js';
 import { pickCurrentCard } from './settingsNavCurrent.js';
-import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
+import { fillToneSelect, renderToneCards } from './editorTonePicker.js';
+import { renderFontCards } from './fontFamilyPicker.js';
+import { renderLineHeightCards } from './lineHeightPicker.js';
+import { createUserFontManager } from './userFontManager.js';
+import { normalizeLineHeight } from './lineHeightOptions.js';
+import { FONT_SIZE_MAX, FONT_SIZE_MIN, showFontSize } from './fontSizeOptions.js';
+import { normalizeTone } from '../../editor/core/editorTonePairs.js';
+import { clearApiKeyFor, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
 import { bindSaveLocationControls } from './saveLocation.js';
 import { getDefaultDocumentFormat, getDefaultNameTokens } from '../../editor/tabs/tabState.js';
 import { confirmClose } from '../notifications/closeGuard.js';
@@ -251,85 +258,96 @@ export function initSettings(updateEditorCb) {
 
   // Name new documents start with (Doc, Untitled or Memo, in the UI language); the number is added by the editor
   const documentNameSelect = document.getElementById('modalDocumentNameSelect');
-  // The name's base, its parts (chosen and ordered), the free text, and the example line that shows the result
-  const documentNameExample = document.querySelector('[data-doc-name-example]');
+  // The name's base, its parts (chosen and ordered) and the free text. The parts are drawn as the file name itself.
   const documentNameTokens = document.getElementById('documentNameTokens');
   const documentNameTextRow = document.getElementById('documentNameTextRow');
   const documentNameText = document.getElementById('documentNameText');
 
-  const updateDocumentNameExample = () => {
-    if (!documentNameExample || !documentNameSelect) return;
-    const id = documentNameSelect.value || DEFAULTS.DOCUMENT_NAME;
-    const format = documentFormatSelect?.value || getDefaultDocumentFormat();
-    const base = composeName(getDefaultNameTokens(), {
-      name: t(`doc_name_${id}`), seq: 1, now: new Date(), text: documentNameText?.value ?? ''
-    });
-    // The sample file name is the large part: it is what a new document will be called
-    const label = document.createElement('span');
-    label.className = 'doc-name-example__label';
-    label.textContent = t('doc_name_example_label');
-    const name = document.createElement('span');
-    name.className = 'doc-name-example__name';
-    name.textContent = `${base}${DOCUMENT_FORMATS[format].extension}`;
-    documentNameExample.replaceChildren(label, name);
-  };
-
-  const makeButton = (label, onClick, { pressed = null, disabled = false } = {}) => {
+  const makeButton = (label, onClick) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ep-chip';
     btn.textContent = label;
-    if (pressed !== null) btn.setAttribute('aria-pressed', String(pressed));
-    btn.disabled = disabled;
     btn.addEventListener('click', onClick);
     return btn;
   };
 
-  // Chips switch a part on or off (added at the end); the order row moves the chosen parts
-  const renderDocumentNameTokens = () => {
-    if (!documentNameTokens) return;
+  // The file name a new document gets, as a row of pieces: each chosen part shows its value (with its name under it),
+  // joined by "-" and followed by the extension. A piece is dragged onto another to move it there (or Left/Right on a
+  // focused piece). The last piece has no remove button, so no control is ever dead. Parts not chosen are + buttons.
+  const renderDocumentName = () => {
+    if (!documentNameTokens || !documentNameSelect) return;
     const chosen = getDefaultNameTokens();
+    const id = documentNameSelect.value || DEFAULTS.DOCUMENT_NAME;
+    const format = documentFormatSelect?.value || getDefaultDocumentFormat();
+    const parts = { name: t(`doc_name_${id}`), seq: 1, now: new Date(), text: documentNameText?.value ?? '' };
     const saveTokens = (next) => setAndSync(STORAGE_KEYS.DOCUMENT_NAME_TOKENS, JSON.stringify(sanitizeNameTokens(next)));
-    const chips = document.createElement('div');
-    chips.className = 'doc-name-chips';
-    for (const token of NAME_TOKENS) {
-      const on = chosen.includes(token);
-      chips.append(makeButton(t(`name_token_${token}`), () => {
-        saveTokens(on ? chosen.filter(x => x !== token) : [...chosen, token]);
-        renderAll();
-      }, { pressed: on }));
-    }
-    const order = document.createElement('div');
-    order.className = 'doc-name-order';
-    const orderLabel = document.createElement('span');
-    orderLabel.className = 'setting-desc';
-    orderLabel.textContent = t('name_order_label');
-    order.append(orderLabel);
+    const apply = (next) => () => { saveTokens(next); renderDocumentName(); };
+    const heading = document.createElement('div');
+    heading.className = 'setting-desc doc-name-parts__label';
+    heading.textContent = t('name_parts_label');
+    const file = document.createElement('div');
+    file.className = 'doc-name-file';
     chosen.forEach((token, index) => {
+      const name = t(`name_token_${token}`);
+      const value = composeName([token], parts);
+      if (index > 0) file.append(Object.assign(document.createElement('span'), { className: 'doc-name-file__sep', textContent: '-' }));
       const item = document.createElement('span');
-      item.className = 'doc-name-order-item';
-      const move = (to) => () => {
-        const next = [...chosen];
-        [next[index], next[to]] = [next[to], next[index]];
-        saveTokens(next);
-        renderAll();
-      };
-      item.append(
-        makeButton('‹', move(index - 1), { disabled: index === 0 }),
-        Object.assign(document.createElement('span'), { textContent: t(`name_token_${token}`) }),
-        makeButton('›', move(index + 1), { disabled: index === chosen.length - 1 })
+      item.className = 'doc-name-part';
+      const body = document.createElement('span');
+      body.className = 'doc-name-part__body';
+      body.append(
+        Object.assign(document.createElement('span'), { className: `doc-name-part__value${value ? '' : ' is-empty'}`, textContent: value || '\u2026' }),
+        Object.assign(document.createElement('span'), { className: 'doc-name-part__name', textContent: name })
       );
-      item.querySelectorAll('button')[0].setAttribute('aria-label', t('name_token_earlier'));
-      item.querySelectorAll('button')[1].setAttribute('aria-label', t('name_token_later'));
-      order.append(item);
+      item.append(body);
+      const swap = (to) => { const next = [...chosen]; [next[index], next[to]] = [next[to], next[index]]; return next; };
+      item.tabIndex = 0;
+      item.setAttribute('aria-label', `${name} ${value}: ${t('name_part_keys')}`);
+      item.addEventListener('keydown', (e) => {
+        const to = e.key === 'ArrowLeft' ? index - 1 : e.key === 'ArrowRight' ? index + 1 : -1;
+        if (to < 0 || to >= chosen.length) return;
+        e.preventDefault();
+        apply(swap(to))();
+        documentNameTokens.querySelectorAll('.doc-name-part')[to]?.focus();
+      });
+      if (chosen.length > 1) {
+        const btn = makeButton('\u00d7', apply(chosen.filter(x => x !== token)));
+        btn.classList.add('doc-name-part__remove');
+        btn.setAttribute('aria-label', `${name}: ${t('name_token_remove')}`);
+        item.append(btn);
+      }
+      item.draggable = true;
+      item.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', String(index));
+        e.dataTransfer.effectAllowed = 'move';
+        item.classList.add('is-dragging');
+      });
+      item.addEventListener('dragend', () => item.classList.remove('is-dragging'));
+      item.addEventListener('dragover', (e) => { e.preventDefault(); item.classList.add('is-drop-target'); });
+      item.addEventListener('dragleave', (e) => { if (!item.contains(e.relatedTarget)) item.classList.remove('is-drop-target'); });
+      item.addEventListener('drop', (e) => {
+        e.preventDefault();
+        item.classList.remove('is-drop-target');
+        const from = Number(e.dataTransfer.getData('text/plain'));
+        if (!Number.isInteger(from) || from === index) return;
+        const next = [...chosen];
+        const [moved] = next.splice(from, 1);
+        next.splice(index, 0, moved);
+        apply(next)();
+      });
+      file.append(item);
     });
-    documentNameTokens.replaceChildren(chips, order);
+    file.append(Object.assign(document.createElement('span'), { className: 'doc-name-file__ext', textContent: DOCUMENT_FORMATS[format].extension }));
+    const add = document.createElement('div');
+    add.className = 'doc-name-parts';
+    for (const token of NAME_TOKENS.filter(x => !chosen.includes(x))) {
+      const btn = makeButton(`\uff0b ${t(`name_token_${token}`)}`, apply([...chosen, token]));
+      btn.classList.add('doc-name-part-add');
+      add.append(btn);
+    }
+    documentNameTokens.replaceChildren(heading, file, ...(add.childElementCount ? [add] : []));
     if (documentNameTextRow) documentNameTextRow.hidden = !chosen.includes('text');
-  };
-
-  const renderAll = () => {
-    renderDocumentNameTokens();
-    updateDocumentNameExample();
   };
 
   if (documentNameSelect) {
@@ -338,16 +356,16 @@ export function initSettings(updateEditorCb) {
       documentNameText.value = readStorage(STORAGE_KEYS.DOCUMENT_NAME_TEXT) || '';
       documentNameText.addEventListener('input', () => {
         setAndSync(STORAGE_KEYS.DOCUMENT_NAME_TEXT, documentNameText.value);
-        updateDocumentNameExample();
+        renderDocumentName();
       });
     }
     documentNameSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.DOCUMENT_NAME, documentNameSelect.value);
-      updateDocumentNameExample();
+      renderDocumentName();
     });
-    documentFormatSelect?.addEventListener('change', updateDocumentNameExample);
-    window.addEventListener('app:languageChanged', renderAll);
-    renderAll();
+    documentFormatSelect?.addEventListener('change', renderDocumentName);
+    window.addEventListener('app:languageChanged', renderDocumentName);
+    renderDocumentName();
   }
 
   // Whether × asks before closing; unsaved tabs are asked about either way
@@ -385,6 +403,13 @@ export function initSettings(updateEditorCb) {
 
   const modalFontFamilySelect = document.getElementById('modalFontFamilySelect');
   const modalFontSizeSelect = document.getElementById('modalFontSizeSelect');
+  const modalFontSizeInput = document.getElementById('modalFontSizeInput');
+  const sizeControls = { toolbarSelect: fontSizeSelect, modalSelect: modalFontSizeSelect, input: modalFontSizeInput };
+  if (modalFontSizeInput) {
+    modalFontSizeInput.min = String(FONT_SIZE_MIN);
+    modalFontSizeInput.max = String(FONT_SIZE_MAX);
+    modalFontSizeInput.addEventListener('change', handleEditorSettingChange);
+  }
   const modalLineHeightSelect = document.getElementById('modalLineHeightSelect');
   const modalLangSelect = document.getElementById('modalLangSelect');
 
@@ -495,7 +520,7 @@ export function initSettings(updateEditorCb) {
     const defaultFont = DEFAULTS.FONT_FAMILY;
     const fontFamily = fontFamilySelect?.value || modalFontFamilySelect?.value || defaultFont;
     const fontSize = parseInt(fontSizeSelect?.value || modalFontSizeSelect?.value || String(DEFAULTS.FONT_SIZE), 10);
-    const lineHeight = parseInt(modalLineHeightSelect?.value || String(DEFAULTS.LINE_HEIGHT), 10);
+    const lineHeight = normalizeLineHeight(modalLineHeightSelect?.value) ?? DEFAULTS.LINE_HEIGHT;
     const wordWrap = modalWordWrapSelect?.value || 'on';
     const lineNumbers = modalLineNumbersSelect?.value || 'on';
     const renderLineHighlight = modalLineHighlightSelect?.value || EDITOR_DEFAULTS.renderLineHighlight;
@@ -528,10 +553,7 @@ export function initSettings(updateEditorCb) {
       fontFamilySelect.value = fontFamily;
       modalFontFamilySelect.value = fontFamily;
     }
-    if (fontSizeSelect && modalFontSizeSelect) {
-      fontSizeSelect.value = String(fontSize);
-      modalFontSizeSelect.value = String(fontSize);
-    }
+    showFontSize(fontSize, sizeControls);
     if (quickEditorToneSelect && modalEditorBgSelect) {
       quickEditorToneSelect.value = editorBgTone;
       modalEditorBgSelect.value = editorBgTone;
@@ -574,11 +596,40 @@ export function initSettings(updateEditorCb) {
   const modalCustomBgPicker = document.getElementById('modalCustomBgPicker');
   const modalCustomFgPicker = document.getElementById('modalCustomFgPicker');
 
-  const savedBgTone = readStorage(STORAGE_KEYS.EDITOR_BG_TONE);
+  // The choices of both lists come from editorTonePairs.js; they must exist before a saved value is put back
+  fillToneSelect(modalEditorBgSelect, 'opt_bg_default');
+  fillToneSelect(quickEditorToneSelect);
+  const savedBgTone = normalizeTone(readStorage(STORAGE_KEYS.EDITOR_BG_TONE));
   if (savedBgTone) {
     if (modalEditorBgSelect) modalEditorBgSelect.value = savedBgTone;
     if (quickEditorToneSelect) quickEditorToneSelect.value = savedBgTone;
   }
+  let lastTone = modalEditorBgSelect?.value || 'default';
+  const toneStatusEl = document.getElementById('editorToneStatus');
+  const toneCardsEl = document.getElementById('modalToneCards');
+  const toneCards = toneCardsEl
+    ? renderToneCards(toneCardsEl, {
+      getTone: () => modalEditorBgSelect?.value,
+      statusEl: toneStatusEl,
+      onPick: (tone) => {
+        if (!modalEditorBgSelect || modalEditorBgSelect.value === tone) return;
+        modalEditorBgSelect.value = tone;
+        modalEditorBgSelect.dispatchEvent(new Event('change'));
+      }
+    })
+    : null;
+  const syncToneTitle = () => {
+    if (quickEditorToneSelect && toneStatusEl) quickEditorToneSelect.title = toneStatusEl.textContent;
+  };
+  syncToneTitle();
+  window.addEventListener('app:languageChanged', () => {
+    fillToneSelect(modalEditorBgSelect, 'opt_bg_default');
+    fillToneSelect(quickEditorToneSelect);
+    toneCards?.rebuild();
+    syncToneTitle();
+  });
+  // The first card shows the theme's own editor colours, so it follows a theme change
+  window.addEventListener('app:themeApplied', () => toneCards?.rebuild());
 
   const savedCustomBg = readStorage(STORAGE_KEYS.CUSTOM_EDITOR_BG) || '#1e1e2e';
   const savedCustomFg = readStorage(STORAGE_KEYS.CUSTOM_EDITOR_FG) || '#cdd6f4';
@@ -592,13 +643,35 @@ export function initSettings(updateEditorCb) {
     if (fontFamilySelect) fontFamilySelect.value = savedFont;
     if (modalFontFamilySelect) modalFontFamilySelect.value = savedFont;
   }
+  const fontCardsEl = document.getElementById('modalFontCards');
+  let userFontManager = null;
+  const fontCards = fontCardsEl && modalFontFamilySelect
+    ? renderFontCards(fontCardsEl, modalFontFamilySelect, { onRemove: (file) => userFontManager?.remove(file) })
+    : null;
+  // Fonts added from the PC: load them, list them as options, then redraw the cards and let the editor take the font
+  userFontManager = createUserFontManager({
+    selects: [fontFamilySelect, modalFontFamilySelect],
+    onChange: () => {
+      fontCards?.rebuild();
+      applyEditorSettings();
+    }
+  });
+  userFontManager.reload();
+  document.getElementById('btnAddFonts')?.addEventListener('click', () => userFontManager.add());
+  // The toolbar select changes the settings select by code (no event), so refresh after both selects have been synced
+  [fontFamilySelect, modalFontFamilySelect].forEach((el) => {
+    el?.addEventListener('change', () => queueMicrotask(() => fontCards?.refresh()));
+  });
+  window.addEventListener('app:languageChanged', () => fontCards?.rebuild());
   const savedSize = readStorage(STORAGE_KEYS.FONT_SIZE);
-  if (savedSize) {
-    if (fontSizeSelect) fontSizeSelect.value = savedSize;
-    if (modalFontSizeSelect) modalFontSizeSelect.value = savedSize;
-  }
+  showFontSize(savedSize || DEFAULTS.FONT_SIZE, sizeControls);
   const savedLineHeight = readStorage(STORAGE_KEYS.LINE_HEIGHT);
-  if (savedLineHeight && modalLineHeightSelect) modalLineHeightSelect.value = savedLineHeight;
+  const restoredLineHeight = normalizeLineHeight(savedLineHeight);
+  if (restoredLineHeight && modalLineHeightSelect) modalLineHeightSelect.value = String(restoredLineHeight);
+  const lineHeightCardsEl = document.getElementById('modalLineHeightCards');
+  const lineHeightCards = lineHeightCardsEl && modalLineHeightSelect ? renderLineHeightCards(lineHeightCardsEl, modalLineHeightSelect) : null;
+  modalLineHeightSelect?.addEventListener('change', () => lineHeightCards?.refresh());
+  window.addEventListener('app:languageChanged', () => lineHeightCards?.rebuild());
   const savedWordWrap = readStorage(STORAGE_KEYS.WORD_WRAP);
   if (savedWordWrap && modalWordWrapSelect) modalWordWrapSelect.value = savedWordWrap;
   const savedLineNumbers = readStorage(STORAGE_KEYS.LINE_NUMBERS);
@@ -646,19 +719,27 @@ export function initSettings(updateEditorCb) {
     } else if (e.target === modalFontFamilySelect && fontFamilySelect) {
       fontFamilySelect.value = modalFontFamilySelect.value;
     }
-    if (e.target === fontSizeSelect && modalFontSizeSelect) {
-      modalFontSizeSelect.value = fontSizeSelect.value;
-    } else if (e.target === modalFontSizeSelect && fontSizeSelect) {
-      fontSizeSelect.value = modalFontSizeSelect.value;
-    }
+    // The size can come from the toolbar, a preset segment or the number input; show it in all three
+    const sizeSource = [fontSizeSelect, modalFontSizeSelect, modalFontSizeInput].find((el) => el === e.target);
+    if (sizeSource && sizeSource.value !== '') showFontSize(sizeSource.value, sizeControls);
     if (e.target === quickEditorToneSelect && modalEditorBgSelect) {
       modalEditorBgSelect.value = quickEditorToneSelect.value;
-      const selectedOption = quickEditorToneSelect.options[quickEditorToneSelect.selectedIndex];
-      if (selectedOption) showToast(t('toast_editor_tone', { tone: selectedOption.text }), 'info');
     } else if (e.target === modalEditorBgSelect && quickEditorToneSelect) {
       quickEditorToneSelect.value = modalEditorBgSelect.value;
     }
+    // A chosen colour pair overrides the theme: say so once, when it takes over from "Match theme"; otherwise name the new tone
+    const tone = modalEditorBgSelect?.value;
+    if (tone && tone !== lastTone) {
+      if (lastTone === 'default') showToast(t('toast_editor_override'), 'info');
+      else if (e.target === quickEditorToneSelect) {
+        const selectedOption = quickEditorToneSelect.options[quickEditorToneSelect.selectedIndex];
+        if (selectedOption) showToast(t('toast_editor_tone', { tone: selectedOption.text }), 'info');
+      }
+      lastTone = tone;
+    }
     applyEditorSettings();
+    toneCards?.refresh();
+    syncToneTitle();
   }
 
   [quickCustomBgPicker, quickCustomFgPicker, modalCustomBgPicker, modalCustomFgPicker].forEach(el => {
@@ -759,6 +840,11 @@ export function initSettings(updateEditorCb) {
       if (!input) return;
       if (!input.dataset.defaultPlaceholder) input.dataset.defaultPlaceholder = input.placeholder || '';
       input.placeholder = isApiKeyConfigured(provider) ? KEY_SET_PLACEHOLDER : input.dataset.defaultPlaceholder;
+      // The delete button works only while a key is saved; when it does not, the reason is written beside it
+      const clearBtn = document.querySelector(`[data-key-clear="${provider}"]`);
+      const reason = document.querySelector(`[data-key-clear-reason="${provider}"]`);
+      if (clearBtn) clearBtn.disabled = !isApiKeyConfigured(provider);
+      if (reason) reason.textContent = isApiKeyConfigured(provider) ? '' : t('key_clear_none');
     });
   };
   refreshApiKeyStatus().then(() => {
@@ -774,10 +860,12 @@ export function initSettings(updateEditorCb) {
     if (!result.success) {
       input.setCustomValidity(result.error || 'Unable to save API key securely.');
       input.reportValidity();
+      showToast(result.error || 'Unable to save API key securely.', 'warning');
       return false;
     }
     input.setCustomValidity('');
     input.value = '';
+    if (result.notice) showToast(result.notice, 'warning');
     showKeyState();
     window.dispatchEvent(new Event('app:settingsChanged'));
     return true;
@@ -793,6 +881,10 @@ export function initSettings(updateEditorCb) {
       updateAiProviderVisibility(val);
       // choiceControls.js handles .active class and button rendering
     });
+    document.getElementById('btnClearAiProvider')?.addEventListener('click', () => {
+      modalAiProviderSelect.value = 'none';
+      modalAiProviderSelect.dispatchEvent(new Event('change'));
+    });
   }
 
   function updateAiProviderVisibility(provider) {
@@ -800,6 +892,12 @@ export function initSettings(updateEditorCb) {
     if (geminiSettingsBlock) geminiSettingsBlock.style.display = provider === 'gemini' ? 'flex' : 'none';
     if (openaiSettingsBlock) openaiSettingsBlock.style.display = provider === 'openai' ? 'flex' : 'none';
     if (claudeSettingsBlock) claudeSettingsBlock.style.display = provider === 'claude' ? 'flex' : 'none';
+    // With no service chosen, say so in text and hide the button that clears the choice
+    const chosen = ['gemini', 'openai', 'claude'].includes(provider);
+    const hint = document.getElementById('aiProviderHint');
+    const clearBtn = document.getElementById('btnClearAiProvider');
+    if (hint) hint.hidden = chosen;
+    if (clearBtn) clearBtn.hidden = !chosen;
   }
 
   const btnFetchGeminiModels = document.getElementById('btnFetchGeminiModels');
@@ -950,28 +1048,34 @@ export function initSettings(updateEditorCb) {
   initApiKeyInput('.api-key-field', 'modalOpenAiKeyInput', 'btnToggleOpenAiKeyVisibility');
   initApiKeyInput('.api-key-field', 'modalClaudeKeyInput', 'btnToggleClaudeKeyVisibility');
 
-  // Clear API Keys from Editor Settings Tab
-  const btnEditorClearApiKey = document.getElementById('btnEditorClearApiKey');
-  if (btnEditorClearApiKey) {
-    btnEditorClearApiKey.addEventListener('click', async () => {
-      const confirmed = await showConfirmModal({ title: t('api_clear_title'), message: t('api_clear_confirm'), type: 'warning', confirmText: t('api_keys_clear_btn') });
+  // Delete the stored key of one service, from the button under its key field
+  document.querySelectorAll('[data-key-clear]').forEach((button) => {
+    const provider = button.dataset.keyClear;
+    button.addEventListener('click', async () => {
+      const service = modalAiProviderSelect?.querySelector(`option[value="${provider}"]`)?.textContent.trim() || provider;
+      const confirmed = await showConfirmModal({
+        title: t('api_clear_title', { service }),
+        message: t('api_clear_confirm', { service }),
+        type: 'warning',
+        confirmText: t('btn_key_clear_one')
+      });
       if (!confirmed) return;
 
-      // All keys live in the main process (encrypted files), so remove them there.
-      const clearRes = await clearAllApiKeys();
+      // The key lives in the main process (an encrypted file), so it is removed there
+      const clearRes = await clearApiKeyFor(provider);
       if (!clearRes.success) {
         showToast(`${t('api_clear_failed')}: ${clearRes.error || 'unknown error'}`, 'error');
         return;
       }
-      if (modalGeminiKeyInput) modalGeminiKeyInput.value = '';
-      if (modalOpenAiKeyInput) modalOpenAiKeyInput.value = '';
-      if (modalClaudeKeyInput) modalClaudeKeyInput.value = '';
+      if (keyInputs[provider]) keyInputs[provider].value = '';
+      const resultEl = document.querySelector(`[data-key-check-result="${provider}"]`);
+      if (resultEl) resultEl.textContent = '';
       showKeyState();
       // Recomputes modelConfigured, which turns the LLM master off when no key remains.
       window.dispatchEvent(new Event('app:settingsChanged'));
-      showToast(t('api_clear_done'), 'success');
+      showToast(t('api_clear_done', { service }), 'success');
     });
-  }
+  });
 
   // The model is already on disk (downloaded in an earlier run or in setup): no download button, say what to do next
   if (btnInitLocalAi && getDownloadedModelIds().has(getActiveModelId())) {
@@ -1096,8 +1200,12 @@ export function initSettings(updateEditorCb) {
     const tops = navCards.map(card => card.getBoundingClientRect().top - bodyTop);
     const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
     setNavCurrent(pickCurrentCard(tops, 24, atBottom));
-    const rowTops = navRows.map(({ row }) => row.getBoundingClientRect().top - bodyTop);
-    setNavRowCurrent(navRows.length ? pickCurrentCard(rowTops, 24, atBottom) : -1);
+    // A row that is not shown (for example the custom colours while no custom colour is chosen) has no place in the nav
+    navRows.forEach(({ row, button }) => { button.parentElement.hidden = row.offsetParent === null; });
+    const shown = navRows.map((entry, index) => ({ ...entry, index })).filter(({ row }) => row.offsetParent !== null);
+    const rowTops = shown.map(({ row }) => row.getBoundingClientRect().top - bodyTop);
+    const picked = shown.length ? pickCurrentCard(rowTops, 24, atBottom) : -1;
+    setNavRowCurrent(picked === -1 ? -1 : shown[picked].index);
   }
 
   // One scroll listener for the page, however often the nav is rebuilt
@@ -1105,6 +1213,8 @@ export function initSettings(updateEditorCb) {
     const body = settingsModal?.querySelector('.settings-modal-body');
     if (!body || navScrollBound) return;
     navScrollBound = true;
+    // The custom colour row appears and goes with the background choice, so the nav follows it
+    document.getElementById('modalEditorBgSelect')?.addEventListener('change', () => requestAnimationFrame(updateNavCurrent));
     body.addEventListener('scroll', () => {
       if (navFrame) return;
       navFrame = requestAnimationFrame(() => {
@@ -1266,9 +1376,7 @@ export function initSettings(updateEditorCb) {
     const toggle = document.getElementById('btnEditorOptionsToggle');
     if (toggle && toggle.getAttribute('aria-pressed') !== 'true') toggle.click();
   };
-  ['btnOpenEditorOptions', 'btnWritingOptionPanel', 'btnWritingMonacoPanel'].forEach((id) => {
-    document.getElementById(id)?.addEventListener('click', openEditorOptionsPanel);
-  });
+  document.getElementById('btnOpenEditorOptions')?.addEventListener('click', openEditorOptionsPanel);
 
   // Keyboard shortcut Esc to return to editor (same confirmation as the back button)
   window.addEventListener('keydown', (e) => {
