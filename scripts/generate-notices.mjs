@@ -86,13 +86,6 @@ const BUNDLED_ASSETS = [
     note: 'Modified: subsetted to the icons in scripts/icon-font/icon-names.txt, FILL and GRAD pinned to 0. Full licence text follows.',
     licenseFile: 'src/renderer/assets/fonts/LICENSE-MaterialSymbols.txt'
   },
-  {
-    // Not bundled: loaded at runtime from Google Fonts (see the CSP and the font links in src/renderer/index.html)
-    name: 'UI and editor fonts (Noto Sans JP, Noto Serif JP, Source Code Pro, Source Sans 3, Source Serif 4, Cascadia Code)',
-    license: 'SIL Open Font License 1.1 (per family on Google Fonts)',
-    source: 'https://fonts.google.com',
-    note: 'Not bundled. Loaded at runtime from Google Fonts.'
-  }
 ];
 
 parts.push('='.repeat(78), 'Bundled and runtime-loaded assets', '');

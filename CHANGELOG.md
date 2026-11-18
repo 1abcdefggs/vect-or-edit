@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- The text fonts (Source Serif 4, Noto Serif JP, Source Sans 3, Noto Sans JP, Source Code Pro, Cascadia Code) are bundled with the app instead of loaded from Google Fonts, so text keeps its typeface offline
+
+### Removed
+- Google Fonts hosts from the outbound allowlist and the page security policy
+
 ## [0.3.72] - 2026-11-17
 
 ### Changed

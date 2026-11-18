@@ -16,13 +16,11 @@ const { decideEgress, withAiEgress, installEgressPolicy, AI_HOSTS } = await impo
 const packaged = { zone: 'app' as const, isDev: false, fromMain: true, openAiHosts: new Set<string>() };
 
 describe('decideEgress (outbound allowlist)', () => {
-  it('allows the embedding model and font hosts', () => {
+  it('allows the embedding model hosts', () => {
     for (const url of [
       'https://huggingface.co/Xenova/multilingual-e5-small/resolve/main/config.json',
       'https://cdn-lfs.huggingface.co/repos/x',
-      'https://cas-bridge.xethub.hf.co/x',
-      'https://fonts.googleapis.com/css2?family=Noto+Sans+JP',
-      'https://fonts.gstatic.com/s/x.woff2'
+      'https://cas-bridge.xethub.hf.co/x'
     ]) expect(decideEgress(url, packaged), url).toBe(true);
   });
 
@@ -33,6 +31,9 @@ describe('decideEgress (outbound allowlist)', () => {
       'https://evilhuggingface.co/',
       'https://huggingface.co.evil.com/',
       'https://api.github.com/repos/x/y/releases/latest',
+      // Fonts are bundled (src/renderer/css/text-fonts.css), so Google Fonts is no longer an exit
+      'https://fonts.googleapis.com/css2?family=Noto+Sans+JP',
+      'https://fonts.gstatic.com/s/x.woff2',
       'not a url'
     ]) expect(decideEgress(url, packaged), url).toBe(false);
   });
