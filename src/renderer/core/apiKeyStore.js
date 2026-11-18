@@ -6,6 +6,8 @@
  */
 import { STORAGE_KEYS } from './constants.js';
 import { readStorage, removeStorage } from './storage.js';
+import { KEY_PREFIXES, checkApiKey } from './apiKeyCheck.js';
+import { t } from './i18n.js';
 
 export const API_KEY_PROVIDERS = ['gemini', 'openai', 'claude'];
 
@@ -44,9 +46,27 @@ export async function refreshApiKeyStatus() {
 export async function saveApiKey(provider, apiKey) {
   const api = window.engineAPI;
   if (!api?.saveApiKey) return { success: false, error: 'Secure key storage needs the desktop app.' };
-  const res = await api.saveApiKey(provider, apiKey);
+  // A space or line break inside the key is a paste mistake: say so instead of storing a key that cannot work
+  const check = checkApiKey(provider, apiKey);
+  if (check.hasInnerWhitespace) return { success: false, error: t('api_key_has_space') };
+  const res = await api.saveApiKey(provider, check.key);
   if (res?.success) setConfigured(provider, true);
-  return res || { success: false, error: 'No response from the key store.' };
+  if (!res) return { success: false, error: 'No response from the key store.' };
+  // An unexpected start is only a notice: the key is stored all the same
+  return check.prefixMismatch ? { ...res, notice: t('api_key_prefix_notice', { prefix: KEY_PREFIXES[provider] }) } : res;
+}
+
+/** Removes the stored key of one provider (and any plain-text copy an older version left). */
+export async function clearApiKeyFor(provider) {
+  const res = await window.engineAPI?.clearApiKey?.(provider);
+  if (!res?.success) return { success: false, error: res?.error || `Could not remove the ${provider} key.` };
+  setConfigured(provider, false);
+  try {
+    (PLAINTEXT_NAMES[provider] ?? []).forEach((name) => removeStorage(name));
+  } catch {
+    return { success: false, error: 'Could not remove the plain-text key copy from local storage.' };
+  }
+  return { success: true };
 }
 
 /** Removes every stored key. Returns the first error, if any. */

@@ -33,13 +33,13 @@ export function initEditorOptionsMode() {
       card.removeAttribute('hidden');
       cardWasCollapsed = card.classList.contains('collapsed');
       card.classList.remove('collapsed');
-      card.querySelector('.semantic-module-header')?.setAttribute('aria-expanded', 'true');
+      card.querySelector('.semantic-module-toggle')?.setAttribute('aria-expanded', 'true');
     } else {
       // Put the card back the way it was; the sidebar stays open (it was the user's choice to open it, or it was open already)
       if (cardWasCollapsed) card.classList.add('collapsed');
       // Back to the setting: hidden again unless the user made the card visible in the settings
       card.toggleAttribute('hidden', !settingsStore.isVisible(CARD_KEY));
-      card.querySelector('.semantic-module-header')?.setAttribute('aria-expanded', String(!cardWasCollapsed));
+      card.querySelector('.semantic-module-toggle')?.setAttribute('aria-expanded', String(!cardWasCollapsed));
     }
     window.__monacoEditorInstance?.layout();
   };

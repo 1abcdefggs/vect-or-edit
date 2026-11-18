@@ -81,7 +81,7 @@ export function usableGeminiModels(models: unknown): Array<{ name: string; displ
 // ---------------------------------------------------------------------------------------------
 
 export type GeminiFamily = 'gemini' | 'gemma' | 'other';
-export type GeminiPurpose = 'text' | 'speech' | 'image' | 'live' | 'other';
+export type GeminiPurpose = 'text' | 'speech' | 'image' | 'video' | 'music' | 'live' | 'other';
 /** Capability and cost step of a Gemini model, read from the id: Pro > Flash > Flash-Lite */
 export type GeminiTier = 'pro' | 'flash' | 'lite';
 /** Rough cost guide taken from the tier in the id (Pro > Flash > Flash-Lite); not an amount */
@@ -109,7 +109,12 @@ export interface GeminiModelView {
   purpose: GeminiPurpose;
   preview: boolean;
   thinking: boolean;
+  /** An alias that points at the newest model of its kind (gemini-pro-latest); Google changes what it points at */
+  latest: boolean;
+  /** Google's own description from the API (English, as given); empty when the API has none */
+  description: string;
   inputTokenLimit?: number;
+  outputTokenLimit?: number;
   /** Newest generation of the Gemini text models */
   isNew: boolean;
 }
@@ -128,6 +133,10 @@ const GENERATION_PATTERN = /^(gemini|gemma)-(\d+(?:\.\d+)?)/;
 function purposeOf(name: string): GeminiPurpose {
   if (/(^|-)(tts|transcribe)(-|$)/.test(name)) return 'speech';
   if (/(^|-)image(-|$)/.test(name)) return 'image';
+  // Gemini Omni makes and edits video (Google's model page for gemini-omni-1.1-flash, checked 2026-11-18)
+  if (/^gemini-omni(-|$)/.test(name)) return 'video';
+  // Lyria makes music (Google's Lyria 3 guide, checked 2026-11-18)
+  if (/^lyria(-|$)/.test(name)) return 'music';
   if (/(^|-)(live|native-audio|audio)(-|$)/.test(name)) return 'live';
   if (/(computer-use|robotics)/.test(name)) return 'other';
   return 'text';
@@ -139,6 +148,9 @@ function purposeOf(name: string): GeminiPurpose {
  */
 export function brandOf(name: string, displayName: string): GeminiBrand {
   if (/nano[\s-]*banana/i.test(displayName) || /^gemini-.*-image(-|$)/.test(name)) return { key: 'nano-banana', label: 'Nano Banana' };
+  if (/^gemini-omni(-|$)/.test(name)) return { key: 'omni', label: 'Gemini Omni' };
+  // Two words: the first word alone ("Deep") does not say what the series is (owner, 2026-11-18)
+  if (/^deep-research(-|$)/.test(name) || /^deep\s+research\b/i.test(displayName)) return { key: 'deep-research', label: 'Deep Research' };
   if (name.startsWith('gemma')) return { key: 'gemma', label: 'Gemma' };
   if (name.startsWith('gemini')) return { key: 'gemini', label: 'Gemini' };
   const word = displayName.trim().split(/\s+/)[0] ?? '';
@@ -153,8 +165,9 @@ function tierRank(name: string): number {
   return 3;
 }
 
+/** Every Gemini id can carry a tier word, also the ones without a generation number (gemini-omni-1.1-flash, gemini-pro-latest) */
 function tierOf(name: string, family: GeminiFamily): GeminiTier | null {
-  if (family !== 'gemini') return null;
+  if (family === 'gemma' || !name.startsWith('gemini')) return null;
   const rank = tierRank(name);
   return rank === 0 ? 'pro' : rank === 1 ? 'flash' : rank === 2 ? 'lite' : null;
 }
@@ -179,19 +192,24 @@ export function groupGeminiModels(models: unknown): GeminiModelGroup[] {
     const family: GeminiFamily = match ? (match[1] as GeminiFamily) : 'other';
     const generation = match ? parseFloat(match[2]) : null;
     const displayName = cappedText(m.displayName, DISPLAY_NAME_MAX);
+    const brand = brandOf(m.name, displayName);
     views.push({
       name: m.name,
       displayName,
       family,
-      brand: brandOf(m.name, displayName),
+      brand,
       major: generation === null ? null : Math.floor(generation),
       generation,
       tier: tierOf(m.name, family),
       costGuide: (() => { const tier = tierOf(m.name, family); return tier ? COST_OF_TIER[tier] : null; })(),
-      purpose: purposeOf(m.name),
+      // Nano Banana makes and edits images, also when its id has no "image" word (it is known by its display name)
+      purpose: brand.key === 'nano-banana' ? 'image' : purposeOf(m.name),
       preview: /(^|-)(preview|exp)(-|$)/.test(m.name),
       thinking: m.thinking === true,
+      latest: /(^|-)latest$/.test(m.name),
+      description: cappedText(m.description, DESCRIPTION_MAX).trim(),
       inputTokenLimit: finiteNumber(m.inputTokenLimit),
+      outputTokenLimit: finiteNumber(m.outputTokenLimit),
       isNew: false
     });
   }

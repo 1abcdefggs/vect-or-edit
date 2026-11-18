@@ -3,7 +3,7 @@ import { readStorage, writeStorage } from '../core/storage.js';
 import { showToast } from './notifications/toastManager';
 
 export function initZoomControls(): void {
-  const modalZoomSelect = document.getElementById('modalZoomSelect') as HTMLSelectElement | null;
+  const modalZoomSlider = document.getElementById('modalZoomSlider') as HTMLInputElement | null;
 
   if (!window.engineAPI?.setZoomFactor) return;
 
@@ -50,12 +50,9 @@ export function initZoomControls(): void {
     const sliderEl = document.getElementById('headerZoomSlider') as HTMLInputElement | null;
     if (sliderEl) sliderEl.value = currentZoom.toString();
 
-    if (modalZoomSelect) {
-      modalZoomSelect.value = currentZoom.toString();
-      if (!modalZoomSelect.value) {
-        modalZoomSelect.value = "1.0";
-      }
-    }
+    if (modalZoomSlider) modalZoomSlider.value = currentZoom.toString();
+    const modalPercentEl = document.getElementById('modalZoomPercent');
+    if (modalPercentEl) modalPercentEl.textContent = `${Math.round(currentZoom * 100)}%`;
 
     if (notify) {
       showToast(t('toast_zoom', { percent: Math.round(currentZoom * 100) }), 'info');
@@ -89,8 +86,47 @@ export function initZoomControls(): void {
       if (!e.ctrlKey && zoomBadge.classList.contains('is-zooming')) stepByWheel(e);
     }, { passive: false });
 
+    // Press and drag left or right on the badge to set the zoom step by step (each DRAG_PX_PER_STEP pixels is one STEP).
+    // A drag ends with a release that must not count as a click, so a click-to-reset is ignored after a drag.
+    const DRAG_PX_PER_STEP = 12;
+    const DRAG_START_PX = 4;
+    let dragStartX = 0;
+    let dragStartZoom = 1;
+    let dragPressed = false;
+    let dragMoved = false;
+    let swallowClick = false;
+    zoomBadge.addEventListener('pointerdown', (e: PointerEvent) => {
+      if (e.button !== 0 || (e.target as HTMLElement).closest('.header-zoom-slider')) return;
+      dragPressed = true;
+      dragMoved = false;
+      dragStartX = e.clientX;
+      dragStartZoom = currentZoom;
+      // Keep the drag on the badge when the pointer leaves it (the popup slider lies below it)
+      zoomBadge.setPointerCapture(e.pointerId);
+    });
+    zoomBadge.addEventListener('pointermove', (e: PointerEvent) => {
+      if (!dragPressed) return;
+      const dx = e.clientX - dragStartX;
+      if (!dragMoved && Math.abs(dx) < DRAG_START_PX) return;
+      dragMoved = true;
+      keepZoomSession();
+      const steps = Math.trunc(dx / DRAG_PX_PER_STEP);
+      applyZoom(Math.round((dragStartZoom + steps * STEP) * 10) / 10, false);
+    });
+    const endDrag = (): void => {
+      if (dragMoved) swallowClick = true;
+      dragPressed = false;
+      dragMoved = false;
+    };
+    zoomBadge.addEventListener('pointerup', endDrag);
+    zoomBadge.addEventListener('pointercancel', endDrag);
+
     // Click on badge resets to 100%
     zoomBadge.addEventListener('click', () => {
+      if (swallowClick) {
+        swallowClick = false;
+        return;
+      }
       if (currentZoom !== 1.0) {
         applyZoom(1.0);
       }
@@ -114,14 +150,6 @@ export function initZoomControls(): void {
     }
   }, { passive: false });
 
-  if (modalZoomSelect) {
-    modalZoomSelect.addEventListener('change', (e) => {
-      const target = e.target as HTMLSelectElement;
-      const val = parseFloat(target.value);
-      if (!isNaN(val)) {
-        applyZoom(val);
-      }
-    });
-  }
+  modalZoomSlider?.addEventListener('input', () => applyZoom(parseFloat(modalZoomSlider.value), false));
 }
 

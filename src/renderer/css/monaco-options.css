@@ -41,11 +41,26 @@
   outline-offset: 1px;
 }
 
+.monaco-options-search-wrap {
+  position: relative;
+}
+
+/* The magnifier sits inside the left edge of the box; the text starts after it */
+.monaco-options-search-icon {
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--fs-14);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
 .monaco-options-search {
   width: 100%;
   box-sizing: border-box;
   height: 26px;
-  padding: 0 8px;
+  padding: 0 8px 0 28px;
   background: var(--bg-secondary);
   color: var(--text-main);
   border: var(--border-width) solid var(--border-color);
@@ -220,7 +235,7 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header {
   pointer-events: none;
 }
 
-body.sidebar-options-mode #monacoOptionsCard .collapse-icon {
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-toggle {
   display: none;
 }
 
@@ -232,4 +247,37 @@ body.sidebar-options-mode .sidebar-header {
 /* The header is no longer a control in this mode, so it takes no focus frame (the groups keep theirs) */
 body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visible {
   outline: none;
+}
+
+/* A line above the search box: the editor is Monaco and its options are set here */
+.monaco-options-intro {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* The number of items of a group, at the right end of its heading: shown / all, in the same form as the total above the list.
+   Each number sits in a cell of a fixed width, right-aligned, with tabular digits, so the columns line up from heading to heading. */
+.mo-group-count {
+  float: right;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: var(--fs-12);
+  font-weight: 400;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.mo-group-num {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+}
+
+.mo-group-changed {
+  margin-right: 6px;
+  color: var(--text-main);
+  font-weight: 600;
 }

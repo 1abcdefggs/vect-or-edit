@@ -65,6 +65,20 @@
 
 ## What's New
 
+### v0.3.74 (2026-11-18)
+
+- Settings > Document name: build the name of a new document from date, time, sequence number and fixed text, in any order, with an example.
+- A New Tab button in the tab bar opens a new tab and creates a new file.
+- The eye switch in Settings shows an eye icon and the state in words.
+- The status bar shows the line count before the character count.
+
+### v0.3.73 (2026-11-18)
+
+- Add an embedding model by its ID (owner/model-name) under Settings > Embedding models. The model is checked on Hugging Face, and it is listed for comparison: it cannot be used yet, because its query and passage prefixes are not verified. Remove it from the list at any time.
+- The embedding model list is a table: model, dimensions, size, license and status. Open a row for its languages, downloads, use and description.
+- The zoom control in Settings is a slider from 50% to 300%, the same as the header.
+- Settings: the list of parts of the window and the developer reset are closed by default; the developer reset sits in a red Danger Zone frame.
+
 ### v0.3.66 – v0.3.72 (2026-11-17)
 
 - First-run setup and the settings list the cloud LLM providers the same way everywhere: Google Gemini, OpenAI and Claude. OpenAI and Claude are no longer marked "coming soon".

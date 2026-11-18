@@ -229,6 +229,19 @@
 
 
 /* Slide-up System Logs Console Panel */
+/* Automatic close: a short fade and slide down, so the closing panel is seen (ui/console/systemConsoleManager.js) */
+.system-log-panel--closing {
+  animation: system-log-panel-fade-out 240ms ease-in forwards;
+}
+
+@keyframes system-log-panel-fade-out {
+  to { opacity: 0; transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .system-log-panel--closing { animation: none; }
+}
+
 .system-log-panel {
   position: relative;
   flex-shrink: 0;

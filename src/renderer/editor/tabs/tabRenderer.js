@@ -8,6 +8,25 @@ import { t } from '../../core/i18n.js';
 import { formatTipText } from '../../core/tipFormat';
 import { icons } from '../../core/icons.js';
 
+/** The close mark of a tab (shared by the tab row and its sample in the settings page) */
+const CLOSE_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+/**
+ * Fills each [data-tab-sample] (settings page, "Using the tabs") with a still picture of one tab and + New.
+ * It uses the classes and icons of the real tab row, so the picture follows the theme and any change to the row.
+ * The labels carry data-i18n, so loadLocales translates them. The picture is not interactive.
+ */
+export function renderTabSample(root = document) {
+  root.querySelectorAll('[data-tab-sample]').forEach((el) => {
+    el.innerHTML = `<div class="editor-tab-item active is-saved">`
+      + `<span class="btn-tab-close">${CLOSE_ICON}</span>`
+      + `<span class="tab-title" data-i18n="tab_sample_name">Doc-1.md</span>`
+      + `<span class="btn-tab-duplicate">${icons.duplicate}</span>`
+      + `</div>`
+      + `<span class="btn-tab-new">${icons.plus}<span class="btn-tab-new-label" data-i18n="tab_label_new">New</span></span>`;
+  });
+}
+
 export function triggerRpgSavedExpFloat(tabId = activeTabId) {
   const tabsContainer = document.getElementById('editorTabsList');
   if (!tabsContainer) return;
@@ -94,7 +113,7 @@ export function renderTabs() {
     const closeBtn = document.createElement('button');
     closeBtn.className = 'btn-tab-close';
     closeBtn.title = t('tip_menu_close_tab');
-    closeBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    closeBtn.innerHTML = CLOSE_ICON;
     tabEl.append(closeBtn);
 
     if (tab.isDirty) {
@@ -116,7 +135,7 @@ export function renderTabs() {
     duplicateBtn.className = 'btn-tab-duplicate';
     duplicateBtn.title = t('tip_tab_duplicate');
     // The label hides when the tab bar is narrow (buttons.css @container rule); the title keeps the full name
-    duplicateBtn.innerHTML = `${icons.duplicate}<span class="tab-duplicate-label">${t('tab_label_duplicate')}</span>`;
+    duplicateBtn.innerHTML = icons.duplicate;
     duplicateBtn.addEventListener('click', (ev) => {
       ev.stopPropagation();
       duplicateTab(tab.id);
@@ -211,14 +230,13 @@ export function renderTabs() {
     tabsContainer.appendChild(tabEl);
   });
 
-  // Inline New Tab Button directly after the tabs (duplicate lives inside each tab)
+  // New tab button after the tabs: the same box as the tab's own buttons, with its label so it is clear what it does
   const btnInlineNewTab = document.createElement('button');
-  btnInlineNewTab.className = 'toolbar-btn icon-btn tab-inline-btn';
+  btnInlineNewTab.type = 'button';
+  btnInlineNewTab.className = 'btn-tab-new';
   btnInlineNewTab.id = 'btnNewTabInline';
   btnInlineNewTab.title = t('tip_tab_new');
-  btnInlineNewTab.style.color = 'var(--text-muted)';
-  btnInlineNewTab.style.marginLeft = '2px';
-  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">tab_new_right</span><span class="tab-inline-label">${t('tab_label_new')}</span>`;
+  btnInlineNewTab.innerHTML = `${icons.plus}<span class="btn-tab-new-label">${t('tab_label_new')}</span>`;
   btnInlineNewTab.addEventListener('click', () => createBlankTab());
   tabsContainer.appendChild(btnInlineNewTab);
 

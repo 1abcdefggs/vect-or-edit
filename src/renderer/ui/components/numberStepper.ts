@@ -1,5 +1,5 @@
 /**
- * Number input with a − and a ＋ button. The input itself stays (same id, min, max, step and value), so every reader of its value keeps working.
+ * Number input with a − and a ＋ button. The input itself stays (same id, min, max, step and value; the limits are read at each press, so a script may change them), so every reader of its value keeps working.
  * Opt in with data-stepper on the input; renderer startup calls enhanceNumberSteppers() once the locale is loaded.
  */
 import { t } from '../../core/i18n';
@@ -36,7 +36,6 @@ function stepButton(label: string, name: string): HTMLButtonElement {
 
 export function enhanceNumberStepper(input: HTMLInputElement): void {
   if (input.closest('.num-stepper')) return;
-  const range = rangeOf(input);
   const minus = stepButton('−', t('stepper_decrease'));
   const plus = stepButton('+', t('stepper_increase'));
 
@@ -48,12 +47,13 @@ export function enhanceNumberStepper(input: HTMLInputElement): void {
   // Each button is disabled at its own limit, so a press never has to be ignored
   function sync(): void {
     const value = Number(input.value);
+    const range = rangeOf(input);
     minus.disabled = !(value > range.min);
     plus.disabled = !(value < range.max);
   }
 
   function press(direction: 1 | -1): void {
-    input.value = String(nextStepValue(Number(input.value) || range.min, direction, range));
+    input.value = String(nextStepValue(Number(input.value) || rangeOf(input).min, direction, rangeOf(input)));
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
     sync();

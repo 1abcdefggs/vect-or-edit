@@ -19,7 +19,7 @@ const adhap = {
   BASE_DELAY_MS: TIMINGS.AUTO_SAVE_BASE_MS || 1500,
   STATUS_NOTIFICATION_MS: 1500,
   MIN_DELAY_MS: 500,
-  MAX_DELAY_MS: 10000
+  MAX_DELAY_MS: 3600000
 };
 
 /** The pause after typing stops before the save, as the user set it (default 1.5 seconds). */

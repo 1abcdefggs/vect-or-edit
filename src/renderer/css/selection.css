@@ -25,9 +25,9 @@
   color: var(--sel-on-surface);
 }
 
-/* Provider-like list cards, dropdown items: the same boxed selection */
-.ep-card.is-active,
-.ml-item.is-active,
+/* Provider-like list cards, catalogue rows, dropdown items: the same boxed selection.
+   The model table's row in use is not inverted: a dark row read as a group heading (model-list.css, owner 2026-11-19) */
+.ep-model-row.is-active > td,
 .ui-select-option.is-selected {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
@@ -35,8 +35,7 @@
   box-shadow: inset 0 0 0 var(--sel-edge-width) var(--sel-edge);
 }
 
-.ep-card.is-active:hover,
-.ml-item.is-active:hover,
+.ep-model-row.is-active:hover > td,
 .ui-select-option.is-selected:hover {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
@@ -55,6 +54,15 @@
 
 .editor-tab-item.active {
   border-top-color: var(--sel-edge);
+}
+
+/* The tab's own buttons sit on the selected surface, so they take the on-surface colour (not the text colour, which is the surface) */
+.editor-tab-item.active {
+  --tab-btn-bg: transparent;
+  --tab-btn-fg: var(--sel-on-surface);
+  --tab-btn-border: color-mix(in srgb, var(--sel-on-surface) 55%, transparent);
+  --tab-btn-hover-bg: color-mix(in srgb, var(--sel-on-surface) 22%, transparent);
+  --tab-btn-hover-fg: var(--sel-on-surface);
 }
 
 /* Text inside a selected surface takes its color from the surface, not from the muted text tokens of the window */

@@ -11,6 +11,9 @@ import { STORAGE_KEYS } from '../../core/constants.js';
 import { el } from '../dom.js';
 import { readStorage } from '../../core/storage.js';
 import { EMBEDDING_MODELS, getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
+import {
+  catalogueModels, parseModelId, fetchModelInfo, addUserModel, removeUserModel, isUserModel
+} from '../../search/embeddingUserModels.js';
 import { requestEmbeddingModelDownload } from '../../search/searchLocalAi.js';
 import {
   REGISTRY, EMPTY_FILTERS, QUICK_LANGUAGE_CODES, MORE_LANGUAGE_RESULTS,
@@ -56,7 +59,8 @@ function initialState() {
     extra: Array.isArray(prefs.extra) ? prefs.extra : [],
     sort: SORTS.some(([k]) => k === prefs.sort) ? prefs.sort : 'fit',
     fullOnly: false, downloadedOnly: false, dimensions: [], scopes: [], uses: [], licenses: [], query: '',
-    langsOpen: false, moreOpen: false, moreQuery: '', moreFilters: false
+    langsOpen: false, moreOpen: false, moreQuery: '', moreFilters: false,
+    expanded: new Set()
   };
 }
 
@@ -167,31 +171,72 @@ function stateCell(model, ctx) {
   return cell;
 }
 
-function modelCard(model, ctx) {
-  const card = el('div', 'ep-card');
-  card.dataset.modelId = model.id;
-  if (model.id === ctx.activeId) card.classList.add('is-active');
-  if (downloading.has(model.id)) card.classList.add('is-loading');
+/** One model as two table rows: the summary row (five columns) and the details row that its toggle opens */
+function modelRows(model, ctx) {
+  const expanded = ctx.state.expanded.has(model.id);
 
-  const main = el('div', 'ep-card-main');
-  main.append(el('div', 'ep-model-id', model.id));
-  const meta = [
-    model.dimensions ? t('ep_dim', { n: model.dimensions }) : '—',
-    model.sizeMB ? `~${model.sizeMB} MB` : '— MB',
-    model.downloadsMonthly ? t('ep_downloads_month', { n: formatCount(model.downloadsMonthly) }) : null,
-    licenseText(model)
-  ].filter(Boolean).join(' · ');
-  main.append(el('div', 'ep-meta', meta));
-  main.append(el('div', 'ep-meta', taskText(model)));
-  main.append(el('div', 'ep-blurb', model.blurb));
-  main.append(el('div', 'ep-langs', langText(model, ctx.state.languages)));
+  const row = el('tr', 'ep-model-row');
+  row.dataset.modelId = model.id;
+  if (model.id === ctx.activeId) row.classList.add('is-active');
+  if (downloading.has(model.id)) row.classList.add('is-loading');
 
+  const nameCell = el('td', 'ep-cell-name');
+  nameCell.append(el('div', 'ep-model-id', model.id));
   const fit = languageFit(model, ctx.state.languages);
-  const fitCell = el('div', 'ep-fit');
-  fitCell.append(el('span', `ep-fit-badge is-${fit}`, t(FIT_KEYS[fit])));
+  nameCell.append(el('span', `ep-fit-badge is-${fit}`, t(FIT_KEYS[fit])));
+  const toggle = button(t(expanded ? 'ep_hide_details' : 'ep_show_details'), () => {
+    if (expanded) ctx.state.expanded.delete(model.id);
+    else ctx.state.expanded.add(model.id);
+    ctx.redraw();
+  }, 'ep-chip ep-detail-toggle');
+  toggle.setAttribute('aria-expanded', String(expanded));
+  nameCell.append(toggle);
 
-  card.append(main, fitCell, stateCell(model, ctx));
-  return card;
+  row.append(
+    nameCell,
+    el('td', 'ep-cell-dim', model.dimensions ? t('ep_dim', { n: model.dimensions }) : '—'),
+    el('td', 'ep-cell-size', model.sizeMB ? `~${model.sizeMB} MB` : '— MB'),
+    el('td', 'ep-cell-license', licenseText(model)),
+    el('td', 'ep-cell-status', undefined)
+  );
+  row.lastElementChild.append(stateCell(model, ctx));
+
+  const detail = el('tr', 'ep-detail-row');
+  detail.hidden = !expanded;
+  const detailCell = el('td', 'ep-detail');
+  detailCell.colSpan = 5;
+  const dl = el('dl', 'ep-detail-list');
+  const fields = [
+    [t('ep_col_languages'), langText(model, ctx.state.languages)],
+    [t('ep_col_downloads'), model.downloadsMonthly ? t('ep_downloads_month', { n: formatCount(model.downloadsMonthly) }) : '—'],
+    [t('ep_col_use'), taskText(model)],
+    [t('ep_col_description'), model.blurb]
+  ];
+  for (const [key, value] of fields) dl.append(el('dt', '', key), el('dd', '', value));
+  detailCell.append(dl);
+  if (isUserModel(model.id)) {
+    // Only models the user added can be removed here; built-in entries stay
+    detailCell.append(button(t('ep_remove_model'), () => {
+      removeUserModel(model.id);
+      ctx.state.expanded.delete(model.id);
+      ctx.redraw();
+    }, 'ep-chip ep-action'));
+  }
+  detail.append(detailCell);
+  return [row, detail];
+}
+
+/** The catalogue as a table; the header names the five columns, each model opens into its details row */
+function catalogueTable(models, ctx) {
+  const table = el('table', 'ep-table');
+  const head = el('tr');
+  for (const key of ['ep_col_model', 'ep_col_dim', 'ep_col_size', 'ep_col_license', 'ep_col_status']) {
+    head.append(el('th', '', t(key)));
+  }
+  table.append(el('thead'), el('tbody'));
+  table.querySelector('thead').append(head);
+  table.querySelector('tbody').append(...models.flatMap(m => modelRows(m, ctx)));
+  return table;
 }
 
 /** Builds the controls once; returns the redraw function */
@@ -252,7 +297,35 @@ function mount(container, handlers) {
   const scopes = row('ep_languages_covered');
   const uses = row('ep_use');
   more.append(dims.wrap, scopes.wrap, uses.wrap);
-  panel.append(langs.wrap, lic.wrap, filter.wrap, more);
+  // Add by ID: the one place where a model outside the built-in catalogue enters the list
+  const add = row('ep_add_model');
+  const addInput = el('input', 'ep-input ep-add-input');
+  addInput.type = 'text';
+  addInput.placeholder = t('ep_add_placeholder');
+  addInput.spellcheck = false;
+  addInput.setAttribute('aria-label', t('ep_add_model'));
+  const addMsg = el('div', 'ep-add-msg');
+  addMsg.setAttribute('role', 'status');
+  async function submitAdd() {
+    addBtn.disabled = true;
+    addMsg.textContent = t('ep_add_fetching');
+    try {
+      const id = parseModelId(addInput.value);
+      addUserModel(await fetchModelInfo(id));
+      addInput.value = '';
+      addMsg.textContent = t('ep_add_done', { id });
+      redraw();
+    } catch (err) {
+      addMsg.textContent = t(`ep_add_err_${err.code ?? 'failed'}`);
+    } finally {
+      addBtn.disabled = false;
+    }
+  }
+  const addBtn = button(t('ep_add_btn'), () => submitAdd(), 'ep-chip ep-action');
+  addInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitAdd(); });
+  add.body.append(addInput, addBtn, addMsg);
+
+  panel.append(add.wrap, langs.wrap, lic.wrap, filter.wrap, more);
 
   const sort = row('ep_sort_by');
   sort.wrap.classList.add('ep-sort');
@@ -347,7 +420,8 @@ function mount(container, handlers) {
     clearBtn.hidden = !hasFilters;
 
     // List
-    const visible = sortModels(filterModels(REGISTRY.models, {
+    const models = catalogueModels();
+    const visible = sortModels(filterModels(models, {
       ...EMPTY_FILTERS,
       languages: state.languages,
       fullOnly: state.fullOnly,
@@ -359,7 +433,7 @@ function mount(container, handlers) {
       query: state.query
     }, { aliases: searchAliases() }), state.sort, state.languages, currentLang);
 
-    count.textContent = t('ep_count', { shown: visible.length, total: REGISTRY.models.length });
+    count.textContent = t('ep_count', { shown: visible.length, total: models.length });
     const hidden = isActiveHidden(visible, activeId);
     hiddenNote.hidden = !hidden;
     hiddenNote.textContent = hidden ? t('ep_active_hidden', { name: activeId.split('/').pop() }) : '';
@@ -369,7 +443,7 @@ function mount(container, handlers) {
       empty.append(el('span', '', t('ep_empty')), button(t('ep_clear'), () => clearFilters(), 'ep-chip'));
       list.replaceChildren(empty);
     } else {
-      list.replaceChildren(...visible.map(m => modelCard(m, ctx)));
+      list.replaceChildren(catalogueTable(visible, ctx));
     }
   }
 

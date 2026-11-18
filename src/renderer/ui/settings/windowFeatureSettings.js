@@ -9,9 +9,18 @@ import { aiManager } from '../../core/aiStateManager.js';
 import { settingsStore } from '../../core/settingsStore.js';
 import { showToast } from '../notifications/toastManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
+import {
+  CUSTOM,
+  DELAY_PRESETS_MS,
+  UNIT_MS,
+  UNIT_RANGE,
+  formatDelayLabel,
+  presetValueFor,
+  splitForCustom,
+  toMs
+} from './autoSaveDelayOptions.js';
 import { isLayoutRemembered, setLayoutRemembered } from '../layout/layoutMemory.js';
 import {
-  AUTO_SAVE_DELAY_RANGE_MS,
   getAutoSaveDelayMs,
   setAutoSaveDelayMs,
   isAutoSaveEnabled,
@@ -33,19 +42,61 @@ function bindAutoSave() {
   const idle = document.getElementById('modalAutoSaveIdleSelect');
   const newline = document.getElementById('modalAutoSaveNewlineSelect');
   const delay = document.getElementById('modalAutoSaveDelayInput');
-  if (!all || !idle || !newline || !delay) return;
+  const delayPreset = document.getElementById('modalAutoSaveDelaySelect');
+  const delayUnit = document.getElementById('modalAutoSaveDelayUnit');
+  const customBox = document.getElementById('autoSaveDelayCustom');
+  if (!all || !idle || !newline || !delay || !delayPreset || !delayUnit || !customBox) return;
 
-  delay.min = String(AUTO_SAVE_DELAY_RANGE_MS.min / 1000);
-  delay.max = String(AUTO_SAVE_DELAY_RANGE_MS.max / 1000);
-  delay.step = '0.5';
+  // The pause is a preset or the user's own amount in seconds or minutes; it is stored in milliseconds either way
+  const buildPresets = () => {
+    const names = { sec: t('autosave_unit_sec'), min: t('autosave_unit_min') };
+    const chosen = delayPreset.value;
+    delayPreset.replaceChildren(
+      ...DELAY_PRESETS_MS.map((ms) => new Option(formatDelayLabel(ms, names), String(ms))),
+      new Option(t('autosave_delay_custom'), CUSTOM)
+    );
+    delayPreset.value = chosen;
+  };
+  const applyUnit = (unit) => {
+    const range = UNIT_RANGE[unit];
+    delay.min = String(range.min);
+    delay.max = String(range.max);
+    delay.step = String(range.step);
+    delay.dispatchEvent(new Event('input', { bubbles: true })); // the stepper re-reads the limits
+  };
+  const showDelay = (ms, custom) => {
+    delayPreset.value = custom ? CUSTOM : presetValueFor(ms);
+    customBox.hidden = delayPreset.value !== CUSTOM;
+    const { unit, amount } = splitForCustom(ms);
+    delayUnit.value = unit;
+    applyUnit(unit);
+    delay.value = String(amount);
+  };
+
+  // The wait only applies to "Save when typing pauses": with that off the row is inactive and says why in text
+  const delayRow = delay.closest('[data-setting-row]');
+  const delayReason = document.getElementById('autoSaveDelayReason');
+  const syncDelayState = () => {
+    const inactive = idle.value !== 'on';
+    delayRow?.classList.toggle('is-inactive', inactive);
+    if (delayReason) delayReason.hidden = !inactive;
+    delayRow?.querySelectorAll('input, select, button').forEach((el) => {
+      if (!el.closest('[data-setting-text]')) el.disabled = inactive; // the info button of the label stays usable
+    });
+    // Back on: let the stepper set its − and + buttons to their own limits again
+    if (!inactive) delay.dispatchEvent(new Event('input', { bubbles: true }));
+  };
 
   const refresh = () => {
     all.value = onOff(isAutoSaveEnabled());
     idle.value = onOff(isIdleAutoSaveEnabled());
     newline.value = onOff(isNewlineAutoSaveEnabled());
-    delay.value = String(getAutoSaveDelayMs() / 1000);
+    showDelay(getAutoSaveDelayMs(), delayPreset.value === CUSTOM);
+    syncDelayState();
   };
+  buildPresets();
   refresh();
+  window.addEventListener('app:languageChanged', buildPresets);
   // The toolbar switch changes the same values
   window.addEventListener('app:autosaveChanged', refresh);
 
@@ -54,15 +105,26 @@ function bindAutoSave() {
     setTriggers({ idle: idle.value === 'on', newline: newline.value === 'on' });
     syncSettingsToBackend();
     updateAutoSaveUI();
+    syncDelayState();
   };
   idle.addEventListener('change', saveTriggers);
   newline.addEventListener('change', saveTriggers);
-  delay.addEventListener('change', () => {
-    const seconds = Number(delay.value);
-    if (Number.isFinite(seconds)) setAutoSaveDelayMs(seconds * 1000);
+  delayPreset.addEventListener('change', () => {
+    if (delayPreset.value !== CUSTOM) setAutoSaveDelayMs(Number(delayPreset.value));
     syncSettingsToBackend();
-    // Show the value that was kept after clamping to the allowed range
-    delay.value = String(getAutoSaveDelayMs() / 1000);
+    showDelay(getAutoSaveDelayMs(), delayPreset.value === CUSTOM);
+  });
+  // Typed amount or unit: kept to the allowed range, and shown again in the unit the user chose
+  const commitCustomDelay = () => {
+    const ms = toMs(delay.value, delayUnit.value);
+    if (Number.isFinite(ms)) setAutoSaveDelayMs(ms);
+    syncSettingsToBackend();
+    delay.value = String(getAutoSaveDelayMs() / UNIT_MS[delayUnit.value]);
+  };
+  delay.addEventListener('change', commitCustomDelay);
+  delayUnit.addEventListener('change', () => {
+    applyUnit(delayUnit.value);
+    commitCustomDelay();
   });
 }
 

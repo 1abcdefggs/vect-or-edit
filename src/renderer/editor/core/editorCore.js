@@ -102,6 +102,9 @@ export async function initEditor() {
   // Options Monaco reads only at creation (from the Editor Options panel) are merged in here
   monacoEditorInstance = monaco.editor.create(monacoContainer, await withCreateOnlyOverrides(baseOptions));
 
+  // A font added from the PC arrives after the editor was made: Monaco must measure its letters again
+  window.addEventListener('app:userFontsChanged', () => monaco.editor.remeasureFonts());
+
   // Editor Options panel: remember the app's own values, then apply the user's overrides on top
   captureBaseline(monacoEditorInstance);
   applyStoredOverrides(monacoEditorInstance).catch((err) => console.warn('[MonacoOptions] Could not apply stored options:', err));

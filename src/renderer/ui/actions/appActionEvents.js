@@ -6,8 +6,14 @@ import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
 import { t } from '../../core/i18n.js';
 import { commandManager } from '../../core/commandManager';
+import { icons } from '../../core/icons.js';
 
 export function bindAppActionEvents() {
+  // Icon slots marked data-svg-icon get their SVG from core/icons.ts (one source for every copy of the icon)
+  document.querySelectorAll('[data-svg-icon]').forEach((el) => {
+    const name = el.getAttribute('data-svg-icon');
+    if (name && icons[name]) el.innerHTML = icons[name];
+  });
   const btnSave = document.getElementById('btnSave');
   const btnResetGoal = document.getElementById('btnResetGoal');
   const btnInsertTemplate = document.getElementById('btnInsertTemplate');
@@ -36,7 +42,7 @@ export function bindAppActionEvents() {
   document.querySelectorAll('.semantic-module-header').forEach((header) => {
     header.addEventListener('click', (e) => {
       if (e.target.closest('.semantic-module-actions')) return;
-      header.parentElement.classList.toggle('collapsed');
+      header.parentElement.classList.toggle('collapsed'); header.querySelector('.semantic-module-toggle')?.setAttribute('aria-expanded', String(!header.parentElement.classList.contains('collapsed')));
     });
   });
 

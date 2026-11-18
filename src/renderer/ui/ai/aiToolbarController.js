@@ -1,6 +1,7 @@
 import { aiManager } from '../../core/aiStateManager.js';
 import { readStorage, writeStorage } from '../../core/storage.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { icons } from '../../core/icons.js';
 import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
 import { isLlmConfigured, isEmbedConfigured } from '../settings/settingsState.js';
 import { canUseLlm } from '../../core/aiAccess.js';
@@ -425,7 +426,7 @@ function initLlmChatDock() {
     }
     dock.style.display = 'flex';
     dock.classList.remove('collapsed');
-    if (collapseIcon) collapseIcon.innerHTML = 'expand_more';
+    if (collapseIcon) collapseIcon.innerHTML = icons.minus;
     updateDockModelBadge();
     if (initialPrompt) {
       chatInput.value = initialPrompt;
@@ -445,7 +446,7 @@ function initLlmChatDock() {
   function toggleCollapseDock() {
     const isCollapsed = dock.classList.toggle('collapsed');
     if (collapseIcon) {
-      collapseIcon.innerHTML = isCollapsed ? 'expand_less' : 'expand_more';
+      collapseIcon.innerHTML = isCollapsed ? icons.unfold : icons.minus;
     }
   }
 

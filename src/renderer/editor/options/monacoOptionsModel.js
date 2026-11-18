@@ -32,7 +32,18 @@ export const LOCK_SETTINGS = 'settings';
 export const LOCK_APP = 'app';
 export const LOCK_UNSUPPORTED = 'unsupported';
 
-/** Group id for each option, first matching rule wins. Group labels live in the locale files (monaco_group_*). */
+/**
+ * Group id for each option, first matching rule wins. Group labels live in the locale files (monaco_group_*).
+ *
+ * Basis of the groups: Monaco itself defines no groups (the catalog, monacoOptions.catalog.json, is generated from the
+ * IEditorOptions and IGlobalEditorOptions type definitions and has only name, type, doc and source). These eight groups
+ * are this app's own arrangement, made by the name prefix of each option, close to what a writer looks for
+ * (display, cursor, editing, suggestions, find, scroll, accessibility). They do not copy the VS Code settings screen.
+ * An option no rule matches goes to "advanced" (the label "Other"), so a new Monaco option is never lost.
+ * Count by top-level option (Monaco 0.56.0, 180 options, checked 2026-11-18): display 43, cursor 26, editing 31,
+ * suggest 29, find 6, scroll 12, accessibility 8, advanced 25. Candidates for a closer group, not moved:
+ * codeLens* (suggest), inertialScroll and mouseMiddleClickAction (scroll or cursor), wrapOnEscapedLineFeeds (editing).
+ */
 const GROUP_RULES = [
   ['accessibility', /^(accessibility|aria|screenReader|tabFocusMode|allowVariableFonts)/],
   ['find', /^(find|seedSearch|selectionHighlight|occurrencesHighlight|wordHighlight)/],

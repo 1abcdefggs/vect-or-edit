@@ -57,29 +57,6 @@
 }
 
 /* Tab buttons with a label: the label sits beside the icon; the button widens to fit it */
-.editor-tab-bar .tab-inline-btn {
-  width: auto;
-  padding: 0 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.tab-inline-label {
-  font-size: var(--fs-12);
-  white-space: nowrap;
-}
-
-@container tab-bar (max-width: 560px) {
-  .editor-tab-bar .tab-inline-btn {
-    width: var(--icon-btn-size);
-    padding: 0;
-  }
-  .tab-inline-label,
-  .tab-duplicate-label {
-    display: none;
-  }
-}
 
 /* Editor style group: the font name takes the width that the other parts of the bar leave free.
    The browser measures that space at each resize, so no bar width is typed in. It stays within 70px to 115px. */
@@ -296,23 +273,34 @@ button.btn-phi {
   min-height: 32px;
 }
 
-.btn-tab-close {
-  display: flex;
+/* Tab bar buttons (close, duplicate, new tab) share one look: a tinted box with an outline, colours from the --tab-btn tokens (variables.css) */
+.btn-tab-close,
+.btn-tab-duplicate,
+.btn-tab-new {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
+  flex-shrink: 0;
   height: 20px;
   border-radius: 4px;
-  border: none;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-muted, #94a3b8);
+  border: var(--border-width) solid var(--tab-btn-border);
+  background: var(--tab-btn-bg);
+  color: var(--tab-btn-fg);
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-tab-duplicate:hover,
+.btn-tab-new:hover {
+  background: var(--tab-btn-hover-bg);
+  color: var(--tab-btn-hover-fg);
+}
+
+.btn-tab-close {
+  width: 20px;
   padding: 0;
   margin-right: 4px;
   margin-left: -2px;
-  opacity: 0.85;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
 }
 
 .btn-tab-close:hover {
@@ -322,52 +310,20 @@ button.btn-phi {
   transform: scale(1.08);
 }
 
-/* Duplicate button inside a tab, on the right of the file name: icon plus label, the label hides when the bar is narrow */
+/* Duplicate and new tab: icon only (the name is in the tooltip), the same box as the close button */
 .btn-tab-duplicate {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  height: 20px;
   padding: 0 6px;
-  margin-right: -4px;
-  border-radius: 4px;
-  border: none;
-  background: transparent;
-  color: var(--text-muted, #94a3b8);
+}
+
+/* New tab: icon and label, so it reads as an action (new tab, new file) */
+.btn-tab-new {
+  gap: 4px;
+  padding: 0 8px;
   font-size: var(--fs-12);
   white-space: nowrap;
-  cursor: pointer;
-  transition: all 0.15s ease;
 }
-
-.btn-tab-duplicate:hover {
-  background: rgba(56, 189, 248, 0.15);
-  color: var(--accent-color, #66f);
-}
-
-.btn-new-tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  margin-left: 4px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-  align-self: center;
-}
-
-.btn-new-tab:hover {
-  background: rgba(56, 189, 248, 0.15);
-  color: var(--accent-color, #66f);
-  border-color: rgba(56, 189, 248, 0.35);
-  transform: scale(1.08);
+.btn-tab-duplicate {
+  margin-right: -4px;
 }
 
 .startup-logo {
@@ -454,7 +410,6 @@ button.btn-phi {
 .status-bar-btn:hover {
   background: rgba(56, 189, 248, 0.25) !important;
 }
-
 
 /* --- Responsive Editor Header & Pill Button Auto-Compaction --- */
 .section-title {

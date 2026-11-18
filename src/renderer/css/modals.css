@@ -241,7 +241,7 @@
 }
 
 .settings-tab-icon {
-  font-size: 18px;
+  font-size: var(--fs-18);
   flex-shrink: 0;
 }
 
@@ -257,6 +257,7 @@
   border-left: var(--border-width) solid var(--border-color);
 }
 
+.settings-nav-items li[hidden] { display: none; }
 .settings-nav-items li {
   min-width: 0;
 }
@@ -286,7 +287,7 @@
 }
 
 .settings-nav-icon {
-  font-size: 16px;
+  font-size: var(--fs-16);
   flex-shrink: 0;
 }
 
@@ -301,6 +302,27 @@
   background: var(--sel-surface);
   color: var(--sel-on-surface);
   font-weight: 600;
+}
+
+/* A card entry with its settings listed under it: the bottom corners are square so the entry joins its list (the top has nothing above it, so it keeps its round top) */
+.settings-nav-item:has(+ .settings-nav-rows) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* The settings under a card form one stack: each entry is square where another entry continues, so only the last one keeps its bottom corners */
+/* The right edge of the entries lines up with the card above them (no inset on the right) */
+.settings-nav-rows { padding-right: 0; }
+.settings-nav-rows > li > .settings-nav-row { border-radius: 0; }
+.settings-nav-rows > li:last-child > .settings-nav-row {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+/* The tabs sit on the bottom edge of the tab bar, so their bottom corners are square (the top corners stay round) */
+.settings-tab-btn {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .settings-tab-btn:hover {

@@ -26,12 +26,6 @@
   color: var(--text-main);
 }
 
-/* Separator between heading and badge */
-.heading-badge-sep {
-  margin: 0 6px;
-  opacity: 0.6;
-}
-
 .settings-section-card > .setting-desc {
   margin-bottom: 12px;
   font-size: var(--fs-16);
@@ -215,14 +209,12 @@
 .provider-card { padding: 12px 8px; }
 .provider-card .provider-sub { font-size: var(--fs-10); color: var(--text-muted); }
 
+/* No frame of its own: a frame inside the card would narrow the model table by its padding and read as a card in a card */
 .provider-block {
   display: none;
   flex-direction: column;
   gap: 12px;
-  padding: 14px;
-  border-radius: 8px;
-  border: var(--border-width) solid var(--border-color);
-  background: var(--bg-card, rgba(255, 255, 255, 0.02));
+  margin-top: var(--spacing-md);
 }
 
 .provider-block .setting-item { border: none; padding: 0; }
@@ -436,7 +428,7 @@
 .settings-modal-body .has-eye > .vis-toggle-wrapper .vis-toggle-btn { width: 100%; }
 
 /* "Shown / Hidden" switch of a part of the window: both words are visible, the current one is lit */
-.settings-modal-body { --vis-switch-w: 8.5rem; }
+.settings-modal-body { --vis-switch-w: 5rem; }
 .settings-modal-body .vis-toggle-btn {
   display: flex;
   align-items: center;
@@ -519,43 +511,62 @@
    Scoped to the settings body, because .setting-label is shared with other screens. */
 .settings-modal-body .settings-section-card h4 { font-size: var(--fs-18); }
 .settings-modal-body .setting-label { font-size: var(--fs-18); }
-
-/* Logo and Version Header */
-.settings-logo-header {
+/* Back to the top: a sticky anchor at the end of the page body, so the button stays in view at the bottom right */
+.settings-to-top-anchor {
+  position: sticky;
+  bottom: 12px;
+  height: 0;
   display: flex;
+  justify-content: center;
+  overflow: visible;
+  pointer-events: none;
+}
+.settings-to-top {
+  pointer-events: auto;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px var(--spacing-md) 12px;
-  border-bottom: var(--border-width) solid var(--border-color);
-  background: var(--bg-card, rgba(255, 255, 255, 0.02));
-}
-
-.settings-logo-icon {
-  flex-shrink: 0;
-  color: var(--accent-color, #38bdf8);
-}
-
-.settings-logo-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.settings-app-name {
-  margin: 0;
-  font-size: var(--fs-20);
-  font-weight: 700;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-top: -48px;
+  border-radius: 50%;
+  border: var(--border-width) solid var(--sel-edge);
+  background: var(--bg-primary);
   color: var(--text-main);
-  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+.settings-to-top:hover { background: var(--hover-bg); }
+.settings-to-top:focus-visible { outline: 2px solid var(--sel-edge); outline-offset: 2px; }
 
-.settings-app-version {
-  margin: 0;
+/* A label with a gear: the gear takes the settings-gear colour, so it matches the gears that open these settings */
+.setting-label--icon { display: flex; align-items: center; gap: 6px; }
+.setting-label-icon { font-size: var(--fs-18); color: var(--settings-key-fg); }
+
+/* The colour choice: one gear per option, shown in its own colour, and the gears of the four areas as they are applied now */
+.key-tone-picker { display: flex; flex-direction: column; gap: var(--spacing-sm); align-items: flex-end; }
+.key-tone-options { display: flex; gap: var(--spacing-sm); }
+.key-tone-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
   font-size: var(--fs-13);
-  font-weight: 500;
-  color: var(--text-muted);
-  line-height: 1.2;
+  color: var(--text-main);
+  background: transparent;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
 }
+.key-tone-option:hover { background: var(--hover-bg); }
+/* The selected choice keeps the page background (dark in dark mode) and takes the accent edge */
+.key-tone-option.is-selected { background: var(--bg-primary); color: var(--text-main); border-color: var(--sel-edge); }
+.key-tone-gear { font-size: var(--fs-18); }
+.key-tone-gear[data-tone="inverse"] { color: color(from var(--accent-color) srgb calc(1 - r) calc(1 - g) calc(1 - b)); }
+.key-tone-gear[data-tone="accent"] { color: var(--accent-color); }
+.key-tone-areas { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 14px; margin: 0; padding: 0; list-style: none; font-size: var(--fs-12); color: var(--text-muted); }
+.key-tone-areas li { display: inline-flex; align-items: center; gap: 4px; }
+.key-tone-areas .material-symbols-outlined { font-size: var(--fs-16); }
 
 /* Card Section Description */
 .card-section-desc {
@@ -568,10 +579,23 @@
 /* Depth on the settings page: the outer surface is the darkest, the inner content sits one step in.
    Light: the nav is a little darker than the content. Dark: the content is a little lighter than the nav.
    Mixed from --bg-primary so every theme keeps its own hue. */
-.settings-nav { background: var(--bg-primary); }
+/* One index tone: the left nav and the card headings of the body share it, so the same area reads the same */
+:root { --settings-index-bg: color-mix(in srgb, var(--bg-primary) 82%, #000); }
+:root.light-theme { --settings-index-bg: color-mix(in srgb, var(--bg-primary) 90%, #000); }
+.settings-nav { background: var(--settings-index-bg); }
+/* The heading is a band across the top of its card, in the index tone, with the card's round top corners */
+.settings-modal-body .settings-section-card > h4 {
+  margin: calc(-1 * 14px) calc(-1 * 18px) var(--spacing-md);
+  padding: 10px 18px var(--spacing-sm);
+  background: var(--settings-index-bg);
+  border-radius: 10px 10px 0 0;
+}
 .settings-split > .settings-modal-body { background: color-mix(in srgb, var(--bg-primary) 94%, #fff); }
-:root.light-theme .settings-nav { background: color-mix(in srgb, var(--bg-primary) 95%, #000); }
 :root.light-theme .settings-split > .settings-modal-body { background: var(--bg-primary); }
+
+/* Edges between the settings areas (tab bar, list, body) use the selected-state colour, the same as the active tab */
+.settings-modal-tabs { border-bottom: var(--border-width) solid var(--sel-surface); }
+.settings-nav { border-right: var(--border-width) solid var(--sel-surface); }
 
 /* Icons only: the labels move to the title tooltip. Used on a narrow page, or with the Guide open
    (the Guide takes 22.85rem to 33.6rem, so the list column would leave too little room for the rows). */
@@ -658,6 +682,8 @@
   border-color: var(--accent-color);
 }
 .settings-guide-btn .material-symbols-outlined { font-size: var(--fs-16); }
+/* The guide sits in the top tab row, just before "Back to Editor" */
+.settings-modal-tabs .settings-guide-btn { margin: 0 var(--spacing-sm) 0 auto; }
 #settingsModal:not(.has-help-pane) .settings-guide-btn { display: none; }
 /* The arrow shows that the guide opens on the right; it turns back while the guide is open */
 .settings-guide-btn .settings-guide-arrow { margin-left: -2px; transition: transform 0.15s ease; }
@@ -773,4 +799,131 @@
 @media (max-width: 760px) { .help-page__nav { display: none; } }
 
 /* The theme cards take the full width of their row, under the label (the 4-column grid needs the room) */
-[data-setting-row]:has(> #modalThemeCards) { flex-direction: column; align-items: stretch; gap: var(--spacing-sm); }
+/* An inactive row dims its control; the reason is written in the text row after it, never by grey alone */
+[data-setting-row].is-inactive > :not([data-setting-text]) { opacity: 0.45; }
+.autosave-delay-custom { display: inline-flex; align-items: center; gap: var(--spacing-sm); }
+.autosave-delay-custom[hidden] { display: none; }
+.autosave-delay-reason { margin-top: calc(-1 * var(--spacing-sm)); color: var(--text-muted); }
+[data-setting-row]:has(> #modalThemeCards),
+[data-setting-row]:has(> #modalFontCards),
+[data-setting-row]:has(> #modalLineHeightCards),
+[data-setting-row]:has(> #modalToneCards) { flex-direction: column; align-items: stretch; gap: var(--spacing-sm); }
+
+/* Danger Zone: one red frame around the developer reset; the row inside has no frame of its own, so the frame is not cut */
+.danger-zone { margin-top: var(--spacing-sm); }
+.danger-zone__box {
+  border: var(--border-width) solid var(--error-color, #ef4444);
+  border-radius: 8px;
+  padding: var(--spacing-sm);
+}
+.danger-zone .setting-item--danger { border: none; padding: 0; }
+
+/* Parts list: the eye column has a fixed width, so the names and switches stay in one column whatever the state text */
+[data-vis-item] { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); }
+[data-vis-item] .vis-toggle-wrapper,
+[data-vis-item] .vis-state-required { width: 120px; justify-content: flex-end; }
+
+/* Zoom in settings: the same slider as the header, with the value beside it */
+.zoom-slider-control { display: inline-flex; align-items: center; gap: var(--spacing-sm); }
+
+/* New document name: the parts as chips, the chosen order below them, the free text and the example line */
+.doc-name-tokens { display: flex; flex-direction: column; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
+.doc-name-parts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.doc-name-parts__label { font-size: var(--fs-12); }
+.doc-name-text { display: flex; flex-direction: column; gap: var(--spacing-xs); margin-top: var(--spacing-sm); }
+.doc-name-text[hidden] { display: none; }
+
+/* New document name, drawn as the file name itself: chosen parts (value over the part's name) joined by "-", then the
+   extension. A piece is dragged onto another to move it; a part not chosen is a dashed + button under the box */
+.doc-name-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 8px;
+  font-family: var(--font-mono, ui-monospace, Consolas, monospace);
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--text-main);
+}
+.doc-name-file__sep,
+.doc-name-file__ext { color: var(--text-muted); }
+.doc-name-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 4px 2px 8px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 6px;
+  cursor: grab;
+}
+.doc-name-part__body { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.doc-name-part__value { overflow-wrap: anywhere; }
+.doc-name-part__value.is-empty { color: var(--text-muted); }
+.doc-name-part__name { font-family: var(--font-ui, inherit); font-size: var(--fs-12); font-weight: 400; color: var(--text-muted); }
+.doc-name-part button { min-width: 1.6rem; padding: 0 4px; font-family: var(--font-ui, inherit); }
+.doc-name-part:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 1px; }
+.doc-name-part.is-dragging { opacity: 0.5; }
+/* Where the dragged piece will land: the shared selection edge */
+.doc-name-part.is-drop-target { border-color: var(--sel-edge); box-shadow: inset 0 0 0 1px var(--sel-edge); }
+.doc-name-part-add { border-style: dashed; }
+
+/* Editor canvas choice: a Theme row, a Dark row and a Light row of cards (editorTonePicker.js). Cards reuse .theme-card, so the selected look comes from selection.css */
+.tone-groups { display: flex; flex-direction: column; gap: var(--spacing-md); }
+/* The generic row-control rule (.settings-modal-body .setting-row > :last-child) centres the control and pushes it to the end, which moved the legend and the rows off the label edge; the id outranks it */
+#modalToneCards { align-items: stretch; justify-content: flex-start; }
+.tone-group { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); align-items: start; gap: var(--spacing-sm); }
+.tone-group-title { padding-top: 8px; font-size: var(--fs-12); font-weight: 600; color: var(--text-muted); }
+/* About 44rem at most, so the four cards do not stretch to 348px each in a wide window (owner decision 2026-11-19) */
+.tone-card-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; max-width: 44rem; }
+.tone-card { position: relative; }
+.tone-card-sample { align-items: center; justify-content: center; min-height: 2.6rem; font-size: var(--fs-14); text-align: center; }
+.tone-card-name { white-space: normal; }
+.tone-card-contrast { font-size: var(--fs-12); font-variant-numeric: tabular-nums; opacity: 0.85; }
+.tone-card-state { display: none; font-size: var(--fs-12); font-weight: 700; }
+.tone-card[aria-pressed="true"] .tone-card-state { display: inline; }
+.tone-legend { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--spacing-sm); }
+.tone-legend p { margin: 0; }
+.tone-status.is-override { color: var(--text-main); font-weight: 600; }
+#modalEditorBgSelect[hidden],
+#modalFontFamilySelect[hidden],
+#modalLineHeightSelect[hidden] { display: none; }
+
+/* Font family cards (fontFamilyPicker.js): each card draws its own typeface; the selected look comes from selection.css */
+.font-card-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.font-card { position: relative; }
+.font-card-sample { align-items: center; justify-content: center; min-height: 3.2rem; font-size: var(--fs-20); text-align: center; }
+.font-card-name { white-space: normal; }
+/* Line height cards (lineHeightPicker.js): each card sets its sample at its own ratio; the selected look comes from selection.css */
+.line-height-card-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.line-height-card-sample { display: block; padding: 8px; font-size: var(--fs-12); white-space: pre-line; }
+.line-height-card-name { white-space: normal; }
+@media (max-width: 720px) { .line-height-card-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.font-card-desc { font-size: var(--fs-12); color: var(--text-muted); white-space: normal; }
+@media (max-width: 720px) {
+  .tone-group { grid-template-columns: minmax(0, 1fr); }
+  .tone-card-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* AI chat inside the LLM assistant card: a sub-block under the LLM switch, set apart by a rule and its own title */
+.llm-chat-block { margin-top: var(--spacing-lg); padding-top: var(--spacing-md); border-top: var(--border-width) solid var(--border-color); }
+.llm-chat-title { display: flex; align-items: center; gap: var(--spacing-xs); margin-bottom: var(--spacing-sm); font-size: var(--fs-16); font-weight: 700; color: var(--text-main); }
+.provider-choice-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; margin-top: var(--spacing-sm); }
+.provider-choice-row[hidden], #aiProviderHint[hidden], #btnClearAiProvider[hidden] { display: none; }
+
+/* Added fonts: the card with its remove button below, and the add row under the cards */
+.font-card-cell { display: flex; flex-direction: column; gap: var(--spacing-xs); min-width: 0; }
+.font-card-cell > .font-card { flex: 1; }
+.font-card-remove { align-self: flex-start; }
+.font-add-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
+.font-add-row > .setting-desc { flex: 1 1 18rem; min-width: 0; }
+
+/* Delete the saved key: on its own line at the right end, set apart from the check button so the two are not pressed by mistake */
+.api-key-clear { display: flex; align-items: center; justify-content: flex-end; gap: var(--spacing-sm); margin-top: var(--spacing-md); padding-top: var(--spacing-sm); border-top: var(--border-width) solid var(--border-color); }
+.api-key-clear > .setting-desc { flex: 1 1 auto; min-width: 0; }
+.api-key-clear > .settings-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* The small heading above the provider choice */
+.llm-provider-title { margin-top: var(--spacing-sm); font-size: var(--fs-14); font-weight: 600; color: var(--text-main); }

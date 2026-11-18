@@ -34,14 +34,24 @@ export function rememberGeminiModels(models) {
 const SORTS = [
   { key: 'recommended', labelKey: 'model_sort_recommended', grouped: true },
   { key: 'name' },
-  { key: 'id' },
   { key: 'input', direction: 'desc' },
-  { key: 'tier' } // Pro first
+  { key: 'tier' } // high cost (Pro) first
 ];
 
-// Proper names of the tiers; they are not translated. Rank 0 is the top tier, so an ascending sort puts Pro first.
-const TIER_NAMES = { pro: 'Pro', flash: 'Flash', lite: 'Flash-Lite' };
+// Rank 0 is the top tier, so an ascending sort puts the high cost (Pro) first.
+// The table shows the cost guide, not the tier name: the tier name (Flash, Pro) is already in the model name.
 const TIER_RANK = { pro: 0, flash: 1, lite: 2 };
+
+/** "1M / 64K": the input limit, then the output limit; one side may be empty when the API leaves it out */
+function limitsCell(m) {
+  const input = formatTokenLimit(m.inputTokenLimit);
+  const output = formatTokenLimit(m.outputTokenLimit);
+  if (!input && !output) return '';
+  return `${input || '–'} / ${output || '–'}`;
+}
+
+/** Series that have no generation number but are known by name: their heading drops "(other)" */
+const NAMED_SERIES = new Set(['omni', 'deep-research', 'nano-banana', 'lyria']);
 
 /** "Gemini 3 series" for a family and a whole generation: the heading of a group and the label of its filter button */
 function generationLabel({ family, major }) {
@@ -52,41 +62,55 @@ function generationLabel({ family, major }) {
 function groupNote(group) {
   const series = group.major === null ? group.brand.key : group.family;
   if (series === 'gemma') return t('model_family_note_gemma');
-  return series === 'gemini' ? t('model_family_note_gemini') : '';
+  if (series === 'gemini') return t('model_family_note_gemini');
+  // A named series says what it makes, so a name such as Lyria or Omni is not a puzzle (owner, 2026-11-18)
+  return NAMED_SERIES.has(series) ? t('model_family_note_' + series.replace(/-/g, '_')) : '';
 }
 
 function groupLabel(group) {
   if (group.major !== null) return generationLabel(group);
+  // A known series of its own, not "other": all its models (numbered or not) are one group, "Gemini Omni series"
+  if (NAMED_SERIES.has(group.brand.key)) return t('model_group_series', { name: group.brand.label });
   // No generation number: named after the name series (an empty label means the series is not known)
   return group.brand.label ? t('model_group_series_other', { name: group.brand.label }) : t('model_group_other');
 }
 
-/** Tags of a model: NEW, what it is for (Text, Speech, ...), Preview, Thinking. Each has a stable kind for the filter. */
+/**
+ * Tags of a model: NEW, what it is for (Text, Speech, ...), Thinking. Each has a stable kind for the filter.
+ * No Preview mark: "preview" is already in the id and the name (owner, 2026-11-18).
+ */
 function tagsOf(m) {
   const tags = [];
   // The tier and the purpose are filtered from their own columns; their tags are only for the filter (the table shows them in those columns)
   tags.push({ kind: 'is-brand-' + m.brand.key, text: m.brand.label || t('model_group_other'), filterOnly: true });
-  if (m.tier) tags.push({ kind: 'is-tier-' + m.tier, text: TIER_NAMES[m.tier], filterOnly: true });
+  if (m.tier && m.costGuide) tags.push({ kind: 'is-tier-' + m.tier, text: t('model_cost_' + m.costGuide), filterOnly: true });
   if (m.isNew) tags.push({ kind: 'is-new', text: t('model_badge_new') });
   tags.push({ kind: 'is-' + m.purpose, text: t('model_purpose_' + m.purpose), filterOnly: true });
-  if (m.preview) tags.push({ kind: 'is-preview', text: t('model_badge_preview') });
   if (m.thinking) tags.push({ kind: 'is-thinking', text: t('model_badge_thinking') });
+  // Latest crosses the series (Gemini, Antigravity, ...), so it is a mark, not a group
+  if (m.latest) tags.push({ kind: 'is-latest', text: t('model_badge_latest') });
   return tags;
 }
 
 // One row per model. The name is the main text; the id column is shown with an eye button (hidden at first).
-// Widths fit the text and the columns sit at the left; the spare room goes to the action column.
-// The action column (favorite star and Use) is added by the part.
-// Filters sit in the column headers. The name filter is the name series (Gemini, Gemma, Nano Banana, ...). One purpose and one tier per model, so several selected means any of them;
-// the tier menu lists Pro > Flash > Flash-Lite. NEW, Preview and Thinking are marks in the notes column, right of the tier.
+// The name column is the widest and its header is the search field. The action column (favorite star and Use) is added by the part.
+// Filters sit in the column headers. The name filter is the name series (Gemini, Gemma, Nano Banana, ...). One purpose and one cost per model, so several selected means any of them;
+// the cost menu lists high > standard > low. NEW, Thinking and Latest are marks in the notes column, left of the cost.
+// Each header has a hint (its tooltip) that says what the column means, so a short label such as "入力 / 出力" is enough.
 const COLUMNS = [
-  { key: 'name', labelKey: 'model_col_name', width: 'auto', sort: 'name', filter: { prefix: 'is-brand-', mode: 'any' } },
-  { key: 'id', labelKey: 'model_col_id', width: 'auto', toggle: true, sort: 'id' },
-  { key: 'purpose', labelKey: 'model_col_purpose', width: 'auto', filter: { kinds: ['is-text', 'is-speech', 'is-image', 'is-live', 'is-other'], mode: 'any' } },
-  { key: 'input', labelKey: 'model_col_input', width: 'auto', optional: true, sort: 'input' },
-  { key: 'tier', labelKey: 'model_col_tier', width: 'auto', sort: 'tier', filter: { kinds: ['is-tier-pro', 'is-tier-flash', 'is-tier-lite'], mode: 'any' } },
-  // Notes: the Preview, NEW and Thinking marks; no filter
-  { key: 'tags', labelKey: 'model_col_notes', width: 'auto' }
+  // The short-value columns (purpose, limits, cost) are exactly as wide as their longest text: a word such as "テキスト"
+  // is not broken over two lines, and they take no spare room (owner, 2026-11-18, at about 1300px). The spare room goes
+  // to the name, id and notes. The name column's minimum fits the search placeholder with the sort and filter buttons.
+  { key: 'name', labelKey: 'model_col_name', hintKey: 'model_col_name_hint', width: 'minmax(16rem, 2.8fr)', search: true, keepGroups: true, sort: 'name', filter: { prefix: 'is-brand-', mode: 'any' } },
+  // The model ID is a second line under the name, not a column: the name and the id are read together and the table
+  // gets no extra column (owner, 2026-11-19). The ID button right of the search field shows or hides it.
+  { key: 'id', labelKey: 'model_col_id', beneath: 'name', toggle: true, toggleLabelKey: 'model_col_id_short' },
+  { key: 'purpose', labelKey: 'model_col_purpose', hintKey: 'model_col_purpose_hint', width: 'max-content', filter: { kinds: ['is-text', 'is-speech', 'is-image', 'is-video', 'is-music', 'is-live', 'is-other'], mode: 'any' } },
+  { key: 'input', labelKey: 'model_col_input', hintKey: 'model_col_input_hint', width: 'max-content', optional: true, sort: 'input' },
+  // Notes: the NEW, Thinking and Latest marks; its filter shows the models with any of the chosen marks
+  { key: 'tags', labelKey: 'model_col_notes', hintKey: 'model_col_notes_hint', width: 'minmax(7rem, 1.6fr)', filter: { kinds: ['is-new', 'is-thinking', 'is-latest'], mode: 'any' } },
+  // The cost is the last column, right before the star and Use: the cost is in sight when Use is pressed (owner, 2026-11-19)
+  { key: 'tier', labelKey: 'model_col_cost', hintKey: 'model_col_cost_hint', width: 'max-content', sort: 'tier', filter: { kinds: ['is-tier-pro', 'is-tier-flash', 'is-tier-lite'], mode: 'any' } }
 ];
 const TOGGLE_KEYS = COLUMNS.filter((c) => c.toggle).map((c) => c.key);
 
@@ -125,6 +149,12 @@ function saveFavorites(ids) {
   } catch (_) { /* storage blocked: the favorites work for this session only */ }
 }
 
+/** In the list the family heading already says Gemini, so a row drops the leading "Gemini " ("Gemini 3.8 Flash" shows as "3.8 Flash"). Other names are kept. */
+function shortName(name) {
+  const short = name.replace(/^Gemini\s+/i, '');
+  return short || name;
+}
+
 export function createGeminiModelPicker(container, { onChange } = {}) {
   let lastModels = [];
   let flat = []; // models in display order, headings excluded
@@ -160,13 +190,15 @@ export function createGeminiModelPicker(container, { onChange } = {}) {
         id: m.name,
         tags: tagsOf(m),
         cells: {
-          name: m.displayName || m.name,
+          name: shortName(m.displayName || m.name),
           purpose: t('model_purpose_' + m.purpose),
-          input: formatTokenLimit(m.inputTokenLimit),
-          tier: m.tier ? (m.costGuide ? t('model_tier_cell', { tier: TIER_NAMES[m.tier], cost: t('model_cost_' + m.costGuide) }) : TIER_NAMES[m.tier]) : ''
+          input: limitsCell(m),
+          tier: m.costGuide ? t('model_cost_' + m.costGuide) : ''
         },
+        // Google's description of the model (English, as the API gives it) is the tooltip of its name (owner, 2026-11-19)
+        hints: m.description ? { name: m.description } : undefined,
         group,
-        sortValues: { name: m.displayName || m.name, id: m.name, input: m.inputTokenLimit, tier: m.tier ? TIER_RANK[m.tier] : undefined }
+        sortValues: { name: m.displayName || m.name, input: m.inputTokenLimit, tier: m.tier ? TIER_RANK[m.tier] : undefined }
       }));
     });
     list.setItems(items, selected);

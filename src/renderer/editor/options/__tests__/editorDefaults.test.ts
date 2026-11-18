@@ -18,12 +18,12 @@ describe('EDITOR_DEFAULTS (first-run Monaco defaults)', () => {
     expect(EDITOR_DEFAULTS).toMatchObject({
       wordWrap: 'on',
       fontSize: 16,
-      lineHeight: 30,
+      lineHeight: 1.8,
       minimap: { enabled: false },
       lineNumbers: 'on',
       folding: true,
       renderWhitespace: 'none',
-      renderLineHighlight: 'line',
+      renderLineHighlight: 'gutter',
       scrollBeyondLastLine: false,
       quickSuggestions: false,
       wordBasedSuggestions: 'off',
@@ -51,8 +51,8 @@ describe('buildMonacoBaseOptions', () => {
   it('applies every default to the options passed to monaco.editor.create', () => {
     const options = buildMonacoBaseOptions(runtime) as Record<string, unknown>;
     expect(options.wordWrap).toBe('on');
-    expect(options.lineHeight).toBe(30);
-    expect(options.renderLineHighlight).toBe('line');
+    expect(options.lineHeight).toBe(1.8);
+    expect(options.renderLineHighlight).toBe('gutter');
     expect(options.folding).toBe(true);
     expect(options.unicodeHighlight).toEqual({ ambiguousCharacters: false, invisibleCharacters: false, nonBasicASCII: false });
   });
@@ -89,22 +89,22 @@ describe('previewTypography', () => {
     expect(previewTypography({})).toEqual({
       fontFamily: EDITOR_DEFAULTS.fontFamily,
       fontSize: EDITOR_DEFAULTS.fontSize,
-      lineHeightPx: EDITOR_DEFAULTS.lineHeight
+      lineHeightPx: EDITOR_DEFAULTS.lineHeight * EDITOR_DEFAULTS.fontSize
     });
   });
 });
 
 describe('preview line breaks', () => {
   it('turns a single newline into a line break (marked breaks: true)', () => {
-    const html = marked.parse('一行目\n二行目', { gfm: true, breaks: true, async: false }) as string;
+    const html = marked.parse('\u4e00\u884c\u76ee\n\u4e8c\u884c\u76ee', { gfm: true, breaks: true, async: false }) as string;
     expect(html).toContain('<br>');
-    expect(html).not.toMatch(/一行目\s二行目/);
+    expect(html).not.toMatch(/\u4e00\u884c\u76ee\s\u4e8c\u884c\u76ee/);
   });
 });
 
 describe('editorDefaults.js source', () => {
   it('contains no Japanese literals (text lives in the locale dictionaries)', () => {
     const source = readFileSync(resolve(__dirname, '..', 'editorDefaults.js'), 'utf8');
-    expect(source).not.toMatch(/[぀-ヿ㐀-鿿＀-￯]/);
+    expect(source).not.toMatch(/[\u3040-\u30ff\u3400-\u9fff\uff00-\uffef]/);
   });
 });

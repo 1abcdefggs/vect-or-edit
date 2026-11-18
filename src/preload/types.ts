@@ -158,6 +158,11 @@ export interface EngineAPI {
   saveApiKey: (provider: ApiKeyProvider, apiKey: string) => Promise<{ success: boolean; error?: string }>;
   hasApiKey: (provider: ApiKeyProvider) => Promise<boolean>;
   clearApiKey: (provider: ApiKeyProvider) => Promise<{ success: boolean; error?: string }>;
+  /** Fonts the user added from the PC (stored in userData/fonts; loaded in the page with the FontFace API). */
+  listUserFonts: () => Promise<Array<{ file: string; name: string; alias: string }>>;
+  addUserFonts: () => Promise<{ success: boolean; canceled?: boolean; added: Array<{ file: string; name: string; alias: string }>; rejected: Array<{ name: string; problem: 'type' | 'empty' | 'size' | 'limit' | 'error' }> }>;
+  readUserFont: (file: string) => Promise<Uint8Array | null>;
+  removeUserFont: (file: string) => Promise<{ success: boolean }>;
   getCursorBaseSize: () => Promise<number>;
   listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number; version?: string; thinking?: boolean; canGenerate: boolean }>>;
   openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;

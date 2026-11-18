@@ -30,7 +30,7 @@
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 2px;"></span>
 
         <!-- Settings Gear Icon -->
-        <button id="btnSidebarQuickSettings" class="gear-btn gear-btn--md" data-ui="sbr:quick-settings" data-tab-target="tabAiSearch" data-i18n-title="tip_sidebar_quick_settings">
+        <button id="btnSidebarQuickSettings" class="gear-btn gear-btn--md gear-btn--key" data-ui="sbr:quick-settings" data-tab-target="tabAiSearch" data-i18n-title="tip_goto_settings_sidebar">
           <span class="material-symbols-outlined">settings</span>
         </button>
       </div>
@@ -49,7 +49,6 @@
       <div id="guidelineModuleCard" data-ui="sbr:guideline-card" class="profile-control-card semantic-module-card has-body">
         <div class="semantic-module-header" data-i18n-title="tip_section_guideline">
           <span class="semantic-module-title">
-            <span class="material-symbols-outlined collapse-icon">expand_more</span>
             <span id="profileIcon">
               <span class="material-symbols-outlined semantic-module-icon">rule_folder</span>
             </span>
@@ -71,6 +70,7 @@
               <span data-i18n="btn_unload_profile">Unload</span>
             </button>
           </div>
+          <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="true"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
         </div>
       </div>
 
@@ -78,7 +78,6 @@
       <div id="knowledgeModuleCard" data-ui="sbr:knowledge-card" class="slots-control-card semantic-module-card has-body">
         <div class="semantic-module-header" data-i18n-title="tip_section_slots">
           <span class="semantic-module-title">
-            <span class="material-symbols-outlined collapse-icon">expand_more</span>
             <span class="material-symbols-outlined semantic-module-icon">menu_book</span>
             <span class="module-title-separator semantic-module-sep">|</span>
             <span data-i18n="knowledge_slots_label">Knowledge</span>
@@ -95,9 +94,10 @@
               <span class="btn-label" data-i18n="btn_add_slot_short">Add files</span>
             </button>
           </div>
+          <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="true" aria-controls="knowledgeModuleBody"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
         </div>
 
-        <div class="semantic-module-body">
+        <div class="semantic-module-body" id="knowledgeModuleBody">
           <!-- Dynamic Slots List (SLOT 1, SLOT 2, ...) -->
           <div id="knowledgeSlotsList"
             style="display: flex; flex-direction: column; gap: 4px; max-height: 140px; overflow-y: auto;" data-i18n-title="tip_slots_list"></div>
@@ -142,9 +142,8 @@
   </div>
   <!-- Editor Options: every Monaco option, shown live in the main editor. Outside the header so it can use the height below it (collapsed until opened) -->
   <div id="monacoOptionsCard" data-ui="sbr:editor-options-card" class="monaco-options-card semantic-module-card collapsed">
-    <div class="semantic-module-header" role="button" tabindex="0" aria-expanded="false" aria-controls="monacoOptionsBody" data-i18n-title="tip_section_editor_options">
+    <div class="semantic-module-header" data-i18n-title="tip_section_editor_options">
       <span class="semantic-module-title">
-        <span aria-hidden="true" class="material-symbols-outlined collapse-icon">expand_more</span>
         <span class="material-symbols-outlined semantic-module-icon">tune</span>
         <span class="module-title-separator semantic-module-sep">|</span>
         <span data-i18n="monaco_opts_title">Editor Options</span>
@@ -154,9 +153,14 @@
           <span class="material-symbols-outlined" style="font-size: var(--fs-14);">restart_alt</span>
         </button>
       </div>
+      <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="false" aria-controls="monacoOptionsBody"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
     </div>
     <div id="monacoOptionsBody" class="semantic-module-body monaco-options-body">
-      <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
+      <p class="monaco-options-intro" data-i18n="monaco_opts_intro">This editor is Monaco. You can change its options here.</p>
+      <div class="monaco-options-search-wrap">
+        <span class="material-symbols-outlined monaco-options-search-icon" aria-hidden="true">search</span>
+        <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
+      </div>
       <div id="monacoOptionsCount" class="monaco-options-count" role="status" aria-live="polite"></div>
       <div id="monacoOptionsList" class="monaco-options-list"></div>
     </div>

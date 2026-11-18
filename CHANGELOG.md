@@ -7,11 +7,126 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.76] - 2026-11-19
+
 ### Changed
-- The text fonts (Source Serif 4, Noto Serif JP, Source Sans 3, Noto Sans JP, Source Code Pro, Cascadia Code) are bundled with the app instead of loaded from Google Fonts, so text keeps its typeface offline
+- The custom colours card in the settings shows its WCAG level (AA, AAA or below the standard) next to the contrast ratio, like the eight pair cards
+- The rows of colour cards in the settings are at most 44rem wide, so each card is about 169px instead of 348px in a 1920px window
+
+## [0.3.75] - 2026-11-19
+
+### Added
+- The line height in the settings is a row of four cards, each showing a few lines of sample text at its own ratio, so the spacing can be judged before choosing
+- The "Editor view (Monaco)" card in the settings has a description: it holds the basic display settings of Monaco, and the finer ones are in Editor Options in the right panel
+- A "Using the tabs" row in the settings' New documents card: how to close, rename, duplicate and create tabs, with a still picture of the tab row drawn from its own classes
+- The Gemini model table shows the output token limit next to the input limit ("1M / 64K") in a column named "IN / OUT" (its tooltip says IN is the input and OUT the output)
+- The Gemini model table has a Video purpose and a Gemini Omni series: the gemini-omni models were listed as text models under Other
+- The Gemini model table has a Music purpose for the Lyria models, which were listed as text models
+- The headings of the Gemini Omni, Lyria, Nano Banana and Deep Research series say what the models make, in one line under the name
+- Each column header of the Gemini model table has a tooltip that says what the column means (for example, that input / output are token limits)
+- A Latest mark in the notes column of the Gemini model table for the -latest aliases, and a filter on the notes column (NEW, Thinking, Latest)
+- The Deep Research models form a Deep Research series in the Gemini model table, instead of a series named after the first word "Deep"; its heading and the Gemini Omni heading do not say "(other)"
+
+### Fixed
+- The current line highlight "Underline only" no longer fills the line with the theme's line background; "Full line" keeps it
+- Three literal font sizes (the icon font, the settings tab icon and the settings nav icon) use the type-scale tokens, so the type-scale guard passes
+- A test of the Markdown preview line break and of the editor defaults no longer holds Japanese literals (written as escapes), so the English-invariants guard passes
+- Nano Banana models whose id has no "image" word are listed as image models, not text models, and their heading does not say "(other)"
+- Gemini models without a generation number (gemini-omni-1.1-flash, gemini-pro-latest) show their cost guide from the tier word in their id
+
+### Changed
+- The settings card "Writing view" (ja: 執筆画面) is named "Editor view (Monaco)" (ja: エディタ表示 (Monaco)) in the card, the Editor tab description and the tab tooltip, because its options are Monaco's
+- The settings' format of new documents says that a Markdown document can be previewed with the eye button in the tab row
+- The settings' new document name has one row of parts instead of a chip row and an order row: the row is the file name itself (each part shows its value, joined by - and followed by the extension) and replaces the example box; parts have a remove button and are moved by dragging (or Left/Right on a focused part), and the other parts have + buttons
+- The new-tab button in the editor tab row is labelled "New" (ja: 新規作成), and its tooltip says it creates a new document in a new tab
+- The settings' new document name explains that the name is used for the tab and the file name of documents made with + New
+- The Markdown preview button in the editor tab row shows only its icon and has no frame at rest, like + New in the same row; the label stays for screen readers
+- The Gemini model table's search field sits in the Model name column header, and the Model name column is about twice as wide
+- The Gemini model table's Tier column is renamed Cost and shows only High, Standard or Low (the tier name is already in the model name)
+- The model in use shows one In use button (使用中) in the place of Use; pressing it takes the choice back, so the action column keeps the width of one button
+- The model in use shows a check left of its name, where the eye reads first; the Use and In use button is narrower
+- The row of the model in use is tinted with the accent color and has an accent bar at the left, instead of the inverted (dark) surface that read as a group heading
+- GitHub light theme: the accent and button color is the darker green #1a7f37 (was #2ea44f), so a selected button shows white text at a contrast of 5.08 instead of black text on a bright green
+- Favorites only in the model table is a star button with the count in the header of the action column, above the stars of the rows, instead of a chip above the table
+- A model's own description from the Gemini API (English, as given) is the tooltip of its name in the model table
+- The cost column of the model table moves to the right end, next to the star and Use, so the cost is in sight when a model is chosen; the notes column comes before it
+- The expand button of the model table shows a diagonal double arrow (to the top right and the bottom left) instead of four corner brackets; the collapse mark points the arrows in
+- The Show model ID button moves from above the model table to the right of the search field in the name header, labelled "ID" (its tooltip gives the full name); the search placeholder reads "モデル名検索" / "Search model name"
+- The model ID is a smaller second line under the model name instead of a column of its own, so showing it adds no column; the list can no longer be sorted by ID (the name order is nearly the same)
+- The expand button fills the top right corner of the model table (the full height of the header row, flush with its right edge) instead of a small chip inside the cell padding
+- Group headings of the model table stick right under the header row at its measured height; the fixed 38px let a heading slide a few pixels under the taller header with the search field
+- The sort chip and the count line of the model table share one line above the table; the Use button reads "使う" in Japanese
+- Group headings in the model table start closer to the left edge (10px instead of 18px); the title and the note line up with the model names
+- The family headings of the model table use a light tint instead of a dark grey, so they are not mistaken for the inverted row in use
+- The model table text is larger in the same 46px rows: cells 16px, model ids and column labels 15px, buttons and the header search 14px, marks 13px, family titles 16px
+- The Purpose, limits and Cost columns of the model table are exactly as wide as their longest text, so their words do not wrap and the spare room goes to the name and notes
+- A model name in the model table breaks between words with even lines, and a bracketed part such as "(Apr-21-2026)" or "[Rerouted]" is never broken inside
+- The column header of the model table has bold labels in the text color and a 2px dark rule under it, so it reads apart from the family headings
 
 ### Removed
-- Google Fonts hosts from the outbound allowlist and the page security policy
+- The Remove button beside the In use mark in the model table (pressing In use does the same)
+- The Preview mark in the notes column of the Gemini model table ("preview" is already in the model id and name)
+
+## [0.3.74] - 2026-11-18
+
+### Added
+- Choose the name of a new document in Settings: date, time, sequence number, fixed text, or a mix, with the order of the parts and an example
+- A labelled New Tab button in the tab bar opens a new tab and creates a new file
+
+### Changed
+- The eye switch in Settings shows an eye icon and the state in words (shown or hidden)
+- The settings gear icons use the inverse of the accent colour by default; Settings > Theme > Settings icon colour switches them back to the accent colour
+- The tab bar buttons (close, duplicate, new tab) share one style with a border and a transparent background
+- The first document of a new install is titled "How to use"
+- The editor status bar shows the line count before the character count
+- Each settings gear's tooltip names the settings it opens: Header, Editor, Right panel or System
+- Hovering a settings gear outlines the part whose settings it opens, in the gear colour
+- The right panel sections (Guidelines, Knowledge, Editor Options) open and close from a minus icon at the right end of their header; the chevron on the left is removed
+- The header minimize button, the editor chat dock collapse button and the section toggles use a minus icon while open and an unfold icon while closed
+- The Editor Options section header is no longer a button containing another button; its toggle is the only button and reports its open state
+- The minus and unfold icons are drawn as inline SVG, so they do not depend on the icon font subset
+- The system log panel fades out for a moment before it closes automatically, 5 seconds after start (not for a close by the user; reduced motion skips the fade)
+- The System log section in Settings explains that it is the same log as the log panel at the bottom of the window, and that its lines are real recorded events
+- The Settings left nav lights the setting row at the top of the page as well as its card, and an entry with its settings listed below has square bottom corners
+- The entries under a Settings left nav card line up with the card's right edge (no inset on the right)
+- The Settings left nav is one step darker than the page body, so the index and the content read as separate areas
+- The card headings of the Settings page use the same tone as the left nav, as a band across the top of each card
+- The logo, app name and version block at the top of the Settings page is removed, since the window already shows them
+- The Menu bar card lists the logo and version first, then the menus
+- The Settings icon colour setting has a gear icon before its title, and its description says why each area has a gear (it opens that area's settings)
+- The Settings icon colour choice shows a gear in each option's colour, and the gears of the header, editor, sidebar and log panel as they are applied now
+- The Appearance settings follow the header order: Appearance, Theme, zoom, then the settings icon colour
+- The Popup colour setting says when its popups appear: text selection, the right-click menu and button tooltips
+- The Settings guide button moves from the bottom of the left list to the top tab row, and a back-to-top button stays at the bottom right of the page
+- The current line is marked in the line-number gutter by default, not by a background band
+- The edges between the Settings tab bar, its list and its body use the selected-state colour
+- The header zoom can be set by pressing and dragging left or right on it; a click still resets it to 100%
+- The zoom popup stays open while the pointer moves down to its slider, and a drag keeps going when the pointer leaves the badge
+- The Preview button uses the shared toolbar button look and active state, like the other editor toolbar buttons
+- The Preview icon uses the shared icon size, and its icon and label are centred on one line
+
+### Fixed
+- The menu bar rows in Settings no longer show "undefined" as their description
+
+## [0.3.73] - 2026-11-18
+
+### Added
+- Add an embedding model by its ID (owner/model-name) in the embedding model list; the model's facts come from Hugging Face. An added model is listed for comparison and cannot be used until its query and passage prefixes are verified
+- Remove a model added by ID from the list
+
+### Changed
+- The zoom control in Settings is a slider from 50% to 300%, the same control as in the header
+- The Parts of the window list is a closed section; each row's eye switch sits in a fixed-width column
+- The developer reset is a closed section inside a red Danger Zone frame
+- The embedding model catalogue is a table with five columns (model, dimensions, size, license, status); each model's languages, downloads, use and description open in a row below it
+
+### Fixed
+- The log panel closes 5 seconds after the window is first shown, instead of staying open; the start is counted when the first-run setup is done and the editor is on screen
+- The tab bar close and duplicate buttons have a visible border and background at rest
+
+### Removed
+- The unused zoom option labels (100%, 110%, 125%, 140%, 150%) in the dictionaries
+
 
 ## [0.3.72] - 2026-11-17
 

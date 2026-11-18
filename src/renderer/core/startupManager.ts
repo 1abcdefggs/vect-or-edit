@@ -5,6 +5,18 @@ import { readStorage } from './storage.js';
 let isSetupShown = false;
 let isSetupDone = true;
 let isEditorReady = false;
+let readyAnnounced = false;
+
+/**
+ * app:ready marks the moment the window is in front of the user: first-run setup is finished (or not needed)
+ * and the loader is going or gone. It fires once per start; the log panel's auto-close timer starts here.
+ * While setup is still open, the window is not announced yet.
+ */
+function announceWhenVisible(): void {
+  if (readyAnnounced || !isSetupDone) return;
+  readyAnnounced = true;
+  window.dispatchEvent(new Event('app:ready'));
+}
 
 /**
  * Shows first-run setup while the editor is still loading. Call after the backend settings and locale are loaded,
@@ -21,6 +33,7 @@ export function initStartupFlow(): void {
   isSetupDone = false;
   initAiSetup(() => {
     isSetupDone = true;
+    announceWhenVisible();
     if (isEditorReady) dismissStartupLoader();
   });
   showAiSetupModal();
@@ -35,6 +48,7 @@ export function completeStartup(): void {
 
 /** Fades the loader out and removes it. Safe to call more than once and as a fallback. */
 export function hideStartupLoader(): void {
+  announceWhenVisible();
   const appLoader = document.getElementById('appStartupLoader');
   if (!appLoader) return;
   appLoader.style.opacity = '0';

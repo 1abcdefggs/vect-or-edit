@@ -64,6 +64,8 @@ function updateButtonLabel() {
   const label = isPreviewVisible ? t('menu_edit') : t('btn_markdown_preview');
   button.querySelector('.markdown-preview-label').textContent = label;
   button.setAttribute('aria-pressed', String(isPreviewVisible));
+  // The shared active state of the toolbar buttons (buttons.css)
+  button.classList.toggle('toolbar-btn-active', isPreviewVisible);
 }
 
 export async function toggleMarkdownPreview() {

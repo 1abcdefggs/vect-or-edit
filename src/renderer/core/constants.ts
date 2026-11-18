@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   THEME: 'vect_theme',
   LEGACY_THEME: 'themeName',
   COLOR_MODE: 'vect_color_mode',
+  KEY_TONE: 'vect_key_tone',
   OVERLAY_COLOR: 'vect_overlay_color',
   FONT_FAMILY: 'editor_fontFamily',
   FONT_SIZE: 'editor_fontSize',
@@ -49,6 +50,12 @@ export const STORAGE_KEYS = {
   AUTO_SAVE_DELAY: 'editor_auto_save_delay_ms',
   // 'markdown' | 'text': the format new documents start in (src/shared/documentFormat.ts)
   DOCUMENT_FORMAT: 'vect_document_format',
+  // 'doc' | 'untitled' | 'memo': the name new documents start with (the label is in the dictionary, doc_name_<id>)
+  DOCUMENT_NAME: 'vect_document_name',
+  /** JSON array of the name parts, in order: name, seq, date, time, text (src/shared/documentName.ts) */
+  DOCUMENT_NAME_TOKENS: 'vect_document_name_tokens',
+  /** Free text added to new document names (when the text part is chosen) */
+  DOCUMENT_NAME_TEXT: 'vect_document_name_text',
   /** 'on' | 'off': ask before closing with × (off closes at once; unsaved tabs are always asked about) */
   CONFIRM_BEFORE_CLOSE: 'vect_confirm_before_close',
   /** 'off' once the "Don't show again" checkbox is ticked on a clean tab; the global switch above sets it back to 'on' */
@@ -64,6 +71,7 @@ export const STORAGE_KEYS = {
   SEARCH_LIMIT: 'vect_search_limit',
   /** JSON { languages, extra, sort }: the embedding model picker's content languages and sort order */
   EMBEDDING_PICKER_PREFS: 'vect_embedding_picker_prefs',
+  EMBEDDING_USER_MODELS: 'vect_embedding_user_models',
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
   EMBEDDING_SOURCE: 'vect_embedding_source',
   /** 'off': never cut dictionary or query vectors to a shorter length (docs 04_10); anything else allows it */
@@ -83,7 +91,7 @@ export const DEFAULTS = {
   MIN_SCORE_PCT: 70,
   SEARCH_LIMIT: 5,
   FONT_SIZE: 16,
-  LINE_HEIGHT: 30,
+  LINE_HEIGHT: 1.8, // a multiple of the font size (Monaco reads a value below 8 that way)
   FONT_FAMILY: "'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif",
   LOCAL_EMBEDDING_MODEL: 'Xenova/multilingual-e5-small',
   CLAUDE_MODEL: 'claude-opus-5-5',
@@ -91,6 +99,7 @@ export const DEFAULTS = {
   SUGGEST_TRIGGER_MODE: 'selection',
   AI_PROVIDER: 'local',
   LLM_PROVIDER: 'none',
+  DOCUMENT_NAME: 'doc',
   /** Default Vectorizer source */
   EMBEDDING_SOURCE: 'local',
   APP_LANG: 'en',

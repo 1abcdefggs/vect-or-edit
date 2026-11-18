@@ -101,7 +101,10 @@ export function showAiSetupModal() {
   autoSaveNewlineSwitch?.set(isNewlineAutoSaveEnabled());
   syncAutoSaveAllSwitch();
   const delayInput = $('setupAutoSaveDelay');
-  if (delayInput) delayInput.value = String(getAutoSaveDelayMs() / 1000);
+  if (delayInput) {
+    delayInput.max = String(AUTO_SAVE_DELAY_RANGE_MS.max / 1000);
+    delayInput.value = String(getAutoSaveDelayMs() / 1000);
+  }
   // The embedding model is the core of the tool, so it starts switched on
   localAiSwitch?.set(true);
   saveLocation?.refresh();

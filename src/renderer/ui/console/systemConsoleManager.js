@@ -63,6 +63,7 @@ export function initSystemConsole() {
   // Entries logged since the last frame; their rows are added to the views in one batch
   let pendingRows = [];
   let rowFrame = 0;
+  let autoCloseTimer = null;
 
   function updateLogBadge() {
     if (!logCountBadge) return;
@@ -204,6 +205,46 @@ export function initSystemConsole() {
         }
       })
     : null;
+
+  // Auto-open and auto-close log panel on first window load
+  // The panel fades out for a moment before it closes, so the close does not go unnoticed (reduced motion skips the fade)
+  const AUTO_CLOSE_FADE_MS = 240;
+  function scheduleAutoClose() {
+    if (autoCloseTimer) clearTimeout(autoCloseTimer);
+    autoCloseTimer = setTimeout(() => {
+      if (systemLogPanel && systemLogPanel.style.display !== 'none') {
+        systemLogPanel.classList.add('system-log-panel--closing');
+        autoCloseTimer = setTimeout(() => {
+          autoCloseTimer = null;
+          systemLogPanel.classList.remove('system-log-panel--closing');
+          logsDisclosure?.set(false);
+        }, AUTO_CLOSE_FADE_MS);
+      }
+    }, 5000);
+  }
+
+  function cancelAutoClose() {
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = null;
+    }
+    systemLogPanel?.classList.remove('system-log-panel--closing');
+  }
+
+  // Runs once after the first window load (renderer.ts dispatches app:ready). The panel is only closed
+  // again when it is open; the "collapse logs on startup" setting decides whether it opens at all
+  let isFirstWindowLoad = true;
+  window.addEventListener('app:ready', () => {
+    if (isFirstWindowLoad && systemLogPanel) {
+      isFirstWindowLoad = false;
+      if (logsDisclosure?.isOpen()) scheduleAutoClose();
+    }
+  });
+
+  // Cancel auto-close if user interacts with log panel
+  btnClearLogs?.addEventListener('click', cancelAutoClose);
+  btnCopyLogs?.addEventListener('click', cancelAutoClose);
+  btnDownloadLogs?.addEventListener('click', cancelAutoClose);
 
   logsDisclosure?.set(!settingsStore.getPreference('system.collapseLogsOnStartup'));
   document.getElementById('btnCloseLogs')?.addEventListener('click', () => logsDisclosure?.set(false));

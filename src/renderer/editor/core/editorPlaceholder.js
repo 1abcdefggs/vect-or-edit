@@ -1,6 +1,7 @@
 import { t } from '../../core/i18n.js';
 import { aiManager } from '../../core/aiStateManager.js';
 import { readStorage } from '../../core/storage.js';
+import { isLightTone } from './editorTonePairs.js';
 
 export function updateCustomPlaceholder(monacoEditorInstance) {
   const model = monacoEditorInstance?.getModel();
@@ -59,7 +60,7 @@ export function updateCustomPlaceholder(monacoEditorInstance) {
     let boxTextMain = 'var(--text-main, #f8fafc)';
     let boxTextMuted = 'var(--text-muted, #94a3b8)';
 
-    if (isLightTone) {
+    if (isLightCanvas) {
       boxBg = 'rgba(0, 0, 0, 0.02)';
       boxBorder = '1px dashed rgba(0, 0, 0, 0.16)';
       boxTextMain = '#18181b';

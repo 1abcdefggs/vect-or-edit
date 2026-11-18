@@ -25,6 +25,8 @@ export interface ModelListItem {
   group?: { key: string; label: string; note?: string };
   /** One value per sort key other than the caller's own order */
   sortValues?: Record<string, string | number | undefined>;
+  /** A longer text per column, shown as the cell's tooltip (a model's description on its name) */
+  hints?: Record<string, string>;
 }
 
 export interface ModelListSort {
