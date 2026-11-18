@@ -64,6 +64,7 @@ export const STORAGE_KEYS = {
   SEARCH_LIMIT: 'vect_search_limit',
   /** JSON { languages, extra, sort }: the embedding model picker's content languages and sort order */
   EMBEDDING_PICKER_PREFS: 'vect_embedding_picker_prefs',
+  EMBEDDING_USER_MODELS: 'vect_embedding_user_models',
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
   EMBEDDING_SOURCE: 'vect_embedding_source',
   /** 'off': never cut dictionary or query vectors to a shorter length (docs 04_10); anything else allows it */

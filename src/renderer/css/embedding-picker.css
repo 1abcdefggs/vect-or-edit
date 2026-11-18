@@ -182,26 +182,45 @@
   scrollbar-gutter: stable;
 }
 
-.ep-card {
+/* Catalogue table: five columns, the header row names them; the details row is shown by its toggle */
+.ep-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-12);
+}
+
+.ep-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 6px 10px;
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.ep-table td {
+  vertical-align: top;
+  padding: 10px;
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.ep-model-row.is-loading > td {
+  border-bottom-color: var(--accent-color);
+}
+
+.ep-cell-name { min-width: 0; }
+.ep-detail-toggle { margin-top: 4px; }
+
+.ep-detail { padding: 10px 14px 14px; }
+
+.ep-detail-list {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 72px 104px;
-  column-gap: 14px;
-  align-items: start;
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  border: var(--border-width) solid var(--border-color);
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 14px;
+  margin: 0;
 }
 
-.ep-card.is-loading {
-  border-color: var(--accent-color);
-}
-
-.ep-card-main {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
+.ep-detail-list dt { color: var(--text-muted); }
+.ep-detail-list dd { margin: 0; overflow-wrap: anywhere; }
 
 .ep-model-id {
   font-family: var(--font-mono, ui-monospace, Consolas, monospace);
@@ -209,23 +228,6 @@
   font-weight: 600;
   color: var(--text-main);
   overflow-wrap: anywhere;
-}
-
-.ep-meta,
-.ep-langs {
-  font-size: var(--fs-12);
-  color: var(--text-muted);
-  overflow-wrap: anywhere;
-}
-
-.ep-langs {
-  font-family: var(--font-mono, ui-monospace, Consolas, monospace);
-}
-
-.ep-blurb {
-  font-size: var(--fs-12);
-  line-height: 1.5;
-  color: var(--text-main);
 }
 
 .ep-fit-badge {
@@ -345,3 +347,7 @@
     grid-column: 1 / -1;
   }
 }
+
+/* Add a model by ID: the field takes the free width, the message wraps under the row */
+.ep-add-input { flex: 1 1 240px; min-width: 0; }
+.ep-add-msg { flex-basis: 100%; font-size: var(--fs-12); color: var(--text-muted); overflow-wrap: anywhere; }

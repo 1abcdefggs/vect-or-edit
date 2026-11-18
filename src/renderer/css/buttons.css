@@ -303,14 +303,13 @@ button.btn-phi {
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  border: none;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-muted, #94a3b8);
+  border: var(--border-width) solid var(--tab-btn-border);
+  background: var(--tab-btn-bg);
+  color: var(--tab-btn-fg);
   cursor: pointer;
   padding: 0;
   margin-right: 4px;
   margin-left: -2px;
-  opacity: 0.85;
   transition: all 0.15s ease;
   flex-shrink: 0;
 }
@@ -332,9 +331,9 @@ button.btn-phi {
   padding: 0 6px;
   margin-right: -4px;
   border-radius: 4px;
-  border: none;
-  background: transparent;
-  color: var(--text-muted, #94a3b8);
+  border: var(--border-width) solid var(--tab-btn-border);
+  background: var(--tab-btn-bg);
+  color: var(--tab-btn-fg);
   font-size: var(--fs-12);
   white-space: nowrap;
   cursor: pointer;
@@ -342,8 +341,8 @@ button.btn-phi {
 }
 
 .btn-tab-duplicate:hover {
-  background: rgba(56, 189, 248, 0.15);
-  color: var(--accent-color, #66f);
+  background: var(--tab-btn-hover-bg);
+  color: var(--tab-btn-hover-fg);
 }
 
 .btn-new-tab {

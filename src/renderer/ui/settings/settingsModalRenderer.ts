@@ -117,7 +117,7 @@ function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {
     return document.getElementById('modalLangSelect')?.closest('.setting-item') as HTMLElement;
   }
   if (item.id === 'h_zoom') {
-    return document.getElementById('modalZoomSelect')?.closest('.setting-item') as HTMLElement;
+    return document.getElementById('modalZoomSlider')?.closest('.setting-item') as HTMLElement;
   }
   if (item.id === 'ed_font_family') {
     return document.getElementById('modalFontFamilySelect')?.closest('.setting-item') as HTMLElement;

@@ -102,13 +102,11 @@
           </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_ui_scaling" data-label-text="UI Scaling (Zoom)" data-desc-key="setting_ui_scaling_desc" data-desc-text="Adjust the overall size of the application UI."></div>
-            <select id="modalZoomSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_zoom">
-              <option value="1.0" selected data-i18n="zoom_100">100%</option>
-              <option value="1.1" data-i18n="zoom_110">110%</option>
-              <option value="1.25" data-i18n="zoom_125">125%</option>
-              <option value="1.4" data-i18n="zoom_140">140%</option>
-              <option value="1.5" data-i18n="zoom_150">150%</option>
-            </select>
+            <div class="zoom-slider-control">
+              <input id="modalZoomSlider" class="header-zoom-slider" type="range" min="0.5" max="3" step="0.1" value="1"
+                data-i18n-title="tip_set_zoom" data-i18n-aria="setting_ui_scaling" data-ui-control="slider">
+              <span id="modalZoomPercent" class="header-zoom-text">100%</span>
+            </div>
           </div>
         </div>
 
@@ -720,8 +718,11 @@
 
 <div class="settings-section-card">
           <h4 data-card-heading data-icon="visibility" data-key="vis_group_title" data-text="Parts of the window"></h4>
-          <div class="setting-desc" data-i18n="vis_group_desc">Show or hide each part of the window with its eye button. Essential parts cannot be hidden.</div>
-          <div id="visibilityList"></div>
+          <details class="settings-details vis-accordion">
+            <summary data-i18n="vis_group_toggle" data-i18n-title="tip_vis_group_toggle">Show the list of parts</summary>
+            <div class="setting-desc" data-i18n="vis_group_desc">Show or hide each part of the window with its eye button. Essential parts cannot be hidden.</div>
+            <div id="visibilityList"></div>
+          </details>
         </div>
 
 <div class="settings-section-card settings-maintenance-card">
@@ -742,10 +743,15 @@
             <div data-setting-text data-label-key="maint_reset_label" data-label-text="Restore Default Settings" data-desc-key="maint_reset_desc" data-desc-text="Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor."></div>
             <button id="btnResetSettings" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_btn" data-i18n-title="tip_reset_settings">Restore Defaults</button>
           </div>
+          <details class="settings-details danger-zone">
+            <summary data-i18n="maint_dev_group" data-i18n-title="tip_maint_dev_group">Developer reset</summary>
+            <div class="danger-zone__box">
           <div data-setting-row class="setting-item--danger">
             <div data-setting-text data-label-key="maint_reset_dev_btn" data-label-text="Dev reset" data-desc-key="maint_reset_dev_desc" data-desc-text="Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again. A confirmation appears first."></div>
             <button id="btnResetSettingsDev" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_dev_btn" data-i18n-title="tip_reset_settings_dev">Dev reset</button>
           </div>
+            </div>
+          </details>
         </div>
 
         <div class="settings-section-card">

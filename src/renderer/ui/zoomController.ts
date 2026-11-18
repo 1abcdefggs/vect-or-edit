@@ -3,7 +3,7 @@ import { readStorage, writeStorage } from '../core/storage.js';
 import { showToast } from './notifications/toastManager';
 
 export function initZoomControls(): void {
-  const modalZoomSelect = document.getElementById('modalZoomSelect') as HTMLSelectElement | null;
+  const modalZoomSlider = document.getElementById('modalZoomSlider') as HTMLInputElement | null;
 
   if (!window.engineAPI?.setZoomFactor) return;
 
@@ -50,12 +50,9 @@ export function initZoomControls(): void {
     const sliderEl = document.getElementById('headerZoomSlider') as HTMLInputElement | null;
     if (sliderEl) sliderEl.value = currentZoom.toString();
 
-    if (modalZoomSelect) {
-      modalZoomSelect.value = currentZoom.toString();
-      if (!modalZoomSelect.value) {
-        modalZoomSelect.value = "1.0";
-      }
-    }
+    if (modalZoomSlider) modalZoomSlider.value = currentZoom.toString();
+    const modalPercentEl = document.getElementById('modalZoomPercent');
+    if (modalPercentEl) modalPercentEl.textContent = `${Math.round(currentZoom * 100)}%`;
 
     if (notify) {
       showToast(t('toast_zoom', { percent: Math.round(currentZoom * 100) }), 'info');
@@ -114,14 +111,6 @@ export function initZoomControls(): void {
     }
   }, { passive: false });
 
-  if (modalZoomSelect) {
-    modalZoomSelect.addEventListener('change', (e) => {
-      const target = e.target as HTMLSelectElement;
-      const val = parseFloat(target.value);
-      if (!isNaN(val)) {
-        applyZoom(val);
-      }
-    });
-  }
+  modalZoomSlider?.addEventListener('input', () => applyZoom(parseFloat(modalZoomSlider.value), false));
 }
 

@@ -774,3 +774,20 @@
 
 /* The theme cards take the full width of their row, under the label (the 4-column grid needs the room) */
 [data-setting-row]:has(> #modalThemeCards) { flex-direction: column; align-items: stretch; gap: var(--spacing-sm); }
+
+/* Danger Zone: one red frame around the developer reset; the row inside has no frame of its own, so the frame is not cut */
+.danger-zone { margin-top: var(--spacing-sm); }
+.danger-zone__box {
+  border: var(--border-width) solid var(--error-color, #ef4444);
+  border-radius: 8px;
+  padding: var(--spacing-sm);
+}
+.danger-zone .setting-item--danger { border: none; padding: 0; }
+
+/* Parts list: the eye column has a fixed width, so the names and switches stay in one column whatever the state text */
+[data-vis-item] { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); }
+[data-vis-item] .vis-toggle-wrapper,
+[data-vis-item] .vis-state-required { width: 120px; justify-content: flex-end; }
+
+/* Zoom in settings: the same slider as the header, with the value beside it */
+.zoom-slider-control { display: inline-flex; align-items: center; gap: var(--spacing-sm); }

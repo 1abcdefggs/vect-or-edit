@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.73] - 2026-11-18
+
+### Added
+- Add an embedding model by its ID (owner/model-name) in the embedding model list; the model's facts come from Hugging Face. An added model is listed for comparison and cannot be used until its query and passage prefixes are verified
+- Remove a model added by ID from the list
+
+### Changed
+- The zoom control in Settings is a slider from 50% to 300%, the same control as in the header
+- The Parts of the window list is a closed section; each row's eye switch sits in a fixed-width column
+- The developer reset is a closed section inside a red Danger Zone frame
+- The embedding model catalogue is a table with five columns (model, dimensions, size, license, status); each model's languages, downloads, use and description open in a row below it
+
+### Fixed
+- The log panel closes 5 seconds after the window is first shown, instead of staying open; the start is counted when the first-run setup is done and the editor is on screen
+- The tab bar close and duplicate buttons have a visible border and background at rest
+
+### Removed
+- The unused zoom option labels (100%, 110%, 125%, 140%, 150%) in the dictionaries
+
+
 ## [0.3.72] - 2026-11-17
 
 ### Changed
