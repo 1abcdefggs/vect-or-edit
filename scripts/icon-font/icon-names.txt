@@ -55,7 +55,6 @@ smart_toy
 style
 supervisor_account
 sync
-tab_new_right
 terminal
 text_fields
 text_format

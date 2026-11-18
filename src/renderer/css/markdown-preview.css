@@ -1,23 +1,16 @@
 /* Markdown preview: read-only rendered view shown in place of the Monaco editor. */
 
+/* Look and size come from the shared .toolbar-btn (buttons.css); the active state from .toolbar-btn-active */
 .markdown-preview-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   flex-shrink: 0;
-  margin: 0 6px;
-  padding: 0 6px;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  color: inherit;
-  font: inherit;
   white-space: nowrap;
-  cursor: pointer;
+  line-height: 1;
 }
 
-.markdown-preview-toggle:hover {
-  background: var(--hover-bg);
+/* Icon and label share one line height, so they sit on the same centre line; the icon uses the shared icon size */
+.markdown-preview-toggle .material-symbols-outlined {
+  font-size: var(--icon-size);
+  line-height: 1;
 }
 
 .markdown-preview-toggle:focus-visible {
@@ -39,10 +32,6 @@
 
 .markdown-preview-toggle.is-unavailable .markdown-preview-reason {
   display: inline;
-}
-
-.markdown-preview-toggle[aria-pressed="true"] {
-  color: var(--accent-color, #38bdf8);
 }
 
 .markdown-preview {

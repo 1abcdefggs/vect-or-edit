@@ -65,6 +65,13 @@
 
 ## What's New
 
+### v0.3.74 (2026-11-18)
+
+- Settings > Document name: build the name of a new document from date, time, sequence number and fixed text, in any order, with an example.
+- A New Tab button in the tab bar opens a new tab and creates a new file.
+- The eye switch in Settings shows an eye icon and the state in words.
+- The status bar shows the line count before the character count.
+
 ### v0.3.73 (2026-11-18)
 
 - Add an embedding model by its ID (owner/model-name) under Settings > Embedding models. The model is checked on Hugging Face, and it is listed for comparison: it cannot be used yet, because its query and passage prefixes are not verified. Remove it from the list at any time.

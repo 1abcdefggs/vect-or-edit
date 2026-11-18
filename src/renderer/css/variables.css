@@ -7,6 +7,8 @@
   --editor-fg: #f8fafc;
   --bg-card: rgba(17, 24, 39, 0.82);
   --accent-color: #2563eb;
+  /* The settings icons that mark an important setting (gear buttons, the setup footer): the inverse of the theme accent by default, so they stand out from the accent-coloured controls. Setting "accent" (data-key-tone) uses the accent itself. */
+  --settings-key-fg: color(from var(--accent-color) srgb calc(1 - r) calc(1 - g) calc(1 - b));
   --accent-hover: #1d4ed8;
   --text-main: #edf5ff;
   --text-muted: #b7c6dc;
@@ -16,7 +18,7 @@
   --control-border: #64748b;
   --border-primary: var(--border-color);
   /* Tab bar buttons (close, duplicate): one token set for every theme */
-  --tab-btn-bg: rgba(255, 255, 255, 0.14);
+  --tab-btn-bg: transparent;
   --tab-btn-border: var(--control-border);
   --tab-btn-fg: var(--text-main);
   --tab-btn-hover-bg: rgba(56, 189, 248, 0.18);
@@ -102,7 +104,7 @@
   --border-primary: var(--border-color);
   --app-backdrop: #d6dde6;
   /* Tab bar buttons (close, duplicate): one token set for every theme */
-  --tab-btn-bg: rgba(15, 23, 42, 0.1);
+  --tab-btn-bg: transparent;
   --tab-btn-border: var(--control-border);
   --tab-btn-fg: var(--text-main);
   --tab-btn-hover-bg: rgba(37, 99, 235, 0.14);

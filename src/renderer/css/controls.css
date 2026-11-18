@@ -13,6 +13,24 @@
 }
 
 /* Gear button: square, the shared icon-button box (--icon-btn-size) */
+/* Settings icons that mark an important setting: coloured with the shared token (variables.css), not a hard-coded colour */
+.gear-btn.gear-btn--key .material-symbols-outlined,
+.settings-key-icon {
+  color: var(--settings-key-fg);
+}
+
+/* Setting "Settings icon colour": accent uses the theme accent itself instead of its inverse */
+:root[data-key-tone="accent"] {
+  --settings-key-fg: var(--accent-color);
+}
+
+/* Hovering a settings gear outlines the part whose settings it opens, in the gear colour */
+:is(.app-header:has(#btnSettings:hover), .editor-section:has(#btnEditorQuickSettings:hover),
+  #suggestionSidebar:has(#btnSidebarQuickSettings:hover), #nativeBottomBar:has(#btnSystemQuickSettings:hover)) {
+  outline: var(--border-width) solid var(--settings-key-fg);
+  outline-offset: calc(var(--border-width) * -1);
+}
+
 .gear-btn {
   --gear-size: var(--icon-btn-size);
   display: inline-flex;

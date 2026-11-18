@@ -11,9 +11,12 @@ export function cardHeadingMarkup({ icon, key, text }) {
   return `<span class="material-symbols-outlined">${icon}</span><span data-i18n="${key}">${text}</span>`;
 }
 
-/** The label and the description inside a row's text block. */
-export function settingTextMarkup({ labelKey, labelText, descKey, descText }) {
-  return `<div class="setting-label" data-i18n="${labelKey}">${labelText}</div>`
+/** The label and the description inside a row's text block. An optional icon (a Material Symbols name) stands before the label. */
+export function settingTextMarkup({ labelKey, labelText, descKey, descText, icon }) {
+  const label = icon
+    ? `<div class="setting-label setting-label--icon"><span class="material-symbols-outlined setting-label-icon" aria-hidden="true">${icon}</span><span data-i18n="${labelKey}">${labelText}</span></div>`
+    : `<div class="setting-label" data-i18n="${labelKey}">${labelText}</div>`;
+  return label
     + `<div class="setting-desc" data-i18n="${descKey}">${descText}</div>`;
 }
 
@@ -23,8 +26,8 @@ export function cardHeadingAttributes({ icon, key, text }) {
 }
 
 /** Placeholder attributes for a row's text block (used in settingsModal.html). */
-export function settingTextAttributes({ labelKey, labelText, descKey, descText }) {
-  return ` data-setting-text data-label-key="${escapeAttr(labelKey)}" data-label-text="${escapeAttr(labelText)}"`
+export function settingTextAttributes({ labelKey, labelText, descKey, descText, icon }) {
+  return ` data-setting-text data-label-key="${escapeAttr(labelKey)}" data-label-text="${escapeAttr(labelText)}"${icon ? ` data-icon="${escapeAttr(icon)}"` : ''}`
     + ` data-desc-key="${escapeAttr(descKey)}" data-desc-text="${escapeAttr(descText)}"`;
 }
 
@@ -50,6 +53,7 @@ export function renderStaticSettingsText(root = document) {
     el.innerHTML = settingTextMarkup({
       labelKey: el.dataset.labelKey,
       labelText: el.dataset.labelText,
+      icon: el.dataset.icon,
       descKey: el.dataset.descKey,
       descText: el.dataset.descText
     });

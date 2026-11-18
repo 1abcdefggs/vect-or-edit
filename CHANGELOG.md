@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.74] - 2026-11-18
+
+### Added
+- Choose the name of a new document in Settings: date, time, sequence number, fixed text, or a mix, with the order of the parts and an example
+- A labelled New Tab button in the tab bar opens a new tab and creates a new file
+
+### Changed
+- The eye switch in Settings shows an eye icon and the state in words (shown or hidden)
+- The settings gear icons use the inverse of the accent colour by default; Settings > Theme > Settings icon colour switches them back to the accent colour
+- The tab bar buttons (close, duplicate, new tab) share one style with a border and a transparent background
+- The first document of a new install is titled "How to use"
+- The editor status bar shows the line count before the character count
+- Each settings gear's tooltip names the settings it opens: Header, Editor, Right panel or System
+- Hovering a settings gear outlines the part whose settings it opens, in the gear colour
+- The right panel sections (Guidelines, Knowledge, Editor Options) open and close from a minus icon at the right end of their header; the chevron on the left is removed
+- The header minimize button, the editor chat dock collapse button and the section toggles use a minus icon while open and an unfold icon while closed
+- The Editor Options section header is no longer a button containing another button; its toggle is the only button and reports its open state
+- The minus and unfold icons are drawn as inline SVG, so they do not depend on the icon font subset
+- The system log panel fades out for a moment before it closes automatically, 5 seconds after start (not for a close by the user; reduced motion skips the fade)
+- The System log section in Settings explains that it is the same log as the log panel at the bottom of the window, and that its lines are real recorded events
+- The Settings left nav lights the setting row at the top of the page as well as its card, and an entry with its settings listed below has square bottom corners
+- The Settings left nav is one step darker than the page body, so the index and the content read as separate areas
+- The card headings of the Settings page use the same tone as the left nav, as a band across the top of each card
+- The logo, app name and version block at the top of the Settings page is removed, since the window already shows them
+- The Menu bar card lists the logo and version first, then the menus
+- The Settings icon colour setting has a gear icon before its title, and its description says why each area has a gear (it opens that area's settings)
+- The Settings icon colour choice shows a gear in each option's colour, and the gears of the header, editor, sidebar and log panel as they are applied now
+- The Appearance settings follow the header order: Appearance, Theme, zoom, then the settings icon colour
+- The Popup colour setting says when its popups appear: text selection, the right-click menu and button tooltips
+- The Settings guide button moves from the bottom of the left list to the top tab row, and a back-to-top button stays at the bottom right of the page
+- The current line is marked in the line-number gutter by default, not by a background band
+- The edges between the Settings tab bar, its list and its body use the selected-state colour
+- The header zoom can be set by pressing and dragging left or right on it; a click still resets it to 100%
+- The zoom popup stays open while the pointer moves down to its slider, and a drag keeps going when the pointer leaves the badge
+- The Preview button uses the shared toolbar button look and active state, like the other editor toolbar buttons
+- The Preview icon uses the shared icon size, and its icon and label are centred on one line
+
+### Fixed
+- The menu bar rows in Settings no longer show "undefined" as their description
+
 ## [0.3.73] - 2026-11-18
 
 ### Added

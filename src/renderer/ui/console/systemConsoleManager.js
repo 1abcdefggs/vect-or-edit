@@ -207,11 +207,18 @@ export function initSystemConsole() {
     : null;
 
   // Auto-open and auto-close log panel on first window load
+  // The panel fades out for a moment before it closes, so the close does not go unnoticed (reduced motion skips the fade)
+  const AUTO_CLOSE_FADE_MS = 240;
   function scheduleAutoClose() {
     if (autoCloseTimer) clearTimeout(autoCloseTimer);
     autoCloseTimer = setTimeout(() => {
       if (systemLogPanel && systemLogPanel.style.display !== 'none') {
-        logsDisclosure?.set(false);
+        systemLogPanel.classList.add('system-log-panel--closing');
+        autoCloseTimer = setTimeout(() => {
+          autoCloseTimer = null;
+          systemLogPanel.classList.remove('system-log-panel--closing');
+          logsDisclosure?.set(false);
+        }, AUTO_CLOSE_FADE_MS);
       }
     }, 5000);
   }
@@ -221,6 +228,7 @@ export function initSystemConsole() {
       clearTimeout(autoCloseTimer);
       autoCloseTimer = null;
     }
+    systemLogPanel?.classList.remove('system-log-panel--closing');
   }
 
   // Runs once after the first window load (renderer.ts dispatches app:ready). The panel is only closed

@@ -3,7 +3,8 @@ import { readStorage } from '../../core/storage.js';
 import { getEditorInstance, getMonaco } from '../core/editorCore.js';
 import { triggerAdaptiveAutoSave } from '../ui/autoSaveManager.js';
 import { t } from '../../core/i18n.js';
-import { STORAGE_KEYS } from '../../core/constants.js';
+import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { nextFreeName, sanitizeNameTokens } from '../../../shared/documentName';
 import { showToast } from '../../ui/notifications/toastManager.js';
 import { showChoiceModal } from '../../ui/notifications/confirmModal.js';
 import { confirmClose } from '../../ui/notifications/closeGuard.js';
@@ -32,26 +33,36 @@ export function getActiveTab() {
 }
 
 /** The format new documents start in: the stored choice (first-run setup or Settings), Markdown when none. */
+const NAME_IDS = ['doc', 'untitled', 'memo'];
+
+/** The name new documents start with: doc, untitled or memo (the label is in the dictionary) */
+export function getDefaultDocumentName() {
+  const stored = readStorage(STORAGE_KEYS.DOCUMENT_NAME);
+  return NAME_IDS.includes(stored) ? stored : DEFAULTS.DOCUMENT_NAME;
+}
+
 export function getDefaultDocumentFormat() {
   return toDocumentFormat(readStorage(STORAGE_KEYS.DOCUMENT_FORMAT));
 }
 
+/** The name of a new document: the chosen parts (name, number, date, time, text) in the chosen order, not used by an open tab */
 function generateDefaultDocumentTitle() {
-  const existingNums = new Set();
-  const pattern = /^Doc-(\d+)\.(?:md|txt)$/i;
-  for (const tab of tabs) {
-    if (tab.title) {
-      const match = tab.title.match(pattern);
-      if (match) {
-        existingNums.add(parseInt(match[1], 10));
-      }
-    }
+  const used = new Set(tabs.filter(tab => tab.title).map(tab => tab.title.replace(/\.(md|txt)$/i, '')));
+  const name = nextFreeName(getDefaultNameTokens(), {
+    name: t(`doc_name_${getDefaultDocumentName()}`),
+    text: readStorage(STORAGE_KEYS.DOCUMENT_NAME_TEXT) || '',
+    now: new Date()
+  }, used);
+  return `${name}${DOCUMENT_FORMATS[getDefaultDocumentFormat()].extension}`;
+}
+
+/** The parts of a new document's name, in order (see src/shared/documentName.ts) */
+export function getDefaultNameTokens() {
+  try {
+    return sanitizeNameTokens(JSON.parse(readStorage(STORAGE_KEYS.DOCUMENT_NAME_TOKENS) || 'null'));
+  } catch {
+    return sanitizeNameTokens(null);
   }
-  let n = 1;
-  while (existingNums.has(n)) {
-    n++;
-  }
-  return `Doc-${n}${DOCUMENT_FORMATS[getDefaultDocumentFormat()].extension}`;
 }
 
 /** A user's new document is empty; only the very first document of a session shows the welcome text. */
@@ -64,7 +75,11 @@ export function createNewTab(title = null, initialContent = null, filePath = nul
   if (!monaco) return null;
 
   const id = `tab_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
-  const tabTitle = title || generateDefaultDocumentTitle();
+  // The first document of a session is the welcome document: it is named after the guide, not Doc-N
+  const isWelcomeTab = title === null && initialContent === null && tabs.length === 0;
+  const tabTitle = title || (isWelcomeTab
+    ? withFormatExtension(t('initial_document_title'), getDefaultDocumentFormat())
+    : generateDefaultDocumentTitle());
     const contentToSet = initialContent !== null ? initialContent : (t('initial_document_content'));
   // The file name decides the format: .txt is plain text, everything else is Markdown
   const model = monaco.editor.createModel(contentToSet, DOCUMENT_FORMATS[formatOfName(tabTitle)].languageId);

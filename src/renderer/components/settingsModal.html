@@ -2,18 +2,6 @@
 <div id="settingsModal" class="modal-backdrop" style="display: none;">
   <div class="modal-dialog settings-modal-dialog">
     <div class="settings-modal-tabs">
-      <!-- Logo and Version at the top -->
-      <div class="settings-logo-header">
-        <svg class="settings-logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-          <path d="M2 17l10 5 10-5"></path>
-          <path d="M2 12l10 5 10-5"></path>
-        </svg>
-        <div class="settings-logo-text">
-          <h2 class="settings-app-name" data-i18n="app_title">VectOrEdit</h2>
-          <p class="settings-app-version" id="settingsAppVersion">Version 0.3.64</p>
-        </div>
-      </div>
       <h3 class="settings-nav-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -28,6 +16,9 @@
       <button class="settings-tab-btn" data-tab="tabEditor" data-i18n-title="tip_tab_editor"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">edit_note</span><span class="settings-tab-label" data-i18n="tab_editor">Editor</span></button>
       <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n-title="tip_tab_ai"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">smart_toy</span><span class="settings-tab-label" data-i18n="tab_ai_search">Sidebar</span></button>
       <button class="settings-tab-btn" data-tab="tabSystem" data-i18n-title="tip_tab_system"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">tune</span><span class="settings-tab-label" data-i18n="tab_system">System</span></button>
+      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
+        <span class="material-symbols-outlined">help</span><span class="settings-guide-label" data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
+      </button>
       <button id="btnBackToEditor" class="toolbar-btn settings-back-btn" data-i18n-title="tip_back_to_editor">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -41,9 +32,6 @@
     <div class="settings-split">
     <nav class="settings-nav" aria-label="Settings sections">
       <ul class="settings-nav-items" id="settingsNavItems"></ul>
-      <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
-        <span class="material-symbols-outlined">help</span><span class="settings-guide-label" data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
-      </button>
     </nav>
 
     <div class="modal-body settings-modal-body">
@@ -53,23 +41,23 @@
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="format_list_bulleted" data-key="grp_menu_bar" data-text="Menu bar"></h4>
           <p class="card-section-desc" data-i18n="grp_menu_bar_desc">Select which menus to display. Hidden menu functions remain accessible via keyboard shortcuts and toolbar buttons.</p>
+          <div data-setting-row data-vis-target="h_logo">
+            <div data-setting-text data-label-key="vis_h_logo" data-label-text="Logo and app version" data-desc-key="vis_logo_desc" data-desc-text="Shows or hides the logo and app version in the header."></div>
+          </div>
           <div data-setting-row data-vis-target="h_menu_file">
-            <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File menu"></div>
+            <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_edit">
-            <div data-setting-text data-label-key="vis_h_menu_edit" data-label-text="Edit menu"></div>
+            <div data-setting-text data-label-key="vis_h_menu_edit" data-label-text="Edit menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_view">
-            <div data-setting-text data-label-key="vis_h_menu_view" data-label-text="View menu"></div>
+            <div data-setting-text data-label-key="vis_h_menu_view" data-label-text="View menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_window">
-            <div data-setting-text data-label-key="vis_h_menu_window" data-label-text="Window menu"></div>
+            <div data-setting-text data-label-key="vis_h_menu_window" data-label-text="Window menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_help">
-            <div data-setting-text data-label-key="vis_h_menu_help" data-label-text="Help menu"></div>
-          </div>
-          <div data-setting-row data-vis-target="h_logo">
-            <div data-setting-text data-label-key="vis_h_logo" data-label-text="Logo and app version"></div>
+            <div data-setting-text data-label-key="vis_h_menu_help" data-label-text="Help menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
         </div>
 
@@ -77,7 +65,7 @@
           <h4 data-card-heading data-icon="palette" data-key="common_theme" data-text="Theme"></h4>
           <p class="card-section-desc" data-i18n="common_theme_section_desc">Configure the colour scheme and theme. The theme shows its light or dark face depending on the appearance mode.</p>
           <div data-setting-row>
-            <div data-setting-text data-label-key="color_mode_label" data-label-text="Appearance" data-desc-key="color_mode_desc" data-desc-text="Light, dark, or follow the system. The theme shows its light or dark face."></div>
+            <div data-setting-text data-label-key="color_mode_label" data-label-text="Appearance" data-desc-key="color_mode_desc" data-desc-text="Match system, light or dark. The theme shows its light or dark face."></div>
             <select id="modalColorModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_color_mode"></select>
           </div>
           <div data-setting-row>
@@ -85,7 +73,7 @@
             <div id="modalThemeCards" class="theme-card-grid settings-theme-cards" data-i18n-title="tip_set_theme"></div>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="overlay_color_label" data-label-text="Popup colour" data-desc-key="overlay_color_desc" data-desc-text="Colour of selection popups, context menus and tooltips. Invert shows them on a dark surface in light mode and a light surface in dark mode, so they stand out."></div>
+            <div data-setting-text data-label-key="overlay_color_label" data-label-text="Popup colour" data-desc-key="overlay_color_desc" data-desc-text="Colour of the popups that appear when you select text (copy and paste), the right-click menu, and the tooltip shown when you hover over a button. Invert shows them on a dark surface in light mode and a light surface in dark mode, so they stand out from the window."></div>
             <div id="modalOverlayColorCards" class="settings-theme-cards popup-color-cards" role="group" data-i18n-aria="overlay_color_label"></div>
           </div>
         </div>
@@ -106,6 +94,26 @@
               <input id="modalZoomSlider" class="header-zoom-slider" type="range" min="0.5" max="3" step="0.1" value="1"
                 data-i18n-title="tip_set_zoom" data-i18n-aria="setting_ui_scaling" data-ui-control="slider">
               <span id="modalZoomPercent" class="header-zoom-text">100%</span>
+            </div>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="key_tone_label" data-label-text="Settings icon colour" data-icon="settings" data-desc-key="key_tone_desc" data-desc-text="The colour of the gear icons that open settings. Inverse stands out from the accent colour; Accent uses the accent colour itself."></div>
+            <div id="modalKeyTonePicker" class="key-tone-picker" role="radiogroup" data-i18n-aria="key_tone_label" aria-label="Settings icon colour">
+              <div class="key-tone-options">
+                <button type="button" class="key-tone-option" role="radio" aria-checked="false" data-tone="inverse" data-i18n-title="tip_set_key_tone">
+                  <span class="material-symbols-outlined key-tone-gear" data-tone="inverse" aria-hidden="true">settings</span><span data-i18n="key_tone_inverse">Inverse of accent</span>
+                </button>
+                <button type="button" class="key-tone-option" role="radio" aria-checked="false" data-tone="accent" data-i18n-title="tip_set_key_tone">
+                  <span class="material-symbols-outlined key-tone-gear" data-tone="accent" aria-hidden="true">settings</span><span data-i18n="key_tone_accent">Accent</span>
+                </button>
+              </div>
+              <!-- The gears as they are applied now, in each area: the same colour as the real gears -->
+              <ul class="key-tone-areas" aria-label="Areas">
+                <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_header">Header</span></li>
+                <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_editor">Editor</span></li>
+                <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_sidebar">Sidebar</span></li>
+                <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_log">Log panel</span></li>
+              </ul>
             </div>
           </div>
         </div>
@@ -209,6 +217,13 @@
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="edit_note" data-key="grp_editor_display" data-text="Writing view"></h4>
           <div data-setting-row>
+            <div data-setting-text data-label-key="writing_panel_row_label" data-label-text="Editor options panel" data-desc-key="writing_panel_row_desc" data-desc-text="Opens the Editor Options panel on the right, where the Monaco options are listed."></div>
+            <div class="setting-actions">
+              <button id="btnWritingOptionPanel" class="settings-btn settings-btn--primary" type="button" data-i18n-title="tip_monaco_open_panel">OPTION</button>
+              <button id="btnWritingMonacoPanel" class="settings-btn" type="button" data-i18n-title="tip_monaco_open_panel">Monaco</button>
+            </div>
+          </div>
+          <div data-setting-row>
             <div data-setting-text data-label-key="setting_word_wrap" data-label-text="Word Wrap" data-desc-key="setting_word_wrap_desc" data-desc-text="Toggle automatic text wrapping."></div>
             <select id="modalWordWrapSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_word_wrap">
               <option value="on" selected data-i18n="opt_wrap_on">On (Wrap at view)</option>
@@ -232,8 +247,8 @@
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_line_highlight" data-label-text="Current Line Highlight" data-desc-key="setting_line_highlight_desc" data-desc-text="Configure cursor highlight style."></div>
             <select id="modalLineHighlightSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_line_highlight">
-              <option value="gutter" data-i18n="opt_highlight_gutter">Line Number Only</option>
-              <option value="line" selected data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
+              <option value="gutter" selected data-i18n="opt_highlight_gutter">Line Number Only</option>
+              <option value="line" data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
               <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
               <option value="none" data-i18n="opt_highlight_none">Disabled</option>
             </select>
@@ -258,12 +273,26 @@
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="description" data-key="grp_documents" data-text="New documents"></h4>
           <div data-setting-row>
+            <div data-setting-text data-label-key="setting_document_name" data-label-text="Name of new documents" data-desc-key="setting_document_name_desc" data-desc-text="The name new documents start with. The number goes after it."></div>
+            <select id="modalDocumentNameSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_document_name">
+              <option value="doc" data-i18n="doc_name_doc">Doc</option>
+              <option value="untitled" data-i18n="doc_name_untitled">Untitled</option>
+              <option value="memo" data-i18n="doc_name_memo">Memo</option>
+            </select>
+          </div>
+          <div id="documentNameTokens" class="doc-name-tokens"></div>
+          <div class="doc-name-text" id="documentNameTextRow" hidden>
+            <label class="setting-desc" for="documentNameText" data-i18n="name_text_label">Text added to the name</label>
+            <input id="documentNameText" class="first-run-input" type="text" maxlength="40" spellcheck="false" autocomplete="off" data-i18n-title="name_text_label">
+          </div>
+          <div data-setting-row>
             <div data-setting-text data-label-key="setting_document_format" data-label-text="Format of new documents" data-desc-key="setting_document_format_desc" data-desc-text="Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar."></div>
             <select id="modalDocumentFormatSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_document_format">
               <option value="markdown" data-i18n="format_option_markdown">Markdown (.md)</option>
               <option value="text" data-i18n="format_option_text">Text (.txt)</option>
             </select>
           </div>
+          <div class="setting-desc doc-name-example" data-doc-name-example></div>
         </div>
 
         <div class="settings-section-card">
@@ -668,6 +697,7 @@
               </button>
             </span>
           </h4>
+          <p class="card-section-desc" data-i18n="settings_group_logs_desc">The same system log as the log panel at the bottom of the window. Each line is a real event the app recorded while it ran, not a summary or an example.</p>
           <div class="log-head" aria-hidden="true"><span data-i18n="log_head_time">Time</span><span data-i18n="log_head_level">Level</span><span data-i18n="log_head_source">Source</span><span data-i18n="log_head_message">Message</span></div>
           <div class="log-entries-container" data-log-mirror></div>
           <div data-setting-row>
@@ -764,6 +794,12 @@
             </select>
           </div>
         </div>
+      </div>
+      <!-- Back to the top of the page; it stays in view at the bottom right while the page scrolls -->
+      <div class="settings-to-top-anchor">
+        <button type="button" id="btnSettingsToTop" class="settings-to-top" data-i18n-title="tip_settings_to_top" data-i18n-aria="tip_settings_to_top" aria-label="Back to the top">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>
+        </button>
       </div>
     </div>
 

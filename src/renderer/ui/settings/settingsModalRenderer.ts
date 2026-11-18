@@ -90,16 +90,17 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
 }
 
 /** A switch with both states written out: the lit word is the current state (look in settings-ui.css). */
+/** The switch shows an eye (open when the part is shown, closed when hidden) and the state in words, not by colour alone */
 function updateEyeButtonState(btn: HTMLButtonElement, isVisible: boolean): void {
-  btn.replaceChildren(stateWord('vis_state_shown', isVisible), stateWord('vis_state_hidden', !isVisible));
-  btn.setAttribute('aria-checked', String(isVisible));
-}
-
-function stateWord(key: string, lit: boolean): HTMLElement {
+  const eye = document.createElement('span');
+  eye.className = 'material-symbols-outlined vis-state-icon';
+  eye.setAttribute('aria-hidden', 'true');
+  eye.textContent = isVisible ? 'visibility' : 'visibility_off';
   const word = document.createElement('span');
-  word.className = lit ? 'vis-state-word is-lit' : 'vis-state-word';
-  word.textContent = t(key);
-  return word;
+  word.className = 'vis-state-word is-lit';
+  word.textContent = t(isVisible ? 'vis_state_shown' : 'vis_state_hidden');
+  btn.replaceChildren(eye, word);
+  btn.setAttribute('aria-checked', String(isVisible));
 }
 
 function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {

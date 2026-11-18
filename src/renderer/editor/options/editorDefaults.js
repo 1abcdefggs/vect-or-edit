@@ -15,7 +15,7 @@ export const EDITOR_DEFAULTS = Object.freeze({
   lineNumbers: 'on',
   folding: true,
   renderWhitespace: 'none',
-  renderLineHighlight: 'line',
+  renderLineHighlight: 'gutter',
   scrollBeyondLastLine: false,
   quickSuggestions: false,
   wordBasedSuggestions: 'off',

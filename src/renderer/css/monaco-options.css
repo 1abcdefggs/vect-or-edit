@@ -220,7 +220,7 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header {
   pointer-events: none;
 }
 
-body.sidebar-options-mode #monacoOptionsCard .collapse-icon {
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-toggle {
   display: none;
 }
 

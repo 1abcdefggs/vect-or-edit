@@ -163,8 +163,17 @@
   z-index: 60;
   pointer-events: none;
 }
+/* Invisible bridge over the gap, so the pointer can move from the badge down to the slider without losing the popup */
+.header-zoom-hint::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6px;
+  height: 6px;
+}
 .header-zoom-group:hover .header-zoom-hint,
-.header-zoom-group.is-zooming .header-zoom-hint { display: flex; }
+.header-zoom-group.is-zooming .header-zoom-hint { display: flex; pointer-events: auto; }
 .header-zoom-group.is-zooming {
   background: color-mix(in srgb, var(--accent-color, #38bdf8) 10%, transparent);
   border-color: color-mix(in srgb, var(--accent-color, #38bdf8) 40%, transparent);

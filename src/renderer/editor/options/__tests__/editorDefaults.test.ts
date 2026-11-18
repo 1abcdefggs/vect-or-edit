@@ -23,7 +23,7 @@ describe('EDITOR_DEFAULTS (first-run Monaco defaults)', () => {
       lineNumbers: 'on',
       folding: true,
       renderWhitespace: 'none',
-      renderLineHighlight: 'line',
+      renderLineHighlight: 'gutter',
       scrollBeyondLastLine: false,
       quickSuggestions: false,
       wordBasedSuggestions: 'off',
@@ -52,7 +52,7 @@ describe('buildMonacoBaseOptions', () => {
     const options = buildMonacoBaseOptions(runtime) as Record<string, unknown>;
     expect(options.wordWrap).toBe('on');
     expect(options.lineHeight).toBe(30);
-    expect(options.renderLineHighlight).toBe('line');
+    expect(options.renderLineHighlight).toBe('gutter');
     expect(options.folding).toBe(true);
     expect(options.unicodeHighlight).toEqual({ ambiguousCharacters: false, invisibleCharacters: false, nonBasicASCII: false });
   });

@@ -5,6 +5,8 @@ import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
 import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode, OVERLAY_COLORS, getOverlayColor } from '../../editor/core/themeLoader.js';
 import { setLedStatus } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { DOCUMENT_FORMATS } from '../../../shared/documentFormat';
+import { NAME_TOKENS, composeName, sanitizeNameTokens } from '../../../shared/documentName';
 import { EDITOR_DEFAULTS } from '../../editor/options/editorDefaults.js';
 import { importDictionary } from '../../search/dictionary.js';
 import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, hasUnsavedTabs, refreshLinter, updateAutoSaveUI } from '../../editor/editorManager.js';
@@ -19,7 +21,7 @@ import { renderThemeCards, fitThemeCards } from '../components/themeCards.js';
 import { pickCurrentCard } from './settingsNavCurrent.js';
 import { clearAllApiKeys, isApiKeyConfigured, refreshApiKeyStatus, saveApiKey } from '../../core/apiKeyStore.js';
 import { bindSaveLocationControls } from './saveLocation.js';
-import { getDefaultDocumentFormat } from '../../editor/tabs/tabState.js';
+import { getDefaultDocumentFormat, getDefaultNameTokens } from '../../editor/tabs/tabState.js';
 import { confirmClose } from '../notifications/closeGuard.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
 import { resetApp } from './resetApp.js';
@@ -46,18 +48,6 @@ export function getThemeList() {
 
 export { getStoredThemeSetting, getColorMode };
 
-/** Updates the version display in the settings modal header. */
-async function updateVersionDisplay() {
-  try {
-    const version = await window.ipc?.invoke('app:getVersion');
-    const versionEl = document.getElementById('settingsAppVersion');
-    if (versionEl && version) {
-      versionEl.textContent = `Version ${version}`;
-    }
-  } catch (err) {
-    console.error('Failed to fetch app version:', err);
-  }
-}
 
 /** Fills a theme select with every theme, keeping its current value. A theme's light or dark face follows the mode. */
 export function populateThemeDropdown(selectEl) {
@@ -153,6 +143,19 @@ export function applyOverlayColor(value) {
   refreshOverlayColorControl();
 }
 
+const KEY_TONES = ['inverse', 'accent'];
+
+export function getKeyTone() {
+  const stored = readStorage(STORAGE_KEYS.KEY_TONE);
+  return KEY_TONES.includes(stored) ? stored : 'inverse';
+}
+
+export function applyKeyTone(tone) {
+  if (!KEY_TONES.includes(tone)) return;
+  setAndSync(STORAGE_KEYS.KEY_TONE, tone);
+  document.documentElement.dataset.keyTone = tone;
+}
+
 export async function applyColorMode(mode) {
   if (!COLOR_MODES.includes(mode)) return;
   setAndSync(STORAGE_KEYS.COLOR_MODE, mode);
@@ -188,9 +191,6 @@ export async function applyLanguageSetting(lang) {
 export function initSettings(updateEditorCb) {
   updateEditorOptionsCallback = updateEditorCb;
 
-  // Update the version display in the settings header
-  updateVersionDisplay();
-
   // The custom text color used to be stored under the key "undefined" (CUSTOM_EDITOR_FG was missing): move it
   const legacyTextColor = readStorage('undefined');
   if (legacyTextColor !== null) {
@@ -223,11 +223,131 @@ export function initSettings(updateEditorCb) {
     browserTextKey: 'setup_save_location_browser'
   });
 
+  // Colour of the settings gear icons: inverse of the accent (default) or the accent itself
+  const keyTonePicker = document.getElementById('modalKeyTonePicker');
+  const paintKeyTonePicker = () => {
+    const tone = getKeyTone();
+    keyTonePicker?.querySelectorAll('.key-tone-option').forEach((button) => {
+      const current = button.dataset.tone === tone;
+      button.setAttribute('aria-checked', String(current));
+      button.classList.toggle('is-selected', current);
+    });
+  };
+  document.documentElement.dataset.keyTone = getKeyTone();
+  paintKeyTonePicker();
+  keyTonePicker?.querySelectorAll('.key-tone-option').forEach((button) => {
+    button.addEventListener('click', () => {
+      applyKeyTone(button.dataset.tone);
+      paintKeyTonePicker();
+    });
+  });
+
   // Format new documents start in (Markdown or Text); documents already open keep theirs
   const documentFormatSelect = document.getElementById('modalDocumentFormatSelect');
   if (documentFormatSelect) {
     documentFormatSelect.value = getDefaultDocumentFormat();
     documentFormatSelect.addEventListener('change', () => setAndSync(STORAGE_KEYS.DOCUMENT_FORMAT, documentFormatSelect.value));
+  }
+
+  // Name new documents start with (Doc, Untitled or Memo, in the UI language); the number is added by the editor
+  const documentNameSelect = document.getElementById('modalDocumentNameSelect');
+  // The name's base, its parts (chosen and ordered), the free text, and the example line that shows the result
+  const documentNameExample = document.querySelector('[data-doc-name-example]');
+  const documentNameTokens = document.getElementById('documentNameTokens');
+  const documentNameTextRow = document.getElementById('documentNameTextRow');
+  const documentNameText = document.getElementById('documentNameText');
+
+  const updateDocumentNameExample = () => {
+    if (!documentNameExample || !documentNameSelect) return;
+    const id = documentNameSelect.value || DEFAULTS.DOCUMENT_NAME;
+    const format = documentFormatSelect?.value || getDefaultDocumentFormat();
+    const base = composeName(getDefaultNameTokens(), {
+      name: t(`doc_name_${id}`), seq: 1, now: new Date(), text: documentNameText?.value ?? ''
+    });
+    // The sample file name is the large part: it is what a new document will be called
+    const label = document.createElement('span');
+    label.className = 'doc-name-example__label';
+    label.textContent = t('doc_name_example_label');
+    const name = document.createElement('span');
+    name.className = 'doc-name-example__name';
+    name.textContent = `${base}${DOCUMENT_FORMATS[format].extension}`;
+    documentNameExample.replaceChildren(label, name);
+  };
+
+  const makeButton = (label, onClick, { pressed = null, disabled = false } = {}) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ep-chip';
+    btn.textContent = label;
+    if (pressed !== null) btn.setAttribute('aria-pressed', String(pressed));
+    btn.disabled = disabled;
+    btn.addEventListener('click', onClick);
+    return btn;
+  };
+
+  // Chips switch a part on or off (added at the end); the order row moves the chosen parts
+  const renderDocumentNameTokens = () => {
+    if (!documentNameTokens) return;
+    const chosen = getDefaultNameTokens();
+    const saveTokens = (next) => setAndSync(STORAGE_KEYS.DOCUMENT_NAME_TOKENS, JSON.stringify(sanitizeNameTokens(next)));
+    const chips = document.createElement('div');
+    chips.className = 'doc-name-chips';
+    for (const token of NAME_TOKENS) {
+      const on = chosen.includes(token);
+      chips.append(makeButton(t(`name_token_${token}`), () => {
+        saveTokens(on ? chosen.filter(x => x !== token) : [...chosen, token]);
+        renderAll();
+      }, { pressed: on }));
+    }
+    const order = document.createElement('div');
+    order.className = 'doc-name-order';
+    const orderLabel = document.createElement('span');
+    orderLabel.className = 'setting-desc';
+    orderLabel.textContent = t('name_order_label');
+    order.append(orderLabel);
+    chosen.forEach((token, index) => {
+      const item = document.createElement('span');
+      item.className = 'doc-name-order-item';
+      const move = (to) => () => {
+        const next = [...chosen];
+        [next[index], next[to]] = [next[to], next[index]];
+        saveTokens(next);
+        renderAll();
+      };
+      item.append(
+        makeButton('‹', move(index - 1), { disabled: index === 0 }),
+        Object.assign(document.createElement('span'), { textContent: t(`name_token_${token}`) }),
+        makeButton('›', move(index + 1), { disabled: index === chosen.length - 1 })
+      );
+      item.querySelectorAll('button')[0].setAttribute('aria-label', t('name_token_earlier'));
+      item.querySelectorAll('button')[1].setAttribute('aria-label', t('name_token_later'));
+      order.append(item);
+    });
+    documentNameTokens.replaceChildren(chips, order);
+    if (documentNameTextRow) documentNameTextRow.hidden = !chosen.includes('text');
+  };
+
+  const renderAll = () => {
+    renderDocumentNameTokens();
+    updateDocumentNameExample();
+  };
+
+  if (documentNameSelect) {
+    documentNameSelect.value = readStorage(STORAGE_KEYS.DOCUMENT_NAME) || DEFAULTS.DOCUMENT_NAME;
+    if (documentNameText) {
+      documentNameText.value = readStorage(STORAGE_KEYS.DOCUMENT_NAME_TEXT) || '';
+      documentNameText.addEventListener('input', () => {
+        setAndSync(STORAGE_KEYS.DOCUMENT_NAME_TEXT, documentNameText.value);
+        updateDocumentNameExample();
+      });
+    }
+    documentNameSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.DOCUMENT_NAME, documentNameSelect.value);
+      updateDocumentNameExample();
+    });
+    documentFormatSelect?.addEventListener('change', updateDocumentNameExample);
+    window.addEventListener('app:languageChanged', renderAll);
+    renderAll();
   }
 
   // Whether × asks before closing; unsaved tabs are asked about either way
@@ -945,12 +1065,23 @@ export function initSettings(updateEditorCb) {
   // and a click scrolls the body to that card.
   let navCards = [];
   let navButtons = [];
+  let navRows = []; // { row, button } for each setting listed under a card, in document order
   let navScrollBound = false;
   let navSpyPausedUntil = 0; // the current-item check waits while a nav click scrolls smoothly
   let navFrame = 0;
 
   function setNavCurrent(index) {
     navButtons.forEach((button, i) => {
+      const current = i === index;
+      button.classList.toggle('is-current', current);
+      if (current) button.setAttribute('aria-current', 'location');
+      else button.removeAttribute('aria-current');
+    });
+  }
+
+  // The setting row at the top of the body is lit in the left nav, so the nav shows the exact place (not only the card)
+  function setNavRowCurrent(index) {
+    navRows.forEach(({ button }, i) => {
       const current = i === index;
       button.classList.toggle('is-current', current);
       if (current) button.setAttribute('aria-current', 'location');
@@ -965,6 +1096,8 @@ export function initSettings(updateEditorCb) {
     const tops = navCards.map(card => card.getBoundingClientRect().top - bodyTop);
     const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
     setNavCurrent(pickCurrentCard(tops, 24, atBottom));
+    const rowTops = navRows.map(({ row }) => row.getBoundingClientRect().top - bodyTop);
+    setNavRowCurrent(navRows.length ? pickCurrentCard(rowTops, 24, atBottom) : -1);
   }
 
   // One scroll listener for the page, however often the nav is rebuilt
@@ -992,6 +1125,7 @@ export function initSettings(updateEditorCb) {
       .map(key => active.querySelector(`.settings-section-card > h4[data-key="${key}"]`)?.parentElement)
       .filter(card => card && card.offsetParent !== null);
     navButtons = [];
+    navRows = [];
     navList.replaceChildren(...navCards.map(card => {
       const item = document.createElement('li');
       const button = document.createElement('button');
@@ -1039,6 +1173,7 @@ export function initSettings(updateEditorCb) {
             body.scrollBy({ top: offset - 12, behavior: 'smooth' });
             setTimeout(updateNavCurrent, 750);
           });
+          navRows.push({ row, button: subButton });
           subItem.append(subButton);
           sub.append(subItem);
         }
@@ -1115,16 +1250,24 @@ export function initSettings(updateEditorCb) {
     }
   };
 
+  // Back to the top of the settings page (the body scrolls, the tab row stays)
+  document.getElementById('btnSettingsToTop')?.addEventListener('click', () => {
+    settingsModal?.querySelector('.settings-modal-body')?.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
   if (btnBackToEditor) {
     btnBackToEditor.addEventListener('click', requestCloseSettings);
   }
 
   // Editor options row: leave the settings and turn the right panel to Editor Options.
   // No close confirmation (owner decision 2026-11-17): the button says where it goes, unlike a stray click on × or Back
-  document.getElementById('btnOpenEditorOptions')?.addEventListener('click', () => {
+  const openEditorOptionsPanel = () => {
     closeSettingsView();
     const toggle = document.getElementById('btnEditorOptionsToggle');
     if (toggle && toggle.getAttribute('aria-pressed') !== 'true') toggle.click();
+  };
+  ['btnOpenEditorOptions', 'btnWritingOptionPanel', 'btnWritingMonacoPanel'].forEach((id) => {
+    document.getElementById(id)?.addEventListener('click', openEditorOptionsPanel);
   });
 
   // Keyboard shortcut Esc to return to editor (same confirmation as the back button)

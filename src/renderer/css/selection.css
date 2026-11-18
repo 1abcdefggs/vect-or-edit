@@ -57,6 +57,15 @@
   border-top-color: var(--sel-edge);
 }
 
+/* The tab's own buttons sit on the selected surface, so they take the on-surface colour (not the text colour, which is the surface) */
+.editor-tab-item.active {
+  --tab-btn-bg: transparent;
+  --tab-btn-fg: var(--sel-on-surface);
+  --tab-btn-border: color-mix(in srgb, var(--sel-on-surface) 55%, transparent);
+  --tab-btn-hover-bg: color-mix(in srgb, var(--sel-on-surface) 22%, transparent);
+  --tab-btn-hover-fg: var(--sel-on-surface);
+}
+
 /* Text inside a selected surface takes its color from the surface, not from the muted text tokens of the window */
 .first-run-choice:has(input:checked) .first-run-hint,
 .first-run-choice:has(input:checked) .first-run-md-marker,

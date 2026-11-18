@@ -1,4 +1,5 @@
 import { readStorage } from '../../core/storage.js';
+import { icons } from '../../core/icons.js';
 
 const STORAGE_KEY = 'header_minimized';
 const HEADER_SELECTOR = '.app-header';
@@ -29,7 +30,7 @@ export function initHeaderMinimize(): void {
 
   const apply = (minimized: boolean) => {
     header.classList.toggle('app-header--minimized', minimized);
-    if (icon) icon.textContent = minimized ? 'expand_more' : 'expand_less';
+    if (icon) icon.innerHTML = minimized ? icons.unfold : icons.minus;
     button.setAttribute('aria-expanded', String(!minimized));
   };
 

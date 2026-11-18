@@ -18,14 +18,38 @@
   display: none !important;
 }
 
-.semantic-module-card .collapse-icon {
-  font-size: var(--fs-17);
+/* Open/close control at the right end of the header: minus while open, unfold while closed */
+.semantic-module-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
   color: var(--text-muted);
-  transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
-.semantic-module-card.collapsed .collapse-icon {
-  transform: rotate(-90deg);
+.semantic-module-toggle:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.semantic-module-toggle .material-symbols-outlined {
+  font-size: var(--fs-17);
+}
+
+.semantic-module-toggle-closed,
+.semantic-module-card.collapsed .semantic-module-toggle-open {
+  display: none;
+}
+
+.semantic-module-card.collapsed .semantic-module-toggle-closed {
+  display: inline-flex;
 }
 
 .semantic-module-header {
@@ -89,9 +113,6 @@
   }
 }
 
-.semantic-module-title > .collapse-icon {
-  width: 16px;
-}
 
 .semantic-module-icon {
   font-size: var(--fs-19);

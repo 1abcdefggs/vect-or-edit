@@ -116,7 +116,7 @@ export function renderTabs() {
     duplicateBtn.className = 'btn-tab-duplicate';
     duplicateBtn.title = t('tip_tab_duplicate');
     // The label hides when the tab bar is narrow (buttons.css @container rule); the title keeps the full name
-    duplicateBtn.innerHTML = `${icons.duplicate}<span class="tab-duplicate-label">${t('tab_label_duplicate')}</span>`;
+    duplicateBtn.innerHTML = icons.duplicate;
     duplicateBtn.addEventListener('click', (ev) => {
       ev.stopPropagation();
       duplicateTab(tab.id);
@@ -211,14 +211,13 @@ export function renderTabs() {
     tabsContainer.appendChild(tabEl);
   });
 
-  // Inline New Tab Button directly after the tabs (duplicate lives inside each tab)
+  // New tab button after the tabs: the same box as the tab's own buttons, with its label so it is clear what it does
   const btnInlineNewTab = document.createElement('button');
-  btnInlineNewTab.className = 'toolbar-btn icon-btn tab-inline-btn';
+  btnInlineNewTab.type = 'button';
+  btnInlineNewTab.className = 'btn-tab-new';
   btnInlineNewTab.id = 'btnNewTabInline';
   btnInlineNewTab.title = t('tip_tab_new');
-  btnInlineNewTab.style.color = 'var(--text-muted)';
-  btnInlineNewTab.style.marginLeft = '2px';
-  btnInlineNewTab.innerHTML = `<span class="material-symbols-outlined">tab_new_right</span><span class="tab-inline-label">${t('tab_label_new')}</span>`;
+  btnInlineNewTab.innerHTML = `${icons.plus}<span class="btn-tab-new-label">${t('tab_label_new')}</span>`;
   btnInlineNewTab.addEventListener('click', () => createBlankTab());
   tabsContainer.appendChild(btnInlineNewTab);
 
