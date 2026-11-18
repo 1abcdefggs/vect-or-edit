@@ -23,7 +23,7 @@ export function toneLabel(pair) {
   return t('tone_label', { bg: levelName(pair.bgLevel), fg: levelName(pair.fgLevel) });
 }
 
-/** The contrast text of a pair, for example "11.3 : 1  AAA". */
+/** The contrast text of a pair or of the custom colours ({ bg, fg }), for example "11.3 : 1  AAA". */
 export function contrastText(pair) {
   const ratio = contrastRatio(pair.bg, pair.fg);
   const level = wcagLevel(ratio);
@@ -134,7 +134,7 @@ export function renderToneCards(container, options) {
         tone: CUSTOM_TONE,
         sample: sampleOf(customSample),
         name: t('theme_custom'),
-        contrast: `${contrastRatio(customSample.bg, customSample.fg).toFixed(1)} : 1`
+        contrast: contrastText(customSample)
       })
     ]);
     const familyRows = FAMILIES.map((family) =>

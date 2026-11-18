@@ -876,7 +876,8 @@
 #modalToneCards { align-items: stretch; justify-content: flex-start; }
 .tone-group { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); align-items: start; gap: var(--spacing-sm); }
 .tone-group-title { padding-top: 8px; font-size: var(--fs-12); font-weight: 600; color: var(--text-muted); }
-.tone-card-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+/* About 44rem at most, so the four cards do not stretch to 348px each in a wide window (owner decision 2026-11-19) */
+.tone-card-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; max-width: 44rem; }
 .tone-card { position: relative; }
 .tone-card-sample { align-items: center; justify-content: center; min-height: 2.6rem; font-size: var(--fs-14); text-align: center; }
 .tone-card-name { white-space: normal; }

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.76] - 2026-11-19
+
+### Changed
+- The custom colours card in the settings shows its WCAG level (AA, AAA or below the standard) next to the contrast ratio, like the eight pair cards
+- The rows of colour cards in the settings are at most 44rem wide, so each card is about 169px instead of 348px in a 1920px window
+
 ## [0.3.75] - 2026-11-19
 
 ### Added
@@ -49,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The model ID is a smaller second line under the model name instead of a column of its own, so showing it adds no column; the list can no longer be sorted by ID (the name order is nearly the same)
 - The expand button fills the top right corner of the model table (the full height of the header row, flush with its right edge) instead of a small chip inside the cell padding
 - Group headings of the model table stick right under the header row at its measured height; the fixed 38px let a heading slide a few pixels under the taller header with the search field
+- The sort chip and the count line of the model table share one line above the table; the Use button reads "使う" in Japanese
 - Group headings in the model table start closer to the left edge (10px instead of 18px); the title and the note line up with the model names
 - The family headings of the model table use a light tint instead of a dark grey, so they are not mistaken for the inverted row in use
 - The model table text is larger in the same 46px rows: cells 16px, model ids and column labels 15px, buttons and the header search 14px, marks 13px, family titles 16px
