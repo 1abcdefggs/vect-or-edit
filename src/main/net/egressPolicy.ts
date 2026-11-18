@@ -38,9 +38,7 @@ export type AiHost = typeof AI_HOSTS[keyof typeof AI_HOSTS];
 // A leading "*." matches subdomains only; a bare name matches that host only.
 const APP_HOSTS: readonly string[] = [
   // Embedding model download (Transformers.js); file downloads redirect to the CDN hosts on both domains
-  'huggingface.co', '*.huggingface.co', 'hf.co', '*.hf.co',
-  // Web fonts linked from index.html
-  'fonts.googleapis.com', 'fonts.gstatic.com'
+  'huggingface.co', '*.huggingface.co', 'hf.co', '*.hf.co'
 ];
 
 // electron-updater (GitHub provider): release feed on github.com, asset downloads redirect to githubusercontent.com

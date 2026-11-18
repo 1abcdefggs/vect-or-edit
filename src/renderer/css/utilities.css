@@ -288,7 +288,7 @@ textarea {
 
 /* Startup loader (scan animation: light sweeps over the letters, then a thin line below)
    Fonts are set here only: --startup-logo-font / -weight / -size for the VectOrEdit letters, --startup-status-font for the status line.
-   Web fonts (Noto Sans JP, Cascadia Code, ...) load from Google Fonts and may not be ready on the first frame, so keep a system fallback at the end. */
+   The text fonts are bundled (css/text-fonts.css, font-display: swap) and may not be ready on the first frame, so keep a system fallback at the end. */
 .app-startup-loader {
   --startup-logo-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --startup-logo-weight: 600;
