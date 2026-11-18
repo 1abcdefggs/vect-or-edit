@@ -34,7 +34,7 @@
   --btn-pad-x: calc(1em * (sqrt(5) - 1) / 2);
   /* The brand face for the product name (the header logo wordmark and the About title). */
   --font-brand: 'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
-  /* Monospace for versions, paths and codes. Cascadia Code is loaded in index.html. */
+  /* Monospace for versions, paths and codes. Cascadia Code is bundled (css/text-fonts.css). */
   --font-mono: 'Cascadia Code', Consolas, monospace;
 
   /* Type scale: the single place for UI font sizes. Names are px at a 16px root; values are rem so they
