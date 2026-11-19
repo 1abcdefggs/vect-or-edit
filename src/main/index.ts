@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: BrowserWindow, app, dialog, session, shell
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import { mainT } from './i18n';
 import { app, BrowserWindow, shell, dialog, session } from 'electron';
 import { handleTrusted, installPermissionPolicy } from './ipcSecurity';

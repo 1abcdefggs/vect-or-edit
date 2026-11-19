@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: app, dialog
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import { mainT } from './i18n';
 import { dialog, app } from 'electron';
 import fs from 'node:fs';

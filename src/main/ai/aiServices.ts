@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: app, net, safeStorage
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import { app, net, safeStorage } from 'electron';
 import { GoogleGenAI } from '@google/genai';
 import fs from 'node:fs/promises';

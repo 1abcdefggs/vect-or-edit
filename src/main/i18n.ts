@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: app
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import { app } from 'electron';
 import en from '../renderer/locales/en.json';
 import ja from '../renderer/locales/ja.json';

@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: ipcMain, session
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ipcMain, session, type IpcMainEvent, type IpcMainInvokeEvent, type WebFrameMain } from 'electron';

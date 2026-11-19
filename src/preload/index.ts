@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: contextBridge, ipcRenderer, webFrame, webUtils
+ * @api-table  local: electron_renderer_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import { contextBridge, ipcRenderer, webFrame, webUtils } from 'electron';
 import type { 
   EngineAPI, 
