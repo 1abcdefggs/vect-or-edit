@@ -80,6 +80,7 @@ export type SidebarUiKey =
   | 'sbr:limit-select'
   | 'sbr:metadata-toggle'
   | 'sbr:metadata-fields'
+  | 'sbr:panel-toggle'
   | 'sbr:quick-settings'
   | 'sbr:embedding-toggle'
   | 'sbr:import-dictionary'

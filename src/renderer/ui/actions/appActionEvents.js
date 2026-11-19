@@ -7,6 +7,8 @@ import { showConfirmModal } from '../notifications/confirmModal.js';
 import { t } from '../../core/i18n.js';
 import { commandManager } from '../../core/commandManager';
 import { icons } from '../../core/icons.js';
+import { readStorage } from '../../core/storage.js';
+import { STORAGE_KEYS } from '../../core/constants.js';
 
 export function bindAppActionEvents() {
   // Icon slots marked data-svg-icon get their SVG from core/icons.ts (one source for every copy of the icon)
@@ -75,6 +77,9 @@ export function bindAppActionEvents() {
       const isCurrentlyCollapsed = suggestionSidebar.classList.contains('collapsed');
       updateSidebarState(!isCurrentlyCollapsed);
     });
+
+    // The settings page chooses whether the panel starts open or closed (Sidebar tab, "Panel top" card)
+    if (readStorage(STORAGE_KEYS.SIDEBAR_START_STATE) === 'closed') updateSidebarState(true);
 
     const btnRailExpand = document.getElementById('btnRailExpand');
     if (btnRailExpand) {

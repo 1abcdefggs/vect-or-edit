@@ -135,8 +135,8 @@ export function initAiControls() {
     }
   }
 
-  function openAiSettingsTab(tab = 'tabAiSearch') {
-    window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab } }));
+  function openAiSettingsTab(tab = 'tabAiSearch', card) {
+    window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab, card } }));
   }
 
   updateSidebarEmbeddingLabel();
@@ -175,8 +175,8 @@ export function initAiControls() {
         icon: 'cloud'
       });
       if (confirmed) {
-        // The LLM keys live in the Editor tab
-        openAiSettingsTab('tabEditor');
+        // The LLM keys live in the Editor tab, in the LLM assistant card; the page starts at that card
+        openAiSettingsTab('tabEditor', 'grp_llm_assistant');
       }
       return;
     }
