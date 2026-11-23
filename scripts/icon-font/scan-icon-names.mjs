@@ -12,7 +12,7 @@ const manifestFile = path.join(here, 'icon-names.txt');
 const NAME = /^[a-z][a-z0-9_]*$/;
 const SKIP_DIRS = new Set(['__tests__', 'generated', 'node_modules']);
 // DOM and CSS words that share a line with an icon (classList.add('active'), setAttribute('class', ...)). Not icon names.
-const DOM_WORDS = new Set(['active', 'class', 'span', 'undefined']);
+const DOM_WORDS = new Set(['active', 'class', 'span', 'undefined', 'true', 'false']);
 
 function sourceFiles(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {

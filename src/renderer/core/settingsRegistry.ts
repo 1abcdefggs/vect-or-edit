@@ -26,13 +26,13 @@ export const DEFAULT_SETTINGS: AppSettings = {
       maxSuggestionsLimit: 5,
       searchTrigger: 'selection',
       contextMenuLayout: 'pattern_a',
-      fullMetadata: false,
       linterEnabled: true
     },
     system: {
-      collapseLogsOnStartup: false,
+      collapseLogsOnStartup: true,
       logTimeFormat: 'h24',
       logTimeZone: 'local',
+      logLanguage: 'en',
       logSaveMode: 'never'
     }
   },
@@ -44,6 +44,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'hdr:menu-view': true,
     'hdr:menu-window': true,
     'hdr:menu-help': true,
+    'hdr:menu-about': true,
     'hdr:menu-overflow': true,
     'hdr:theme-select': true,
     'hdr:color-mode': true,
@@ -60,12 +61,17 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'edt:tab-bar': true,
     'edt:status-bar': true,
     'edt:document-format': true,
+    'edt:document-language': true,
     'edt:markdown-preview': true,
     'edt:llm-dock': true,
     'edt:llm-key-config': true,
     'edt:llm-clear-chat': true,
+    'edt:llm-export-chat': true,
     'edt:llm-collapse': true,
-    'edt:llm-close': true,
+    'edt:llm-model': true,
+    'edt:llm-switch': true,
+    'edt:llm-settings': true,
+    'edt:llm-move': true,
     'sbr:sidebar': true,
     'sbr:score-filter': true,
     'sbr:limit-select': true,
@@ -77,6 +83,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'sbr:import-dictionary': true,
     'sbr:add-slot': true,
     'sbr:rail': true,
+    'sbr:tab-collection': true,
+    'sbr:tab-chat': true,
+    'sbr:collection': true,
     'sbr:guideline-card': true,
     'sbr:knowledge-card': true,
     'sbr:editor-options-card': false,
@@ -88,6 +97,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'sys:log-clear': true,
     'sys:log-copy': true,
     'sys:log-download': true,
+    'sys:log-tab-log': true,
+    'sys:log-tab-models': true,
+    'sys:log-models-fetch': true,
     'sys:update-status': true,
     'sys:save-status': true
   }
@@ -135,6 +147,12 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     id: 'h_menu_help',
     category: 'header',
     visibilityKey: 'hdr:menu-help',
+    controlType: 'none'
+  },
+  {
+    id: 'h_menu_about',
+    category: 'header',
+    visibilityKey: 'hdr:menu-about',
     controlType: 'none'
   },
   {
@@ -288,6 +306,12 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     controlType: 'none'
   },
   {
+    id: 'ed_document_language',
+    category: 'editor',
+    visibilityKey: 'edt:document-language',
+    controlType: 'none'
+  },
+  {
     id: 'ed_markdown_preview',
     category: 'editor',
     visibilityKey: 'edt:markdown-preview',
@@ -312,15 +336,39 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     controlType: 'none'
   },
   {
+    id: 'ed_llm_export_chat',
+    category: 'editor',
+    visibilityKey: 'edt:llm-export-chat',
+    controlType: 'none'
+  },
+  {
     id: 'ed_llm_collapse',
     category: 'editor',
     visibilityKey: 'edt:llm-collapse',
     controlType: 'none'
   },
   {
-    id: 'ed_llm_close',
+    id: 'ed_llm_model',
     category: 'editor',
-    visibilityKey: 'edt:llm-close',
+    visibilityKey: 'edt:llm-model',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_switch',
+    category: 'editor',
+    visibilityKey: 'edt:llm-switch',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_settings',
+    category: 'editor',
+    visibilityKey: 'edt:llm-settings',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_llm_move',
+    category: 'editor',
+    visibilityKey: 'edt:llm-move',
     controlType: 'none'
   },
 
@@ -354,7 +402,6 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
   {
     id: 'sb_metadata_toggle',
     category: 'sidebar',
-    prefPath: 'sidebar.fullMetadata',
     visibilityKey: 'sbr:metadata-toggle',
     controlType: 'toggle'
   },
@@ -429,7 +476,25 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     visibilityKey: 'sbr:rail',
     controlType: 'none'
   },
+  {
+    id: 'sb_tab_collection',
+    category: 'sidebar',
+    visibilityKey: 'sbr:tab-collection',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_tab_chat',
+    category: 'sidebar',
+    visibilityKey: 'sbr:tab-chat',
+    controlType: 'none'
+  },
 
+  {
+    id: 'sb_collection',
+    category: 'sidebar',
+    visibilityKey: 'sbr:collection',
+    controlType: 'none'
+  },
   {
     id: 'sb_guideline_card',
     category: 'sidebar',
@@ -490,6 +555,12 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     controlType: 'toggle'
   },
   {
+    id: 'sys_log_language',
+    category: 'system',
+    prefPath: 'system.logLanguage',
+    controlType: 'select'
+  },
+  {
     id: 'sys_log_save',
     category: 'system',
     prefPath: 'system.logSaveMode',
@@ -511,6 +582,24 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     id: 'sys_log_download',
     category: 'system',
     visibilityKey: 'sys:log-download',
+    controlType: 'none'
+  },
+  {
+    id: 'sys_log_tab_log',
+    category: 'system',
+    visibilityKey: 'sys:log-tab-log',
+    controlType: 'none'
+  },
+  {
+    id: 'sys_log_tab_models',
+    category: 'system',
+    visibilityKey: 'sys:log-tab-models',
+    controlType: 'none'
+  },
+  {
+    id: 'sys_log_models_fetch',
+    category: 'system',
+    visibilityKey: 'sys:log-models-fetch',
     controlType: 'none'
   },
   {

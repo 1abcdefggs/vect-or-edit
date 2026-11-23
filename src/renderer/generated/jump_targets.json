@@ -1,0 +1,292 @@
+{
+  "hdr:logo": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-bar": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-file": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-edit": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-view": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-window": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-help": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-about": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:menu-overflow": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "hdr:color-mode": {
+    "tab": "tabAppearance",
+    "card": "common_theme",
+    "control": "modalColorModeSelect"
+  },
+  "hdr:theme-select": {
+    "tab": "tabAppearance",
+    "card": "common_theme",
+    "control": "modalColorModeSelect"
+  },
+  "hdr:zoom-select": {
+    "tab": "tabAppearance",
+    "card": "monaco_group_display",
+    "control": "modalZoomSlider"
+  },
+  "hdr:settings-btn": {
+    "tab": "tabAppearance",
+    "card": "grp_menu_bar",
+    "control": ""
+  },
+  "edt:save": {
+    "tab": "tabEditor",
+    "card": "autosave_menu_item",
+    "control": "modalAutoSaveSelect"
+  },
+  "edt:bg-tone": {
+    "tab": "tabEditor",
+    "card": "grp_editor_text",
+    "control": "modalEditorBgSelect"
+  },
+  "edt:font-family": {
+    "tab": "tabEditor",
+    "card": "grp_editor_text",
+    "control": "modalFontFamilySelect"
+  },
+  "edt:font-size": {
+    "tab": "tabEditor",
+    "card": "grp_editor_text",
+    "control": "modalFontSizeSelect"
+  },
+  "edt:ai-toggle": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": "modalLlmSwitchSelect"
+  },
+  "edt:tab-bar": {
+    "tab": "tabSystem",
+    "card": "vis_group_title",
+    "control": ""
+  },
+  "edt:status-bar": {
+    "tab": "tabEditor",
+    "card": "grp_documents",
+    "control": "modalDocumentNameSelect"
+  },
+  "edt:document-format": {
+    "tab": "tabEditor",
+    "card": "grp_documents",
+    "control": "modalDocumentFormatSelect"
+  },
+  "edt:llm-dock": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": ""
+  },
+  "edt:llm-key-config": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": "modalGeminiKeyInput"
+  },
+  "edt:llm-clear-chat": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": ""
+  },
+  "edt:llm-export-chat": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": ""
+  },
+  "edt:llm-collapse": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": ""
+  },
+  "edt:llm-switch": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": "modalLlmSwitchSelect"
+  },
+  "edt:llm-model": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": "modalOpenAiModelSelect"
+  },
+  "edt:llm-settings": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": ""
+  },
+  "sbr:sidebar": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_top",
+    "control": "modalSidebarStartSelect"
+  },
+  "sbr:panel-toggle": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_top",
+    "control": "modalSidebarStartSelect"
+  },
+  "sbr:embedding-toggle": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_top",
+    "control": "modalEmbeddingAssistantSelect"
+  },
+  "sbr:quick-settings": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_top",
+    "control": "modalSidebarStartSelect"
+  },
+  "sbr:collection": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_top",
+    "control": "modalSidebarStartSelect"
+  },
+  "sbr:guideline-card": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_guidelines",
+    "control": "btnGoToModelInstall"
+  },
+  "sbr:import-dictionary": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_knowledge",
+    "control": "btnModalImportDict"
+  },
+  "sbr:knowledge-card": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_knowledge",
+    "control": "modalTruncationSelect"
+  },
+  "sbr:add-slot": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_knowledge",
+    "control": "modalTruncationSelect"
+  },
+  "sbr:score-filter": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_knowledge",
+    "control": "modalMinScoreInput"
+  },
+  "sbr:limit-select": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_knowledge",
+    "control": "modalLimitSelect"
+  },
+  "sbr:metadata-toggle": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_knowledge",
+    "control": "modalShowFullMetadataSelect"
+  },
+  "sbr:metadata-fields": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_knowledge",
+    "control": "modalTruncationSelect"
+  },
+  "sbr:editor-options-card": {
+    "tab": "tabEditor",
+    "card": "grp_editor_display",
+    "control": "btnOpenEditorOptions"
+  },
+  "sbr:rail": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_top",
+    "control": "modalSidebarStartSelect"
+  },
+  "sys:log-tab-log": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "log:clear"
+  },
+  "sys:log-tab-models": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "log:clear"
+  },
+  "sys:log-clear": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "log:clear"
+  },
+  "sys:log-copy": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "log:clear"
+  },
+  "sys:log-download": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "log:clear"
+  },
+  "sys:log-models-fetch": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "log:clear"
+  },
+  "sys:bottom-bar": {
+    "tab": "tabSystem",
+    "card": "vis_group_title",
+    "control": ""
+  },
+  "sys:log-console": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "modalLogsOnStartSelect"
+  },
+  "sys:quick-settings": {
+    "tab": "tabSystem",
+    "card": "settings_group_logs",
+    "control": "log:clear"
+  },
+  "sys:update-status": {
+    "tab": "tabSystem",
+    "card": "maint_title",
+    "control": "btnReloadEditor"
+  },
+  "sys:save-status": {
+    "tab": "tabEditor",
+    "card": "autosave_menu_item",
+    "control": "modalAutoSaveSelect"
+  },
+  "edt:llm-move": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": "modalChatPlacementSelect"
+  },
+  "sbr:tab-collection": {
+    "tab": "tabAiSearch",
+    "card": "grp_sidebar_top",
+    "control": ""
+  },
+  "sbr:tab-chat": {
+    "tab": "tabEditor",
+    "card": "grp_llm_assistant",
+    "control": "modalChatPlacementSelect"
+  }
+}

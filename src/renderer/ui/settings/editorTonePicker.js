@@ -10,10 +10,20 @@ import { t } from '../../core/i18n.js';
 import { readStorage } from '../../core/storage.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
 import { getStoredThemeSetting, getThemePreview } from '../../editor/core/themeLoader.js';
-import { FAMILIES, TONE_PAIRS, contrastRatio, normalizeTone, wcagLevel } from '../../editor/core/editorTonePairs.js';
+import { FAMILIES, TONE_PAIRS, contrastRatio, normalizeTone, pairFor, wcagLevel } from '../../editor/core/editorTonePairs.js';
+import { registerOptionStyle } from '../components/selectMenu';
 
 const DEFAULT_TONE = 'default';
 const CUSTOM_TONE = 'custom';
+
+// A tone option's label is drawn as a sample of its own background and text colours.
+registerOptionStyle('tone', (value, label) => {
+  const pair = pairFor(value);
+  if (!pair) return;
+  label.classList.add('ui-select-option__sample');
+  label.style.background = pair.bg;
+  label.style.color = pair.fg;
+});
 
 const levelName = (level) => t(`tone_level_${level}`);
 const familyName = (family) => t(`tone_family_${family}`);
@@ -21,6 +31,14 @@ const familyName = (family) => t(`tone_family_${family}`);
 /** "BG Soft / Text Crisp": the two choices of a pair, in words. */
 export function toneLabel(pair) {
   return t('tone_label', { bg: levelName(pair.bgLevel), fg: levelName(pair.fgLevel) });
+}
+
+/**
+ * The note for the title-bar appearance controls: a chosen colour pair beats the theme and the appearance mode.
+ * Empty while the editor follows the theme (the default tone).
+ */
+export function editorToneNote(tone) {
+  return normalizeTone(tone || DEFAULT_TONE) === DEFAULT_TONE ? '' : t('tone_note_override');
 }
 
 /** The contrast text of a pair or of the custom colours ({ bg, fg }), for example "11.3 : 1  AAA". */

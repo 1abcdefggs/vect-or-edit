@@ -42,6 +42,7 @@ export function renderFontCards(container, select, { onRemove } = {}) {
       const nameEl = document.createElement('span');
       nameEl.className = 'theme-card-name font-card-name';
       nameEl.textContent = name;
+      nameEl.style.fontFamily = option.value;
 
       const userFile = option.dataset.userFont;
       const descKey = userFile ? 'font_card_desc_user' : DESCRIPTION_KEYS[name];

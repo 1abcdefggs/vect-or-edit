@@ -12,7 +12,7 @@ import { el } from '../dom.js';
 import { readStorage } from '../../core/storage.js';
 import { EMBEDDING_MODELS, getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
 import {
-  catalogueModels, parseModelId, fetchModelInfo, addUserModel, removeUserModel, isUserModel
+  modelList, parseModelId, fetchModelInfo, addUserModel, removeUserModel, isUserModel
 } from '../../search/embeddingUserModels.js';
 import { requestEmbeddingModelDownload } from '../../search/searchLocalAi.js';
 import {
@@ -226,8 +226,8 @@ function modelRows(model, ctx) {
   return [row, detail];
 }
 
-/** The catalogue as a table; the header names the five columns, each model opens into its details row */
-function catalogueTable(models, ctx) {
+/** The model list as a table; the header names the five columns, each model opens into its details row */
+function modelTable(models, ctx) {
   const table = el('table', 'ep-table');
   const head = el('tr');
   for (const key of ['ep_col_model', 'ep_col_dim', 'ep_col_size', 'ep_col_license', 'ep_col_status']) {
@@ -297,7 +297,7 @@ function mount(container, handlers) {
   const scopes = row('ep_languages_covered');
   const uses = row('ep_use');
   more.append(dims.wrap, scopes.wrap, uses.wrap);
-  // Add by ID: the one place where a model outside the built-in catalogue enters the list
+  // Add by ID: the one place where a model outside the built-in list enters the list
   const add = row('ep_add_model');
   const addInput = el('input', 'ep-input ep-add-input');
   addInput.type = 'text';
@@ -420,7 +420,7 @@ function mount(container, handlers) {
     clearBtn.hidden = !hasFilters;
 
     // List
-    const models = catalogueModels();
+    const models = modelList();
     const visible = sortModels(filterModels(models, {
       ...EMPTY_FILTERS,
       languages: state.languages,
@@ -443,7 +443,7 @@ function mount(container, handlers) {
       empty.append(el('span', '', t('ep_empty')), button(t('ep_clear'), () => clearFilters(), 'ep-chip'));
       list.replaceChildren(empty);
     } else {
-      list.replaceChildren(catalogueTable(visible, ctx));
+      list.replaceChildren(modelTable(visible, ctx));
     }
   }
 

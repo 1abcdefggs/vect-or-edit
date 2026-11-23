@@ -49,35 +49,43 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
     lock.title = formatTipText('tip_vis_locked', t('tip_vis_locked'));
     const glyph = document.createElement('span');
     glyph.className = 'material-symbols-outlined';
-    glyph.setAttribute('aria-hidden', 'true');
+    glyph.ariaHidden = 'true';
     glyph.textContent = 'lock';
     const text = document.createElement('span');
     text.textContent = t('vis_state_required');
     lock.append(glyph, text);
     wrapper.appendChild(lock);
   } else {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'vis-toggle-btn';
-    btn.setAttribute('role', 'switch');
-    btn.setAttribute('data-ui-key', visKey);
-    if (labelEl) btn.setAttribute('aria-labelledby', labelEl.id);
-    btn.title = t(settingsStore.isVisible(visKey) ? 'tip_vis_hide' : 'tip_vis_show');
-
-    updateEyeButtonState(btn, settingsStore.isVisible(visKey));
-
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      settingsStore.toggleVisibility(visKey);
-      const isVis = settingsStore.isVisible(visKey);
-      updateEyeButtonState(btn, isVis);
-      btn.title = t(isVis ? 'tip_vis_hide' : 'tip_vis_show');
-      // Parts that other features lean on say what stopped being available, and how to get it back
-      if (!isVis && item.hideNoticeKey) showToast(`${t(item.hideNoticeKey)} ${t('hide_notice_restore')}`, 'warning');
-    });
-
-    wrapper.appendChild(btn);
+    // Shown and Hidden as two choices side by side: both words stay visible and the current one is filled
+    const group = document.createElement('div');
+    group.className = 'vis-segmented';
+    group.setAttribute('role', 'radiogroup');
+    group.setAttribute('data-ui-key', visKey);
+    if (labelEl) group.setAttribute('aria-labelledby', labelEl.id);
+    for (const isShown of [true, false]) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vis-choice';
+      btn.setAttribute('role', 'radio');
+      const icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined';
+      icon.ariaHidden = 'true';
+      const word = document.createElement('span');
+      word.className = 'vis-choice-word';
+      btn.append(icon, word);
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (settingsStore.isVisible(visKey) === isShown) return;
+        settingsStore.setVisibility(visKey, isShown);
+        paintVisChoices(group, isShown);
+        // Parts that other features lean on say what stopped being available, and how to get it back
+        if (!isShown && item.hideNoticeKey) showToast(`${t(item.hideNoticeKey)} ${t('hide_notice_restore')}`, 'warning');
+      });
+      group.appendChild(btn);
+    }
+    paintVisChoices(group, settingsStore.isVisible(visKey));
+    wrapper.appendChild(group);
   }
 
   // Prepend wrapper to the setting row label area
@@ -89,18 +97,20 @@ function attachVisibilityToggleToRow(item: SettingItemDef): void {
   }
 }
 
-/** A switch with both states written out: the lit word is the current state (look in settings-ui.css). */
-/** The switch shows an eye (open when the part is shown, closed when hidden) and the state in words, not by colour alone */
-function updateEyeButtonState(btn: HTMLButtonElement, isVisible: boolean): void {
-  const eye = document.createElement('span');
-  eye.className = 'material-symbols-outlined vis-state-icon';
-  eye.setAttribute('aria-hidden', 'true');
-  eye.textContent = isVisible ? 'visibility' : 'visibility_off';
-  const word = document.createElement('span');
-  word.className = 'vis-state-word is-lit';
-  word.textContent = t(isVisible ? 'vis_state_shown' : 'vis_state_hidden');
-  btn.replaceChildren(eye, word);
-  btn.setAttribute('aria-checked', String(isVisible));
+/** Writes the two Shown/Hidden choices: the current one is filled and marked, both keep their icon and word. */
+function paintVisChoices(group: HTMLElement, isVisible: boolean): void {
+  // The Shown choice is built first, so it is the first button of the group
+  group.querySelectorAll<HTMLButtonElement>('.vis-choice').forEach((btn, index) => {
+    const shown = index === 0;
+    const current = shown === isVisible;
+    btn.setAttribute('aria-checked', String(current));
+    btn.classList.toggle('is-current', current);
+    btn.title = t(shown ? 'tip_vis_show' : 'tip_vis_hide');
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon) icon.textContent = shown ? 'visibility' : 'visibility_off';
+    const word = btn.querySelector('.vis-choice-word');
+    if (word) word.textContent = t(shown ? 'vis_state_shown' : 'vis_state_hidden');
+  });
 }
 
 function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {
@@ -136,7 +146,7 @@ function findTargetRowForItem(item: SettingItemDef): HTMLElement | null {
     return document.getElementById('modalLimitSelect')?.closest('.setting-item') as HTMLElement;
   }
   if (item.id === 'sb_metadata_toggle') {
-    return document.getElementById('modalShowFullMetadataChk')?.closest('.setting-item') as HTMLElement;
+    return document.getElementById('modalShowFullMetadataSelect')?.closest('.setting-item') as HTMLElement;
   }
   return null;
 }
@@ -183,6 +193,14 @@ window.addEventListener('app:languageChanged', () => {
   });
   document.querySelectorAll<HTMLElement>('[data-vis-group-heading]').forEach((el) => {
     el.textContent = t(`vis_group_${el.getAttribute('data-vis-group-heading')}`);
+  });
+  // Shown/Hidden choices: the words and tooltips are written once at build time, so they are written again here
+  document.querySelectorAll<HTMLElement>('.vis-segmented[data-ui-key]').forEach((group) => {
+    paintVisChoices(group, settingsStore.isVisible(group.getAttribute('data-ui-key') as UiKey));
+  });
+  document.querySelectorAll<HTMLElement>('.vis-state-required').forEach((lock) => {
+    lock.title = formatTipText('tip_vis_locked', t('tip_vis_locked'));
+    if (lock.lastElementChild) lock.lastElementChild.textContent = t('vis_state_required');
   });
 });
 

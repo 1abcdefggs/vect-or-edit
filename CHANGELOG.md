@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.85] - 2026-11-23
+
+### Added
+- Settings: a search box at the top of the page; the text is left-aligned, the hint right-aligned
+- Right-click on a window part offers "Open settings for this item", which opens the settings card that controls it (jump table: ui_blueprint jump_targets)
+
+### Changed
+- The choice controls of the settings page (switch, segmented buttons) follow the disabled state of their select, so a disabled one cannot be clicked or reached by keyboard
+
 ## [0.3.84] - 2026-11-23
 
 ### Added

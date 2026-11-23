@@ -145,45 +145,60 @@
       </section>
 
       <!-- Step 3: AI (the embedding model installs in the background after setup) -->
-      <section class="first-run-step" data-setup-step="3" hidden data-ui="stp:step-dictionary">
-        <div class="first-run-section first-run-section--spaced">
+      <section class="first-run-step first-run-step--fill first-run-step--start-offset" data-setup-step="3" hidden data-ui="stp:step-dictionary">
           <!-- Main heading: Embedding Model with description -->
           <div class="first-run-section">
             <h2 class="first-run-heading">
               <span data-i18n="setup_ai_embedding_heading">Embedding Model</span>
-              <span class="first-run-badge" data-i18n="setup_ai_core_badge">Core feature</span>
               <span class="first-run-heading-note" data-i18n="setup_ai_local_note">Runs on this PC</span>
-              <span data-info-tip="setup_info_embedding"></span>
+              <span data-info-tip="embedding_what"></span>
             </h2>
-            <p class="first-run-hint" data-i18n="setup_ai_dictionary_desc">Shows dictionary items that match the text you write in the right panel as you type.</p>
+            <p class="first-run-hint" data-i18n="embedding_what">Finds dictionary entries that match what you write, on this PC. Your text is not sent out.</p>
+
+          <div class="first-run-setting">
+            <div class="first-run-choice-row" role="radiogroup" aria-labelledby="setupEmbedLabel">
+              <span id="setupEmbedLabel" class="first-run-setting-text">
+                <span class="first-run-check-title" data-i18n="setup_ai_embed_question">Install the embedding model?</span>
+                <span class="first-run-hint" data-i18n="setup_ai_embed_hint">Used for dictionary suggestions. Downloads once, then works offline.</span>
+              </span>
+              <div class="first-run-choice-buttons" data-ui="stp:embed">
+                <label class="first-run-choice-button">
+                  <input type="radio" name="setup_embed" value="yes" data-tip-exempt="true">
+                  <span data-i18n="setup_ai_embed_yes">Yes</span>
+                </label>
+                <label class="first-run-choice-button">
+                  <input type="radio" name="setup_embed" value="no" data-tip-exempt="true">
+                  <span data-i18n="setup_ai_embed_no">No</span>
+                </label>
+              </div>
+              <p class="first-run-hint" id="setupEmbedChoiceHint" data-i18n="setup_ai_embed_choose_first" hidden>Choose Yes or No to continue.</p>
+              <p id="setupLocalNotice" class="first-run-notice" role="status">
+                <span class="material-symbols-outlined" aria-hidden="true">info</span>
+                <span id="setupLocalNoticeText"></span>
+              </p>
+            </div>
+          </div>
+          <dl class="first-run-facts">
+            <dt data-i18n="setup_ai_fact_model">Model</dt>
+            <dd>
+              <code id="setupInstallModelId" class="first-run-code"></code>
+              <span class="first-run-hint-inline" data-i18n="setup_ai_fact_model_note">Lightweight and multilingual (90+ languages)</span>
+            </dd>
+            <dt data-i18n="setup_ai_fact_source">Source</dt>
+            <dd data-i18n="setup_ai_fact_source_value">Downloaded once from Hugging Face (huggingface.co)</dd>
+            <dt data-i18n="setup_ai_fact_place">Install location</dt>
+            <dd><code id="setupInstallPath" class="first-run-code"></code></dd>
+          </dl>
           </div>
 
-          <!-- A picture of the editor, not a form. The left pane is what the user writes, with optional writing assist from a
-               cloud AI under it; the right pane is the dictionary that the embedding model reads inside the editor. -->
-          <div class="setup-ai-window">
-            <div class="setup-ai-window-bar" aria-hidden="true">
-              <img src="./assets/icon.png" alt="" class="logo-icon">
-              <span class="app-header__title">VectOrEdit</span>
-            </div>
-            <div class="setup-ai-panes">
-              <section class="setup-ai-pane setup-ai-pane--editor" aria-labelledby="setupPaneEditorTitle">
-                <header class="setup-ai-pane-head">
-                  <span id="setupPaneEditorTitle" class="setup-ai-pane-title" data-i18n="setup_ai_pane_editor">Editor (Monaco)</span>
-                  <span class="setup-ai-pane-role" data-i18n="setup_ai_pane_editor_role">You write here</span>
-                </header>
-                <div class="setup-ai-page" aria-hidden="true">
-                  <span class="setup-ai-line is-long"></span>
-                  <span class="setup-ai-line is-mid"></span>
-                  <span class="setup-ai-line is-short"></span>
-                  <span class="setup-ai-line is-mid"></span>
-                  <span class="setup-ai-caret"></span>
-                </div>
-                <div class="setup-ai-assist">
-                  <div class="setup-ai-assist-head">
+          <!-- Optional: the cloud writing assist is folded away, so the one required choice (the embedding model) stays alone above -->
+          <details class="setup-ai-optional">
+            <summary class="setup-ai-assist-head" data-i18n-title="tip_setup_assist_toggle">
                     <span class="setup-ai-assist-title" data-i18n="setup_ai_assist_label">Writing assist (Gemini, etc.)</span>
                     <span class="first-run-heading-note" data-i18n="setup_ai_cloud_note">Supporting, optional</span>
                     <span data-info-tip="setup_info_cloud"></span>
-                  </div>
+                  </summary>
+
                   <div class="first-run-key-grid">
                     <label class="first-run-field">
                       <span class="first-run-label" data-i18n="setup_ai_provider_label">Provider</span>
@@ -209,61 +224,7 @@
                     <span class="material-symbols-outlined" aria-hidden="true">lock</span>
                     <span data-i18n="setup_ai_key_hint">The key is stored encrypted by the OS and is never kept on screen.</span>
                   </p>
-                </div>
-              </section>
-
-              <div class="setup-ai-link" aria-hidden="true">
-                <span class="material-symbols-outlined">arrow_back</span>
-              </div>
-
-              <section class="setup-ai-pane setup-ai-pane--dict" aria-labelledby="setupPaneDictTitle">
-                <header class="setup-ai-pane-head">
-                  <span id="setupPaneDictTitle" class="setup-ai-pane-title" data-i18n="setup_ai_pane_dict">Dictionary</span>
-                </header>
-                <div class="first-run-setting">
-                  <div class="first-run-choice-row" role="radiogroup" aria-labelledby="setupEmbedLabel">
-                    <span id="setupEmbedLabel" class="first-run-setting-text">
-                      <span class="first-run-check-title" data-i18n="setup_ai_embed_question">Install the embedding model?</span>
-                      <span class="first-run-hint" data-i18n="setup_ai_embed_hint">Required for dictionary suggestions. Downloads once; runs on this PC.</span>
-                    </span>
-                    <div class="first-run-choice-buttons" data-ui="stp:embed">
-                      <label class="first-run-choice-button">
-                        <input type="radio" name="setup_embed" value="yes" checked data-tip-exempt="true">
-                        <span data-i18n="setup_ai_embed_yes">Yes</span>
-                      </label>
-                      <label class="first-run-choice-button">
-                        <input type="radio" name="setup_embed" value="no" data-tip-exempt="true">
-                        <span data-i18n="setup_ai_embed_no">No</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <dl class="first-run-facts">
-                  <dt data-i18n="setup_ai_fact_model">Model</dt>
-                  <dd>
-                    <code id="setupInstallModelId" class="first-run-code"></code>
-                    <span class="first-run-hint-inline" data-i18n="setup_ai_fact_model_note">Lightweight and multilingual (90+ languages)</span>
-                  </dd>
-                  <dt data-i18n="setup_ai_fact_source">Source</dt>
-                  <dd data-i18n="setup_ai_fact_source_value">Downloaded once from Hugging Face (huggingface.co)</dd>
-                  <dt data-i18n="setup_ai_fact_place">Install location</dt>
-                  <dd><code id="setupInstallPath" class="first-run-code"></code></dd>
-                </dl>
-                <ul class="setup-ai-entries" aria-hidden="true">
-                  <li><i></i><span class="setup-ai-line is-long"></span></li>
-                  <li><i></i><span class="setup-ai-line is-mid"></span></li>
-                  <li><i></i><span class="setup-ai-line is-short"></span></li>
-                </ul>
-              </section>
-            </div>
-          </div>
-
-          <p class="setup-ai-flow" data-i18n="setup_ai_flow">The embedding model reads the dictionary inside the editor and brings back related knowledge for the text you write.</p>
-          <p id="setupLocalNotice" class="first-run-notice" role="status">
-            <span class="material-symbols-outlined" aria-hidden="true">info</span>
-            <span id="setupLocalNoticeText"></span>
-          </p>
-        </div>
+          </details>
       </section>
     </div>
 

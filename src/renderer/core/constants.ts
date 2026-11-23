@@ -10,6 +10,9 @@ export const STORAGE_KEYS = {
   COLOR_MODE: 'vect_color_mode',
   KEY_TONE: 'vect_key_tone',
   OVERLAY_COLOR: 'vect_overlay_color',
+  TOOLTIP_WIDTH: 'vect_tooltip_width',
+  TOOLTIP_GAP: 'vect_tooltip_gap',
+  TOOLTIP_ENABLED: 'vect_tooltip_enabled',
   FONT_FAMILY: 'editor_fontFamily',
   FONT_SIZE: 'editor_fontSize',
   LINE_HEIGHT: 'editor_lineHeight',
@@ -23,6 +26,8 @@ export const STORAGE_KEYS = {
   SUGGEST_TRIGGER_MODE: 'vect_suggest_trigger_mode',
   AI_PROVIDER: 'ai_provider',
   LLM_PROVIDER: 'llm_provider',
+  // Where the AI chat area sits: 'below' the editor or in the right 'sidebar' (ui/ai/chatPlacement.js)
+  LLM_CHAT_PLACEMENT: 'llm_chat_placement',
   // *_API_KEY: plain-text names from older versions, read only to migrate them (core/apiKeyStore.js)
   CLAUDE_API_KEY: 'claude_api_key',
   CLAUDE_MODEL: 'claude_model',
@@ -101,6 +106,7 @@ export const DEFAULTS = {
   SUGGEST_TRIGGER_MODE: 'selection',
   AI_PROVIDER: 'local',
   LLM_PROVIDER: 'none',
+  LLM_CHAT_PLACEMENT: 'below',
   DOCUMENT_NAME: 'doc',
   /** Default Vectorizer source */
   EMBEDDING_SOURCE: 'local',

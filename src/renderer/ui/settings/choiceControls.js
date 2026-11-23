@@ -35,21 +35,47 @@ function renderSwitchWords(select, offWord, onWord) {
 function nameSwitch(select, host) {
   const label = select.closest('[data-setting-row]')?.querySelector('.setting-label');
   if (label) host.setAttribute('aria-labelledby', rowLabelId(label));
+  // Outside a settings row (the sidebar), the select names its own label
+  else if (select.getAttribute('aria-labelledby')) host.setAttribute('aria-labelledby', select.getAttribute('aria-labelledby'));
 }
 
 function renderSegments(select, host) {
-  const options = Array.from(select.options);
-  if (host.children.length !== options.length) {
-    host.replaceChildren(...options.map((option) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.setAttribute('role', 'radio');
-      btn.dataset.value = option.value;
-      return btn;
+  // An option marked hidden is a state only (for example "none"): it gets no button, and no button is lit while it is selected
+  const options = Array.from(select.options).filter((option) => !option.hidden);
+  // Options with the same data-group share a row; a new group starts a new row, so the split is visible
+  const rows = [];
+  for (const option of options) {
+    const last = rows[rows.length - 1];
+    if (last && last.group === option.dataset.group) last.options.push(option);
+    else rows.push({ group: option.dataset.group, options: [option] });
+  }
+  // Rebuild the buttons only when the layout changes, so a focused button keeps its focus on a click
+  const headingOf = (row) => row.options[0].dataset.groupLabel ?? '';
+  const layout = rows.map((row) => `${headingOf(row)}:${row.options.map((option) => option.value).join('|')}`).join('/');
+  if (host.dataset.layout !== layout) {
+    host.dataset.layout = layout;
+    host.replaceChildren(...rows.map((row) => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'ui-segment-row';
+      const heading = headingOf(row);
+      if (heading) {
+        const label = document.createElement('span');
+        label.className = 'ui-segment-row-label';
+        label.textContent = heading;
+        rowEl.append(label);
+      }
+      rowEl.append(...row.options.map(() => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('role', 'radio');
+        return btn;
+      }));
+      return rowEl;
     }));
   }
+  const buttons = host.querySelectorAll('button');
   options.forEach((option, i) => {
-    const btn = host.children[i];
+    const btn = buttons[i];
     btn.dataset.value = option.value;
     btn.textContent = labelOf(option);
     const selected = option.value === select.value;
@@ -108,6 +134,9 @@ function enhance(select) {
 
   const refresh = () => {
     host.title = select.title;
+    // The page keeps the <select> as the source of truth, so its disabled state is the control's too (inert keeps clicks and the keyboard out)
+    host.inert = select.disabled;
+    host.setAttribute('aria-disabled', String(select.disabled));
     if (kind === 'switch') {
       renderSwitch(select, host);
       nameSwitch(select, host);
@@ -125,7 +154,7 @@ function enhance(select) {
   });
   select.addEventListener('change', refresh);
   // The option names are translated after the page is built
-  new MutationObserver(refresh).observe(select, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['title'] });
+  new MutationObserver(refresh).observe(select, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['title', 'disabled'] });
 
   select.classList.add('ui-control-source');
   select.setAttribute('aria-hidden', 'true');

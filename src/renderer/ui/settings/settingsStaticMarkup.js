@@ -22,15 +22,28 @@ export function settingJumpMarkup({ key, text, tab, card }) {
 }
 
 /**
- * The label and the description inside a row's text block. An optional icon (a Material Symbols name) stands before the label.
- * An optional jump ({ key, text, tab, card }) adds a link to another place of the settings page under the description.
+ * The reason a row is inactive, written under its description. It starts hidden; the code that locks the row shows it
+ * (found by id). It does not use the setting-desc class, because the description class is rendered as a bullet list.
+ * An optional ui key ("set:...") is kept as data-ui.
  */
-export function settingTextMarkup({ labelKey, labelText, descKey, descText, icon, jump }) {
-  const label = icon
+export function settingReasonMarkup({ id, key, text, ui }) {
+  return `<div class="setting-reason" id="${escapeAttr(id)}"${ui ? ` data-ui="${escapeAttr(ui)}"` : ''} hidden data-i18n="${key}">${text}</div>`;
+}
+
+/**
+ * The label and the description inside a row's text block. An optional icon (a Material Symbols name) stands before the label.
+ * An optional reason ({ id, key, text, ui }) stands under the description, an optional jump ({ key, text, tab, card })
+ * adds a link to another place of the settings page under that.
+ * @param {{ labelKey: string, labelText: string, descKey: string, descText: string, icon?: string,
+ *   reason?: { id: string, key: string, text: string, ui?: string },
+ *   jump?: { key: string, text: string, tab: string, card?: string } }} parts
+ */
+export function settingTextMarkup({ labelKey, labelText, descKey, descText, icon, reason, jump }) {  const label = icon
     ? `<div class="setting-label setting-label--icon"><span class="material-symbols-outlined setting-label-icon" aria-hidden="true">${icon}</span><span data-i18n="${labelKey}">${labelText}</span></div>`
     : `<div class="setting-label" data-i18n="${labelKey}">${labelText}</div>`;
   return label
     + `<div class="setting-desc" data-i18n="${descKey}">${descText}</div>`
+    + (reason?.id && reason?.key ? settingReasonMarkup(reason) : '')
     + (jump?.key && jump?.tab ? settingJumpMarkup(jump) : '');
 }
 
@@ -70,6 +83,9 @@ export function renderStaticSettingsText(root = document) {
       icon: el.dataset.icon,
       descKey: el.dataset.descKey,
       descText: el.dataset.descText,
+      reason: el.dataset.reasonKey
+        ? { id: el.dataset.reasonId, key: el.dataset.reasonKey, text: el.dataset.reasonText ?? '', ui: el.dataset.reasonUi }
+        : undefined,
       jump: el.dataset.jumpKey
         ? { key: el.dataset.jumpKey, text: el.dataset.jumpText ?? '', tab: el.dataset.jumpTab, card: el.dataset.jumpCard }
         : undefined

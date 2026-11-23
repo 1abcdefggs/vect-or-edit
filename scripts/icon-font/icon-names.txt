@@ -1,4 +1,3 @@
-arrow_back
 arrow_downward
 arrow_upward
 auto_awesome
@@ -42,9 +41,9 @@ menu_book
 monitor_heart
 neurology
 palette
-preview
 restart_alt
 right_panel_close
+right_panel_open
 rotate_left
 rule_folder
 save

@@ -3,6 +3,7 @@
   <div class="modal-dialog settings-modal-dialog">
     <div class="settings-modal-tabs">
       <h3 class="settings-nav-title">
+        <button id="btnBackToEditor" class="settings-back-btn" type="button" data-i18n-title="tip_back_to_editor" data-i18n-aria="btn_back_to_editor" aria-label="Back to Editor"><span class="material-symbols-outlined settings-back-icon" aria-hidden="true">chevron_left</span><span class="settings-back-label" aria-hidden="true">BACK</span></button>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="3"></circle>
@@ -12,29 +13,29 @@
         </svg>
         <span class="settings-nav-title-label" data-i18n="settings_title">Application Settings</span>
       </h3>
-      <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n-title="tip_tab_appearance"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">palette</span><span class="settings-tab-label" data-i18n="tab_appearance">Title Bar</span></button>
-      <button class="settings-tab-btn" data-tab="tabEditor" data-i18n-title="tip_tab_editor"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">edit_note</span><span class="settings-tab-label" data-i18n="tab_editor">Editor</span></button>
-      <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n-title="tip_tab_ai"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">smart_toy</span><span class="settings-tab-label" data-i18n="tab_ai_search">Sidebar</span></button>
-      <button class="settings-tab-btn" data-tab="tabSystem" data-i18n-title="tip_tab_system"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">tune</span><span class="settings-tab-label" data-i18n="tab_system">System</span></button>
+      <button class="settings-tab-btn active" data-tab="tabAppearance" data-guide-area="Header" data-i18n-title="tip_tab_appearance" data-i18n-aria="tab_appearance"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">palette</span><span class="settings-tab-label" data-i18n="tab_appearance">Title Bar</span></button>
+      <button class="settings-tab-btn" data-tab="tabEditor" data-guide-area="Editor" data-i18n-title="tip_tab_editor" data-i18n-aria="tab_editor"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">edit_note</span><span class="settings-tab-label" data-i18n="tab_editor">Editor</span></button>
+      <button class="settings-tab-btn" data-tab="tabAiSearch" data-guide-area="Sidebar" data-i18n-title="tip_tab_ai" data-i18n-aria="tab_ai_search"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">right_panel_close</span><span class="settings-tab-label" data-i18n="tab_ai_search">Sidebar</span></button>
+      <button class="settings-tab-btn" data-tab="tabSystem" data-guide-area="System" data-i18n-title="tip_tab_system" data-i18n-aria="tab_system"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">tune</span><span class="settings-tab-label" data-i18n="tab_system">System</span></button>
       <button id="btnSettingsGuide" class="log-panel-btn settings-guide-btn" type="button" aria-pressed="false" data-i18n-title="tip_settings_guide">
-        <span class="material-symbols-outlined">help</span><span class="settings-guide-label" data-i18n="settings_help_title">Guide</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
-      </button>
-      <button id="btnBackToEditor" class="toolbar-btn settings-back-btn" data-i18n-title="tip_back_to_editor">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        <span class="settings-back-label" data-i18n="btn_back_to_editor">Back to Editor</span>
+        <span class="material-symbols-outlined">help</span><span class="settings-guide-label" data-i18n="settings_help_title">Help</span><span class="material-symbols-outlined settings-guide-arrow" aria-hidden="true">chevron_right</span>
       </button>
     </div>
     <p id="settingsTabDesc" class="settings-tab-desc" data-i18n="tab_desc_appearance">Menu bar, theme and appearance mode, display language and zoom, save location and workspace.</p>
     <div class="settings-split">
     <nav class="settings-nav" aria-label="Settings sections">
+        <div class="settings-search">
+          <span class="settings-search-field"><span class="material-symbols-outlined settings-search-icon" aria-hidden="true">search</span>
+            <input id="settingsSearchInput" type="search" class="settings-search-input" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="settingsSearchList" aria-autocomplete="list" data-i18n-placeholder="settings_search_placeholder" data-i18n-aria="settings_search_placeholder" data-i18n-title="tip_settings_search"></span>
+          <label class="settings-search-guide"><input id="settingsSearchGuide" type="checkbox" data-i18n-title="tip_settings_search_guide"> <span data-i18n="settings_search_guide_toggle">Include guide text</span></label>
+          <ul id="settingsSearchList" class="settings-search-list" role="listbox" hidden></ul>
+        </div>
       <ul class="settings-nav-items" id="settingsNavItems"></ul>
     </nav>
 
     <div class="modal-body settings-modal-body">
+      <!-- One sentence for the whole page: the tabs follow the window from top to bottom, each area has a gear to its tab. {gear} is drawn as the icon (core/gearToken.ts) -->
+      <p class="settings-gear-intro" data-i18n="settings_gear_intro">Settings follow the window from top to bottom: Title Bar, Editor, Sidebar, System. The {gear} in each area opens its tab.</p>
 
       <!-- Tab 1: Header (hdr) - what the title bar and its menus control -->
       <div id="tabAppearance" class="settings-tab-content active">
@@ -42,22 +43,25 @@
           <h4 data-card-heading data-icon="format_list_bulleted" data-key="grp_menu_bar" data-text="Menu bar"></h4>
           <p class="card-section-desc" data-i18n="grp_menu_bar_desc">Select which menus to display. Hidden menu functions remain accessible via keyboard shortcuts and toolbar buttons.</p>
           <div data-setting-row data-vis-target="h_logo">
-            <div data-setting-text data-label-key="vis_h_logo" data-label-text="Logo and app version" data-desc-key="vis_logo_desc" data-desc-text="Shows or hides the logo and app version in the header."></div>
+            <div data-setting-text data-label-key="vis_h_logo" data-label-text="App name" data-desc-key="vis_logo_desc" data-desc-text="Shows or hides the logo, app name and version in the header."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_file">
-            <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_edit">
-            <div data-setting-text data-label-key="vis_h_menu_edit" data-label-text="Edit menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_edit" data-label-text="Edit" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_view">
-            <div data-setting-text data-label-key="vis_h_menu_view" data-label-text="View menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_view" data-label-text="View" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_window">
-            <div data-setting-text data-label-key="vis_h_menu_window" data-label-text="Window menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_window" data-label-text="Window" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_help">
-            <div data-setting-text data-label-key="vis_h_menu_help" data-label-text="Help menu" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_help" data-label-text="Help" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+          </div>
+          <div data-setting-row data-vis-target="h_menu_about">
+            <div data-setting-text data-label-key="vis_h_menu_about" data-label-text="About" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
           </div>
         </div>
 
@@ -76,13 +80,36 @@
             <div data-setting-text data-label-key="overlay_color_label" data-label-text="Popup colour" data-desc-key="overlay_color_desc" data-desc-text="Colour of the popups that appear when you select text (copy and paste), the right-click menu, and the tooltip shown when you hover over a button. Invert shows them on a dark surface in light mode and a light surface in dark mode, so they stand out from the window."></div>
             <div id="modalOverlayColorCards" class="settings-theme-cards popup-color-cards" role="group" data-i18n-aria="overlay_color_label"></div>
           </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="tooltip_width_label" data-label-text="Tooltip width" data-desc-key="tooltip_width_desc" data-desc-text="Line length of the tooltip shown when you hover over a button. Short wraps long text onto two lines; Long lets a line run wider."></div>
+            <select id="modalTooltipWidthSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_tooltip_width">
+              <option value="short" data-i18n="tooltip_width_short">Short (2 lines)</option>
+              <option value="long" data-i18n="tooltip_width_long">Long</option>
+            </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="tooltip_on_label" data-label-text="Tooltips" data-desc-key="tooltip_on_desc" data-desc-text="Show the tooltip when you hover over a button, with no delay. Off uses the standard tooltip of the system instead." data-reason-id="tooltipOffReason" data-reason-ui="set:tooltip-off-reason" data-reason-key="tooltip_off_reason" data-reason-text="Not available while Tooltips is off, because the system's standard tooltip is used."></div>
+            <select id="modalTooltipEnabledSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_tooltip_on">
+              <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="tooltip_gap_label" data-label-text="Tooltip distance" data-desc-key="tooltip_gap_desc" data-desc-text="Distance between the pointer and the tooltip shown when you hover over a button. Near keeps the tooltip close to the pointer; Far moves it away from the pointer."></div>
+            <select id="modalTooltipGapSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_tooltip_gap">
+              <option value="near" data-i18n="tooltip_gap_near">Near</option>
+              <option value="standard" data-i18n="tooltip_gap_standard" selected>Standard</option>
+              <option value="far" data-i18n="tooltip_gap_far">Far</option>
+            </select>
+          </div>
         </div>
 
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="zoom_in" data-key="monaco_group_display" data-text="Display"></h4>
           <p class="card-section-desc" data-i18n="monaco_group_display_desc">Adjust display language and overall UI size.</p>
           <div data-setting-row>
-            <div data-setting-text data-label-key="common_language" data-label-text="Display language" data-desc-key="setting_language_desc" data-desc-text="Choose the display language. The screen switches at once."></div>
+            <div data-setting-text data-label-key="common_language" data-label-text="Display language" data-desc-key="setting_language_desc" data-desc-text="Choose the display language. The screen switches at once."
+              data-jump-key="setting_language_log_jump" data-jump-text="The log language is set apart: System log" data-jump-tab="tabSystem" data-jump-card="settings_group_logs"></div>
             <select id="modalLangSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_language">
               <option value="en" data-i18n="lang_en">English (EN)</option>
               <option value="ja" data-i18n="lang_ja">Japanese (JA)</option>
@@ -161,7 +188,7 @@
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="save" data-key="autosave_menu_item" data-text="Autosave"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="autosave_menu_item" data-label-text="Autosave" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write. Save As still saves a copy under a new name."></div>
+            <div data-setting-text data-label-key="setting_autosave_enable" data-label-text="Enable" data-desc-key="setting_autosave_desc" data-desc-text="Save the document automatically while you write. Save As still saves a copy under a new name." data-reason-id="autoSaveOffReason" data-reason-ui="set:autosave-off-reason" data-reason-key="setting_autosave_off_reason" data-reason-text="Not available while Autosave is off. Turn it on to set these."></div>
             <select id="modalAutoSaveSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_autosave_toggle">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
@@ -175,19 +202,12 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_autosave_delay" data-label-text="Pause before saving" data-desc-key="setting_autosave_delay_desc" data-desc-text="How long to wait after you stop typing. Choose a preset or set your own, from 0.5 seconds to 60 minutes."></div>
+            <div data-setting-text data-label-key="setting_autosave_delay" data-label-text="Pause before saving" data-desc-key="setting_autosave_delay_desc" data-desc-text="How long to wait after you stop typing. Choose a preset, or type your own as m:ss (for example 10:30), from 0.5 seconds to 60:00." data-reason-id="autoSaveDelayReason" data-reason-key="setting_autosave_delay_off_reason" data-reason-text="Not available while &quot;Save when typing pauses&quot; is off. Turn it on to set the wait."></div>
             <div class="setting-actions">
-              <select id="modalAutoSaveDelaySelect" class="toolbar-select" data-i18n-title="tip_set_autosave_delay"></select>
-              <span id="autoSaveDelayCustom" class="autosave-delay-custom" hidden>
-                <input type="number" id="modalAutoSaveDelayInput" data-stepper class="toolbar-select input-num" min="0.5" max="3600" step="0.5" value="1.5" data-i18n-title="tip_set_autosave_delay">
-                <select id="modalAutoSaveDelayUnit" class="toolbar-select" data-i18n-title="tip_set_autosave_delay_unit">
-                  <option value="sec" data-i18n="autosave_unit_sec_long">seconds</option>
-                  <option value="min" data-i18n="autosave_unit_min_long">minutes</option>
-                </select>
-              </span>
+              <select id="modalAutoSaveDelaySelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_autosave_delay"></select>
+              <input type="text" id="modalAutoSaveDelayInput" class="toolbar-select input-clock" inputmode="decimal" placeholder="m:ss" value="0:01.5" spellcheck="false" autocomplete="off" data-i18n-title="tip_set_autosave_delay">
             </div>
           </div>
-          <div class="setting-desc autosave-delay-reason" id="autoSaveDelayReason" hidden data-i18n="setting_autosave_delay_off_reason">Not available while "Save when typing pauses" is off. Turn it on to set the wait.</div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_autosave_newline" data-label-text="Save at each new line" data-desc-key="setting_autosave_newline_desc" data-desc-text="Saves every time you start a new line."></div>
             <select id="modalAutoSaveNewlineSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_setup_autosave_newline">
@@ -200,9 +220,9 @@
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="text_fields" data-key="grp_editor_text" data-text="Text tools"></h4>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_editor_bg" data-label-text="Editor Canvas BG/FG Theme (Dark &amp; Light Variations)" data-desc-key="setting_editor_bg_desc" data-desc-text="Customize background and foreground text color inside Monaco editor independently."></div>
+            <div data-setting-text data-label-key="setting_editor_bg" data-label-text="Editor background" data-desc-key="setting_editor_bg_desc" data-desc-text="Choose the editor background color and text color. The two can be chosen separately."></div>
             <!-- The state holder of the choice: the cards below set it (ui/settings/editorTonePicker.js); the rest of the settings code reads it -->
-            <select id="modalEditorBgSelect" class="toolbar-select" hidden data-i18n-title="tip_editor_bg_theme">
+            <select id="modalEditorBgSelect" class="toolbar-select" hidden data-option-style="tone" data-i18n-title="tip_editor_bg_theme">
               <option value="default" selected data-i18n="opt_bg_default">Theme Match (Default)</option>
             </select>
             <p id="editorToneStatus" class="setting-desc tone-status" aria-live="polite"></p>
@@ -222,9 +242,9 @@
             </div>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="font_family_label" data-label-text="Font Family" data-desc-key="setting_font_family_desc" data-desc-text="Select typeface for text rendering."></div>
+            <div data-setting-text data-label-key="font_family_label" data-label-text="Font Family" data-desc-key="setting_font_family_desc" data-desc-text="Select the font family used inside the editor (also applied to the Markdown preview)."></div>
             <!-- The state holder of the choice: the cards below set it (ui/settings/fontFamilyPicker.js) -->
-            <select id="modalFontFamilySelect" class="toolbar-select" hidden data-i18n-title="tip_editor_font_family">
+            <select id="modalFontFamilySelect" class="toolbar-select" hidden data-option-style="font-family" data-i18n-title="tip_editor_font_family">
               <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif" data-i18n="font_serif">Source Serif 4</option>
               <option value="'Source Sans 3', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" data-i18n="font_sans_serif">Source Sans 3 (Sans-serif)</option>
               <option value="'Source Code Pro', 'Cascadia Code', Consolas, Monaco, monospace" data-i18n="font_mono">Source Code Pro (Monospace)</option>
@@ -239,7 +259,7 @@
             <div data-setting-text data-label-key="font_size_label" data-label-text="Font Size" data-desc-key="setting_font_size_desc" data-desc-text="Choose the editor font size in pixels."></div>
             <div class="setting-actions">
               <!-- Presets (the same numbers as ui/settings/fontSizeOptions.js); an own value is typed in the box beside them -->
-              <select id="modalFontSizeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_editor_font_size">
+              <select id="modalFontSizeSelect" class="toolbar-select" data-i18n-title="tip_editor_font_size">
                 <option value="10">10</option>
                 <option value="12">12</option>
                 <option value="14">14</option>
@@ -253,22 +273,24 @@
               <span class="setting-desc">px</span>
             </div>
           </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="monaco_reset_row_label" data-label-text="Editor options" data-desc-key="monaco_reset_row_desc" data-desc-text="This editor is built on Monaco, the editor part of Visual Studio Code, and its options can be changed. They are listed in the Editor Options panel on the right."></div>
-            <div class="setting-actions">
-              <button id="btnOpenEditorOptions" class="settings-btn settings-btn--primary" type="button" data-i18n="monaco_open_panel_btn" data-i18n-title="tip_monaco_open_panel">Open panel</button>
-              <button id="btnEditorOptionsReset" class="settings-btn" type="button" data-i18n="monaco_reset_row_btn" data-i18n-title="tip_monaco_reset_row">Restore Defaults</button>
-            </div>
-          </div>
         </div>
 
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="cloud" data-key="grp_llm_assistant" data-text="LLM assistant"></h4>
+          <h4 data-card-heading data-icon="cloud" data-key="grp_llm_assistant" data-text="AI chat"></h4>
+          <div class="setting-desc" data-i18n="grp_llm_assistant_desc">Write and edit text in the editor area with the AI chat. When the switch is on, the chat opens below the editor: type an instruction in its input box and send it.</div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_master_ai" data-label-text="LLM (cloud AI)" data-desc-key="setting_master_ai_desc" data-desc-text="Turns the cloud LLM assistant and the suggestion sidebar on or off. A model must be set up first."></div>
+            <div data-setting-text data-label-key="setting_master_ai" data-label-text="Use AI chat" data-reason-id="llmSwitchReason" data-reason-ui="set:llm-switch-reason" data-reason-key="setting_master_ai_reason_provider" data-reason-text="Not available while no provider is chosen. Choose one under API key setup below." data-desc-key="setting_master_ai_desc" data-desc-text="Turns the features that use a cloud AI (chat, Ctrl+K, right-click rewrite) on or off. An API key must be set up first."></div>
             <select id="modalLlmSwitchSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_master_ai">
               <option value="on" data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
+              <option value="off" data-i18n="opt_toggle_off" selected>Off</option>
+            </select>
+          </div>
+
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_chat_placement" data-label-text="Chat position" data-desc-key="setting_chat_placement_desc" data-desc-text="Where the AI chat area sits: below the editor, or as a tab of the right sidebar next to Collection. The move button in the chat header changes it too."></div>
+            <select id="modalChatPlacementSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_chat_placement">
+              <option value="below" selected data-i18n="opt_chat_below">Below the editor</option>
+              <option value="sidebar" data-i18n="opt_chat_sidebar">Right sidebar</option>
             </select>
           </div>
 
@@ -276,15 +298,20 @@
           <div id="llmConfigCard" class="llm-chat-block">
             <div class="llm-chat-title">
               <span class="material-symbols-outlined" aria-hidden="true">key</span>
-              <span data-i18n="heading_llm_catalog">API key setup</span>
+              <span data-i18n="heading_api_key_setup">API key setup</span>
             </div>
+            <ol class="setting-desc llm-card-steps">
+              <li data-i18n="llm_card_step1">Get an API key on the provider's site (for example Gemini)</li>
+              <li data-i18n="llm_card_step2">Choose the provider and paste the key into the key field</li>
+              <li data-i18n="llm_card_step3">Choose a model (Gemini can load the latest list with Fetch Models)</li>
+            </ol>
             <div class="setting-desc" data-i18n="llm_card_desc">Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality.</div>
 
             <div class="llm-provider-title" data-i18n="heading_provider">Provider</div>
             <div class="provider-choice-row">
               <!-- No segment pressed means no service is chosen yet (the hidden "none" option) -->
               <select id="modalAiProviderSelect" data-ui-control="segmented" data-segmented-size="lg" data-i18n-title="tip_select_llm_provider">
-                <option value="none" hidden></option>
+                <option value="none" hidden selected></option>
                 <option value="gemini">Gemini</option>
                 <option value="openai">OpenAI</option>
                 <option value="claude">Claude</option>
@@ -381,6 +408,12 @@
               </div>
             </div>
           </div>
+
+          <!-- The embedding model is a separate setting, in the Sidebar tab: a pointer to it, not a row of this card -->
+          <div class="settings-pointer">
+            <div class="setting-desc" data-i18n="setting_llm_to_embedding_desc">Semantic search for the suggestion sidebar uses the embedding model. It is set in the Sidebar tab and does not change with the AI chat above.</div>
+            <button type="button" class="settings-link settings-link--jump" data-open-settings-tab="tabAiSearch" data-open-settings-card="grp_sidebar_top" data-tip-exempt="its text names the target"><span data-i18n="setting_llm_to_embedding_jump">Go to Sidebar › Embedding model</span><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
+          </div>
         </div>
 
         <div class="settings-section-card">
@@ -415,6 +448,14 @@
         <div class="settings-section-card">
           <h4 data-card-heading data-icon="edit_note" data-key="grp_editor_display" data-text="Editor view (Monaco)"></h4>
           <p class="card-section-desc" data-i18n="grp_editor_display_desc">Basic display settings for Monaco, the editor component (the same editor as in VS Code). For finer control, use Editor Options in the right panel.</p>
+          <!-- The way to the full Monaco option list (300+) sits at the top of the card, before the basic display rows -->
+          <div data-setting-row>
+            <div data-setting-text data-label-key="monaco_reset_row_label" data-label-text="Editor options" data-desc-key="monaco_reset_row_desc" data-desc-text="This editor is built on Monaco, the editor part of Visual Studio Code, and its options can be changed. They are listed in the Editor Options panel on the right."></div>
+            <div class="setting-actions">
+              <button id="btnOpenEditorOptions" class="settings-btn settings-btn--primary" type="button" data-i18n-title="tip_monaco_open_panel"><span class="material-symbols-outlined" aria-hidden="true">right_panel_open</span><span data-i18n="monaco_open_panel_btn">Open panel</span></button>
+              <button id="btnEditorOptionsReset" class="settings-btn" type="button" data-i18n="monaco_reset_row_btn" data-i18n-title="tip_monaco_reset_row">Restore editor defaults</button>
+            </div>
+          </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_line_height" data-label-text="Line Height" data-desc-key="setting_line_height_desc" data-desc-text="Adjust the height of each line."></div>
             <!-- The state holder of the choice: the cards below set it (ui/settings/lineHeightPicker.js) -->
@@ -448,12 +489,12 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_line_highlight" data-label-text="Current Line Highlight" data-desc-key="setting_line_highlight_desc" data-desc-text="Configure cursor highlight style."></div>
+            <div data-setting-text data-label-key="setting_line_highlight" data-label-text="Current Line Highlight" data-desc-key="setting_line_highlight_desc" data-desc-text="Choose how the cursor line is highlighted (line number / underline / whole line / none)."></div>
             <select id="modalLineHighlightSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_line_highlight">
-              <option value="gutter" selected data-i18n="opt_highlight_gutter">Line Number Only</option>
-              <option value="line" data-i18n="opt_highlight_line">Bottom Line (Subtle)</option>
-              <option value="all" data-i18n="opt_highlight_all">Full Row Background</option>
-              <option value="none" data-i18n="opt_highlight_none">Disabled</option>
+              <option value="gutter" selected data-i18n="opt_highlight_gutter">Line number</option>
+              <option value="line" data-i18n="opt_highlight_line">Underline</option>
+              <option value="all" data-i18n="opt_highlight_all">Whole line</option>
+              <option value="none" data-i18n="opt_highlight_none">None</option>
             </select>
           </div>
           <div data-setting-row>
@@ -473,22 +514,22 @@
           <!-- The three controls at the top of the right panel, in the panel's order: panel button, embedding switch, gear -->
           <h4 data-card-heading data-icon="right_panel_close" data-key="grp_sidebar_top" data-text="Panel top"></h4>
           <div data-setting-row data-vis-target="sb_panel_toggle">
-            <div data-setting-text data-label-key="vis_sb_panel_toggle" data-label-text="Panel open/close button" data-desc-key="setting_sidebar_start_desc" data-desc-text="Opens or closes the right panel. Choose whether the panel is open or closed when the app starts."></div>
-            <select id="modalSidebarStartSelect" class="toolbar-select" data-i18n-title="tip_set_sidebar_start">
+            <div data-setting-text data-icon="right_panel_close" data-label-key="vis_sb_panel_toggle" data-label-text="Panel open/close button" data-desc-key="setting_sidebar_start_desc" data-desc-text="Use it when you want more room for writing. Drag the border between the editor and the panel with the mouse to change the panel width. Choose whether the panel is open or closed when the app starts."></div>
+            <select id="modalSidebarStartSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_sidebar_start">
               <option value="open" data-i18n="opt_sidebar_start_open">Open at start</option>
               <option value="closed" data-i18n="opt_sidebar_start_closed">Closed at start</option>
             </select>
           </div>
           <div data-setting-row data-vis-target="sb_embedding_toggle">
             <div data-setting-text data-label-key="setting_embedding_assistant" data-label-text="Embedding model" data-desc-key="setting_embedding_assistant_desc" data-desc-text="Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."
-              data-jump-key="setting_embedding_llm_jump" data-jump-text="For the LLM: LLM assistant" data-jump-tab="tabEditor" data-jump-card="grp_llm_assistant"></div>
+              data-jump-key="setting_embedding_llm_jump" data-jump-text="For AI chat: Editor › AI chat" data-jump-tab="tabEditor" data-jump-card="grp_llm_assistant"></div>
             <select id="modalEmbeddingAssistantSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_embedding_assistant">
               <option value="on" data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
+              <option value="off" data-i18n="opt_toggle_off" selected>Off</option>
             </select>
           </div>
           <div data-setting-row data-vis-target="sb_quick_settings">
-            <div data-setting-text data-label-key="vis_sb_quick_settings" data-label-text="Sidebar settings button (gear)" data-desc-key="setting_sidebar_gear_desc" data-desc-text="Opens this tab of the settings page."></div>
+            <div data-setting-text data-label-key="vis_sb_quick_settings" data-label-text="Sidebar settings button (gear)" data-desc-key="setting_sidebar_gear_desc" data-desc-text="{gear} opens the Sidebar tab of the settings page."></div>
           </div>
         </div>
 
@@ -496,13 +537,133 @@
           <!-- Overview of the two parts below the tabs: a card with a heading and one row each (no control) -->
           <div class="settings-section-card">
             <h4 data-card-heading data-icon="format_list_bulleted" data-key="sidebar_overview_title" data-text="Collection"></h4>
-            <div data-setting-row>
-              <div data-setting-text data-icon="rule_folder" data-label-key="grp_sidebar_guidelines" data-label-text="Guidelines" data-desc-key="sidebar_overview_guidelines" data-desc-text="Checks the document in the background (Linter) and flags problems"></div>
+            <div class="setting-desc" data-i18n="sidebar_overview_desc">Guidelines hold the writing rules and formats. Knowledge holds the dictionaries that give suggestions. Both run on the embedding model.</div>
+            <div class="collection-flow" data-ui="set:collection-flow" aria-hidden="true">
+              <div class="collection-flow-col">
+                <span class="collection-flow-node" data-i18n="flow_web_info">Information on the web</span>
+                <span class="material-symbols-outlined collection-flow-arrow">arrow_upward</span>
+                <span class="collection-flow-node" data-i18n="flow_llm_model">LLM model</span>
+                <span class="material-symbols-outlined collection-flow-arrow">arrow_upward</span>
+                <span class="collection-flow-node" data-i18n="flow_keyword_input">Keyword input</span>
+              </div>
+              <div class="collection-flow-col">
+                <span class="collection-flow-node" data-i18n="flow_dictionary">Dictionary</span>
+                <span class="material-symbols-outlined collection-flow-arrow">arrow_upward</span>
+                <span class="collection-flow-node" data-i18n="flow_embedding_model">Embedding model</span>
+                <span class="material-symbols-outlined collection-flow-arrow">arrow_upward</span>
+                <span class="collection-flow-node" data-i18n="flow_keyword_input">Keyword input</span>
+              </div>
+              <div class="collection-flow-col">
+                <span class="collection-flow-node" data-i18n="flow_search">Search</span>
+                <span class="material-symbols-outlined collection-flow-arrow">arrow_upward</span>
+                <span class="collection-flow-node" data-i18n="flow_typed_input">Input</span>
+                <span class="material-symbols-outlined collection-flow-arrow">arrow_upward</span>
+                <span class="collection-flow-node" data-i18n="flow_ordinary_person">Ordinary person</span>
+              </div>
             </div>
-            <div data-setting-row>
-              <div data-setting-text data-icon="menu_book" data-label-key="grp_sidebar_knowledge" data-label-text="Knowledge" data-desc-key="sidebar_overview_knowledge" data-desc-text="Suggests candidates from dictionaries for the selected text. The embedding model powers the meaning-based search behind these suggestions"></div>
+            <!-- Guidelines card of the right panel -->
+            <div class="settings-section-card">
+              <h4 data-card-heading data-icon="rule_folder" data-key="grp_sidebar_guidelines" data-text="Guidelines"></h4>
+              <div class="setting-desc" id="settingsCollectionGuidelineStatus"></div>
+              <div class="setting-actions">
+                <button type="button" id="btnGoToModelInstall" class="settings-btn" data-ui="set:model-install-button" data-i18n-title="tip_go_model_install">
+                  <span class="material-symbols-outlined">arrow_downward</span>
+                  <span data-i18n="btn_go_model_install">Go to model install</span>
+                </button>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_linter_enabled" data-label-text="Real-time Validation (Linter)" data-desc-key="setting_linter_enabled_desc" data-desc-text="Enable background document validation."></div>
+                <select id="modalLinterSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_linter">
+                  <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
+                  <option value="off" data-i18n="opt_linter_off">Disabled</option>
+                </select>
+              </div>
+            </div>
+            <!-- Knowledge card of the right panel: dictionaries and the suggestions they give -->
+            <div class="settings-section-card">
+              <h4 data-card-heading data-icon="menu_book" data-key="grp_sidebar_knowledge" data-text="Knowledge"></h4>
+              <div class="setting-desc" id="settingsCollectionKnowledgeStatus"></div>
+              <div class="settings-subhead" data-i18n="settings_inuse_heading">Dictionaries and model in use</div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_knowledge_model" data-label-text="Embedding model in use" data-desc-key="setting_knowledge_model_desc" data-desc-text="Knowledge suggestions are searched with this model. Change it in the embedding model list below."></div>
+                <span id="knowledgeEmbeddingModelName" class="settings-model-name"></span>
+              </div>
+              <div class="setting-desc" data-i18n="settings_model_dim_desc">Dimensions: the number of values that describe one text. A dictionary can be searched with this model only when it was built in the same embedding space.</div>
+              <div class="setting-desc" id="knowledgeEmbeddingModelDims"></div>
+              <div class="setting-desc" id="knowledgeDictionaryFit"></div>
+              <ul class="settings-inuse-list" id="knowledgeInUseList"></ul>
+              <!-- Shortening applies to dictionaries and to the model in use alike, so it sits in this card -->
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_truncation" data-label-text="Shorten vectors to fit" data-desc-key="setting_truncation_desc" data-desc-text="When a dictionary and the model differ in vector length but share one embedding space, cut the longer vectors to the shorter length (approximate). Off: such a dictionary is left out of vector search."></div>
+                <select id="modalTruncationSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_truncation">
+                  <option value="on" selected data-i18n="opt_toggle_on">On</option>
+                  <option value="off" data-i18n="opt_toggle_off">Off</option>
+                </select>
+              </div>
+              <div class="settings-subhead" data-i18n="settings_function_heading">Suggestion functions</div>
+              <div class="setting-desc settings-group-reason" id="suggestEmbedOffReason" data-ui="set:suggest-off-reason" hidden data-i18n="setting_suggest_embed_off_reason">Not available while the embedding model is off. Turn it on to set these.</div>
+              <div class="setting-desc settings-group-reason" id="suggestModelNotReadyReason" data-ui="set:suggest-off-reason" hidden data-i18n="setting_suggest_model_not_ready_reason">The embedding model is not downloaded yet. Install it in the list below to set these.</div>
+              <div class="setting-desc settings-group-reason" id="suggestNoDictReason" data-ui="set:suggest-off-reason" hidden data-i18n="setting_suggest_no_dict_reason">Not available until a dictionary is loaded.</div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_suggest_trigger" data-label-text="Suggestion Trigger Mode" data-desc-key="setting_suggest_trigger_desc" data-desc-text="Control how vector suggestions are invoked."></div>
+                <select id="modalSuggestTriggerSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_suggest_trigger">
+                  <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse Release)</option>
+                  <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
+                  <option value="manual" data-i18n="opt_trigger_manual">Manual (Alt+S Shortcut Only)</option>
+                </select>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_min_score" data-label-text="Similarity threshold (%)" data-desc-key="setting_min_score_desc" data-desc-text="Ignore results below this similarity threshold."></div>
+                <input type="number" id="modalMinScoreInput" data-stepper min="50" max="99" value="70" class="toolbar-select input-num" data-i18n-title="tip_min_score">
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_limit" data-label-text="Result limit" data-desc-key="setting_limit_desc" data-desc-text="Maximum number of suggestions returned."></div>
+                <select id="modalLimitSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_suggestion_limit">
+                  <option value="5" selected data-i18n="opt_limit_5">5 results</option>
+                  <option value="10" data-i18n="opt_limit_10">10 results</option>
+                  <option value="20" data-i18n="opt_limit_20">20 results</option>
+                </select>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="opt_show_full_metadata" data-label-text="Show full metadata" data-desc-key="setting_full_meta_desc" data-desc-text="Auto-expand key-value attributes in suggestion cards."></div>
+                <select id="modalShowFullMetadataSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_show_full_metadata">
+                  <option value="on" data-i18n="opt_toggle_on">On</option>
+                  <option value="off" selected data-i18n="opt_toggle_off">Off</option>
+                </select>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_result_desc_lines" data-label-text="Description lines per search result" data-desc-key="setting_result_desc_lines_desc" data-desc-text="How many lines of the description a search result shows. With 1 line, the full text is shown on hover."></div>
+                <select id="modalResultDescLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_desc_lines">
+                  <option value="1" data-i18n="opt_desc_lines_1">1 line</option>
+                  <option value="2" selected data-i18n="opt_desc_lines_2">2 lines</option>
+                </select>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="setting_result_title_lines" data-label-text="Heading lines per search result" data-desc-key="setting_result_title_lines_desc" data-desc-text="How many lines of the heading a search result shows. Full shows the whole heading without cutting it."></div>
+                <select id="modalResultTitleLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_title_lines">
+                  <option value="1" data-i18n="opt_desc_lines_1">1 line</option>
+                  <option value="2" selected data-i18n="opt_desc_lines_2">2 lines</option>
+                  <option value="3" data-i18n="opt_title_lines_3">3 lines</option>
+                  <option value="full" data-i18n="opt_title_lines_full">Full</option>
+                </select>
+              </div>
+              <!-- A sample result card with the real card classes; the two selects above set its line counts -->
+              <div class="result-lines-preview" id="resultLinesPreview" aria-hidden="true">
+                <div class="result-card__title" data-lines="2" data-i18n="result_preview_title">Quarterly report: summary of the first visit and the follow-up plan</div>
+                <div class="result-card__desc" data-lines="2" data-i18n="result_preview_desc">The first visit was recorded on the date of the referral. The follow-up plan lists the next review and the documents to bring, so this example shows how a longer description is cut to the chosen number of lines.</div>
+              </div>
+              <div data-setting-row>
+                <div data-setting-text data-label-key="btn_import_dict" data-label-text="Add files" data-desc-key="import_dict_desc" data-desc-text="Load custom domain terms, schema rules, or vector definitions into HNSW index."></div>
+                <button id="btnModalImportDict" class="settings-btn" type="button" data-i18n-title="tip_import_dictionary">
+                  <span data-i18n="btn_import_dict">Add files</span>
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+
+
+
           <div class="ai-model-subtab-bar" role="tablist">
             <button type="button" class="ai-model-subtab-btn active" data-emb-subtab="local" id="btnSubTabLocal" data-i18n-title="tip_subtab_local">
               <span class="material-symbols-outlined">memory</span>
@@ -516,11 +677,7 @@
 
           <div id="subpanelEmbLocal" class="ai-model-panel active">
             <div id="embeddingConfigCard" class="settings-section-card">
-              <h4>
-                <span class="material-symbols-outlined">menu_book</span>
-                <span data-i18n="heading_embedding_catalog">EMBEDDING MODEL CATALOG</span>
-                <span class="card-badge card-badge--ok" data-i18n="ai_badge_offline">100% OFFLINE</span>
-              </h4>
+              <h4 data-card-heading data-icon="menu_book" data-key="heading_embedding_models" data-text="EMBEDDING MODELS"></h4>
               <div class="setting-desc" data-i18n="embedding_card_desc">Used for the editor's specialized terminology dictionary, HNSW vector search, and real-time intelligence. Models are not required for normal dictionary and text input functionality.</div>
               <div id="localAiSettingsBlock" class="settings-subpanel">
                 <div class="setting-item-head">
@@ -529,7 +686,7 @@
                     <span data-i18n="btn_init_local_ai">Download & Activate Local AI Model</span>
                   </button>
                 </div>
-                <!-- Embedding model catalog: rendered from search/embeddingModels.js (Download / Use / Active) -->
+                <!-- Embedding model list: rendered from search/embeddingModels.js (Download / Use / Active) -->
                 <div id="embeddingModelList" class="embedding-model-list"></div>
                 <div id="modalAiDownloadProgress" style="display: none;">
                   <div class="setting-item-head setting-desc">
@@ -546,11 +703,7 @@
 
           <div id="subpanelEmbCloud" class="ai-model-panel">
             <div class="settings-section-card">
-              <h4>
-                <span class="material-symbols-outlined">cloud_sync</span>
-                <span data-i18n="cloud_emb_title">Cloud Vector Embedding (API Vectorizer)</span>
-                <span class="card-badge" data-i18n="ai_badge_cloud">CLOUD API</span>
-              </h4>
+              <h4 data-card-heading data-icon="cloud_sync" data-key="cloud_emb_title" data-text="Cloud Vector Embedding (API Vectorizer)"></h4>
               <div class="setting-desc" data-i18n="cloud_emb_desc">Use an external API for semantic search when you need higher accuracy. Local 384-dimension search stays the default. Set the API key in the LLM tab first.</div>
               <div class="setting-actions">
                 <button type="button" id="btnGoToLlmConfig" class="settings-btn" data-i18n-title="tip_go_llm_config">
@@ -559,82 +712,7 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Guidelines card of the right panel -->
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="rule_folder" data-key="grp_sidebar_guidelines" data-text="Guidelines"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_linter_enabled" data-label-text="Real-time Validation (Linter)" data-desc-key="setting_linter_enabled_desc" data-desc-text="Enable background document validation."></div>
-            <select id="modalLinterSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_linter">
-              <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
-              <option value="off" data-i18n="opt_linter_off">Disabled</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Knowledge card of the right panel: dictionaries and the suggestions they give -->
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="menu_book" data-key="grp_sidebar_knowledge" data-text="Knowledge"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_suggest_trigger" data-label-text="Suggestion Trigger Mode" data-desc-key="setting_suggest_trigger_desc" data-desc-text="Control how vector suggestions are invoked."></div>
-            <select id="modalSuggestTriggerSelect" class="toolbar-select" data-i18n-title="tip_set_suggest_trigger">
-              <option value="selection" selected data-i18n="opt_trigger_selection">Selection Auto Popover (Mouse Release)</option>
-              <option value="contextmenu" data-i18n="opt_trigger_contextmenu">Right-Click Context Menu Only</option>
-              <option value="manual" data-i18n="opt_trigger_manual">Manual (Alt+S Shortcut Only)</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_min_score" data-label-text="Minimum Similarity Score (%)" data-desc-key="setting_min_score_desc" data-desc-text="Ignore results below this similarity threshold."></div>
-            <input type="number" id="modalMinScoreInput" data-stepper min="50" max="99" value="70" class="toolbar-select input-num" data-i18n-title="tip_min_score">
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_limit" data-label-text="Search Results Limit" data-desc-key="setting_limit_desc" data-desc-text="Maximum number of suggestions returned."></div>
-            <select id="modalLimitSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_suggestion_limit">
-              <option value="5" selected data-i18n="opt_limit_5">5 results</option>
-              <option value="10" data-i18n="opt_limit_10">10 results</option>
-              <option value="20" data-i18n="opt_limit_20">20 results</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="opt_show_full_metadata" data-label-text="Show Full Metadata / Attributes" data-desc-key="setting_full_meta_desc" data-desc-text="Auto-expand key-value attributes in suggestion cards."></div>
-            <input type="checkbox" id="modalShowFullMetadataChk" data-i18n-title="tip_show_full_metadata">
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_result_desc_lines" data-label-text="Description lines on result cards" data-desc-key="setting_result_desc_lines_desc" data-desc-text="How many lines of the description a suggestion card shows. With 1 line, the full text is shown on hover."></div>
-            <select id="modalResultDescLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_desc_lines">
-              <option value="1" data-i18n="opt_desc_lines_1">1 line</option>
-              <option value="2" selected data-i18n="opt_desc_lines_2">2 lines</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_result_title_lines" data-label-text="Heading lines on result cards" data-desc-key="setting_result_title_lines_desc" data-desc-text="How many lines of the heading a suggestion card shows. Full shows the whole heading without cutting it."></div>
-            <select id="modalResultTitleLinesSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_result_title_lines">
-              <option value="1" data-i18n="opt_desc_lines_1">1 line</option>
-              <option value="2" selected data-i18n="opt_desc_lines_2">2 lines</option>
-              <option value="3" data-i18n="opt_title_lines_3">3 lines</option>
-              <option value="full" data-i18n="opt_title_lines_full">Full</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="btn_import_dict" data-label-text="Import Dictionary / Knowledge (.json)" data-desc-key="import_dict_desc" data-desc-text="Load custom domain terms, schema rules, or vector definitions into HNSW index."></div>
-            <button id="btnModalImportDict" class="settings-btn" type="button" data-i18n-title="tip_import_dictionary">
-              <span data-i18n="btn_import_dict">Import Dictionary</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Settings that matter only in special cases (for example a dictionary whose vectors differ in length) -->
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="tune" data-key="grp_sidebar_advanced" data-text="Advanced"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_truncation" data-label-text="Shorten vectors to fit" data-desc-key="setting_truncation_desc" data-desc-text="When a dictionary and the model differ in vector length but share one embedding space, cut the longer vectors to the shorter length (approximate). Off: such a dictionary is left out of vector search."></div>
-            <select id="modalTruncationSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_truncation">
-              <option value="on" selected data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
-            </select>
-          </div>
-        </div>
       </div>
 
       <!-- Tab 4: System (sys) - closing, log, parts of the window and maintenance -->
@@ -747,21 +825,18 @@
         </details>
 
 <div class="settings-section-card">
-          <h4>
-            <span class="material-symbols-outlined">terminal</span>
-            <span data-i18n="settings_group_logs">System log</span>
-            <span class="setting-actions">
-              <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="clear" data-i18n-title="tip_logs_clear">
-                <span class="material-symbols-outlined">rotate_left</span><span data-i18n="btn_clear_logs">CLEAR</span>
-              </button>
-              <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="copy" data-i18n-title="tip_logs_copy">
-                <span class="material-symbols-outlined">copy_all</span><span data-i18n="btn_copy_logs">Copy Logs</span>
-              </button>
-              <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="download" data-i18n-title="tip_logs_save">
-                <span class="material-symbols-outlined">download</span><span data-i18n="btn_download_logs">Save Logs</span>
-              </button>
-            </span>
-          </h4>
+          <h4 data-card-heading data-icon="terminal" data-key="settings_group_logs" data-text="System log"></h4>
+          <div class="setting-actions settings-log-actions">
+            <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="clear" data-i18n-title="tip_logs_clear">
+              <span class="material-symbols-outlined">rotate_left</span><span data-i18n="btn_clear_logs">CLEAR</span>
+            </button>
+            <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="copy" data-i18n-title="tip_logs_copy">
+              <span class="material-symbols-outlined">copy_all</span><span data-i18n="btn_copy_logs">Copy Logs</span>
+            </button>
+            <button type="button" class="log-panel-btn btn-phi settings-log-btn" data-log-action="download" data-i18n-title="tip_logs_save">
+              <span class="material-symbols-outlined">download</span><span data-i18n="btn_download_logs">Save Logs</span>
+            </button>
+          </div>
           <p class="card-section-desc" data-i18n="settings_group_logs_desc">The same system log as the log panel at the bottom of the window. Each line is a real event the app recorded while it ran, not a summary or an example.</p>
           <div class="log-head" aria-hidden="true"><span data-i18n="log_head_time">Time</span><span data-i18n="log_head_level">Level</span><span data-i18n="log_head_source">Source</span><span data-i18n="log_head_message">Message</span></div>
           <div class="log-entries-container" data-log-mirror></div>
@@ -789,8 +864,15 @@
             </select>
           </div>
           <div data-setting-row>
+            <div data-setting-text data-label-key="setting_log_language" data-label-text="Log language" data-desc-key="setting_log_language_desc" data-desc-text="The language of the log lines. English keeps every log the same whatever the app language is, which suits sharing it. Follow app language writes new lines in the app language."></div>
+            <select id="modalLogLanguageSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_log_language">
+              <option value="en" selected data-i18n="opt_log_lang_en">English</option>
+              <option value="ui" data-i18n="opt_log_lang_ui">Follow app language</option>
+            </select>
+          </div>
+          <div data-setting-row>
             <div data-setting-text data-label-key="setting_log_save" data-label-text="Save logs" data-desc-key="setting_log_save_desc" data-desc-text="Choose how the log is kept. Ask when exiting asks each time you quit. Always save keeps every session for 30 days. Do not save keeps nothing."></div>
-            <select id="modalLogSaveModeSelect" class="toolbar-select" data-i18n-title="tip_set_log_save">
+            <select id="modalLogSaveModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_log_save">
               <option value="ask" selected data-i18n="opt_log_save_ask">Ask when exiting</option>
               <option value="always" data-i18n="opt_log_save_always">Always save</option>
               <option value="never" data-i18n="opt_log_save_never">Do not save</option>
@@ -835,8 +917,8 @@
             <button id="btnClearAppCache" class="settings-btn" type="button" data-i18n="maint_cache_btn" data-i18n-title="tip_clear_cache">Clear Cache</button>
           </div>
           <div data-setting-row class="setting-item--danger">
-            <div data-setting-text data-label-key="maint_reset_label" data-label-text="Restore Default Settings" data-desc-key="maint_reset_desc" data-desc-text="Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor."></div>
-            <button id="btnResetSettings" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_btn" data-i18n-title="tip_reset_settings">Restore Defaults</button>
+            <div data-setting-text data-label-key="maint_reset_label" data-label-text="Restore all settings" data-desc-key="maint_reset_desc" data-desc-text="Resets preferences (theme, language, layout, AI provider, search options) to their defaults, then reloads the editor."></div>
+            <button id="btnResetSettings" class="settings-btn settings-btn--danger semantic-btn-clear" type="button" data-i18n="maint_reset_btn" data-i18n-title="tip_reset_settings">Restore all settings…</button>
           </div>
           <details class="settings-details danger-zone">
             <summary data-i18n="maint_dev_group" data-i18n-title="tip_maint_dev_group">Developer reset</summary>
@@ -860,9 +942,9 @@
           </div>
         </div>
       </div>
-      <!-- Back to the top of the page; it stays in view at the bottom right while the page scrolls -->
+      <!-- Go to the end of the page: one button, down at the top and up at the bottom (settingsFacade.js); it stays in view while the page scrolls -->
       <div class="settings-to-top-anchor">
-        <button type="button" id="btnSettingsToTop" class="settings-to-top" data-i18n-title="tip_settings_to_top" data-i18n-aria="tip_settings_to_top" aria-label="Back to the top">
+        <button type="button" id="btnSettingsToTop" class="settings-to-top" data-i18n-title="tip_settings_to_top" data-i18n-aria="tip_settings_to_top" aria-label="Back to the top" hidden>
           <span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>
         </button>
       </div>

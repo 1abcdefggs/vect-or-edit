@@ -45,7 +45,7 @@
         <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_bg_theme">style</span>
         <span class="style-label style-label--bg" style="font-size: var(--fs-12); color: var(--text-main); margin-right: 2px;" data-i18n-title="tip_editor_bg_colors">BG/FG</span>
         <select id="quickEditorToneSelect" data-ui="edt:bg-tone" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 110px;"
-          data-i18n-title="setting_editor_bg">
+          data-option-style="tone" data-i18n-title="setting_editor_bg">
           <!-- The choices (default, eight pairs, custom) are filled by ui/settings/editorTonePicker.js from editor/core/editorTonePairs.js -->
           <option value="default" selected data-i18n="tone_default">Default</option>
         </select>
@@ -56,7 +56,7 @@
         <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_family">text_format</span>
         <div data-ui="edt:font-family" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_family">
           <select id="fontFamilySelect" class="editor-toolbar-select editor-toolbar-select--flat"
-            data-i18n-title="tip_editor_font_family">
+            data-option-style="font-family" data-i18n-title="tip_editor_font_family">
             <option value="'Source Serif 4', 'Noto Serif JP', Georgia, 'Times New Roman', serif"
               data-i18n="font_serif">Source Serif 4</option>
             <option
@@ -73,7 +73,7 @@
         <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); margin-right: 2px; flex-shrink: 0;" data-i18n-title="tip_editor_font_size">format_size</span>
         <div data-ui="edt:font-size" style="display: inline-flex; align-items: center;" data-i18n-title="tip_choose_font_size">
           <select id="fontSizeSelect" class="editor-toolbar-select editor-toolbar-select--flat" style="max-width: 80px;"
-            data-i18n-title="tip_editor_font_size">
+            data-option-style="font-size" data-i18n-title="tip_editor_font_size">
             <!-- The choices are filled by ui/settings/fontSizeOptions.js (presets, plus an own value when one is set) -->
             <option value="16" selected>16px</option>
           </select>
@@ -105,7 +105,7 @@
       <button id="btnEditorAiToggle" class="ai-chip-pill ai-switch-pill" data-ui="edt:ai-toggle"
         role="switch" aria-checked="false" data-i18n-title="tip_editor_ai_toggle">
         <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8); flex-shrink: 0;">cloud</span>
-        <span class="ai-switch-pill__name" data-i18n="ai_tab_llm">LLM</span>
+        <span class="ai-switch-pill__name" data-i18n="editor_ai_label">AI chat</span>
         <span class="toggle-switch-group" aria-hidden="true">
           <span class="toggle-switch-word" data-side="off" data-i18n="opt_toggle_off">OFF</span>
           <span class="toggle-switch"><span class="toggle-switch__knob"></span></span>
@@ -126,7 +126,7 @@
     <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" data-i18n-title="tip_editor_tabs"></div>
     <!-- The view switch for the active document. Always shown; a Text document shows it disabled with the reason beside it (markdownPreview.js) -->
     <button type="button" id="btnMarkdownPreview" data-ui="edt:markdown-preview" class="toolbar-btn markdown-preview-toggle" aria-pressed="false" data-i18n-title="tip_markdown_preview">
-      <span class="material-symbols-outlined">preview</span>
+      <span class="markdown-preview-eye" data-svg-icon="eye" aria-hidden="true"></span>
       <span class="markdown-preview-label" data-i18n="btn_markdown_preview">Preview</span>
       <span class="markdown-preview-reason" data-i18n="preview_unavailable_reason">Text has no preview</span>
     </button>
@@ -155,6 +155,18 @@
           <button type="button" class="format-switch__item" role="menuitemradio" aria-checked="false" data-format="text" data-i18n="format_option_text" data-i18n-title="tip_format_text">Text (.txt)</button>
         </span>
       </span>
+      <span class="status-bar-separator">|</span>
+      <!-- The language of the current document. Pointing at it lists Auto, Japanese and English; Auto decides from the text (documentLanguageControl.js) -->
+      <span class="format-switch">
+        <button type="button" id="btnDocumentLanguage" data-ui="edt:document-language" class="status-bar-item status-bar-button" aria-haspopup="menu" data-i18n-title="doc_lang_title">
+          <span id="statusLanguageLabel">EN</span>
+        </button>
+        <span class="format-switch__menu" role="menu">
+          <button type="button" class="format-switch__item" role="menuitemradio" aria-checked="true" data-language="auto" data-i18n="doc_lang_option_auto" data-i18n-title="tip_doc_lang_auto">Auto</button>
+          <button type="button" class="format-switch__item" role="menuitemradio" aria-checked="false" data-language="ja" data-i18n="doc_lang_option_ja" data-i18n-title="tip_doc_lang_ja">Japanese</button>
+          <button type="button" class="format-switch__item" role="menuitemradio" aria-checked="false" data-language="en" data-i18n="doc_lang_option_en" data-i18n-title="tip_doc_lang_en">English</button>
+        </span>
+      </span>
     </div>
   </div>
 
@@ -162,23 +174,38 @@
   <div id="editorLlmChatDock" data-ui="edt:llm-dock" class="editor-llm-chat-dock" style="display: flex;">
     <div class="llm-dock-header">
       <div class="llm-dock-title" data-i18n-title="tip_llm_dock">
-        <span class="material-symbols-outlined llm-dock-icon" style="color: var(--accent-color, #38bdf8);">cloud</span>
-        <span class="llm-dock-label" data-i18n="llm_chat_dock_title">LLM Chat & Assistant</span>
-        <button id="llmDockModelBadge" class="llm-model-badge llm-model-badge--button" type="button" data-i18n-title="tip_llm_model_badge">Gemini</button>
+        <span class="material-symbols-outlined llm-dock-icon">cloud</span>
+        <span class="llm-dock-label" data-i18n="llm_chat_dock_title">AI Chat</span>
+        <!-- The model in use: a button of the same form as the other header buttons, not a badge -->
+        <button id="btnLlmModel" data-ui="edt:llm-model" class="llm-head-btn llm-model-btn" type="button" data-i18n-title="tip_llm_model">Gemini</button>
       </div>
       <div class="llm-dock-actions">
-        <button id="btnLlmKeyConfig" data-ui="edt:llm-key-config" class="toolbar-btn llm-dock-btn llm-key-btn" data-i18n-title="btn_llm_key_config_title" style="display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); padding: 2px 8px;">
-          <span id="llmKeyStatusIcon" class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">key</span>
+        <button id="btnLlmKeyConfig" data-ui="edt:llm-key-config" class="llm-head-btn llm-key-btn" type="button" data-i18n-title="btn_llm_key_config_title">
+          <span id="llmKeyStatusIcon" class="material-symbols-outlined llm-key-icon">key</span>
           <span data-i18n="setup_ai_key_label">API Key</span>
         </button>
-        <button id="btnLlmClearChat" data-ui="edt:llm-clear-chat" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_clear_chat">
-          <span class="material-symbols-outlined">rotate_left</span>
+        <button id="btnLlmClearChat" data-ui="edt:llm-clear-chat" class="llm-dock-btn" type="button" data-i18n-title="tip_llm_clear_chat">
+          <span class="material-symbols-outlined" data-svg-icon="plus" aria-hidden="true"></span>
         </button>
-        <button id="btnLlmToggleCollapse" data-ui="edt:llm-collapse" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_toggle_dock">
+        <button id="btnLlmExportChat" data-ui="edt:llm-export-chat" class="llm-dock-btn" type="button" data-i18n-title="tip_llm_export_chat">
+          <span class="material-symbols-outlined" data-svg-icon="save"></span>
+        </button>
+        <!-- Moves the chat between its two places (below the editor, right sidebar); writes the same value as the settings row -->
+        <button id="btnLlmMove" data-ui="edt:llm-move" class="llm-dock-btn" type="button" data-i18n-title="tip_llm_move_to_sidebar"></button>
+        <!-- The same switch as the title-bar AI button and the settings row: switching off closes this area -->
+        <button id="btnLlmDockSwitch" data-ui="edt:llm-switch" class="ai-chip-pill ai-switch-pill llm-dock-switch" type="button"
+          role="switch" aria-checked="true" data-i18n-title="tip_llm_dock_switch">
+          <span class="toggle-switch-group" aria-hidden="true">
+            <span class="toggle-switch-word" data-side="off" data-i18n="opt_toggle_off">OFF</span>
+            <span class="toggle-switch"><span class="toggle-switch__knob"></span></span>
+            <span class="toggle-switch-word" data-side="on">ON</span>
+          </span>
+        </button>
+        <button id="btnLlmToggleCollapse" data-ui="edt:llm-collapse" class="llm-dock-btn" type="button" data-i18n-title="tip_llm_toggle_dock">
           <span id="llmCollapseIcon" class="material-symbols-outlined" data-svg-icon="minus"></span>
         </button>
-        <button id="btnLlmCloseChat" data-ui="edt:llm-close" class="toolbar-btn llm-dock-btn" data-i18n-title="tip_llm_close_chat">
-          <span class="material-symbols-outlined">close</span>
+        <button id="btnLlmQuickSettings" data-ui="edt:llm-settings" class="gear-btn gear-btn--md gear-btn--key" type="button" data-i18n-title="tip_goto_settings_ai_chat">
+          <span class="material-symbols-outlined">settings</span>
         </button>
       </div>
     </div>
@@ -198,7 +225,7 @@
         <div class="api-key-input-container" style="flex: 1; display: flex; align-items: center; background: rgba(0, 0, 0, 0.4); border: var(--border-width) solid var(--border-color); border-radius: 6px; padding: 0 4px 0 8px; height: 28px;">
           <input type="password" id="llmQuickApiKeyInput" data-i18n-placeholder="llm_quick_key_placeholder" placeholder="Enter API Key (AIzaSy... / sk-...)" autocomplete="off" spellcheck="false"
             style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-mono, monospace); font-size: var(--fs-12); letter-spacing: 0.5px; height: 100%;" data-i18n-title="tip_api_key_input">
-          <button type="button" id="btnToggleQuickKeyVisibility" class="toolbar-btn" data-i18n="btnToggleQuickKeyVisibilityTitle"
+          <button type="button" id="btnToggleQuickKeyVisibility" class="toolbar-btn"
             style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-muted); padding: 0;" data-i18n-title="tip_toggle_key_visibility">
             <span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">visibility_off</span>
           </button>
@@ -207,7 +234,7 @@
       </div>
     </div>
 
-    <div id="llmChatMessages" class="llm-chat-messages" data-i18n="llm_chat_section">
+    <div id="llmChatMessages" class="llm-chat-messages">
       <div class="llm-msg llm-msg-system">
         <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
         <span data-i18n="llm_chat_welcome">You can chat or refine your text here in conjunction with the writing process at the top of the editor. You can also issue AI instructions directly from within the editor by pressing Ctrl+K.</span>
@@ -220,11 +247,13 @@
     <div class="llm-chat-input-bar">
       <textarea id="llmChatInput" class="llm-chat-input" rows="1" placeholder="Ask LLM or command rewrite (Shift+Enter for newline, Enter to send)..." data-i18n-placeholder="llm_chat_placeholder" data-i18n-title="tip_llm_chat_input"></textarea>
       <div class="llm-chat-controls">
-        <button id="btnLlmSend" class="llm-send-btn" data-i18n-title="tip_llm_send">
-          <span class="material-symbols-outlined">arrow_upward</span>
-          <span data-i18n="btn_send">Send</span>
+        <button id="btnLlmSend" class="llm-send-btn" type="button" data-i18n-title="tip_llm_send">
+          <span class="llm-send-icon" data-svg-icon="arrowUp" aria-hidden="true"></span>
+          <span id="llmSendLabel" data-i18n="btn_send">Send</span>
         </button>
       </div>
+      <!-- Where the text goes: the cloud service and model that receive the next message -->
+      <div id="llmChatDestination" class="llm-chat-destination"></div>
     </div>
   </div>
 
