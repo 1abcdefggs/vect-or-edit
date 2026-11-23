@@ -117,6 +117,8 @@ function openMenu(select: HTMLSelectElement): void {
   const menu = document.createElement('div');
   menu.className = MENU_CLASS;
   menu.setAttribute('role', 'listbox');
+  // A select can ask for a variant of the list (for example a larger text size) through data-menu-class
+  if (select.dataset.menuClass) menu.classList.add(select.dataset.menuClass);
 
   const items: HTMLButtonElement[] = [];
   Array.from(select.options).forEach((option, index) => {

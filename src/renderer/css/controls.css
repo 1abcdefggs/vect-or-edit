@@ -137,7 +137,13 @@
   border-radius: var(--radius-sm, 4px);
 }
 
-.ui-select-option.is-active {
+.ui-select-menu--lg .ui-select-option {
+  height: var(--control-h-lg);
+  font-size: var(--fs-16);
+}
+
+/* The selected item keeps its own surface (selection.css); the hover tint is only for the others */
+.ui-select-option.is-active:not(.is-selected) {
   background: var(--hover-bg, rgba(255, 255, 255, 0.08));
 }
 

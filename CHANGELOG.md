@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.91] - 2026-11-23
+
+### Added
+- Select menu: a select can ask for a larger list through data-menu-class (ui-select-menu--lg, 16px text)
+
+### Fixed
+- Select menu: the selected item keeps its own surface when it is also the active item, so its light text is no longer shown on a pale background
+
 ## [0.3.90] - 2026-11-23
 
 ### Changed
