@@ -7,8 +7,9 @@
  * Pure functions only (no DOM), so the boundary values can be tested directly.
  */
 
-/** The 22 colour keys of a theme file, in the order the GitHub theme uses. */
+/** The 23 colour keys of a theme file, in the order the GitHub theme uses. */
 export const THEME_COLOR_KEYS = [
+  'terminal.ansiGreen',
   'editor.foreground',
   'editor.background',
   'editor.selectionBackground',
@@ -86,7 +87,7 @@ export function readableOn(hex) {
  *
  * Every other colour is a mix of these, so a theme built from two colours is complete and readable.
  */
-export function buildThemeFromPalette({ base = 'vs-dark', background, foreground, accent = SKELETON_ACCENT }) {
+export function buildThemeFromPalette({ base = 'vs-dark', background, foreground, accent = SKELETON_ACCENT, success = '#2e7d32' }) {
   const bg = background;
   const fg = foreground;
   const isLight = base === 'vs';
@@ -95,6 +96,7 @@ export function buildThemeFromPalette({ base = 'vs-dark', background, foreground
   const header = isLight ? panel : mixColors(bg, '#000000', 0.3);
 
   const colors = {
+    'terminal.ansiGreen': success,
     'editor.foreground': fg,
     'editor.background': bg,
     'editor.selectionBackground': mixColors(bg, accent, 0.35),

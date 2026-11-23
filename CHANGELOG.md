@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.81] - 2026-11-23
+
+### Changed
+- Success colour (log OK, status) follows the theme through `terminal.ansiGreen`; it is used only when its contrast on the editor background is at least 4.5:1, otherwise the default stays
+
+### Fixed
+- Markdown headings in the Solarized light, Monokai dark, GitHub dark and Tukune light themes reach 4.5:1 on the editor background (keyword.md rules added)
+- Tukune light accent colour is #255393, 3.24:1 against the title bar, up from a lower contrast
+
 ## [0.3.80] - 2026-11-23
 
 ### Added

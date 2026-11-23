@@ -39,6 +39,10 @@
       "token": "keyword"
     },
     {
+      "foreground": "687700",
+      "token": "keyword.md"
+    },
+    {
       "foreground": "073642",
       "fontStyle": "bold",
       "token": "storage"
@@ -1067,6 +1071,7 @@
     }
   ],
   "colors": {
+    "terminal.ansiGreen": "#208140",
     "editor.foreground": "#586E75",
     "editor.background": "#FDF6E3",
     "editor.selectionBackground": "#EEE8D5",

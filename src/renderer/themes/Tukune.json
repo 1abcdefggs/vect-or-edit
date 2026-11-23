@@ -24,6 +24,10 @@
       "token": "keyword"
     },
     {
+      "foreground": "1f4f8a",
+      "token": "keyword.md"
+    },
+    {
       "foreground": "111111",
       "fontStyle": "bold",
       "token": "entity.name"
@@ -38,6 +42,7 @@
     }
   ],
   "colors": {
+    "terminal.ansiGreen": "#1d743a",
     "editor.background": "#e5e5e5",
     "editor.foreground": "#111111",
     "editor.selectionBackground": "#FFE200",
@@ -56,7 +61,7 @@
     "titleBar.activeBackground": "#87abdb",
     "editorWidget.background": "#f4f4f4",
     "editorGroup.border": "#c8c8c8",
-    "button.background": "#87abdb",
+    "button.background": "#255393",
     "button.foreground": "#ffffff",
     "dropdown.background": "#f4f4f4",
     "dropdown.foreground": "#111111"

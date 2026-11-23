@@ -55,6 +55,10 @@
       "token": "keyword"
     },
     {
+      "foreground": "ed616f",
+      "token": "keyword.md"
+    },
+    {
       "foreground": "ea4a5a",
       "token": "storage"
     },
@@ -334,6 +338,7 @@
     }
   ],
   "colors": {
+    "terminal.ansiGreen": "#29a352",
     "editor.foreground": "#f6f8fa",
     "editor.background": "#24292e",
     "editor.selectionBackground": "#4c2889",
