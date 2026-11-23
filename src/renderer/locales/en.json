@@ -1840,5 +1840,6 @@
   "tip_settings_search_guide": "Also search the guide text of each tab",
   "tooltip_width_short": "Short (2 lines)",
   "tooltip_width_long": "Long",
-  "tip_set_tooltip_width": "Choose the line length of the tooltips"
+  "tip_set_tooltip_width": "Choose the line length of the tooltips",
+  "model_menu_checked": "Fixed list, checked {date}"
 }

@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.83] - 2026-11-23
+
+### Added
+- Chat: the model button opens a quick menu of the model in use (OpenAI and Claude: their fixed lists; Gemini: the fetched list)
+- Chat placement: below the editor (default) or as a sidebar tab, set in Settings, by the chat header move button, or from the AI button menu
+- Chat: the Send button becomes Stop while a reply is awaited; a line under the input names the service and model
+- Chat: a save button writes the conversation to a Markdown file
+- Chat: the fixed model lists show the date they were last checked, as an English date
+
+### Changed
+- The AI chat switch in Settings is locked while no provider or key is set, with the missing step named in the text
+
+## [0.3.82] - 2026-11-23
+
+### Added
+- Instant tooltip: an on/off switch, the gap to the pointer (near, standard, far) and the line length (short, long)
+- The zoom hint has 10% step buttons for zooming in and out
+
+### Changed
+- The zoom popup stays in place while the page zooms: it is anchored where the gesture starts
+- The header collapse button uses the chevrons icon and the title "Collapse title bar"
+
+## [0.3.81] - 2026-11-23
+
+### Changed
+- Success colour (log OK, status) follows the theme through `terminal.ansiGreen`; it is used only when its contrast on the editor background is at least 4.5:1, otherwise the default stays
+
+### Fixed
+- Markdown headings in the Solarized light, Monokai dark, GitHub dark and Tukune light themes reach 4.5:1 on the editor background (keyword.md rules added)
+- Tukune light accent colour is #255393, 3.24:1 against the title bar, up from a lower contrast
+
+## [0.3.80] - 2026-11-23
+
+### Added
+- Icon definitions for the editor options, the chat and the panel toggles (eye, chevrons, stop, panel layouts, arrow up) in the icon set
+
+### Changed
+- Module card icons share one size token (`--icon-size-ui`, 18px) instead of three separate font sizes
+
 ## [0.3.79] - 2026-11-23
 
 ### Added

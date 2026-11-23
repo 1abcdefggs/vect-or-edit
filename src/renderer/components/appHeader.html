@@ -48,7 +48,7 @@
       </div>
 
       <!-- About: a plain button beside Help (no dropdown), it opens the About dialog -->
-      <button class="menu-bar-btn btn-phi" id="menuBtnAbout" type="button" data-command="help.about"
+      <button class="menu-bar-btn btn-phi" id="menuBtnAbout" type="button" data-command="help.about" data-ui="hdr:menu-about"
         data-i18n="menu_about" data-i18n-title="tip_menu_about">About</button>
 
       <!-- Overflow: the menus that do not fit are moved into this panel (menuBarController.ts fitMenuBar) -->
@@ -88,16 +88,16 @@
     <span class="header-control-divider" aria-hidden="true"></span>
 
     <!-- Zoom / UI Scaling Relative Adjustment (Mouse Wheel, Click Reset) -->
-    <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select" data-i18n-title="tip_header_zoom">
+    <div id="headerZoomBadge" class="app-header__zoom-group header-zoom-group" data-ui="hdr:zoom-select" data-tip-exempt="hover hint on this control explains it">
       <span class="material-symbols-outlined header-zoom-icon">zoom_in</span>
       <span id="headerZoomPercent" class="header-zoom-text">100%</span>
       <!-- Hover hint: bold arrows say the wheel zooms in (up) and out (down). The label stays English (style_rules.csv zoom-label) -->
       <span class="header-zoom-hint" aria-hidden="true">
-        <span class="material-symbols-outlined header-zoom-hint__arrow">arrow_upward</span>
         <span class="header-zoom-hint__label"><span class="material-symbols-outlined">search</span><span data-i18n="header_zoom_hint">Zoom</span></span>
+        <button type="button" class="header-zoom-step" data-zoom-step="0.1" tabindex="-1" data-tip-exempt="the hint shows the step" data-i18n-aria="tip_zoom_in"><span class="material-symbols-outlined header-zoom-hint__arrow">arrow_upward</span></button>
         <input id="headerZoomSlider" class="header-zoom-slider" type="range" min="0.5" max="3" step="0.1" value="1"
           data-i18n-title="tip_header_zoom_slider" aria-hidden="true" tabindex="-1">
-        <span class="material-symbols-outlined header-zoom-hint__arrow">arrow_downward</span>
+        <button type="button" class="header-zoom-step" data-zoom-step="-0.1" tabindex="-1" data-tip-exempt="the hint shows the step" data-i18n-aria="tip_zoom_out"><span class="material-symbols-outlined header-zoom-hint__arrow">arrow_downward</span></button>
       </span>
     </div>
     </div>
@@ -109,9 +109,9 @@
     </button>
 
     <!-- Minimize toggle: collapses the header to a thin strip (headerMinimize.ts) -->
-    <button id="btnHeaderMinimize" class="gear-btn gear-btn--md" type="button" data-i18n-title="tip_header_minimize"
+    <button id="btnHeaderMinimize" class="gear-btn gear-btn--md" type="button" data-i18n-title="tip_header_collapse"
       data-ui="hdr:minimize" aria-expanded="true">
-      <span class="material-symbols-outlined" data-svg-icon="minus"></span>
+      <span class="material-symbols-outlined" data-svg-icon="chevronsLeft"></span>
     </button>
   </div>
 </header>

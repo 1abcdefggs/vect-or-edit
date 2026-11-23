@@ -98,6 +98,7 @@ export function createModelList(container, { columns, sorts, onUse, noticeKeys =
   search.type = 'search';
   search.placeholder = t('model_list_search');
   search.setAttribute('aria-label', t('model_list_search'));
+  // The search box and the expand button take their words at build time; the language change writes them again (see below)
   search.addEventListener('input', () => { state.query = search.value; redraw(); });
   const sortRow = el('div', 'ep-chips');
   const columnRow = el('div', 'ep-chips');
@@ -624,4 +625,23 @@ export function createModelList(container, { columns, sorts, onUse, noticeKeys =
       revealActive();
     }
   };
+}
+
+// The search box and the expand button take their words when a list is built; this writes them again on a language change
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:languageChanged', () => {
+    document.querySelectorAll('.model-list').forEach((root) => {
+      const search = root.querySelector('.ep-search');
+      if (search) {
+        search.placeholder = t('model_list_search');
+        search.setAttribute('aria-label', t('model_list_search'));
+      }
+      const expand = root.querySelector('.ml-expand');
+      if (expand) {
+        const label = t(root.classList.contains('is-expanded') ? 'model_list_collapse' : 'model_list_expand');
+        expand.title = label;
+        expand.setAttribute('aria-label', label);
+      }
+    });
+  });
 }

@@ -23,6 +23,8 @@
      The icon is 86% of the box (target 80-90%): 24 / 28. */
   --icon-btn-size: 28px;
   --icon-size: 24px;
+  /* Sidebar and card icons (one size for every module header) */
+  --icon-size-ui: 18px;
   /* Icons that sit beside text (labels, menus, status pills): one size for all of them */
   --icon-text-size: var(--fs-18);
   /* Button padding from the font size alone (golden ratio, em based): vertical 1/phi^3, horizontal 1/phi.

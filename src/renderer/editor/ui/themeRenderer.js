@@ -3,6 +3,7 @@
  */
 import { mixColors, contrastRatio, readableOn, SKELETON_ACCENT } from '../core/themeSkeleton.js';
 import { TINT_ALPHA, deriveTextColours } from '../core/derivedColors.js';
+import { markColourFor } from '../core/markColour.js';
 
 function rgbaOf(hex, alpha) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -31,6 +32,9 @@ function applyDerivedColors(theme, setVar) {
   setVar('--accent-hover', mixColors(accent, '#000000', 0.15));
   setVar('--text-on-accent', readableOn(accent));
   setVar('--item-code-text', derived.itemCodeText);
+  // The settings mark (gear, outline): the accent's inverse, lightened only as far as 3:1 needs on the backgrounds it sits on
+  const headerBg = sanitizeHexColor(colors['titleBar.activeBackground'], panel);
+  setVar('--settings-key-fg-inverse', markColourFor(accent, [headerBg, bg, panel]));
 
   // Muted text and control outline: kept only when they meet the contrast limit
   const muted = mixColors(fg, bg, 0.25);
@@ -46,6 +50,10 @@ function applyDerivedColors(theme, setVar) {
   setVar('--log-msg', fg);
   setVar('--log-time', derived.logMuted);
   setVar('--log-source', derived.logMuted);
+  // Success text (the OK line) takes the theme's green when it meets the contrast limit on the log body;
+  // otherwise the stylesheet's mode default applies
+  const success = sanitizeHexColor(colors['terminal.ansiGreen'], '');
+  if (success && contrastRatio(success, bg) >= 4.5) setVar('--success-color', success);
 
   // Shared tints: the theme's text or accent colour at the mode's alpha
   setVar('--hover-bg', rgbaOf(fg, alpha.hover));

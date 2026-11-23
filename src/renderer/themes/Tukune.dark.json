@@ -163,6 +163,7 @@
     }
   ],
   "colors": {
+    "terminal.ansiGreen": "#29a352",
     "editor.foreground": "#ece8e1",
     "editor.background": "#1f1d1a",
     "editor.selectionBackground": "#6b5d00",
