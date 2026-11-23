@@ -56,7 +56,9 @@ export function fillToneSelect(select, defaultKey = 'tone_default') {
     const group = document.createElement('optgroup');
     group.label = familyName(family);
     TONE_PAIRS.filter((pair) => pair.family === family).forEach((pair) => {
-      const option = new Option(t('tone_option', { family: familyName(family), label: toneLabel(pair) }), pair.key);
+      // The toolbar list is read in English in every language: family, the two levels and the text-on-background ratio
+      const ratio = contrastRatio(pair.bg, pair.fg).toFixed(1);
+      const option = new Option(t('tone_option', { family: t(`tone_short_${family}`), bg: t(`tone_short_${pair.bgLevel}`), fg: t(`tone_short_${pair.fgLevel}`), ratio }), pair.key);
       group.append(option);
     });
     return group;

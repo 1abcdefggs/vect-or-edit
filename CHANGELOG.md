@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.94] - 2026-11-23
+
+### Changed
+- Minimap: on by default, as in Monaco, so the "Default: true" shown in Editor Options and the value a reset returns to agree; saved values are kept
+- Editor colour list in the toolbar: each entry reads in English in every language and shows the text-on-background contrast ratio ("Dark  BG soft  FG soft  8.9:1")
+
+### Fixed
+- Editor colour pairs now apply: the Monaco theme name no longer contains underscores, which Monaco rejects ("Illegal theme name")
+- A failed colour pair is logged to the console instead of being swallowed
+
 ## [0.3.93] - 2026-11-23
 
 ### Changed

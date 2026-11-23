@@ -37,7 +37,10 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
       if (typeof window !== 'undefined') window.monaco = monaco;
     } catch (_) {}
   }
-  if (!monaco || !monaco.editor) return;
+  if (!monaco || !monaco.editor) {
+    console.warn('[Tone] Monaco is not loaded, so the canvas tone was not applied');
+    return;
+  }
 
   const currentTone = tone || readStorage(STORAGE_KEYS.EDITOR_BG_TONE) || 'default';
 
@@ -69,7 +72,8 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
         document.documentElement.style.setProperty('--editor-fg', fg);
         window.dispatchEvent(new CustomEvent('app:editorToneChanged', { detail: { tone: 'custom', bg, fg, isDark } }));
       }
-    } catch (_) {
+    } catch (err) {
+      console.warn('[Tone] Could not apply the custom canvas colours:', err);
       safeSetMonacoTheme('vs-dark', isDark ? 'vs-dark' : 'vs');
     }
     return;
@@ -81,7 +85,8 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
   }
 
   const toneConfig = TONE_COLORS[currentTone];
-  const customThemeName = `custom-tone-${currentTone}`;
+  // Monaco accepts only letters, digits and hyphens in a theme name; the tone keys contain underscores (light_soft_crisp)
+  const customThemeName = `custom-tone-${currentTone.replace(/[^a-zA-Z0-9-]/g, '-')}`;
 
   try {
     monaco.editor.defineTheme(customThemeName, {
@@ -105,7 +110,8 @@ export async function applyEditorCanvasTone(tone, customBg = null, customFg = nu
         detail: { tone: currentTone, bg: toneConfig.bg, fg: toneConfig.fg, isDark: toneConfig.isDark }
       }));
     }
-  } catch (_) {
+  } catch (err) {
+    console.warn(`[Tone] Could not apply the canvas tone "${currentTone}":`, err);
     safeSetMonacoTheme('vs-dark', toneConfig.isDark ? 'vs-dark' : 'vs');
   }
 }

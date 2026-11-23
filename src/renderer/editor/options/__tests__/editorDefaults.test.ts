@@ -19,7 +19,7 @@ describe('EDITOR_DEFAULTS (first-run Monaco defaults)', () => {
       wordWrap: 'on',
       fontSize: 16,
       lineHeight: 1.8,
-      minimap: { enabled: false },
+      minimap: { enabled: true },
       lineNumbers: 'on',
       folding: true,
       renderWhitespace: 'none',
@@ -65,12 +65,12 @@ describe('buildMonacoBaseOptions', () => {
 
   it('returns fresh nested objects so callers cannot change the defaults', () => {
     const a = buildMonacoBaseOptions(runtime) as any;
-    a.minimap.enabled = true;
+    a.minimap.enabled = false;
     a.unicodeHighlight.nonBasicASCII = true;
     const b = buildMonacoBaseOptions(runtime) as any;
-    expect(b.minimap.enabled).toBe(false);
+    expect(b.minimap.enabled).toBe(true);
     expect(b.unicodeHighlight.nonBasicASCII).toBe(false);
-    expect(EDITOR_DEFAULTS.minimap.enabled).toBe(false);
+    expect(EDITOR_DEFAULTS.minimap.enabled).toBe(true);
   });
 });
 
