@@ -1,5 +1,6 @@
 import { readStorage } from '../../core/storage.js';
 import { icons } from '../../core/icons.js';
+import { t } from '../../core/i18n';
 
 const STORAGE_KEY = 'header_minimized';
 const HEADER_SELECTOR = '.app-header';
@@ -30,11 +31,16 @@ export function initHeaderMinimize(): void {
 
   const apply = (minimized: boolean) => {
     header.classList.toggle('app-header--minimized', minimized);
-    if (icon) icon.innerHTML = minimized ? icons.unfold : icons.minus;
+    if (icon) icon.innerHTML = minimized ? icons.chevronsRight : icons.chevronsLeft;
+    // The tooltip names what a click does now; the key is kept on the button so a language change redraws the right one
+    const tipKey = minimized ? 'tip_header_expand' : 'tip_header_collapse';
+    button.setAttribute('data-i18n-title', tipKey);
+    button.title = t(tipKey);
     button.setAttribute('aria-expanded', String(!minimized));
   };
 
   apply(readMinimized());
+  window.addEventListener('app:languageChanged', () => apply(header.classList.contains('app-header--minimized')));
 
   button.addEventListener('click', () => {
     const minimized = !header.classList.contains('app-header--minimized');

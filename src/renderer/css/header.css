@@ -110,7 +110,7 @@
   background: var(--tooltip-bg, #f1f5f9);
   color: var(--tooltip-fg, #0f172a);
   padding: 10px 14px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: var(--fs-16);
   line-height: 1.5;
   white-space: pre-wrap;
@@ -119,9 +119,35 @@
   border: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   min-width: 200px;
-  /* --wrap-width: 75 half-width characters per line (ADR-11); the text wraps and stays left-aligned */
-  max-width: min(var(--wrap-width, 75ch), calc(100vw - 16px));
+  /* Short text stays on one line; longer text wraps at --wrap-width (set by ui/tooltips/tooltipWidth.js, default 22em) */
+  width: max-content;
+  max-width: min(var(--wrap-width, 22em), calc(100vw - 16px));
+  text-wrap: balance; /* two lines of similar length */
+  overflow-wrap: break-word;
   text-align: left;
+}
+
+/* Speech-bubble tail: a rotated square on the edge facing the pointer, in the same colours as the box */
+.instant-tooltip::before {
+  content: '';
+  position: absolute;
+  left: var(--tail-x, 12px);
+  top: -6px;
+  width: 10px;
+  height: 10px;
+  background: var(--tooltip-bg, #f1f5f9);
+  border: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
+  border-right: 0;
+  border-bottom: 0;
+  transform: translateX(-50%) rotate(45deg);
+}
+.instant-tooltip[data-side="above"]::before {
+  top: auto;
+  bottom: -6px;
+  border-top: 0;
+  border-left: 0;
+  border-right: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
+  border-bottom: 1px solid var(--tooltip-border, rgba(56, 189, 248, 0.4));
 }
 
 /* ==========================================================================

@@ -112,7 +112,7 @@
 /* Gear look lives in controls.css (.gear-btn); this keeps the header gear lit while the settings modal is open */
 #settingsModal:not([style*='display: none']) ~ * .settings-icon,
 .modal-backdrop:not([style*='display: none']) ~ * .settings-icon {
-  color: #fbbf24 !important;
+  color: var(--settings-key-fg) !important;
 }
 
 /* Zoom badge: the mouse wheel changes the zoom, a click resets it to 100%.
@@ -178,6 +178,18 @@
   background: color-mix(in srgb, var(--accent-color, #38bdf8) 10%, transparent);
   border-color: color-mix(in srgb, var(--accent-color, #38bdf8) 40%, transparent);
 }
+/* 10% step buttons on the hover meter: the arrows are clickable */
+.header-zoom-step {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  line-height: 0;
+}
+.header-zoom-step:hover { color: var(--text-main); }
 .header-zoom-hint__arrow {
   font-size: var(--fs-18);
   font-variation-settings: 'wght' 700;
@@ -227,11 +239,21 @@
   background: color-mix(in srgb, var(--accent-color, #38bdf8) 24%, transparent);
 }
 
-/* Zoom slider in the zoom hint: the hint itself ignores the pointer, the slider takes it (drag to set the scale) */
+/* Zoom slider in the zoom hint: the hint itself ignores the pointer, the slider takes it (drag to set the scale).
+   Vertical, between the up and down arrows: max at the top, so up = bigger on every input of the badge. */
 .header-zoom-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
   pointer-events: auto;
-  width: 120px;
+  width: 16px;
+  height: 120px;
   margin: 2px 0;
   cursor: pointer;
   accent-color: var(--accent-color, #38bdf8);
+}
+
+/* While a zoom gesture runs, the popup is held at its screen position (zoomController.ts holdHint / placeHint) */
+.header-zoom-hint.is-held {
+  position: fixed;
+  transform-origin: 0 0;
 }

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.82] - 2026-11-23
+
+### Added
+- Instant tooltip: an on/off switch, the gap to the pointer (near, standard, far) and the line length (short, long)
+- The zoom hint has 10% step buttons for zooming in and out
+
+### Changed
+- The zoom popup stays in place while the page zooms: it is anchored where the gesture starts
+- The header collapse button uses the chevrons icon and the title "Collapse title bar"
+
 ## [0.3.81] - 2026-11-23
 
 ### Changed
