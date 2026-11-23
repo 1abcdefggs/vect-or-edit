@@ -114,11 +114,14 @@
   box-shadow: 0 0 0 1px var(--accent-color);
 }
 
+/* Same size and gap as the heading counts, so the cells line up with them */
 .monaco-options-count {
-  white-space: pre;
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
   padding-right: 11px;
-  font-size: var(--fs-16);
+  font-size: var(--fs-18);
+  font-variant-numeric: tabular-nums;
   color: var(--text-muted);
 }
 
@@ -357,20 +360,22 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visib
   font-variant-numeric: tabular-nums;
 }
 
-.mo-group-changed,
-.mo-group-items {
-  display: inline-block;
-  text-align: right;
+/* Fixed columns; the label (top line only) sits at the left of a cell, the number at the right */
+.mo-count-cell {
+  display: inline-flex;
+  justify-content: space-between;
+  gap: 6px;
+  white-space: nowrap;
 }
 
-.mo-group-changed {
-  min-width: 5.5em;
+.mo-count-num { margin-left: auto; } /* a cell with no label still puts its number at the right */
+
+.mo-count-items { min-width: 5.5em; }
+
+.mo-count-changed {
+  min-width: 4.5em;
   color: var(--text-main);
   font-weight: 600;
-}
-
-.mo-group-items {
-  min-width: 8em;
 }
 
 /* The × that leaves Editor Options mode: only in the mode (the header ignores the pointer there, so the button opts back in) */
