@@ -1148,9 +1148,9 @@
    1
   ],
   "semanticHighlighting.enabled": [
-   "managed",
-   "managed",
-   0
+   "display",
+   "rendering",
+   1
   ],
   "find.cursorMoveOnType": [
    "find",

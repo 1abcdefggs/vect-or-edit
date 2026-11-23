@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.92] - 2026-11-23
+
+### Added
+- Editor Options: a "Show changed only" toggle with a filter icon beside the search, which lists only the options that were changed
+- Editor Options: semanticHighlighting.enabled is editable again as a three-way choice (a flat dotted option name is no longer split into a nested path)
+
+### Changed
+- Editor Options: the header is its own area (left aligned, tinted, framed down both sides and along the bottom), and the intro text is shorter
+- Editor Options: names, descriptions, the search box, the count line and the controls use 16px text; the search box takes the settings page style
+- Editor Options: each row shows what the option does first, then its name, with the default under the value column; values sit in one fixed-width column
+- Editor Options: counts read name first ("Options 80", "Changed 5"); "shown / all" appears only while a filter hides options
+- Editor Options: rows are indented under the heading text, and a value equal to its default is no longer stored as a change
+
+### Removed
+- Editor Options: the options the app fixes and the ones one input cannot express (14 entries, the "Managed by the app" group) are no longer listed
+
 ## [0.3.91] - 2026-11-23
 
 ### Added

@@ -194,9 +194,12 @@
     </div>
     <div id="monacoOptionsBody" class="semantic-module-body monaco-options-body">
       <p class="monaco-options-intro" data-i18n="monaco_opts_intro">This editor is Monaco. You can change its options here.</p>
-      <div class="monaco-options-search-wrap">
-        <span class="material-symbols-outlined monaco-options-search-icon" aria-hidden="true">search</span>
-        <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
+      <div class="monaco-options-search-row">
+        <div class="monaco-options-search-wrap">
+          <span class="material-symbols-outlined monaco-options-search-icon" aria-hidden="true">search</span>
+          <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
+        </div>
+        <button type="button" id="btnMonacoOptionsChangedOnly" class="monaco-options-filter" aria-pressed="false" data-i18n-title="tip_monaco_opts_changed_only"><span class="material-symbols-outlined monaco-options-filter-icon" data-svg-icon="filter" aria-hidden="true"></span><span data-i18n="monaco_opts_changed_only">Show changed only</span></button>
       </div>
       <div id="monacoOptionsCount" class="monaco-options-count" role="status" aria-live="polite"></div>
       <div id="monacoOptionsList" class="monaco-options-list"></div>

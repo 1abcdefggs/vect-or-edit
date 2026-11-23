@@ -42,17 +42,55 @@
   outline-offset: 1px;
 }
 
+.monaco-options-search-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
 .monaco-options-search-wrap {
   position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
 }
+
+/* Filter toggle next to the search: pressed = only the changed options; the selected state comes from selection.css tokens */
+.monaco-options-filter {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--control-h-lg);
+  padding: 0 12px;
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  font-size: var(--fs-16);
+  cursor: pointer;
+}
+.monaco-options-filter-icon {
+  display: inline-flex;
+  font-size: var(--fs-16);
+}
+.monaco-options-filter[aria-pressed="true"] {
+  background: var(--sel-surface);
+  color: var(--sel-on-surface);
+  border-color: var(--sel-edge);
+}
+.monaco-options-filter:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.monaco-options-filter:focus-visible { outline: 2px solid var(--accent-color, #38bdf8); outline-offset: 2px; }
 
 /* The magnifier sits inside the left edge of the box; the text starts after it */
 .monaco-options-search-icon {
   position: absolute;
-  left: 7px;
+  left: 9px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: var(--fs-14);
+  font-size: var(--fs-18);
   color: var(--text-muted);
   pointer-events: none;
 }
@@ -60,17 +98,27 @@
 .monaco-options-search {
   width: 100%;
   box-sizing: border-box;
-  height: 26px;
-  padding: 0 8px 0 28px;
-  background: var(--bg-secondary);
+  height: var(--control-h-lg);
+  padding: 0 8px 0 36px;
+  background: var(--bg-primary);
   color: var(--text-main);
-  border: var(--border-width) solid var(--border-color);
-  border-radius: 4px;
-  font-size: var(--fs-12);
+  /* Accent frame at rest, like the settings page search */
+  border: var(--border-width) solid var(--accent-color);
+  border-radius: 6px;
+  font-size: var(--fs-18);
+}
+
+.monaco-options-search::placeholder { color: var(--text-muted); opacity: 1; }
+.monaco-options-search:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--accent-color);
 }
 
 .monaco-options-count {
-  font-size: var(--fs-11);
+  white-space: pre;
+  text-align: right;
+  padding-right: 11px;
+  font-size: var(--fs-16);
   color: var(--text-muted);
 }
 
@@ -117,7 +165,7 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 2px 8px;
   align-items: center;
-  padding: 6px 8px;
+  padding: 6px 10px 6px 30px;
   border-top: var(--border-width) solid var(--border-color);
 }
 
@@ -130,9 +178,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  grid-column: 1;
+  grid-row: 2;
   font-family: var(--font-mono, monospace);
-  font-size: var(--fs-12);
-  color: var(--text-main);
+  font-size: var(--fs-16);
+  color: var(--text-muted);
 }
 
 .mo-side {
@@ -140,18 +190,24 @@
   align-items: center;
   gap: 4px;
   justify-self: end;
+  justify-content: flex-start;
+  width: 200px;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .mo-control {
   display: flex;
   align-items: center;
+  width: 160px;
 }
 
 .mo-desc {
-  grid-column: 1 / -1;
-  font-size: var(--fs-11);
+  grid-column: 1;
+  grid-row: 1;
+  font-size: var(--fs-16);
   line-height: 1.4;
-  color: var(--text-muted);
+  color: var(--text-main);
   overflow-wrap: anywhere;
 }
 
@@ -166,21 +222,27 @@
 }
 
 .mo-default {
-  margin-left: 6px;
-  opacity: 0.8;
+  grid-column: 2;
+  grid-row: 2;
+  width: 200px;
+  justify-self: end;
+  font-size: var(--fs-14);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
 }
 
 .mo-select,
 .mo-input {
-  max-width: 130px;
-  height: 24px;
+  width: 100%;
+  max-width: 160px;
+  height: var(--control-h-md);
   box-sizing: border-box;
   padding: 0 6px;
   background: var(--bg-secondary);
   color: var(--text-main);
   border: var(--border-width) solid var(--border-color);
   border-radius: 4px;
-  font-size: var(--fs-12);
+  font-size: var(--fs-16);
 }
 
 .mo-input.invalid {
@@ -242,6 +304,28 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-toggle {
   display: none;
 }
 
+/* The header is its own area: title at the left (it takes the free width, the buttons sit at the right), tinted with the accent */
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-header {
+  justify-content: flex-start;
+  background: var(--mo-frame);
+  border: var(--border-width) solid var(--mo-frame);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+/* The body carries on the header's frame down both sides and along the bottom, in the header's own colour */
+body.sidebar-options-mode #monacoOptionsCard {
+  --mo-frame: color-mix(in srgb, var(--accent-color) 18%, var(--bg-primary));
+}
+body.sidebar-options-mode #monacoOptionsCard .monaco-options-body {
+  border: var(--border-width) solid var(--mo-frame);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+}
+body.sidebar-options-mode #monacoOptionsCard .semantic-module-title {
+  flex: 1 1 auto;
+  font-size: var(--fs-18) !important;
+}
+
 /* The line under the header separates it from the results list; in this mode there is no list below it */
 body.sidebar-options-mode .sidebar-header {
   border-bottom: none;
@@ -255,9 +339,9 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visib
 /* A line above the search box: the editor is Monaco and its options are set here */
 .monaco-options-intro {
   margin: 0 0 var(--spacing-sm);
-  font-size: var(--fs-12);
+  font-size: var(--fs-16);
   line-height: 1.5;
-  color: var(--text-muted);
+  color: var(--text-main);
 }
 
 /* The number of items of a group, at the right end of its heading: shown / all, in the same form as the total above the list.
@@ -273,16 +357,20 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visib
   font-variant-numeric: tabular-nums;
 }
 
-.mo-group-num {
+.mo-group-changed,
+.mo-group-items {
   display: inline-block;
-  min-width: 3ch;
   text-align: right;
 }
 
 .mo-group-changed {
-  margin-right: 6px;
+  min-width: 5.5em;
   color: var(--text-main);
   font-weight: 600;
+}
+
+.mo-group-items {
+  min-width: 8em;
 }
 
 /* The × that leaves Editor Options mode: only in the mode (the header ignores the pointer there, so the button opts back in) */
@@ -315,14 +403,20 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visib
 }
 
 .mo-sub-title {
-  padding-left: 18px;
+  padding-left: 28px;
   font-size: var(--fs-18);
   font-weight: 500;
 }
 
 .mo-rare-title {
-  padding-left: 18px;
+  padding-left: 28px;
   font-size: var(--fs-18);
   font-weight: 400;
   color: var(--text-muted);
+}
+
+/* Rows inside a sub-heading sit one step deeper than the sub-heading text */
+.mo-sub .mo-row,
+.mo-rare .mo-row {
+  padding-left: 50px;
 }

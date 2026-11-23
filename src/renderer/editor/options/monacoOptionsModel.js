@@ -28,6 +28,17 @@ export const REQUIRED_BY_APP = new Set([
   'theme'
 ]);
 
+/**
+ * Options whose own name contains a dot. Monaco reads them as one flat key, so they are not split into a nested path
+ * ({'semanticHighlighting.enabled': true}, never {semanticHighlighting: {enabled: true}}).
+ */
+const FLAT_DOTTED_NAMES = new Set(['semanticHighlighting.enabled']);
+
+/** [top, member] of a control path; a flat dotted option name stays whole with no member. */
+function splitPath(path) {
+  return FLAT_DOTTED_NAMES.has(path) ? [path, undefined] : path.split('.');
+}
+
 export const LOCK_SETTINGS = 'settings';
 export const LOCK_APP = 'app';
 export const LOCK_UNSUPPORTED = 'unsupported';
@@ -117,13 +128,13 @@ function makeControl(path, def, topName, layout) {
   const kind = controlKind(def);
   const choices = kind === 'enum' ? choicesOf(def) : [];
   let lock = lockOf(path);
-  // A dot inside the option's own name (e.g. "semanticHighlighting.enabled") would be read as a nested path;
-  // the members of readOnlyMessage describe a Markdown string, which one input cannot express
-  if (!lock && (kind === 'unsupported' || topName.includes('.') || topName === 'readOnlyMessage')) lock = LOCK_UNSUPPORTED;
+  // The members of readOnlyMessage describe a Markdown string, which one input cannot express.
+  // A dotted option name that is not a known flat one would be read as a nested path, so it stays locked
+  if (!lock && (kind === 'unsupported' || (topName.includes('.') && !FLAT_DOTTED_NAMES.has(topName)) || topName === 'readOnlyMessage')) lock = LOCK_UNSUPPORTED;
   return {
     path,
     name: topName,
-    member: path.includes('.') ? path.slice(topName.length + 1) : null,
+    member: path === topName ? null : path.slice(topName.length + 1),
     ...placement(path, topName, layout),
     kind,
     choices,
@@ -204,7 +215,7 @@ export function sanitizeOverrides(raw, controlIndex) {
 export function toEditorOptions(overrides) {
   const out = {};
   for (const [path, value] of Object.entries(overrides)) {
-    const [top, member] = path.split('.');
+    const [top, member] = splitPath(path);
     if (member === undefined) out[top] = value;
     else {
       if (typeof out[top] !== 'object' || out[top] === null) out[top] = {};
@@ -216,7 +227,7 @@ export function toEditorOptions(overrides) {
 
 /** Reads the value of one path out of a resolved options snapshot (`{minimap: {enabled: false}, ...}`). */
 export function readPath(snapshot, path) {
-  const [top, member] = path.split('.');
+  const [top, member] = splitPath(path);
   const v = snapshot?.[top];
   if (member === undefined) return v;
   return v && typeof v === 'object' ? v[member] : undefined;

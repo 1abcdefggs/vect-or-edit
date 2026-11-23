@@ -70,8 +70,13 @@ describe('monaco option controls', () => {
     }
   });
 
-  it('does not offer a name that contains a dot as an editable path', () => {
-    expect(index.get('semanticHighlighting.enabled')?.lock).toBe(model.LOCK_UNSUPPORTED);
+  it('keeps a flat dotted option name whole: editable, and never split into a nested path', () => {
+    const c = index.get('semanticHighlighting.enabled');
+    expect(c?.lock).toBeNull();
+    expect(c?.member).toBeNull();
+    expect(c?.kind).toBe('enum');
+    expect(model.toEditorOptions({ 'semanticHighlighting.enabled': 'configuredByTheme' })).toEqual({ 'semanticHighlighting.enabled': 'configuredByTheme' });
+    expect(model.readPath({ 'semanticHighlighting.enabled': false }, 'semanticHighlighting.enabled')).toBe(false);
   });
 
   it('marks the options Monaco reads only at creation', () => {
