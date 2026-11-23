@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.78] - 2026-11-23
+
+### Changed
+- UI text in the English and Japanese locale files: new strings for the settings page, the AI chat and the logs, and reworded strings; keys still used by the current code are kept
+
 ## [0.3.77] - 2026-11-19
 
 ### Added
