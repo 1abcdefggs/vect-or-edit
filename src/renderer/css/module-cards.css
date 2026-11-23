@@ -99,7 +99,7 @@
     font-size: var(--fs-12) !important;
   }
   .semantic-module-title .material-symbols-outlined {
-    font-size: var(--fs-15) !important;
+    font-size: var(--icon-size-ui) !important;
   }
 }
 
@@ -109,13 +109,13 @@
     font-weight: 600;
   }
   .semantic-module-title .material-symbols-outlined {
-    font-size: var(--fs-20) !important;
+    font-size: var(--icon-size-ui) !important;
   }
 }
 
 
 .semantic-module-icon {
-  font-size: var(--fs-19);
+  font-size: var(--icon-size-ui);
   color: var(--accent-color, #38bdf8);
   flex-shrink: 0;
 }

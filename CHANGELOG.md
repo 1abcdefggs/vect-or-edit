@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.80] - 2026-11-23
+
+### Added
+- Icon definitions for the editor options, the chat and the panel toggles (eye, chevrons, stop, panel layouts, arrow up) in the icon set
+
+### Changed
+- Module card icons share one size token (`--icon-size-ui`, 18px) instead of three separate font sizes
+
 ## [0.3.79] - 2026-11-23
 
 ### Added
