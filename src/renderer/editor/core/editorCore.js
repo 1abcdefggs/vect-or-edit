@@ -7,7 +7,9 @@ import { setLedStatus } from '../../core/statusManager.js';
 import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
-import { t } from '../../core/i18n.js';
+import { t, currentLang } from '../../core/i18n.js';
+import { detectDocumentLanguage } from '../options/documentLanguage.js';
+import { bindDocumentLanguage } from '../options/documentLanguageSync.js';
 import { openLlmChat } from '../../core/externalActions.js';
 import { commandManager } from '../../core/commandManager';
 import { captureBaseline, applyStoredOverrides, withCreateOnlyOverrides } from '../options/monacoOptionsStore.js';
@@ -92,9 +94,11 @@ export async function initEditor() {
     await loadTheme(currentTheme);
   } catch (_) {}
 
+  const initialValue = t('initial_document_content');
   const baseOptions = buildMonacoBaseOptions({
-    value: t('initial_document_content'),
+    value: initialValue,
     language: 'markdown',
+    documentLanguage: detectDocumentLanguage(initialValue, { uiLanguage: currentLang }).language,
     theme: currentTheme || 'vs-dark',
     fontSize: getFontSize(),
     fontFamily: getFontFamily()
@@ -108,6 +112,8 @@ export async function initEditor() {
   // Editor Options panel: remember the app's own values, then apply the user's overrides on top
   captureBaseline(monacoEditorInstance);
   applyStoredOverrides(monacoEditorInstance).catch((err) => console.warn('[MonacoOptions] Could not apply stored options:', err));
+  // Language-dependent options follow the language of the open document (tab switch, opened file, pasted text)
+  bindDocumentLanguage(monacoEditorInstance, { getUiLanguage: () => currentLang });
 
   // Inline AI Command & Prompt Trigger (Ctrl+K or Alt+Enter)
   monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK, () => {

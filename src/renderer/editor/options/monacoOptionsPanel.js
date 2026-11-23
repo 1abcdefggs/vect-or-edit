@@ -206,28 +206,56 @@ function buildRow(control) {
   };
 }
 
+/** A folding block (<details>) with a title and a right-aligned count; the caller adds its rows to `body`. */
+function buildFold(className, titleText, controls) {
+  const details = el('details', className);
+  const summary = el('summary', className === 'mo-group' ? 'mo-group-title' : `mo-group-title ${className}-title`, titleText);
+  const countEl = el('span', 'mo-group-count', '');
+  summary.appendChild(countEl);
+  details.appendChild(summary);
+  const body = el('div', 'mo-group-body');
+  details.appendChild(body);
+  state.groups.push({ details, controls, countEl });
+  return { details, body };
+}
+
+function addRows(body, controls) {
+  for (const control of controls) {
+    const row = buildRow(control);
+    state.rows.set(control.path, row);
+    body.appendChild(row.element);
+    row.refresh();
+  }
+}
+
+/** The options a writer may judge, then the weight-0 ones folded away under one heading (the search still opens it). */
+function addSub(body, { main, rare }) {
+  addRows(body, main);
+  if (!rare.length) return;
+  const fold = buildFold('mo-rare', t('monaco_rare'), rare);
+  addRows(fold.body, rare);
+  body.appendChild(fold.details);
+}
+
 function render() {
   const list = document.getElementById('monacoOptionsList');
   if (!list) return;
   list.textContent = '';
   state.rows.clear();
   state.groups = [];
-  for (const { group, controls } of groupControls(state.controls)) {
-    const details = el('details', 'mo-group');
-    const summary = el('summary', 'mo-group-title', t(`monaco_group_${group}`));
-    const countEl = el('span', 'mo-group-count', '');
-    summary.appendChild(countEl);
-    details.appendChild(summary);
-    const body = el('div', 'mo-group-body');
-    for (const control of controls) {
-      const row = buildRow(control);
-      state.rows.set(control.path, row);
-      body.appendChild(row.element);
-      row.refresh();
+  for (const { group, controls, subs } of groupControls(state.controls)) {
+    const section = buildFold('mo-group', t(`monaco_group_${group}`), controls);
+    // A group with one sub-heading (or none) shows its rows directly: a sub-heading that repeats the group name adds nothing
+    for (const sub of subs) {
+      if (subs.length === 1 || sub.sub === null) {
+        addSub(section.body, sub);
+      } else {
+        const fold = buildFold('mo-sub', t(`monaco_sub_${sub.sub}`), sub.controls);
+        addSub(fold.body, sub);
+        section.body.appendChild(fold.details);
+      }
     }
-    details.appendChild(body);
-    list.appendChild(details);
-    state.groups.push({ details, controls, countEl });
+    list.appendChild(section.details);
   }
   applyFilter();
 }

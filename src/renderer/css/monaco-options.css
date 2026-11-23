@@ -27,7 +27,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 6px 8px 8px;
+  /* No side padding: the card already insets its content (module-cards.css), and the group rows add their own */
+  padding: 6px 0 8px;
 }
 
 .monaco-options-card .semantic-module-header:focus-visible,
@@ -83,6 +84,8 @@
 }
 
 .mo-group[hidden],
+.mo-sub[hidden],
+.mo-rare[hidden],
 .mo-row[hidden],
 .mo-reset[hidden] {
   display: none !important;
@@ -98,8 +101,8 @@
 
 .mo-group-title {
   cursor: pointer;
-  padding: 5px 8px;
-  font-size: var(--fs-12);
+  padding: 8px 10px;
+  font-size: var(--fs-18);
   font-weight: 600;
   color: var(--text-main);
   user-select: none;
@@ -264,7 +267,7 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visib
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
-  font-size: var(--fs-12);
+  font-size: var(--fs-18);
   font-weight: 400;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
@@ -280,4 +283,46 @@ body.sidebar-options-mode #monacoOptionsCard .semantic-module-header:focus-visib
   margin-right: 6px;
   color: var(--text-main);
   font-weight: 600;
+}
+
+/* The × that leaves Editor Options mode: only in the mode (the header ignores the pointer there, so the button opts back in) */
+.mo-mode-close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.sidebar-options-mode .mo-mode-close {
+  display: inline-flex;
+  pointer-events: auto;
+}
+.mo-mode-close:hover { color: var(--text-main); background: var(--bg-secondary); }
+.mo-mode-close:focus-visible { outline: 2px solid var(--accent-color, #38bdf8); outline-offset: 2px; }
+
+/* Sub-headings inside a group, and the folded block of weight-0 options at the end of a group or sub-heading.
+   They reuse the group title and count; only the indent, the weight and the colour differ. */
+.mo-sub,
+.mo-rare {
+  flex-shrink: 0;
+  border-top: var(--border-width) solid var(--border-color);
+}
+
+.mo-sub-title {
+  padding-left: 18px;
+  font-size: var(--fs-18);
+  font-weight: 500;
+}
+
+.mo-rare-title {
+  padding-left: 18px;
+  font-size: var(--fs-18);
+  font-weight: 400;
+  color: var(--text-muted);
 }

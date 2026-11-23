@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.84] - 2026-11-23
+
+### Added
+- Editor options: each option has a weight and a generated panel layout (monacoOptions.layout.json)
+- Document language: the language of the open document is detected on open, paste and tab switch; the language-dependent options follow it
+- Status bar: the document language control shows the language and whether it is automatic (for example JA, auto)
+
+### Changed
+- Editor options panel: the sub-headings and the weight-0 options are folded at the end of each group
+
 ## [0.3.83] - 2026-11-23
 
 ### Added

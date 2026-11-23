@@ -54,7 +54,25 @@ const GROUP_RULES = [
   ['display', /^(minimap|rulers|guides|folding|glyphMargin|lineDecorations|lineNumbersMinChars|renderFinalNewline|renderControlCharacters|renderLineHighlight|renderWhitespace|renderValidationDecorations|showFoldingControls|showUnused|showDeprecated|foldingHighlight|foldingImportsByDefault|foldingMaximumRegions|foldingStrategy|unfoldOnClickAfterEndOfLine|letterSpacing|fontLigatures|fontVariations|fontWeight|disableMonospaceOptimizations|disableLayerHinting|roundedSelection|stickyScroll|bracketPairColorization|extraEditorClassName|placeholder|lineHeight|fontSize|fontFamily|wordWrap|lineNumbers|experimentalWhitespaceRendering|showDeprecated|hideUnchanged|accessibilityPageSize|allowVariableLineHeights|effectiveExperimentalEditContext|experimentalEditContextEnabled|experimental)/]
 ];
 
-export const GROUP_ORDER = ['display', 'cursor', 'editing', 'suggest', 'find', 'scroll', 'accessibility', 'advanced'];
+export const GROUP_ORDER = ['display', 'cursor', 'editing', 'suggest', 'find', 'scroll', 'accessibility', 'managed', 'advanced'];
+
+/**
+ * Sub-headings inside each group, in display order. The headings, the weight and the sub-heading of every option come from
+ * monacoOptions.layout.json, generated from the editor options review sheet (kept outside the repository).
+ * An option the layout does not list (a new Monaco option) keeps the old name-prefix group below and has no sub-heading.
+ * Weight 0 means no writer needs to judge the option; the panel folds those rows away and the search still finds them.
+ */
+export const SUB_ORDER = {
+  display: ['font', 'linenumbers', 'wrap', 'folding', 'whitespace', 'currentline', 'minimap', 'guides', 'sticky', 'marks', 'rendering'],
+  cursor: ['cursorshape', 'selection', 'multicursor', 'mouse'],
+  editing: ['input', 'indent'],
+  suggest: ['list', 'hover', 'goto'],
+  find: ['find'],
+  scroll: ['scrollbar', 'overview'],
+  accessibility: ['assist'],
+  managed: ['managed'],
+  advanced: []
+};
 
 export function groupOf(name) {
   for (const [group, re] of GROUP_RULES) if (re.test(name)) return group;
@@ -88,7 +106,14 @@ function lockOf(path) {
   return null;
 }
 
-function makeControl(path, def, topName) {
+/** Group, sub-heading and weight of one option: from the layout when it lists the path, else the name-prefix group. */
+function placement(path, topName, layout) {
+  const hit = layout?.items?.[path];
+  if (hit && SUB_ORDER[hit[0]]?.includes(hit[1])) return { group: hit[0], sub: hit[1], weight: hit[2] };
+  return { group: groupOf(topName), sub: null, weight: null };
+}
+
+function makeControl(path, def, topName, layout) {
   const kind = controlKind(def);
   const choices = kind === 'enum' ? choicesOf(def) : [];
   let lock = lockOf(path);
@@ -99,7 +124,7 @@ function makeControl(path, def, topName) {
     path,
     name: topName,
     member: path.includes('.') ? path.slice(topName.length + 1) : null,
-    group: groupOf(topName),
+    ...placement(path, topName, layout),
     kind,
     choices,
     type: def.type,
@@ -116,14 +141,14 @@ function makeControl(path, def, topName) {
  * Flattens the catalog into one control per settable value. An option that is an object becomes one control per member
  * ("minimap.enabled", "minimap.side", ...); members that are objects themselves stay a JSON control.
  */
-export function buildControls(catalog) {
+export function buildControls(catalog, layout = null) {
   const controls = [];
   for (const def of catalog.options) {
     const nested = def.nested?.[0]?.members;
     if (nested?.length) {
-      for (const m of nested) controls.push(makeControl(`${def.name}.${m.name}`, m, def.name));
+      for (const m of nested) controls.push(makeControl(`${def.name}.${m.name}`, m, def.name, layout));
     } else {
-      controls.push(makeControl(def.name, def, def.name));
+      controls.push(makeControl(def.name, def, def.name, layout));
     }
   }
   return controls;
@@ -256,9 +281,30 @@ export function filterControls(controls, query, docText = (c) => c.doc) {
   return controls.filter((c) => c.path.toLowerCase().includes(q) || docText(c).toLowerCase().includes(q));
 }
 
-/** Controls grouped in display order: [{group, controls}] without empty groups. */
+/**
+ * Controls grouped in display order, without empty groups: [{group, controls, subs}].
+ * "subs" splits the group by sub-heading in SUB_ORDER order: [{sub, controls, main, rare}], where "main" holds the options a
+ * writer may judge (weight above 0, highest weight first, sheet order within a weight) and "rare" the weight-0 ones.
+ * Options without a sub-heading (not in the layout) form one entry with sub null.
+ */
 export function groupControls(controls) {
   const byGroup = new Map(GROUP_ORDER.map((g) => [g, []]));
   for (const c of controls) byGroup.get(c.group).push(c);
-  return GROUP_ORDER.map((group) => ({ group, controls: byGroup.get(group) })).filter((g) => g.controls.length);
+  return GROUP_ORDER.map((group) => ({ group, controls: byGroup.get(group), subs: splitSubs(group, byGroup.get(group)) })).filter((g) => g.controls.length);
+}
+
+function splitSubs(group, list) {
+  const bySub = new Map();
+  for (const c of list) {
+    const key = c.sub ?? null;
+    if (!bySub.has(key)) bySub.set(key, []);
+    bySub.get(key).push(c);
+  }
+  const order = [...(SUB_ORDER[group] || []), null];
+  return order.filter((sub) => bySub.has(sub)).map((sub) => {
+    const all = bySub.get(sub);
+    const rare = all.filter((c) => c.weight === 0);
+    const main = all.filter((c) => c.weight !== 0).sort((a, b) => (b.weight ?? 1) - (a.weight ?? 1));
+    return { sub, controls: all, main, rare };
+  });
 }

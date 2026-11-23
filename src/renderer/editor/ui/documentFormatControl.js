@@ -7,7 +7,7 @@
 import { getActiveTab, setTabFormat } from '../tabs/tabState.js';
 
 export function initDocumentFormatControl() {
-  document.querySelectorAll('.format-switch__item').forEach((item) => {
+  document.querySelectorAll('.format-switch__item[data-format]').forEach((item) => {
     item.addEventListener('click', () => {
       const tab = getActiveTab();
       if (tab) setTabFormat(tab, item.dataset.format);
@@ -19,7 +19,7 @@ export function initDocumentFormatControl() {
 
 /** Lights the item of the current format. Called whenever the status bar updates. */
 export function syncFormatMenu(isText) {
-  document.querySelectorAll('.format-switch__item').forEach((item) => {
+  document.querySelectorAll('.format-switch__item[data-format]').forEach((item) => {
     const on = item.dataset.format === (isText ? 'text' : 'markdown');
     item.setAttribute('aria-checked', String(on));
     item.classList.toggle('is-current', on);
