@@ -11,7 +11,7 @@ export const EDITOR_DEFAULTS = Object.freeze({
   fontSize: DEFAULTS.FONT_SIZE,
   lineHeight: DEFAULTS.LINE_HEIGHT,
   wordWrap: 'on',
-  minimap: Object.freeze({ enabled: false }),
+  minimap: Object.freeze({ enabled: true }),
   lineNumbers: 'on',
   folding: true,
   renderWhitespace: 'none',

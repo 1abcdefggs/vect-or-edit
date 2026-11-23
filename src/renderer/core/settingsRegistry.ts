@@ -15,7 +15,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
       fontFamily: DEFAULTS.FONT_FAMILY,
       fontSize: '16px',
       lineWrapping: 'on',
-      minimap: false,
+      minimap: true,
       aiAssistEnabled: false,
       llmProvider: 'gemini',
       llmModel: 'gemini-3.1-flash-lite'
