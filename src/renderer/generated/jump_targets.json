@@ -159,6 +159,11 @@
     "card": "grp_sidebar_top",
     "control": "modalEmbeddingAssistantSelect"
   },
+  "sbr:embedding-model-change": {
+    "tab": "tabAiSearch",
+    "card": "heading_embedding_models",
+    "control": ""
+  },
   "sbr:quick-settings": {
     "tab": "tabAiSearch",
     "card": "grp_sidebar_top",

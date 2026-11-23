@@ -90,6 +90,7 @@ export type SidebarUiKey =
   | 'sbr:panel-toggle'
   | 'sbr:quick-settings'
   | 'sbr:embedding-toggle'
+  | 'sbr:embedding-model-change'
   | 'sbr:import-dictionary'
   | 'sbr:add-slot'
   | 'sbr:rail'

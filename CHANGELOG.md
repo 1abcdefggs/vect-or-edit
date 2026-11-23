@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.95] - 2026-11-24
+
+### Added
+- Sidebar: a Change button on the row of the embedding model in use; it opens the model list of the settings page
+
+### Changed
+- Settings page: BACK and the guide button take the accent colour for text and frame; a pressed guide button also gets a tinted background; a gap and a thin rule separate BACK from the title
+- AI chat card: the API key setup now follows "Use AI chat", and "Chat position" comes after the model rows
+- "Confirm before closing" moved from the System tab (Closing card, removed) to the Theme card of the Title Bar tab, below the tooltip rows
+
 ## [0.3.94] - 2026-11-23
 
 ### Changed
