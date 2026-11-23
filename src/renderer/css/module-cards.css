@@ -1,6 +1,8 @@
 /* Module cards: the Guideline, Knowledge and Editor Options cards share these rules (one definition).
    Markup: components/suggestionSidebar.html. Loaded after utilities.css and ticker.css. */
 
+.semantic-module-back { font-size: var(--icon-size-ui); color: var(--text-muted); cursor: pointer; margin-right: 2px; }
+
 .semantic-module-card {
   display: flex;
   flex-direction: column;
@@ -123,6 +125,30 @@
 .semantic-module-sep {
   opacity: 0.4;
   font-weight: 300;
+}
+
+/* Collection: the parent of the Guidelines and Knowledge cards. A title row above the cards, not a card itself */
+.collection-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Title size and colour come from .semantic-module-title (shared with the card titles) */
+.collection-group-header {
+  padding: 0 2px;
+}
+
+.collection-group-icon {
+  font-size: var(--fs-17);
+  color: var(--accent-color, #38bdf8);
+  flex-shrink: 0;
+}
+
+.collection-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .semantic-module-actions {

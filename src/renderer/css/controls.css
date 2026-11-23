@@ -26,7 +26,8 @@
 
 /* Hovering a settings gear outlines the part whose settings it opens, in the gear colour */
 :is(.app-header:has(#btnSettings:hover), .editor-section:has(#btnEditorQuickSettings:hover),
-  #suggestionSidebar:has(#btnSidebarQuickSettings:hover), #nativeBottomBar:has(#btnSystemQuickSettings:hover)) {
+  #suggestionSidebar:has(#btnSidebarQuickSettings:hover), #nativeBottomBar:has(#btnSystemQuickSettings:hover),
+  .editor-llm-chat-dock:has(#btnLlmQuickSettings:hover)) {
   outline: var(--border-width) solid var(--settings-key-fg);
   outline-offset: calc(var(--border-width) * -1);
 }
@@ -82,8 +83,14 @@
 }
 
 .gear-btn:hover .material-symbols-outlined {
-  color: #fbbf24;
+  /* The same colour as the outline the hover draws around the area (see above), not a separate hard-coded one */
+  color: var(--settings-key-fg);
   transform: rotate(30deg);
+}
+
+/* A directional icon keeps its direction: the collapse chevrons do not turn on hover */
+#btnHeaderMinimize:hover .material-symbols-outlined {
+  transform: none;
 }
 
 .gear-btn:focus-visible {
@@ -122,6 +129,12 @@
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
+}
+
+/* A label drawn as a colour or theme sample: the sample's own colours are set inline by its registered style. */
+.ui-select-option__sample {
+  padding: 0 6px;
+  border-radius: var(--radius-sm, 4px);
 }
 
 .ui-select-option.is-active {
@@ -365,9 +378,9 @@
   gap: 8px;
 }
 
-/* The whole pill is the switch track, so its outline is a full capsule (beats the chip's fixed radius) */
+/* The whole pill is the switch track; both ends share the same 4px corner radius */
 .ai-chip-pill.ai-switch-pill {
-  border-radius: 999px !important;
+  border-radius: var(--radius-sm, 4px) !important;
 }
 
 .ai-switch-pill .toggle-switch-group {

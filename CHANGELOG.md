@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.88] - 2026-11-23
+
+### Added
+- About dialog: rebuilt on a language change and kept open, so the new language shows at once
+
+### Changed
+- Tooltip text: each sentence after the first starts a new bulleted line (split at the Japanese full stop); commas stay inside their sentence
+- Close guard: the chat is no longer a close target
+- Styling: sidebar, popups, modals, buttons, selection and layout rules adjusted (see the commit diff)
+
+### Removed
+- The update dialog markup and script (updateModal.html, updateModal.js)
+
 ## [0.3.87] - 2026-11-23
 
 ### Added

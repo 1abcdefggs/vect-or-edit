@@ -20,8 +20,8 @@ export const BULLET_TIP_KEYS: ReadonlySet<string> = new Set([
   'tip_monaco_opts_reset_all'
 ]);
 
-/** Each 、 starts a new bulleted line. The tooltip element uses white-space: pre-wrap, so the line breaks show. */
+/** Each sentence after the first (split at the Japanese full stop U+3002) starts a new bulleted line; commas stay inside their sentence. The tooltip element uses white-space: pre-wrap, so the line breaks show. */
 export function formatTipText(key: string, text: string): string {
   if (!BULLET_TIP_KEYS.has(key)) return text;
-  return text.replace(/\u3001/g, '\n\u30fb');
+  return text.replace(/\u3002(?!\s*$)/g, '\u3002\n\u30fb');
 }

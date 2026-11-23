@@ -6,7 +6,6 @@ import nativeBottomBarHtml from '../components/nativeBottomBar.html?raw';
 import systemLogPanelHtml from '../components/systemLogPanel.html?raw';
 import settingsModalHtml from '../components/settingsModal.html?raw';
 import workspaceSetupModalHtml from '../components/workspaceSetupModal.html?raw';
-import updateModalHtml from '../components/updateModal.html?raw';
 import aiSetupModalHtml from '../components/aiSetupModal.html?raw';
 
 /**
@@ -35,7 +34,6 @@ export function injectLazyUIComponents(): void {
 
   // Inject modals that should reside at the body level
   document.body.insertAdjacentHTML('beforeend', workspaceSetupModalHtml);
-  document.body.insertAdjacentHTML('beforeend', updateModalHtml);
   document.body.insertAdjacentHTML('beforeend', aiSetupModalHtml);
 
   // Dispatch an event so that other modules know the DOM nodes are now available for binding.

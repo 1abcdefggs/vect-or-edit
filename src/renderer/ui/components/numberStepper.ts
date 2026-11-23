@@ -25,19 +25,29 @@ function rangeOf(input: HTMLInputElement): StepRange {
   };
 }
 
-function stepButton(label: string, name: string): HTMLButtonElement {
+function stepButton(label: string, step: 'decrease' | 'increase'): HTMLButtonElement {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'num-stepper__btn';
+  button.dataset.step = step;
   button.textContent = label;
-  button.setAttribute('aria-label', name);
+  button.setAttribute('aria-label', t(`stepper_${step}`));
   return button;
+}
+
+// The names of the buttons are written when they are made; the language change writes them again
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:languageChanged', () => {
+    document.querySelectorAll<HTMLButtonElement>('.num-stepper__btn[data-step]').forEach((button) => {
+      button.setAttribute('aria-label', t(`stepper_${button.dataset.step}`));
+    });
+  });
 }
 
 export function enhanceNumberStepper(input: HTMLInputElement): void {
   if (input.closest('.num-stepper')) return;
-  const minus = stepButton('−', t('stepper_decrease'));
-  const plus = stepButton('+', t('stepper_increase'));
+  const minus = stepButton('−', 'decrease');
+  const plus = stepButton('+', 'increase');
 
   const wrap = document.createElement('span');
   wrap.className = 'num-stepper';

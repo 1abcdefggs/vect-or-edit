@@ -1,5 +1,6 @@
 /*
  * Selected state, one definition for every boxed choice (style_rules: selected-state).
+ * Boxed choices without a sample use the inverted surface below; cards with a sample keep their surface (see the card rule).
  * The surface is the inverse of the window: dark in light mode, light in dark mode. It is built from the text and
  * background tokens, so it follows the theme and the mode without a rule of its own. Size does not change it.
  */
@@ -10,23 +11,18 @@
   --sel-edge-width: 2px;
 }
 
+/* Cards that hold a sample or preview (file format, theme, editor canvas, font, line height) keep their own surface:
+   an inverted surface would read as another look of the sample. The selection is shown by the ring, the check mark
+   and a light tint of the edge colour over the card's own background */
 .first-run-choice:has(input:checked),
 .theme-card[aria-pressed="true"] {
-  background: var(--sel-surface);
-  color: var(--sel-on-surface);
+  background-image: linear-gradient(color-mix(in srgb, var(--sel-edge) 14%, transparent), color-mix(in srgb, var(--sel-edge) 14%, transparent));
   border-color: var(--sel-edge);
   box-shadow: inset 0 0 0 var(--sel-edge-width) var(--sel-edge);
 }
 
-/* Hover keeps the selected surface instead of the plain hover tint */
-.first-run-choice:has(input:checked):hover,
-.theme-card[aria-pressed="true"]:hover {
-  background: var(--sel-surface);
-  color: var(--sel-on-surface);
-}
-
 /* Provider-like list cards, catalogue rows, dropdown items: the same boxed selection.
-   The model table's row in use is not inverted: a dark row read as a group heading (model-list.css, owner 2026-11-19) */
+   The model table's row in use is not inverted: a dark row read as a group heading (model-list.css) */
 .ep-model-row.is-active > td,
 .ui-select-option.is-selected {
   background: var(--sel-surface);
@@ -48,10 +44,6 @@
   color: var(--sel-on-surface);
 }
 
-.settings-tab-btn.active {
-  border-bottom-color: var(--sel-edge);
-}
-
 .editor-tab-item.active {
   border-top-color: var(--sel-edge);
 }
@@ -65,15 +57,8 @@
   --tab-btn-hover-fg: var(--sel-on-surface);
 }
 
-/* Text inside a selected surface takes its color from the surface, not from the muted text tokens of the window */
-.first-run-choice:has(input:checked) .first-run-hint,
-.first-run-choice:has(input:checked) .first-run-md-marker,
-.theme-card[aria-pressed="true"] .theme-card-name {
-  color: inherit;
-  opacity: 0.8;
-}
-
+/* The check mark is the edge colour with the accent's text colour on it (the card surface is not inverted) */
 .first-run-choice:has(input:checked) .first-run-choice-mark {
-  background: var(--sel-on-surface);
-  color: var(--sel-surface);
+  background: var(--sel-edge);
+  color: var(--text-on-accent);
 }

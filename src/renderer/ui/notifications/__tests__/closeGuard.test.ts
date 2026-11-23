@@ -31,10 +31,10 @@ describe('closeGuard', () => {
     expect(isCloseConfirmEnabled()).toBe(true);
 
     showConfirmModal.mockResolvedValueOnce(false);
-    expect(await confirmClose('chat')).toBe(false);
+    expect(await confirmClose('about')).toBe(false);
 
     showConfirmModal.mockResolvedValueOnce(true);
-    expect(await confirmClose('chat')).toBe(true);
+    expect(await confirmClose('about')).toBe(true);
     expect(showConfirmModal).toHaveBeenCalledTimes(2);
   });
 
@@ -76,7 +76,7 @@ describe('closeGuard', () => {
 
   it('keeps the global switch in charge of every other target', async () => {
     showConfirmModal.mockResolvedValueOnce(true);
-    await confirmClose('chat');
+    await confirmClose('about');
     expect(showConfirmModal).toHaveBeenCalledTimes(1);
   });
 

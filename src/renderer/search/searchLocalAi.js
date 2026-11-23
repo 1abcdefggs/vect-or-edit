@@ -1,6 +1,6 @@
-import { t } from '../core/i18n.js';
+import { t, tLog } from '../core/i18n.js';
 import { readStorage } from '../core/storage.js';
-import { setLedStatus } from '../core/statusManager.js';
+import { setLedStatus, led } from '../core/statusManager.js';
 import { i18n } from '../core/i18n.js';
 import { renderResults } from './searchUi.js';
 import { STORAGE_KEYS, DEFAULTS } from '../core/constants.js';
@@ -106,17 +106,17 @@ export function initLocalAiWorker(getCurrentResults) {
         const pct = data.progress !== undefined ? Math.round(data.progress) : 0;
         const fileName = data.file || t('model_files_fallback');
         const modelId = data.name || data.model || loadingModel || getActiveModelId();
-        setLedStatus('ai', 'loading', t('led_ai_downloading', { pct }));
+        setLedStatus('ai', 'loading', led('led_ai_downloading', { pct }));
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct, fileName, status } }));
 
         // Milestones go through the shared log (time stamp, Copy and Save); a cached model sends no progress, so nothing is logged
         if (loggedModelFiles.size === 0) {
-          window.appendSystemLog?.(t('log_model_download_start', { model: modelId }), 'info');
+          window.appendSystemLog?.(tLog('log_model_download_start', { model: modelId }), 'info');
         }
         const fileKey = `${modelId}|${fileName}`;
         if (!loggedModelFiles.has(fileKey)) {
           loggedModelFiles.add(fileKey);
-          window.appendSystemLog?.(t('log_model_file_fetch', { model: modelId, file: fileName }), 'info');
+          window.appendSystemLog?.(tLog('log_model_file_fetch', { model: modelId, file: fileName }), 'info');
         }
 
         if (modalDownloadProgress) modalDownloadProgress.style.display = 'block';
@@ -143,7 +143,7 @@ export function initLocalAiWorker(getCurrentResults) {
         window.__isLocalAiModelReady = true;
         isLocalAiDownloading = false;
         const modelShortName = loadedModel.split('/').pop();
-        setLedStatus('ai', true, t('led_ai_ready', { model: modelShortName }));
+        setLedStatus('ai', true, led('led_ai_ready', { model: modelShortName }));
         window.dispatchEvent(new CustomEvent('app:settingsChanged'));
         window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct: 100, status: 'ready', model: loadedModel } }));
         markModelDownloaded(loadedModel);
@@ -167,7 +167,9 @@ export function initLocalAiWorker(getCurrentResults) {
       } else if (status === 'error') {
         isLocalAiDownloading = false;
         console.warn("Embedding worker reported error:", error);
-        setLedStatus('ai', 'error', t('led_ai_error', { error }));
+        setLedStatus('ai', 'error', led('led_ai_error', { error }));
+        // The sidebar switch and the first-run setup wait for this event to leave "preparing"
+        window.dispatchEvent(new CustomEvent('app:aiModelProgress', { detail: { pct: 0, status: 'error', model: loadingModel } }));
         if (btnInitLocalAi) {
           btnInitLocalAi.disabled = false;
           btnInitLocalAi.style.opacity = '1';

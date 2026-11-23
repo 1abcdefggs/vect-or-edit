@@ -8,10 +8,11 @@
   --bg-card: rgba(17, 24, 39, 0.82);
   --accent-color: #2563eb;
   /* The settings icons that mark an important setting (gear buttons, the setup footer): the inverse of the theme accent by default, so they stand out from the accent-coloured controls. Setting "accent" (data-key-tone) uses the accent itself. */
-  --settings-key-fg: color(from var(--accent-color) srgb calc(1 - r) calc(1 - g) calc(1 - b));
+  --settings-key-fg: var(--settings-key-fg-inverse, color(from var(--accent-color) srgb calc(1 - r) calc(1 - g) calc(1 - b)));
   --accent-hover: #1d4ed8;
   --text-main: #edf5ff;
   --text-muted: #b7c6dc;
+  --text-subtle: #8f9db3; /* quieter than text-muted: notes that must stay readable but not look active */
   --border-width: 1px;
   --border-color: #64748b;
   /* Outline of an operable control: at least 3:1 against the background (style_rules: control-border) */
@@ -99,6 +100,7 @@
   --bg-card: rgba(255, 255, 255, 0.94);
   --text-main: #0f172a;
   --text-muted: #475569;
+  --text-subtle: #64748b; /* quieter than text-muted: notes that must stay readable but not look active */
   --border-color: #94a3b8;
   --control-border: #64748b;
   --border-primary: var(--border-color);

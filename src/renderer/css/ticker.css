@@ -294,6 +294,55 @@
 /* Fixed columns (time, level, source, message) so the message starts at the same x in every row.
    The widths follow the longest value of each column; a longer source is cut with an ellipsis. */
 /* The header and every row share one column grid, so the labels sit over their values */
+/* Tabs of the log panel: Log and Models */
+.log-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px 12px 0;
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.log-tab {
+  font: inherit;
+  font-size: var(--fs-12);
+  padding: 4px 10px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--log-time);
+  cursor: pointer;
+}
+
+.log-tab.is-active {
+  color: var(--text-main);
+  border-bottom-color: var(--accent-color, #38bdf8);
+}
+
+.log-view {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-models-view {
+  padding: 8px 12px;
+  overflow: auto;
+}
+
+.log-models-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.log-models-status,
+.log-models-hint {
+  font-size: var(--fs-12);
+  color: var(--log-time);
+}
+
 .log-row,
 .log-head {
   display: grid;
@@ -608,3 +657,16 @@
 
 /* A pipeline lamp that is not green jumps to where it is fixed (ui/layout/lampNavigation.js) */
 .status-pill:not(.pill-ready) { cursor: pointer; }
+
+.system-log-intro {
+  margin: 0;
+  padding: 6px 12px;
+  color: var(--text-muted);
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.system-log-intro[hidden] {
+  display: none;
+}

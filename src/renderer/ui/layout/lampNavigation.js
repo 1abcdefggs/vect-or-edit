@@ -1,6 +1,5 @@
 /**
- * Pipeline lamps: a click on a lamp that is not green jumps to the place that fixes it (ADR-11 section 2.7,
- * docs/PROJECT/04_VECT_OR_EDITOR/ui_blueprint/status_lamps.csv).
+ * Pipeline lamps: a click on a lamp that is not green jumps to the place that fixes it.
  *
  * Settings problems go to their settings tab. A Rust engine problem is not something a setting can fix (the engine is a
  * package the app loads), so the click opens the System tab and says what usually causes it.

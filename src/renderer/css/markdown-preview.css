@@ -1,7 +1,8 @@
 /* Markdown preview: read-only rendered view shown in place of the Monaco editor. */
 
-/* Look and size come from the shared .toolbar-btn (buttons.css); the active state from .toolbar-btn-active */
-.markdown-preview-toggle {
+/* Look and size come from the shared .toolbar-btn (buttons.css); the active state from .toolbar-btn-active.
+   style.css imports buttons.css after this file, so the selector names .toolbar-btn to beat its border at equal specificity */
+.toolbar-btn.markdown-preview-toggle {
   flex-shrink: 0;
   white-space: nowrap;
   line-height: 1;
@@ -10,9 +11,10 @@
   position: relative;
 }
 
-.markdown-preview-toggle:not(.is-unavailable):hover {
+.toolbar-btn.markdown-preview-toggle:not(.is-unavailable):hover {
   background: var(--tab-btn-hover-bg);
   color: var(--tab-btn-hover-fg);
+  border-color: transparent;
 }
 
 /* Icon only (owner 2026-11-19): the label stays for screen readers; the tooltip names the button */
@@ -29,6 +31,14 @@
 .markdown-preview-toggle .material-symbols-outlined {
   font-size: var(--icon-size);
   line-height: 1;
+}
+
+/* The eye is a plain drawing (an arc and a circle), not a font glyph; it takes the icon size and the text colour */
+.markdown-preview-toggle .markdown-preview-eye {
+  display: inline-flex;
+  font-size: var(--icon-size);
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .markdown-preview-toggle:focus-visible {

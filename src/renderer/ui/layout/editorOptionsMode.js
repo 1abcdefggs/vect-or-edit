@@ -45,4 +45,11 @@ export function initEditorOptionsMode() {
   };
 
   button.addEventListener('click', () => setMode(!document.body.classList.contains(MODE_CLASS)));
+
+  // The × in the card header leaves the mode the same way as the toolbar button; focus goes back to that button
+  const closeButton = card.querySelector('.mo-mode-close');
+  closeButton?.addEventListener('click', () => {
+    setMode(false);
+    button.focus();
+  });
 }

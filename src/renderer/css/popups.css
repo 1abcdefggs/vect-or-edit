@@ -3,7 +3,9 @@
    ========================================================================== */
 
 /* Right-click menu of an editor tab; fixed to the pointer, so it sits above the tab bar */
-.tab-context-menu {
+/* jump-context-menu: right-click "open settings for this item" on a window part (same look) */
+.tab-context-menu,
+.jump-context-menu {
   position: fixed;
   z-index: 10000;
   min-width: 160px;
@@ -205,4 +207,42 @@
 .chip-desc {
   font-size: var(--fs-11);
   color: var(--overlay-muted);
+}
+
+/* Quick model menu of the chat header (ui/ai/modelQuickMenu.js): the popup look above, a column for the check, a rule before the long list */
+.model-quick-menu {
+  min-width: 220px;
+  max-width: min(360px, calc(100vw - 16px));
+  max-height: min(60vh, 420px);
+  overflow-y: auto;
+}
+
+.model-quick-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.model-quick-item[aria-checked="true"] {
+  font-weight: 700;
+}
+
+.model-quick-check {
+  display: inline-flex;
+  width: 1em;
+  flex-shrink: 0;
+  /* The popup is dark in every theme: its own text token, not the accent text token of the page (1.4 to 3.9:1 on it) */
+  color: var(--overlay-fg);
+}
+
+.model-quick-rule {
+  height: var(--border-width);
+  margin: var(--spacing-xs) 0;
+  background: var(--overlay-border);
+}
+
+.model-quick-status {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--fs-12);
+  color: var(--overlay-fg);
 }

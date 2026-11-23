@@ -46,24 +46,15 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "ロゴとバージョン表示"
+     "text": "アプリ名"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Logo and app version"
+     "text": "App name"
     }
    ],
-   "senses": [
-    {
-     "id": "hdr:logo#help.ja",
-     "definition": "アプリのロゴとバージョンの表示です。クリックすると、バージョン情報（About）が開きます。"
-    },
-    {
-     "id": "hdr:logo#help.en",
-     "definition": "The app logo and version. Click it to open the About dialog."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -128,12 +119,12 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "ファイルメニュー"
+     "text": "ファイル"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "File menu"
+     "text": "File"
     }
    ],
    "senses": [
@@ -149,7 +140,7 @@
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:settingsFolderName",
+     "target": "c:ui-setting:btnExportWorkspace",
      "source": "internal"
     }
    ],
@@ -175,12 +166,12 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "編集メニュー"
+     "text": "編集"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Edit menu"
+     "text": "Edit"
     }
    ],
    "senses": [
@@ -216,12 +207,12 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "表示メニュー"
+     "text": "表示"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "View menu"
+     "text": "View"
     }
    ],
    "senses": [
@@ -257,12 +248,12 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "ウィンドウメニュー"
+     "text": "ウィンドウ"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Window menu"
+     "text": "Window"
     }
    ],
    "senses": [
@@ -298,12 +289,12 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "ヘルプメニュー"
+     "text": "ヘルプ"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Help menu"
+     "text": "Help"
     }
    ],
    "senses": [
@@ -317,13 +308,45 @@
     },
     {
      "id": "hdr:menu-help#behavior.1.ja",
-     "definition": "「ドキュメント」を選ぶ → アプリ内のヘルプページを開く。画面と設定のガイド（4 つの領域と初回設定）を、検索できる文書として読める。リポジトリのページは、ページ内のボタンから開く"
+     "definition": "「ドキュメント」を選ぶ → アプリ内のヘルプページを開く。画面と設定のガイド（4 つの領域）を、検索できる文書として読める。リポジトリのページは、ページ内のボタンから開く"
     },
     {
      "id": "hdr:menu-help#behavior.1.en",
-     "definition": "Documentation is chosen → Opens the in-app Help page: the guide to the window and the settings (four areas and the first-run setup) as a searchable document. The repository page is a button inside it"
+     "definition": "Documentation is chosen → Opens the in-app Help page: the guide to the window and the settings (four areas) as a searchable document. The repository page is a button inside it"
     }
    ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:hdr:menu-about",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "hdr:menu-about"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "h_menu_about"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Header"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "バージョン情報"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "About"
+    }
+   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -347,12 +370,12 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "はみ出しメニュー（»）"
+     "text": "はみ出し（»）"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Overflow menu (»)"
+     "text": "Overflow (»)"
     }
    ],
    "senses": [
@@ -388,7 +411,7 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "外観モードのボタン（ヘッダー）"
+     "text": "外観モードのボタン（タイトルバー）"
     },
     {
      "kind": "pref",
@@ -396,16 +419,7 @@
      "text": "Appearance mode button (header)"
     }
    ],
-   "senses": [
-    {
-     "id": "hdr:color-mode#help.ja",
-     "definition": "外観モードの切替です。ライト、システムに従う（OS の設定）、ダークから選びます。テーマは変わらず、そのテーマの明るい面か暗い面で表示します。"
-    },
-    {
-     "id": "hdr:color-mode#help.en",
-     "definition": "The appearance mode switch: Light, System (follows the OS) or Dark. The theme stays and shows its light or dark face."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
@@ -435,7 +449,7 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "テーマのメニュー（ヘッダー）"
+     "text": "テーマのメニュー（タイトルバー）"
     },
     {
      "kind": "pref",
@@ -443,23 +457,8 @@
      "text": "Theme menu (header)"
     }
    ],
-   "senses": [
-    {
-     "id": "hdr:theme-select#help.ja",
-     "definition": "配色テーマの選択です。どのテーマにも明るい面と暗い面があり、どちらを使うかは外観モードで決まります。"
-    },
-    {
-     "id": "hdr:theme-select#help.en",
-     "definition": "The color theme menu. Every theme has a light and a dark face; the appearance mode picks which one is shown."
-    }
-   ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:ui-setting:modalColorModeSelect",
-     "source": "internal"
-    }
-   ],
+   "senses": [],
+   "relations": [],
    "facet": "F.concept"
   },
   {
@@ -482,7 +481,7 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "ズーム表示（ヘッダー）"
+     "text": "ズーム表示（タイトルバー）"
     },
     {
      "kind": "pref",
@@ -491,14 +490,6 @@
     }
    ],
    "senses": [
-    {
-     "id": "hdr:zoom-select#help.ja",
-     "definition": "ウィンドウ全体の拡大率（100% が標準）を示す表示です。マウスホイールで拡大・縮小し、クリックすると 100% に戻ります。"
-    },
-    {
-     "id": "hdr:zoom-select#help.en",
-     "definition": "Shows the zoom level of the whole window (100% is standard). The mouse wheel zooms in and out, and a click returns to 100%."
-    },
     {
      "id": "hdr:zoom-select#behavior.1.ja",
      "definition": "マウスホイールを上へ → ズームを 1 段階拡大する（上限あり）"
@@ -535,7 +526,7 @@
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalZoomSelect",
+     "target": "c:ui-setting:modalZoomSlider",
      "source": "internal"
     }
    ],
@@ -561,7 +552,7 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "設定ボタン（ヘッダーの歯車）"
+     "text": "設定ボタン（タイトルバーの歯車）"
     },
     {
      "kind": "pref",
@@ -570,14 +561,6 @@
     }
    ],
    "senses": [
-    {
-     "id": "hdr:settings-btn#help.ja",
-     "definition": "設定画面を開く歯車のボタンです。このボタンは隠せません。"
-    },
-    {
-     "id": "hdr:settings-btn#help.en",
-     "definition": "The gear button that opens the Settings page. This button cannot be hidden."
-    },
     {
      "id": "hdr:settings-btn#behavior.1.ja",
      "definition": "クリック → 設定ページを開く（既定のタブはヘッダー）。必須の部品で、隠せない"
@@ -610,24 +593,15 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "ヘッダーの最小化ボタン"
+     "text": "タイトルバーの最小化ボタン"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Header minimize button"
+     "text": "Title Bar minimize button"
     }
    ],
-   "senses": [
-    {
-     "id": "hdr:minimize#help.ja",
-     "definition": "ヘッダーを最小化または展開するボタンです。"
-    },
-    {
-     "id": "hdr:minimize#help.en",
-     "definition": "The button that minimizes or expands the header."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -762,12 +736,12 @@
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalAutoSaveSelect",
+     "target": "c:ui-setting:modalAutoSaveIdleSelect",
      "source": "internal"
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalAutoSaveSelect",
+     "target": "c:ui-setting:modalAutoSaveNewlineSelect",
      "source": "internal"
     }
    ],
@@ -801,30 +775,21 @@
      "text": "Background tone selector"
     }
    ],
-   "senses": [
-    {
-     "id": "edt:bg-tone#help.ja",
-     "definition": "エディタの背景トーンを選びます。"
-    },
-    {
-     "id": "edt:bg-tone#help.en",
-     "definition": "Chooses the background tone of the editor."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalFontFamilySelect",
+     "target": "c:ui-setting:modalEditorBgSelect",
      "source": "internal"
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalFontFamilySelect",
+     "target": "c:ui-setting:modalEditorBgSelect",
      "source": "internal"
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalFontFamilySelect",
+     "target": "c:ui-setting:modalEditorBgSelect",
      "source": "internal"
     }
    ],
@@ -858,16 +823,7 @@
      "text": "Font menu (toolbar)"
     }
    ],
-   "senses": [
-    {
-     "id": "edt:font-family#help.ja",
-     "definition": "エディタのフォントを選びます。"
-    },
-    {
-     "id": "edt:font-family#help.en",
-     "definition": "Chooses the editor font."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
@@ -905,20 +861,11 @@
      "text": "Text size menu (toolbar)"
     }
    ],
-   "senses": [
-    {
-     "id": "edt:font-size#help.ja",
-     "definition": "エディタの文字サイズを選びます。"
-    },
-    {
-     "id": "edt:font-size#help.en",
-     "definition": "Chooses the editor text size."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalFontFamilySelect",
+     "target": "c:ui-setting:modalFontSizeSelect",
      "source": "internal"
     }
    ],
@@ -954,14 +901,6 @@
    ],
    "senses": [
     {
-     "id": "edt:ai-toggle#help.ja",
-     "definition": "エディタの LLM アシスタントのオン／オフを切り替えるボタンです。オフのときに押すとオンになり、下のチャット欄が開きます。モデルが未設定のときは、押すと設定画面が開きます。"
-    },
-    {
-     "id": "edt:ai-toggle#help.en",
-     "definition": "Switches the editor's LLM assistant on or off. When it is off, a click turns it on and opens the chat dock below. When no model is set, a click opens Settings."
-    },
-    {
      "id": "edt:ai-toggle#behavior.1.ja",
      "definition": "モデルが未設定（キーなし） → 「AI Setup Required」の確認を出し、承認されたらエディタタブの LLM のカードを開く"
     },
@@ -992,6 +931,14 @@
     {
      "id": "edt:ai-toggle#behavior.4.en",
      "definition": "When switched → Shows the same sentence in a toast and in the log (for example [AI] LLM: ON → OFF)"
+    },
+    {
+     "id": "edt:ai-toggle#behavior.2.ja",
+     "definition": "右クリック → 「AI チャットを右サイドバーで開く」「AI チャットをエディタの下で開く」を選べる。選ぶと場所が変わり、オフのときはオンにして開く。タイトルバーの AI ボタン、チャット欄、ヘッダーのスイッチ、移動ボタンでも同じ"
+    },
+    {
+     "id": "edt:ai-toggle#behavior.2.en",
+     "definition": "On right-click → Offers Open AI chat in the right sidebar and Open AI chat below the editor. Choosing one changes the place and, with the chat off, turns it on. The title-bar AI button, the chat area, the header switch and the move button all offer the same"
     }
    ],
    "relations": [
@@ -1032,14 +979,6 @@
     }
    ],
    "senses": [
-    {
-     "id": "edt:quick-settings#help.ja",
-     "definition": "エディタの設定画面を開く歯車のボタンです。"
-    },
-    {
-     "id": "edt:quick-settings#help.en",
-     "definition": "The gear button that opens the editor preferences."
-    },
     {
      "id": "edt:quick-settings#behavior.1.ja",
      "definition": "クリック → 設定ページのエディタタブを開く"
@@ -1121,32 +1060,7 @@
      "text": "Markdown preview button"
     }
    ],
-   "senses": [
-    {
-     "id": "edt:markdown-preview#help.ja",
-     "definition": "Markdown の整形プレビューを表示または非表示にするボタンです。テキストの文書では無効になり、その理由を横に表示します。"
-    },
-    {
-     "id": "edt:markdown-preview#help.en",
-     "definition": "The button that shows or hides the rendered Markdown preview. For a Text document it is disabled and shows the reason beside it."
-    },
-    {
-     "id": "edt:markdown-preview#behavior.1.ja",
-     "definition": "Markdown の文書を開いている → ボタンを押せる。押すと本文の代わりに整形した表示に切り替わり、ボタンは「編集」に変わる"
-    },
-    {
-     "id": "edt:markdown-preview#behavior.1.en",
-     "definition": "Document is Markdown → The button can be pressed. It switches the body to the rendered view and the button reads Edit"
-    },
-    {
-     "id": "edt:markdown-preview#behavior.2.ja",
-     "definition": "Text の文書を開いている → ボタンは残したまま無効にし、横に「テキストにはプレビューがありません」を出す。開いていたプレビューは閉じて編集に戻る"
-    },
-    {
-     "id": "edt:markdown-preview#behavior.2.en",
-     "definition": "Document is Text → The button stays visible but disabled, with the reason beside it. An open preview closes and returns to the editor"
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -1221,14 +1135,6 @@
    ],
    "senses": [
     {
-     "id": "edt:document-format#help.ja",
-     "definition": "開いている文書の形式（Markdown かテキスト）を示し、切り替えるボタンです。マウスを合わせると両方の候補が並び、選んだ形式が保存時のファイル名と拡張子になります。"
-    },
-    {
-     "id": "edt:document-format#help.en",
-     "definition": "Shows the format of the open document (Markdown or Text) and switches it. Point at it to list both choices; the one you choose sets the file name and extension when you save."
-    },
-    {
      "id": "edt:document-format#behavior.1.ja",
      "definition": "ホバー → 現在の形式と、もう一方の形式（Markdown / Text）を並べて出し、どちらも選べる。選んだ形式が、手動保存の保存ダイアログの既定のファイル名と拡張子になる（保存時に変えられる）"
     },
@@ -1266,22 +1172,22 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "LLM チャットドック"
+     "text": "AI チャット"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "LLM chat dock"
+     "text": "AI chat"
     }
    ],
    "senses": [
     {
      "id": "edt:llm-dock#help.ja",
-     "definition": "エディタの下のチャット欄です。LLM に文章の相談や書き換えを頼みます。プロバイダーの選択と API キーの入力欄があり、履歴の消去、折りたたみ、閉じるのボタンが付いています。LLM をオフにすると閉じ、入力と送信は使えなくなります。上の境界線をドラッグすると高さを変えられます。"
+     "definition": "エディタの下のチャット欄です。LLM に文章の相談や書き換えを頼みます。ヘッダーに、モデルのボタン、API キー、履歴の消去、会話の保存、使用のスイッチ、最小化、設定ページへの歯車があります。使用のスイッチをオフにすると閉じ、入力と送信は使えなくなります。最小化は、ヘッダーの帯だけに折りたたみます。返答を待っている間は、送信ボタンが Stop になり、押すと止められます。入力欄の下に、送信先の会社とモデルが出ます。上の境界線をドラッグすると高さを変えられます。"
     },
     {
      "id": "edt:llm-dock#help.en",
-     "definition": "The chat panel below the editor, for asking an LLM about your text or having it rewritten. It has the provider choice and the API key field, and buttons to clear the history, collapse and close it."
+     "definition": "The chat panel below the editor, for asking an LLM about your text or having it rewritten. Its header has the model button, the API key, clear history, save chat, the use switch, minimize, and a gear to the settings page. Switching off closes it. Minimize collapses it to the header bar. While a reply is awaited the Send button becomes Stop, which cancels the send. Under the input box it shows the service and model the next message goes to."
     },
     {
      "id": "edt:llm-dock#behavior.1.ja",
@@ -1306,27 +1212,88 @@
     {
      "id": "edt:llm-dock#behavior.3.en",
      "definition": "A question about the app (for example what Embedding is or whether the font can be changed) → Puts the matching cards of the guide in front of the question and has the LLM answer within them. What the guide does not cover is answered with I do not know and a pointer to Settings or the Guide button. Other requests (such as rewriting a text) get nothing added"
+    },
+    {
+     "id": "edt:llm-dock#behavior.4.ja",
+     "definition": "返答を待っているとき → 送信ボタンが「Stop」に変わる。押すと送信を止め、「停止しました」と出して、入力した文を入力欄に戻す。待っている間は Enter でも二つ目を送らない"
+    },
+    {
+     "id": "edt:llm-dock#behavior.4.en",
+     "definition": "While waiting for a reply → The Send button becomes Stop. Pressing it cancels the send, says it was stopped, and puts the typed text back into the input box. Enter does not send a second message while waiting"
+    },
+    {
+     "id": "edt:llm-dock#behavior.5.ja",
+     "definition": "入力欄の下 → 次のメッセージの送信先（会社とモデル）を常に表示する。モデルのボタンと同じ内容で、設定で変えると追従する"
+    },
+    {
+     "id": "edt:llm-dock#behavior.5.en",
+     "definition": "Under the input box → Always shows where the next message goes (service and model). It is the same as the model button and follows a change in the settings"
     }
    ],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalAiProviderSelect",
+     "target": "c:ui-setting:modalChatPlacementSelect",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:edt:llm-model",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "edt:llm-model"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "ed_llm_model"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Editor"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "チャットドック: モデルのボタン"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Chat dock: model button"
+    }
+   ],
+   "senses": [
+    {
+     "id": "edt:llm-model#help.ja",
+     "definition": "使用中のモデルのボタンです。押すと短いメニューが開き、モデルをその場で選べます。長い一覧（検索や並べ替え）は、メニュー最後の「すべてのモデルを見る…」から開くログ欄の「モデル」タブにあります。"
+    },
+    {
+     "id": "edt:llm-model#help.en",
+     "definition": "The button of the model in use. Pressing it opens a short menu to pick the model in place. The long list (search and sorting) is in the Models tab of the log panel, opened by All models at the end of the menu."
+    },
+    {
+     "id": "edt:llm-model#behavior.1.ja",
+     "definition": "モデルのボタンを押したとき → 短いメニューを開き、モデルをその場で選べる。OpenAI と Claude は決まった一覧、Gemini は取得済みの一覧の新しい文章用モデルから最大 8 件を出す。使用中のモデルは必ず先頭に出る。選ぶと、設定ページとログ欄の「モデル」タブと同じ保存先に書き、送信先の行も変わる。一覧のないときは「モデル一覧を取得」を出す。最後の「すべてのモデルを見る…」でログ欄の「モデル」タブを開く。返答を待っている間は開かない。プロバイダー未選択のときは設定ページのカードを開く"
+    },
+    {
+     "id": "edt:llm-model#behavior.1.en",
+     "definition": "When the model button is pressed → Opens a short menu to pick the model in place. OpenAI and Claude show their fixed lists; Gemini shows up to 8 of the newest text models of the list already fetched. The model in use is always first. Choosing writes the same stored value as the settings page and the Models tab of the log panel, and the destination line follows. With no list it offers Fetch the model list. The last item All models opens the Models tab of the log panel. It does not open while a reply is awaited. With no provider chosen it opens the card of the settings page"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalOpenAiModelSelect",
      "source": "internal"
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalGeminiModelSelect",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:ui-setting:modalOpenAiKeyInput",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:ui-setting:modalClaudeKeyInput",
+     "target": "c:ui-setting:modalClaudeModelSelect",
      "source": "internal"
     }
    ],
@@ -1361,14 +1328,6 @@
     }
    ],
    "senses": [
-    {
-     "id": "edt:llm-key-config#help.ja",
-     "definition": "チャットドックの API キー設定を開くボタンです。押すと、LLM の API キーを設定する画面が開きます。"
-    },
-    {
-     "id": "edt:llm-key-config#help.en",
-     "definition": "Opens the API key settings of the chat dock, where you set the LLM API key."
-    },
     {
      "id": "edt:llm-key-config#behavior.1.ja",
      "definition": "キーが保存済み → 末尾 4 文字だけを表示する。空欄は「変更なし」、入力すると上書き、削除ボタンで消す。キーはメインプロセスにあり、画面には戻さない"
@@ -1428,14 +1387,189 @@
    "senses": [
     {
      "id": "edt:llm-clear-chat#help.ja",
-     "definition": "チャットドックの会話をすべて消去するボタンです。確認は出ず、すぐに消えます。LLM がオフのとき、または API キーが未設定のときは押せません。"
+     "definition": "会話を消します。消す前に確認を出します。消した会話は戻せません。残したい場合は、先に保存ボタンで保存してください。"
     },
     {
      "id": "edt:llm-clear-chat#help.en",
-     "definition": "Clears the whole conversation in the chat dock at once. No confirmation is asked. It cannot be pressed while the LLM is off or no API key is set."
+     "definition": "Clears the conversation. Asks for confirmation first. A cleared conversation cannot be restored; save it first with the save button if you want to keep it."
+    },
+    {
+     "id": "edt:llm-clear-chat#behavior.1.ja",
+     "definition": "履歴を消す操作を押したとき → 確認を出し、「消す」を選んだときだけ、画面の会話を消す。消した会話は戻せない"
+    },
+    {
+     "id": "edt:llm-clear-chat#behavior.1.en",
+     "definition": "When Clear history is pressed → Asks to confirm. Only Clear removes the conversation from the window; it cannot be restored"
     }
    ],
    "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:edt:llm-export-chat",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "edt:llm-export-chat"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "ed_llm_export_chat"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Editor"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "チャットドック: 会話の保存ボタン"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Chat dock: save chat button"
+    }
+   ],
+   "senses": [
+    {
+     "id": "edt:llm-export-chat#help.ja",
+     "definition": "チャットドックの保存ボタンです。会話を Markdown ファイルとして書き出します。保存先は保存ダイアログで選びます。"
+    },
+    {
+     "id": "edt:llm-export-chat#help.en",
+     "definition": "The save button of the chat dock. Writes the conversation to a Markdown file; the save dialog chooses where."
+    },
+    {
+     "id": "edt:llm-export-chat#behavior.1.ja",
+     "definition": "会話があるとき保存を押したとき → 保存先を選ぶダイアログを開き、会話を Markdown ファイルとして書き出す"
+    },
+    {
+     "id": "edt:llm-export-chat#behavior.1.en",
+     "definition": "When Save chat is pressed with a conversation → Opens the save dialog and writes the conversation as a Markdown file"
+    },
+    {
+     "id": "edt:llm-export-chat#behavior.2.ja",
+     "definition": "会話がないとき保存を押したとき → 「まだ保存する会話がありません」と出し、ファイルは作らない"
+    },
+    {
+     "id": "edt:llm-export-chat#behavior.2.en",
+     "definition": "When Save chat is pressed with no conversation → Says there is no conversation yet; no file is written"
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:edt:llm-move",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "edt:llm-move"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "ed_llm_move"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Editor"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "チャットドック: 移動のボタン"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Chat dock: move button"
+    }
+   ],
+   "senses": [
+    {
+     "id": "edt:llm-move#help.ja",
+     "definition": "チャット欄を、エディタの下と右サイドバーの間で移すボタンです。設定ページの「チャット欄の位置」と同じ値を書き換えます。会話と入力途中は消えません。"
+    },
+    {
+     "id": "edt:llm-move#help.en",
+     "definition": "Moves the chat area between below the editor and the right sidebar. It writes the same value as Chat position on the settings page. The conversation and the draft are kept."
+    },
+    {
+     "id": "edt:llm-move#behavior.1.ja",
+     "definition": "移動のボタンを押したとき → チャット欄をもう一方の場所へ移す（エディタの下 ↔ 右サイドバー）。場所は設定の「チャット欄の位置」に覚えられ、次の起動でも同じ。会話と入力途中は消えない"
+    },
+    {
+     "id": "edt:llm-move#behavior.1.en",
+     "definition": "When the move button is pressed → Moves the chat area to the other place (below the editor <-> right sidebar). The place is remembered as the Chat position setting, also for the next start. The conversation and the draft are kept"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalChatPlacementSelect",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:edt:llm-switch",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "edt:llm-switch"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "ed_llm_switch"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Editor"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "チャットドック: 使用のスイッチ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Chat dock: use switch"
+    }
+   ],
+   "senses": [
+    {
+     "id": "edt:llm-switch#help.ja",
+     "definition": "チャット欄のヘッダーにある使用のスイッチです。タイトルバーの AI ボタンと設定ページの「AI チャットの使用」と同じ値です。オフにするとチャット欄が閉じます。会話は消えません。"
+    },
+    {
+     "id": "edt:llm-switch#help.en",
+     "definition": "The use switch in the chat area header. It is the same value as the title-bar AI button and Use AI chat on the settings page. Switching off closes the chat area; the conversation is not lost."
+    },
+    {
+     "id": "edt:llm-switch#behavior.1.ja",
+     "definition": "ヘッダーのスイッチを押したとき → AI チャットの使用をオフにし、チャット欄を閉じる。タイトルバーの AI ボタンと設定ページの行と同じ値で、どれを変えても他が追従する。会話は画面に残り、オンに戻すと同じ会話が見える"
+    },
+    {
+     "id": "edt:llm-switch#behavior.1.en",
+     "definition": "When the header switch is pressed → Turns Use AI chat off and closes the chat area. It is the same value as the title-bar AI button and the settings row, and all follow each other. The conversation stays in the window; turning it on again shows the same conversation"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalLlmSwitchSelect",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -1468,27 +1602,27 @@
    ],
    "senses": [
     {
-     "id": "edt:llm-collapse#help.ja",
-     "definition": "チャットドックを最小化または展開するボタンです。"
+     "id": "edt:llm-collapse#behavior.1.ja",
+     "definition": "最小化を押したとき → チャット欄をヘッダーの帯だけに折りたたむ。オンのままで、帯のスイッチと歯車は使える。もう一度押すと広げる。「ON なのに見えない」状態は作らない"
     },
     {
-     "id": "edt:llm-collapse#help.en",
-     "definition": "The button that minimizes or expands the chat dock."
+     "id": "edt:llm-collapse#behavior.1.en",
+     "definition": "When Minimize is pressed → Collapses the chat area to its header bar. It stays on, and the switch and the gear on the bar still work. Pressing again expands it. There is no on-but-hidden state"
     }
    ],
    "relations": [],
    "facet": "F.concept"
   },
   {
-   "id": "c:data-ui:edt:llm-close",
+   "id": "c:data-ui:edt:llm-settings",
    "notations": [
     {
      "scheme": "data-ui",
-     "value": "edt:llm-close"
+     "value": "edt:llm-settings"
     },
     {
      "scheme": "settings-registry",
-     "value": "ed_llm_close"
+     "value": "ed_llm_settings"
     }
    ],
    "broader": [
@@ -1499,22 +1633,30 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "チャットドック: 閉じるボタン"
+     "text": "チャットドック: 設定の歯車"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Chat dock: close button"
+     "text": "Chat dock: settings gear"
     }
    ],
    "senses": [
     {
-     "id": "edt:llm-close#help.ja",
-     "definition": "チャットドックを閉じるボタンです。閉じる前に確認が出ます。"
+     "id": "edt:llm-settings#help.ja",
+     "definition": "設定ページの「エディタ › AI チャット」を開く歯車のボタンです。プロバイダー、API キー、モデルの取得など、詳しい設定はそこで行います。"
     },
     {
-     "id": "edt:llm-close#help.en",
-     "definition": "The button that closes the chat dock. A confirmation appears first."
+     "id": "edt:llm-settings#help.en",
+     "definition": "The gear button that opens AI chat (Editor tab) of the settings page. The detailed settings such as the provider, the API key and fetching models are set there."
+    },
+    {
+     "id": "edt:llm-settings#behavior.1.ja",
+     "definition": "歯車を押したとき → 設定ページの「エディタ › AI チャット」のカードを開く。他のエリアの歯車と同じ働きで、ここにない詳細な設定はそこで行う"
+    },
+    {
+     "id": "edt:llm-settings#behavior.1.en",
+     "definition": "When the gear is pressed → Opens the AI chat card (Editor tab) of the settings page. It works like the gears of the other areas; the detailed settings that are not here are set there"
     }
    ],
    "relations": [],
@@ -1568,16 +1710,39 @@
      "text": "Suggestion sidebar"
     }
    ],
-   "senses": [
+   "senses": [],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:sbr:panel-toggle",
+   "notations": [
     {
-     "id": "sbr:sidebar#help.ja",
-     "definition": "提案サイドバーです。境界線をドラッグすると、幅を変えられます。"
+     "scheme": "data-ui",
+     "value": "sbr:panel-toggle"
     },
     {
-     "id": "sbr:sidebar#help.en",
-     "definition": "The suggestion sidebar. Drag its border to change the width."
+     "scheme": "settings-registry",
+     "value": "sb_panel_toggle"
     }
    ],
+   "broader": [
+    "c:ui-area:Sidebar"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "パネルの開閉ボタン"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Panel open/close button"
+    }
+   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -1610,14 +1775,6 @@
     }
    ],
    "senses": [
-    {
-     "id": "sbr:embedding-toggle#help.ja",
-     "definition": "埋め込みアシスタントのオン／オフを切り替えるボタンです。オンの間は、入力に合わせて意味の近い候補がリアルタイムで提案されます。"
-    },
-    {
-     "id": "sbr:embedding-toggle#help.en",
-     "definition": "Switches the embedding assistant on or off. While it is on, semantically close suggestions appear in real time as you type."
-    },
     {
      "id": "sbr:embedding-toggle#behavior.1.ja",
      "definition": "Embedding がオフ → Embedding をオンにする。LLM の状態は変えない"
@@ -1687,20 +1844,165 @@
    ],
    "senses": [
     {
-     "id": "sbr:quick-settings#help.ja",
-     "definition": "サイドバーのベクトルとナレッジの設定を開く歯車のボタンです。"
-    },
-    {
-     "id": "sbr:quick-settings#help.en",
-     "definition": "The gear button that opens the vector and knowledge settings."
-    },
-    {
      "id": "sbr:quick-settings#behavior.1.ja",
      "definition": "クリック → 設定ページのサイドバータブを開く"
     },
     {
      "id": "sbr:quick-settings#behavior.1.en",
      "definition": "Click → Opens the Sidebar tab of the settings page"
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:sbr:tab-collection",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "sbr:tab-collection"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "sb_tab_collection"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Sidebar"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "サイドバー: Collection のタブ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Sidebar: Collection tab"
+    }
+   ],
+   "senses": [
+    {
+     "id": "sbr:tab-collection#help.ja",
+     "definition": "右サイドバーの Collection（ガイドライン、ナレッジ、検索結果）を表示するタブです。チャットを右サイドバーに置いたときだけ出ます。"
+    },
+    {
+     "id": "sbr:tab-collection#help.en",
+     "definition": "The tab that shows Collection (guidelines, knowledge, results) in the right sidebar. It appears only while the chat is placed in the sidebar."
+    },
+    {
+     "id": "sbr:tab-collection#behavior.1.ja",
+     "definition": "Collection のタブを押したとき → チャットを隠して、モデル情報、ガイドライン、ナレッジ、検索結果を出す。チャットはオンのまま"
+    },
+    {
+     "id": "sbr:tab-collection#behavior.1.en",
+     "definition": "When the Collection tab is pressed → Hides the chat and shows the model info, guidelines, knowledge and results. The chat stays on"
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:sbr:tab-chat",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "sbr:tab-chat"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "sb_tab_chat"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Sidebar"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "サイドバー: AI チャットのタブ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Sidebar: AI chat tab"
+    }
+   ],
+   "senses": [
+    {
+     "id": "sbr:tab-chat#help.ja",
+     "definition": "右サイドバーに AI チャットを表示するタブです。チャットがオンのときは点が付き、別のタブを見ている間に返答が届くと強調します。チャットを右サイドバーに置いたときだけ出ます。"
+    },
+    {
+     "id": "sbr:tab-chat#help.en",
+     "definition": "The tab that shows the AI chat in the right sidebar. A dot means the chat is on; the tab is emphasized when a reply arrives while another tab is shown. It appears only while the chat is placed in the sidebar."
+    },
+    {
+     "id": "sbr:tab-chat#behavior.1.ja",
+     "definition": "AI チャットのタブを押したとき → Collection の側（モデル情報、ガイドライン、ナレッジ、検索結果）を隠して、チャットを出す。チャットがオフのときは、短い説明と「AI チャットをオンにする」を出す"
+    },
+    {
+     "id": "sbr:tab-chat#behavior.1.en",
+     "definition": "When the AI chat tab is pressed → Hides the Collection side (model info, guidelines, knowledge, results) and shows the chat. With the chat off it shows a short note and Turn on AI chat"
+    },
+    {
+     "id": "sbr:tab-chat#behavior.2.ja",
+     "definition": "タブを見ていない間に返答が届いたとき → タブに点を付けて強調する。タブを開くと戻る。チャットをオフにすると Collection のタブに戻る"
+    },
+    {
+     "id": "sbr:tab-chat#behavior.2.en",
+     "definition": "When a reply arrives while the tab is not shown → Emphasizes the tab with a dot until it is opened. Switching the chat off returns to the Collection tab"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:modalChatPlacementSelect",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:sbr:collection",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "sbr:collection"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "sb_collection"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Sidebar"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "Collection の見出し"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Collection heading"
+    }
+   ],
+   "senses": [
+    {
+     "id": "sbr:collection#help.ja",
+     "definition": "エンベディングとLLMは、どちらもニューラルネットワークの技術を使いますが、出すものが違います。エンベディングは文章の意味を数字の並び（ベクトル）に変えるもので、新しい文章は作りません。似た意味の文章を探すのに使います。LLMは、文章を読んで新しい文章（回答や書き換え）を作ります。ガイドラインとナレッジは、エンベディングモデルを使って動きます。"
+    },
+    {
+     "id": "sbr:collection#help.en",
+     "definition": "Embedding and the LLM both use neural-network technology, but they produce different things. Embedding turns the meaning of a text into a list of numbers (a vector) and writes no new text; it is used to find texts with a similar meaning. The LLM reads a text and writes new text (an answer or a rewrite). Guidelines and Knowledge run on the embedding model."
     }
    ],
    "relations": [],
@@ -1726,12 +2028,12 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "ガイドラインのカード"
+     "text": "Guidelines のカード"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Guideline card"
+     "text": "Guidelines card"
     }
    ],
    "senses": [
@@ -1775,20 +2077,11 @@
      "text": "Import dictionary button"
     }
    ],
-   "senses": [
-    {
-     "id": "sbr:import-dictionary#help.ja",
-     "definition": "目標プロファイル（プリセット）のファイルを選んで読み込むボタンです。読み込みに成功すると、プロファイル名が通知に出ます。"
-    },
-    {
-     "id": "sbr:import-dictionary#help.en",
-     "definition": "Loads a goal profile (preset) from a file you choose. On success a notice shows the profile name."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "target": "c:ui-setting:btnModalImportDict",
      "source": "internal"
     }
    ],
@@ -1871,16 +2164,7 @@
      "text": "Add knowledge slot button"
     }
    ],
-   "senses": [
-    {
-     "id": "sbr:add-slot#help.ja",
-     "definition": "ナレッジのスロットを追加するボタンです。ファイルを選ぶと、スロットが 1 つ増え、ナレッジの欄が開きます。パスワードで保護されたファイルのときは、パスワードを聞かれます。"
-    },
-    {
-     "id": "sbr:add-slot#help.en",
-     "definition": "The button that adds a knowledge slot. Choosing a file adds one slot and opens the Knowledge card. A password-protected file asks for its password."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -1912,20 +2196,11 @@
      "text": "Minimum score field (sidebar)"
     }
    ],
-   "senses": [
-    {
-     "id": "sbr:score-filter#help.ja",
-     "definition": "提案に必要な最小の類似度（50% から 99%、既定は 70%）を指定する入力欄です。これより低い結果は出ません。"
-    },
-    {
-     "id": "sbr:score-filter#help.en",
-     "definition": "The minimum similarity a suggestion needs (50% to 99%, default 70%). Results below it are not shown."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "target": "c:ui-setting:modalMinScoreInput",
      "source": "internal"
     }
    ],
@@ -1959,20 +2234,11 @@
      "text": "Result limit menu (sidebar)"
     }
    ],
-   "senses": [
-    {
-     "id": "sbr:limit-select#help.ja",
-     "definition": "提案の最大件数を選ぶメニューです。"
-    },
-    {
-     "id": "sbr:limit-select#help.en",
-     "definition": "The menu for the maximum number of suggestions."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "target": "c:ui-setting:modalLimitSelect",
      "source": "internal"
     }
    ],
@@ -2006,20 +2272,11 @@
      "text": "Full metadata checkbox (sidebar)"
     }
    ],
-   "senses": [
-    {
-     "id": "sbr:metadata-toggle#help.ja",
-     "definition": "オンにすると、提案結果にメタデータと属性をすべて表示します。"
-    },
-    {
-     "id": "sbr:metadata-toggle#help.en",
-     "definition": "When on, suggestion results show all metadata and attributes."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalSuggestTriggerSelect",
+     "target": "c:ui-setting:modalShowFullMetadataSelect",
      "source": "internal"
     }
    ],
@@ -2107,7 +2364,12 @@
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalWordWrapSelect",
+     "target": "c:ui-setting:btnOpenEditorOptions",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:ui-setting:btnOpenEditorOptions",
      "source": "internal"
     }
    ],
@@ -2175,6 +2437,96 @@
    "stub": true
   },
   {
+   "id": "c:data-ui:sys:log-tab-log",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "sys:log-tab-log"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "sys_log_tab_log"
+    }
+   ],
+   "broader": [
+    "c:ui-area:System"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ログパネル: ログのタブ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Log panel: Log tab"
+    }
+   ],
+   "senses": [
+    {
+     "id": "sys:log-tab-log#help.ja",
+     "definition": "ログパネルの「ログ」タブです。システムのログの一覧を表示します。"
+    },
+    {
+     "id": "sys:log-tab-log#help.en",
+     "definition": "The Log tab of the log panel. Shows the list of system log entries."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:sys:log-tab-models",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "sys:log-tab-models"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "sys_log_tab_models"
+    }
+   ],
+   "broader": [
+    "c:ui-area:System"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ログパネル: モデルのタブ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Log panel: Models tab"
+    }
+   ],
+   "senses": [
+    {
+     "id": "sys:log-tab-models#help.ja",
+     "definition": "ログパネルの「モデル」タブです。Gemini のモデル一覧を取得し、使うモデルを選びます。設定ページと同じ選択になります。"
+    },
+    {
+     "id": "sys:log-tab-models#help.en",
+     "definition": "The Models tab of the log panel. Fetches the Gemini model list and chooses the model to use. The choice is the same as on the settings page."
+    },
+    {
+     "id": "sys:log-tab-models#behavior.1.ja",
+     "definition": "モデルのタブを選んだとき → モデル一覧を表示する。選んだモデルは設定ページと同じものになる"
+    },
+    {
+     "id": "sys:log-tab-models#behavior.1.en",
+     "definition": "When the Models tab is chosen → Shows the model list. The chosen model is the same as on the settings page"
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
    "id": "c:data-ui:sys:log-clear",
    "notations": [
     {
@@ -2202,20 +2554,11 @@
      "text": "Log panel: clear button"
     }
    ],
-   "senses": [
-    {
-     "id": "sys:log-clear#help.ja",
-     "definition": "ログパネルのログをすべて消去するボタンです。消去の前に確認が出ます。"
-    },
-    {
-     "id": "sys:log-clear#help.en",
-     "definition": "Clears all log entries from the log panel. A confirmation appears first."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "target": "c:ui-setting:log:clear",
      "source": "internal"
     }
    ],
@@ -2249,20 +2592,11 @@
      "text": "Log panel: copy button"
     }
    ],
-   "senses": [
-    {
-     "id": "sys:log-copy#help.ja",
-     "definition": "ログをすべてクリップボードにコピーするボタンです。"
-    },
-    {
-     "id": "sys:log-copy#help.en",
-     "definition": "The button that copies all log entries to the clipboard."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "target": "c:ui-setting:log:clear",
      "source": "internal"
     }
    ],
@@ -2296,23 +2630,63 @@
      "text": "Log panel: save button"
     }
    ],
-   "senses": [
-    {
-     "id": "sys:log-download#help.ja",
-     "definition": "ログをすべてテキストファイルに保存するボタンです。"
-    },
-    {
-     "id": "sys:log-download#help.en",
-     "definition": "The button that saves all log entries to a text file."
-    }
-   ],
+   "senses": [],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "target": "c:ui-setting:log:clear",
      "source": "internal"
     }
    ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:sys:log-models-fetch",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "sys:log-models-fetch"
+    },
+    {
+     "scheme": "settings-registry",
+     "value": "sys_log_models_fetch"
+    }
+   ],
+   "broader": [
+    "c:ui-area:System"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ログパネル: モデル一覧を取得のボタン"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Log panel: Fetch Models button"
+    }
+   ],
+   "senses": [
+    {
+     "id": "sys:log-models-fetch#help.ja",
+     "definition": "モデル一覧を取得するボタンです。保存されたキーを使って Gemini から一覧を読み込みます。"
+    },
+    {
+     "id": "sys:log-models-fetch#help.en",
+     "definition": "Fetches the Gemini model list with the saved key and shows it in the list."
+    },
+    {
+     "id": "sys:log-models-fetch#behavior.1.ja",
+     "definition": "取得ボタンを押したとき → 保存されたキーで一覧を読み込み、モデルを一覧に出す。読み込めないときはエラーの文を出す"
+    },
+    {
+     "id": "sys:log-models-fetch#behavior.1.en",
+     "definition": "When Fetch Models is pressed → Loads the list with the saved key and shows the models. If loading fails, shows an error line"
+    }
+   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
@@ -2386,14 +2760,6 @@
    ],
    "senses": [
     {
-     "id": "sys:log-console#help.ja",
-     "definition": "下部のログパネルを開閉するボタンです。ログパネルには、アプリの動作の記録が表示されます。設定の「ログの保存」で、ログを残す方法を選べます。既定は「保存しない」で、終了時に確認は出ません。「終了時に確認」を選ぶと、終了のたびに保存するかを尋ねます。「常に保存」は、起動ごとのログを 30 日間残します。保存したログは、設定の「保存されたログ」から選んで読めます。"
-    },
-    {
-     "id": "sys:log-console#help.en",
-     "definition": "Opens or closes the log panel at the bottom. The panel shows the app's operation log. The setting Save logs chooses how the log is kept. By default nothing is saved and nothing is asked. Ask when exiting asks each time you quit. Always save keeps each start for 30 days. Saved logs can be opened from Saved logs in Settings."
-    },
-    {
      "id": "sys:log-console#behavior.1.ja",
      "definition": "ログ行（ボタン）をクリック → ログパネルを開閉する"
     },
@@ -2418,17 +2784,17 @@
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "target": "c:ui-setting:modalRememberLayoutSelect",
      "source": "internal"
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "target": "c:ui-setting:modalLogTimeFormatSelect",
      "source": "internal"
     },
     {
      "type": "alsoSee",
-     "target": "c:ui-setting:modalLogsOnStartSelect",
+     "target": "c:ui-setting:modalLogTimeZoneSelect",
      "source": "internal"
     }
    ],
@@ -2543,6 +2909,14 @@
     {
      "id": "sys:pipeline-meter#behavior.4.en",
      "definition": "When 6 AI model becomes ready → Writes the log line once. It is not written for each downloaded file"
+    },
+    {
+     "id": "sys:pipeline-meter#behavior.5.ja",
+     "definition": "6 AI モデルのダウンロードが始まったとき → 開始の行と、ファイルごとの取得の行を 1 回ずつシステムログに出す（時刻つき。コピーと保存に入る）。% はランプと設定ページのバーに出し、ログには出さない"
+    },
+    {
+     "id": "sys:pipeline-meter#behavior.5.en",
+     "definition": "When 6 AI model starts downloading → Writes one start line and one line per fetched file to the system log (with time, included in Copy and Save). The percentage shows on the lamp and the settings bar, not in the log"
     }
    ],
    "relations": [],
@@ -2568,7 +2942,7 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "システム設定ボタン（歯車）"
+     "text": "ログパネルの設定ボタン（歯車）"
     },
     {
      "kind": "pref",
@@ -2577,14 +2951,6 @@
     }
    ],
    "senses": [
-    {
-     "id": "sys:quick-settings#help.ja",
-     "definition": "システムとログの設定を開く歯車のボタンです。"
-    },
-    {
-     "id": "sys:quick-settings#help.en",
-     "definition": "The gear button that opens the system and log settings."
-    },
     {
      "id": "sys:quick-settings#behavior.1.ja",
      "definition": "クリック → 設定ページのシステムタブを開く"
@@ -2723,24 +3089,7 @@
      "text": "Step 1: Language, appearance, theme"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:step-appearance#help.ja",
-     "definition": "初回設定の手順 1 です。表示の言語、外観（システム・明・暗）、テーマを選びます。選んだものは、すぐに画面に反映されます。"
-    },
-    {
-     "id": "stp:step-appearance#help.en",
-     "definition": "Step 1 of the first-run setup. Choose the display language, the appearance (system, light or dark) and the theme. A choice applies at once."
-    },
-    {
-     "id": "stp:step-appearance#behavior.1.ja",
-     "definition": "手順 1 を開いたとき → 言語・外観・テーマの今の値を出す。ここで選ぶと、すぐに画面へ反映される"
-    },
-    {
-     "id": "stp:step-appearance#behavior.1.en",
-     "definition": "When step 1 opens → Shows the current language, appearance and theme. A choice here applies at once"
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -2768,23 +3117,8 @@
      "text": "Language"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:lang#help.ja",
-     "definition": "表示の言語（英語か日本語）を選びます。設定ページの言語と同じ値です。"
-    },
-    {
-     "id": "stp:lang#help.en",
-     "definition": "The display language (English or Japanese). The same value as the language on the settings page."
-    }
-   ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:ui-setting:modalLangSelect",
-     "source": "internal"
-    }
-   ],
+   "senses": [],
+   "relations": [],
    "facet": "F.concept"
   },
   {
@@ -2811,16 +3145,7 @@
      "text": "Appearance"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:mode#help.ja",
-     "definition": "外観（システム、明、暗）を選びます。設定ページの外観と同じ値です。"
-    },
-    {
-     "id": "stp:mode#help.en",
-     "definition": "The appearance (system, light or dark). The same value as on the settings page."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -2848,16 +3173,7 @@
      "text": "Theme"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:theme#help.ja",
-     "definition": "テーマを選びます。カードの見本は、選んだ外観で表示されます。"
-    },
-    {
-     "id": "stp:theme#help.en",
-     "definition": "Choose a theme. Each card shows a sample in the chosen appearance."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -2885,16 +3201,7 @@
      "text": "Step 2: Save location, format, auto-save"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:step-saving#help.ja",
-     "definition": "初回設定の手順 2 です。保存先のフォルダと名前、新しい文書の形式（Markdown かテキスト）、自動保存を選びます。"
-    },
-    {
-     "id": "stp:step-saving#help.en",
-     "definition": "Step 2 of the first-run setup. Choose the save folder and its name, the format of new documents (Markdown or text), and auto-save."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -2922,16 +3229,7 @@
      "text": "Save location"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:save-location#help.ja",
-     "definition": "保存先のフォルダを表示します。変えるときは、フォルダを選びます。"
-    },
-    {
-     "id": "stp:save-location#help.en",
-     "definition": "Shows the save folder. Choose a folder to change it."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -2959,16 +3257,7 @@
      "text": "Folder name"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:folder-name#help.ja",
-     "definition": "保存先のフォルダの名前です。Enter を押すか、欄の外をクリックすると保存されます。"
-    },
-    {
-     "id": "stp:folder-name#help.en",
-     "definition": "The name of the save folder. Press Enter or click outside the field to save it."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -2996,16 +3285,7 @@
      "text": "File format"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:format#help.ja",
-     "definition": "新しい文書の形式を選びます。Markdown（見出しや表を書式として使う）か、テキスト（書式なし）です。"
-    },
-    {
-     "id": "stp:format#help.en",
-     "definition": "Choose the format of new documents: Markdown (headings and tables as formatting) or plain text."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -3033,16 +3313,7 @@
      "text": "Auto-save"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:autosave#help.ja",
-     "definition": "書いている間の自動保存を入れるかを選びます。詳細を開くと、一時停止と改行の二つの条件を設定できます。"
-    },
-    {
-     "id": "stp:autosave#help.en",
-     "definition": "Turns auto-save on while you write. Open the details to set the pause and new-line triggers."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -3070,16 +3341,7 @@
      "text": "Auto-save delay"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:autosave-delay#help.ja",
-     "definition": "一時停止の秒数です。0.5 秒刻みで、0.5 から 10 秒の間で入力します。"
-    },
-    {
-     "id": "stp:autosave-delay#help.en",
-     "definition": "The pause in seconds, in steps of 0.5, from 0.5 to 10."
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -3110,48 +3372,11 @@
    "senses": [
     {
      "id": "stp:step-dictionary#help.ja",
-     "definition": "初回設定の手順 3 です。辞書の検索（EMBED）の入れ方と、クラウド AI の提供元を選びます。辞書の検索は、この PC の中で行います。クラウド AI を選んだときだけ、その AI に文章を送ります。"
+     "definition": "手順 3 では、辞書の検索に使う埋め込みモデルと、任意の文章作成支援を設定します"
     },
     {
      "id": "stp:step-dictionary#help.en",
-     "definition": "Step 3 of the first-run setup. Choose whether to turn on dictionary search (EMBED) and the cloud AI provider. Dictionary search runs on this PC. Text is sent to a cloud AI only when one is chosen."
-    }
-   ],
-   "relations": [],
-   "facet": "F.concept"
-  },
-  {
-   "id": "c:data-ui:stp:cloud-provider",
-   "notations": [
-    {
-     "scheme": "data-ui",
-     "value": "stp:cloud-provider"
-    }
-   ],
-   "broader": [
-    "c:ui-area:Setup"
-   ],
-   "depth": 1,
-   "labels": [
-    {
-     "kind": "pref",
-     "lang": "ja",
-     "text": "クラウド AI の提供元"
-    },
-    {
-     "kind": "pref",
-     "lang": "en",
-     "text": "Cloud AI provider"
-    }
-   ],
-   "senses": [
-    {
-     "id": "stp:cloud-provider#help.ja",
-     "definition": "クラウド AI の提供元を選びます。選ばないときは、クラウド AI は使いません。"
-    },
-    {
-     "id": "stp:cloud-provider#help.en",
-     "definition": "Choose the cloud AI provider. If none is chosen, no cloud AI is used."
+     "definition": "Step 3 sets the embedding model for dictionary search and the optional writing assist."
     }
    ],
    "relations": [],
@@ -3184,21 +3409,41 @@
    "senses": [
     {
      "id": "stp:embed#help.ja",
-     "definition": "辞書の検索（EMBED）を入れます。オンのときは、モデルを準備し、書いている文章に合う辞書の項目を右パネルに出します。モデルがないと、辞書の候補は出ません。"
+     "definition": "オンにすると、辞書の候補を探す埋め込みモデルを 1 回だけダウンロードして、この PC の中で動かします"
     },
     {
      "id": "stp:embed#help.en",
-     "definition": "Turns on dictionary search (EMBED). When on, the model is prepared and matching dictionary items appear in the right panel. Without the model, no dictionary suggestions appear."
-    },
-    {
-     "id": "stp:embed#behavior.1.ja",
-     "definition": "辞書の検索（EMBED）のモデルの準備ができたとき → EMBED は自動でオンになる（変更なし）"
-    },
-    {
-     "id": "stp:embed#behavior.1.en",
-     "definition": "When the dictionary model is ready → EMBED switches on by itself (unchanged)"
+     "definition": "When on, the embedding model that finds dictionary suggestions is downloaded once and runs on this PC."
     }
    ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:stp:cloud-provider",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "stp:cloud-provider"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Setup"
+   ],
+   "depth": 1,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "クラウド AI の提供元"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Cloud AI provider"
+    }
+   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -3226,24 +3471,7 @@
      "text": "Cancel"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:cancel#help.ja",
-     "definition": "設定を保存せずに終了します。手順 1 の言語・外観・テーマと、手順 2 の保存先は、開いたときの値に戻ります。次回起動時に、初回設定がもう一度出ます。"
-    },
-    {
-     "id": "stp:cancel#help.en",
-     "definition": "Quits without saving the choices. Language, appearance, theme and the save folder go back to their values from when setup opened. Setup shows again at the next start."
-    },
-    {
-     "id": "stp:cancel#behavior.1.ja",
-     "definition": "キャンセルを押したとき → 手順 1 の言語・外観・テーマと、保存先（場所と名前）を、設定を開いた時点の値に戻してから閉じる"
-    },
-    {
-     "id": "stp:cancel#behavior.1.en",
-     "definition": "When Cancel is pressed → Puts language, appearance, theme and the save folder (location and name) back to the values held when setup opened, then quits"
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -3271,24 +3499,7 @@
      "text": "Back"
     }
    ],
-   "senses": [
-    {
-     "id": "stp:back#help.ja",
-     "definition": "ひとつ前の手順に戻ります。選んだ内容は残ります。"
-    },
-    {
-     "id": "stp:back#help.en",
-     "definition": "Goes back one step. Choices are kept."
-    },
-    {
-     "id": "stp:back#behavior.1.ja",
-     "definition": "戻るを押したとき → ひとつ前の手順に移る。選んだ内容は残る"
-    },
-    {
-     "id": "stp:back#behavior.1.en",
-     "definition": "When Back is pressed → Moves to the previous step. Choices stay"
-    }
-   ],
+   "senses": [],
    "relations": [],
    "facet": "F.concept"
   },
@@ -3316,30 +3527,207 @@
      "text": "Next or Finish"
     }
    ],
+   "senses": [],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-area:Settings",
+   "notations": [
+    {
+     "scheme": "ui-area",
+     "value": "Settings"
+    }
+   ],
+   "broader": [],
+   "depth": 0,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Settings"
+    }
+   ],
+   "facet": "F.concept",
+   "stub": true
+  },
+  {
+   "id": "c:data-ui:set:log-intro",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "set:log-intro"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Settings"
+   ],
+   "depth": 1,
+   "labels": [],
    "senses": [
     {
-     "id": "stp:next#help.ja",
-     "definition": "次の手順に進みます。手順 3 では「完了」になり、設定を保存して閉じます。"
+     "id": "set:log-intro#help.ja",
+     "definition": "初回起動のときだけ、下部のログパネルに出る案内です。ログは閉じてもよく、ログボタンでいつでも開けます。"
     },
     {
-     "id": "stp:next#help.en",
-     "definition": "Goes to the next step. On step 3 it reads Finish: stores the settings and closes."
+     "id": "set:log-intro#help.en",
+     "definition": "Shown only on the first start in the bottom log panel: the log can be closed and opened again with the Logs button."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:set:tooltip-off-reason",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "set:tooltip-off-reason"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Settings"
+   ],
+   "depth": 1,
+   "labels": [],
+   "senses": [
+    {
+     "id": "set:tooltip-off-reason#help.ja",
+     "definition": "ツールチップがオフのとき、幅と距離の設定が使えない理由を示す文です。"
     },
     {
-     "id": "stp:next#behavior.1.ja",
-     "definition": "手順 1 か 2 で次へを押したとき → 次の手順に移る。手順 2 では、保存先の名前を先に確定する。名前に問題があれば、その場に残る"
+     "id": "set:tooltip-off-reason#help.en",
+     "definition": "Shows why the tooltip width and distance are locked while tooltips are off."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:set:autosave-off-reason",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "set:autosave-off-reason"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Settings"
+   ],
+   "depth": 1,
+   "labels": [],
+   "senses": [
+    {
+     "id": "set:autosave-off-reason#help.ja",
+     "definition": "自動保存がオフのとき、その下の設定（入力が止まったら保存、改行で保存）が使えない理由を示す文です。"
     },
     {
-     "id": "stp:next#behavior.1.en",
-     "definition": "When Next is pressed on step 1 or 2 → Moves to the next step. On step 2 the folder name is applied first; a problem keeps the user on the step"
+     "id": "set:autosave-off-reason#help.en",
+     "definition": "Shows why the auto-save settings below are locked while auto-save is off."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:set:llm-switch-reason",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "set:llm-switch-reason"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Settings"
+   ],
+   "depth": 1,
+   "labels": [],
+   "senses": [
+    {
+     "id": "set:llm-switch-reason#help.ja",
+     "definition": "「AI チャットの使用」のスイッチが使えない理由を示す文です。プロバイダーが未選択か、選んだプロバイダーの API キーが未保存の間だけ出ます。"
     },
     {
-     "id": "stp:next#behavior.2.ja",
-     "definition": "手順 3 で完了を押したとき → 保存、形式、自動保存、辞書の選択を保存し、初回設定を完了として閉じる"
+     "id": "set:llm-switch-reason#help.en",
+     "definition": "Shows why the Use AI chat switch is locked. It appears only while no provider is chosen or the key of the chosen provider is not saved."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:set:collection-flow",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "set:collection-flow"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Settings"
+   ],
+   "depth": 1,
+   "labels": [],
+   "senses": [
+    {
+     "id": "set:collection-flow#help.ja",
+     "definition": "Collection の上にある図です。左はネット上の情報と LLM、右は辞書とエンベディングを表し、どちらも入力のキーワードから始まります。ネット上の情報と辞書は、それぞれ LLM とエンベディングに渡されます。"
     },
     {
-     "id": "stp:next#behavior.2.en",
-     "definition": "When Finish is pressed on step 3 → Stores the format, auto-save and dictionary choices, marks setup complete and closes"
+     "id": "set:collection-flow#help.en",
+     "definition": "A diagram above the Collection cards. The left column is online information and the LLM; the right column is dictionaries and the embedding model. Both start from the keyword you type."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:set:model-install-button",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "set:model-install-button"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Settings"
+   ],
+   "depth": 1,
+   "labels": [],
+   "senses": [
+    {
+     "id": "set:model-install-button#help.ja",
+     "definition": "Guidelines の下にあるボタンです。押すと、エンベディングモデルの一覧（カタログ）まで移動します。"
+    },
+    {
+     "id": "set:model-install-button#help.en",
+     "definition": "A button under the Guidelines status line. It scrolls to the embedding model catalog."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:data-ui:set:suggest-off-reason",
+   "notations": [
+    {
+     "scheme": "data-ui",
+     "value": "set:suggest-off-reason"
+    }
+   ],
+   "broader": [
+    "c:ui-area:Settings"
+   ],
+   "depth": 1,
+   "labels": [],
+   "senses": [
+    {
+     "id": "set:suggest-off-reason#help.ja",
+     "definition": "提案の設定（トリガー、最小スコア、件数）が使えない理由を書いた文です。エンベディングがオフ、モデル未準備、辞書なし、のどれかを示します。"
+    },
+    {
+     "id": "set:suggest-off-reason#help.en",
+     "definition": "Shows why the suggestion settings (trigger, minimum score, limit) are locked: embedding off, model not ready, or no dictionary."
     }
    ],
    "relations": [],
@@ -3368,6 +3756,43 @@
    "stub": true
   },
   {
+   "id": "c:ui-setting:",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": ""
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Header/tabAppearance"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "アプリ名"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "App name"
+    }
+   ],
+   "senses": [
+    {
+     "id": "#desc.ja",
+     "definition": "タイトルバーのロゴ、アプリ名、バージョンの表示と非表示の切替"
+    },
+    {
+     "id": "#desc.en",
+     "definition": "Shows or hides the logo, app name and version in the header."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
    "id": "c:ui-setting:modalColorModeSelect",
    "notations": [
     {
@@ -3383,7 +3808,7 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "外観モード"
+     "text": "外観"
     },
     {
      "kind": "pref",
@@ -3394,11 +3819,11 @@
    "senses": [
     {
      "id": "modalColorModeSelect#desc.ja",
-     "definition": "ライト・ダーク・システム設定に従うを選びます。テーマはそのまま、明るい面か暗い面で表示します。"
+     "definition": "OSに合わせる、ライト、ダークから選択。テーマはそのまま、明るい面か暗い面で表示"
     },
     {
      "id": "modalColorModeSelect#desc.en",
-     "definition": "Light, dark, or follow the system. The theme shows its light or dark face."
+     "definition": "Match system, light or dark. The theme shows its light or dark face."
     },
     {
      "id": "modalColorModeSelect#pair.ja",
@@ -3407,14 +3832,6 @@
     {
      "id": "modalColorModeSelect#pair.en",
      "definition": "linked: Same value as the appearance button in the header"
-    },
-    {
-     "id": "modalThemeSelect#pair.ja",
-     "definition": "linked: ヘッダーのテーマ選択、View メニューのテーマ切替と同じ値"
-    },
-    {
-     "id": "modalThemeSelect#pair.en",
-     "definition": "linked: Same value as the theme selector in the header and the theme switch in the View menu"
     }
    ],
    "relations": [
@@ -3422,13 +3839,119 @@
      "type": "alsoSee",
      "target": "c:data-ui:hdr:color-mode",
      "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:hdr:theme-select",
-     "source": "internal"
     }
    ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalTooltipWidthSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalTooltipWidthSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Header/tabAppearance"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ツールチップの幅"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Tooltip width"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalTooltipWidthSelect#desc.ja",
+     "definition": "ボタンにマウスを合わせたときのツールチップの行の長さ。短いは長い文を2行に折り返し、長いは横に広く表示"
+    },
+    {
+     "id": "modalTooltipWidthSelect#desc.en",
+     "definition": "Line length of the tooltip shown when you hover over a button. Short wraps long text onto two lines; Long lets a line run wider."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalTooltipEnabledSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalTooltipEnabledSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Header/tabAppearance"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ツールチップ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Tooltips"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalTooltipEnabledSelect#desc.ja",
+     "definition": "ボタンにマウスを合わせたとき、遅延なくツールチップを表示。オフにすると、システム標準のツールチップを使う"
+    },
+    {
+     "id": "modalTooltipEnabledSelect#desc.en",
+     "definition": "Show the tooltip when you hover over a button, with no delay. Off uses the standard tooltip of the system instead."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalTooltipGapSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalTooltipGapSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Header/tabAppearance"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ツールチップの距離"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Tooltip distance"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalTooltipGapSelect#desc.ja",
+     "definition": "ボタンにマウスを合わせたときのツールチップと、ポインタとの距離。近いは、ツールチップをポインタの近くに置く。遠いは、ポインタから離して置く"
+    },
+    {
+     "id": "modalTooltipGapSelect#desc.en",
+     "definition": "Distance between the pointer and the tooltip shown when you hover over a button. Near keeps the tooltip close to the pointer; Far moves it away from the pointer."
+    }
+   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
@@ -3458,36 +3981,22 @@
    "senses": [
     {
      "id": "modalLangSelect#desc.ja",
-     "definition": "アプリケーションの表示言語を切り替えます。"
+     "definition": "表示言語を選択。選ぶと画面がすぐ切替わる"
     },
     {
      "id": "modalLangSelect#desc.en",
-     "definition": "Switch application locale."
-    },
-    {
-     "id": "modalLangSelect#pair.ja",
-     "definition": "linked: 初回設定の手順 1 の言語と同じ値"
-    },
-    {
-     "id": "modalLangSelect#pair.en",
-     "definition": "linked: Same value as the language in step 1 of the first-run setup"
+     "definition": "Choose the display language. The screen switches at once."
     }
    ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:stp:lang",
-     "source": "internal"
-    }
-   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalZoomSelect",
+   "id": "c:ui-setting:modalZoomSlider",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalZoomSelect"
+     "value": "modalZoomSlider"
     }
    ],
    "broader": [
@@ -3508,19 +4017,19 @@
    ],
    "senses": [
     {
-     "id": "modalZoomSelect#desc.ja",
-     "definition": "アプリ全体の表示の大きさを調整します"
+     "id": "modalZoomSlider#desc.ja",
+     "definition": "アプリ全体の表示の大きさを調整"
     },
     {
-     "id": "modalZoomSelect#desc.en",
+     "id": "modalZoomSlider#desc.en",
      "definition": "Adjust the overall size of the application UI."
     },
     {
-     "id": "modalZoomSelect#pair.ja",
+     "id": "modalZoomSlider#pair.ja",
      "definition": "linked: ヘッダーのズームバッジ、View メニューの拡大・縮小・リセット、Ctrl+ホイールと同じ値"
     },
     {
-     "id": "modalZoomSelect#pair.en",
+     "id": "modalZoomSlider#pair.en",
      "definition": "linked: Same value as the zoom badge in the header, the zoom items in the View menu and Ctrl+wheel"
     }
    ],
@@ -3560,11 +4069,48 @@
    "senses": [
     {
      "id": "settingsFolderName#desc.ja",
-     "definition": "新しい文書と設定ファイル（.settings.json）を保存するフォルダです"
+     "definition": "新しい文書と設定ファイル（.settings.json）を保存するフォルダ"
     },
     {
      "id": "settingsFolderName#desc.en",
      "definition": "Folder for new documents and the settings file (.settings.json)."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnExportWorkspace",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnExportWorkspace"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Header/tabAppearance"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ワークスペースセッション（.vectorspace）"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Workspace Session (.vectorspace)"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnExportWorkspace#desc.ja",
+     "definition": "開いている全ドキュメント・タブ状態を1つのファイルにまとめて保存・復元"
+    },
+    {
+     "id": "btnExportWorkspace#desc.en",
+     "definition": "Save or restore all active documents and tabs in a single bundle file."
     },
     {
      "id": "btnImportWorkspace#pair.ja",
@@ -3607,11 +4153,11 @@
    "stub": true
   },
   {
-   "id": "c:ui-setting:modalFontFamilySelect",
+   "id": "c:ui-setting:modalAutoSaveSelect",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalFontFamilySelect"
+     "value": "modalAutoSaveSelect"
     }
    ],
    "broader": [
@@ -3622,22 +4168,212 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "フォント"
+     "text": "自動保存の使用"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Font Family"
+     "text": "Use autosave"
     }
    ],
    "senses": [
     {
-     "id": "modalFontFamilySelect#desc.ja",
-     "definition": "エディタのフォントファミリー(書体)を選択します。"
+     "id": "modalAutoSaveSelect#desc.ja",
+     "definition": "書いている間、文書を自動で保存。名前を付けて保存は、別の名前で保存するときに使う"
     },
     {
-     "id": "modalFontFamilySelect#desc.en",
-     "definition": "Select typeface for text rendering."
+     "id": "modalAutoSaveSelect#desc.en",
+     "definition": "Save the document automatically while you write. Save As still saves a copy under a new name."
+    },
+    {
+     "id": "modalAutoSaveSelect#pair.ja",
+     "definition": "linked: 保存ボタンのメニュー内の自動保存スイッチと同じ値"
+    },
+    {
+     "id": "modalAutoSaveSelect#pair.en",
+     "definition": "linked: Same value as the AutoSave switch in the save button's menu"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:save",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalAutoSaveIdleSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalAutoSaveIdleSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "入力が止まったら保存"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Save when typing pauses"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalAutoSaveIdleSelect#desc.ja",
+     "definition": "下の待ち時間のあとに保存"
+    },
+    {
+     "id": "modalAutoSaveIdleSelect#desc.en",
+     "definition": "Saves after the pause set below."
+    },
+    {
+     "id": "modalAutoSaveIdleSelect#pair.ja",
+     "definition": "reflected: 保存ボタンの LED が状態を表示"
+    },
+    {
+     "id": "modalAutoSaveIdleSelect#pair.en",
+     "definition": "reflected: The lamp on the save button shows the state"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:save",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalAutoSaveDelaySelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalAutoSaveDelaySelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "保存までの待ち時間"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Pause before saving"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalAutoSaveDelaySelect#desc.ja",
+     "definition": "入力が止まってから保存するまでの時間。候補から選ぶか、分:秒の形式（例 10:30）で0.5秒〜60:00の範囲で自由に指定できる"
+    },
+    {
+     "id": "modalAutoSaveDelaySelect#desc.en",
+     "definition": "How long to wait after you stop typing. Choose a preset, or type your own as m:ss (for example 10:30), from 0.5 seconds to 60:00."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalAutoSaveNewlineSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalAutoSaveNewlineSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "改行のたびに保存"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Save at each new line"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalAutoSaveNewlineSelect#desc.ja",
+     "definition": "新しい行を始めるたびに保存"
+    },
+    {
+     "id": "modalAutoSaveNewlineSelect#desc.en",
+     "definition": "Saves every time you start a new line."
+    },
+    {
+     "id": "modalAutoSaveNewlineSelect#pair.ja",
+     "definition": "reflected: 保存ボタンの LED が状態を表示"
+    },
+    {
+     "id": "modalAutoSaveNewlineSelect#pair.en",
+     "definition": "reflected: The lamp on the save button shows the state"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:save",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalEditorBgSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalEditorBgSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "エディタの背景"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Editor background"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalEditorBgSelect#desc.ja",
+     "definition": "エディタの背景色と文字色を選択。背景と文字は別々に選択可能"
+    },
+    {
+     "id": "modalEditorBgSelect#desc.en",
+     "definition": "Choose the background and text colours of the editor. They can be set separately."
     },
     {
      "id": "modalCustomBgPicker#pair.ja",
@@ -3659,16 +4395,6 @@
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:data-ui:edt:font-family",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:font-size",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
      "target": "c:data-ui:edt:bg-tone",
      "source": "internal"
     },
@@ -3686,11 +4412,11 @@
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalWordWrapSelect",
+   "id": "c:ui-setting:modalFontFamilySelect",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalWordWrapSelect"
+     "value": "modalFontFamilySelect"
     }
    ],
    "broader": [
@@ -3701,39 +4427,544 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "折り返し"
+     "text": "フォントファミリー"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Word Wrap"
+     "text": "Font Family"
     }
    ],
    "senses": [
     {
-     "id": "modalWordWrapSelect#desc.ja",
-     "definition": "画面幅に応じたテキストの自動折り返しを切り替え"
+     "id": "modalFontFamilySelect#desc.ja",
+     "definition": "エディタ内のフォントファミリーを選択（Markdown プレビューにも反映）"
     },
     {
-     "id": "modalWordWrapSelect#desc.en",
-     "definition": "Toggle automatic text wrapping based on viewport width."
-    },
-    {
-     "id": "btnEditorOptionsReset#pair.ja",
-     "definition": "linked: エディタオプションのカードの「既定に戻す」と同じ操作"
-    },
-    {
-     "id": "btnEditorOptionsReset#pair.en",
-     "definition": "linked: Same action as Restore Defaults in the editor options card"
+     "id": "modalFontFamilySelect#desc.en",
+     "definition": "Select the font family used inside the editor (also applied to the Markdown preview)."
     }
    ],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:data-ui:sbr:editor-options-card",
+     "target": "c:data-ui:edt:font-family",
      "source": "internal"
     }
    ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalFontSizeSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalFontSizeSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "フォントサイズ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Font Size"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalFontSizeSelect#desc.ja",
+     "definition": "エディタの文字サイズを選択。プリセットのほか、8〜72px の好きな値も指定できる"
+    },
+    {
+     "id": "modalFontSizeSelect#desc.en",
+     "definition": "Choose the editor font size. Pick a preset or type your own value from 8 to 72 px."
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:font-size",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLlmSwitchSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLlmSwitchSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "AI チャットの使用"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Use AI chat"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLlmSwitchSelect#desc.ja",
+     "definition": "クラウドの AI（Gemini、OpenAI、Claude） を使う機能（チャット、Ctrl+K、右クリックの書き換え）のオン／オフ。タイトルバーの AI ボタンと同じ操作で、オンにするとチャット欄も開く。先に API キーの設定が必要"
+    },
+    {
+     "id": "modalLlmSwitchSelect#desc.en",
+     "definition": "Turns the features that use a cloud AI (Gemini, OpenAI, Claude) on or off: chat, Ctrl+K and the rewrite in the right-click menu. It does the same as the AI button in the header, and turning it on also opens the chat dock. An API key must be set up first."
+    },
+    {
+     "id": "modalLlmSwitchSelect#pair.ja",
+     "definition": "linked: チャットドックのヘッダーのスイッチと同じ状態"
+    },
+    {
+     "id": "modalLlmSwitchSelect#pair.en",
+     "definition": "linked: Same state as the switch in the chat dock header"
+    },
+    {
+     "id": "modalLlmSwitchSelect#pair.ja",
+     "definition": "linked: エディタ上部の LLM ボタンと同じ状態（Master AI は廃止。「LLM」に改名予定: planned.csv S04）"
+    },
+    {
+     "id": "modalLlmSwitchSelect#pair.en",
+     "definition": "linked: The same state as the LLM button above the editor (Master AI is removed; to be renamed LLM: planned.csv S04)"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-switch",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:ai-toggle",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalChatPlacementSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalChatPlacementSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "チャット欄の位置"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Chat position"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalChatPlacementSelect#desc.ja",
+     "definition": "AI チャット欄を置く場所。エディタの下か、右サイドバーのタブ（Collection と切替え）。チャット欄ヘッダーの移動ボタンでも変えられる"
+    },
+    {
+     "id": "modalChatPlacementSelect#desc.en",
+     "definition": "Where the AI chat area sits: below the editor, or as a tab of the right sidebar next to Collection. The move button in the chat header changes it too."
+    },
+    {
+     "id": "modalAiProviderSelect#pair.ja",
+     "definition": "linked: チャットドックのプロバイダー選択と同じ値"
+    },
+    {
+     "id": "modalAiProviderSelect#pair.en",
+     "definition": "linked: Same value as the provider choice in the chat dock"
+    },
+    {
+     "id": "modalChatPlacementSelect#pair.ja",
+     "definition": "linked: チャットドックの移動ボタンと同じ値（どちらで変えても同じ場所になる）"
+    },
+    {
+     "id": "modalChatPlacementSelect#pair.en",
+     "definition": "linked: Same value as the move button in the chat dock (changing either gives the same place)"
+    },
+    {
+     "id": "modalChatPlacementSelect#pair.ja",
+     "definition": "linked: チャットを右サイドバーに置いたときに出るタブ。位置が「右サイドバー」のときだけ表示する"
+    },
+    {
+     "id": "modalChatPlacementSelect#pair.en",
+     "definition": "linked: The tab that appears when the chat is placed in the right sidebar; shown only while the position is Right sidebar"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-dock",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-move",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:tab-chat",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalGeminiKeyInput",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalGeminiKeyInput"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "API キー"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "API Key"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalGeminiKeyInput#desc.ja",
+     "definition": "[Google AI Studio](https://aistudio.google.com/app/apikey) で取得した API キーを入力。API キーは、この OS 端末内で安全に保存される"
+    },
+    {
+     "id": "modalGeminiKeyInput#desc.en",
+     "definition": "API key from [Google AI Studio](https://aistudio.google.com/app/apikey). Stored securely on this device."
+    },
+    {
+     "id": "modalGeminiKeyInput#pair.ja",
+     "definition": "linked: チャットドックのキー入力と同じキー"
+    },
+    {
+     "id": "modalGeminiKeyInput#pair.en",
+     "definition": "linked: Same key as the key field in the chat dock"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-key-config",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnFetchGeminiModels",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnFetchGeminiModels"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "モデル"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Model"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnFetchGeminiModels#desc.ja",
+     "definition": "API キーを設定したら、次は「モデルを取得」で、プロバイダーからモデルを取得。API がプロバイダーにつながっていれば、モデルの一覧が表示される"
+    },
+    {
+     "id": "btnFetchGeminiModels#desc.en",
+     "definition": "After the API key is set, press \"Fetch Models\" to get the models from the provider. If the API is connected to the provider, the list of models is shown."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalOpenAiKeyInput",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalOpenAiKeyInput"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "API キー"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "API Key"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalOpenAiKeyInput#desc.ja",
+     "definition": "[OpenAI Platform](https://platform.openai.com/api-keys) で取得したシークレット API キーを入力。API キーは、この OS 端末内で安全に保存される"
+    },
+    {
+     "id": "modalOpenAiKeyInput#desc.en",
+     "definition": "Secret key from [OpenAI Platform](https://platform.openai.com/api-keys). Stored securely on this device."
+    },
+    {
+     "id": "modalOpenAiKeyInput#pair.ja",
+     "definition": "linked: チャットドックのキー入力と同じキー"
+    },
+    {
+     "id": "modalOpenAiKeyInput#pair.en",
+     "definition": "linked: Same key as the key field in the chat dock"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-key-config",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalOpenAiModelSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalOpenAiModelSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "モデル"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Model"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalOpenAiModelSelect#desc.ja",
+     "definition": "OpenAI のチャットと書き換えに使うモデルを選択"
+    },
+    {
+     "id": "modalOpenAiModelSelect#desc.en",
+     "definition": "Model used for OpenAI chat and rewriting."
+    },
+    {
+     "id": "modalOpenAiModelSelect#pair.ja",
+     "definition": "reflected: チャットドックのモデルのボタンに出る名前"
+    },
+    {
+     "id": "modalOpenAiModelSelect#pair.en",
+     "definition": "reflected: The name shown on the model button in the chat dock"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-model",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalClaudeKeyInput",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalClaudeKeyInput"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "API キー"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "API Key"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalClaudeKeyInput#desc.ja",
+     "definition": "[Anthropic Console](https://console.anthropic.com/settings/keys) で取得した API キーを入力。API キーは、この OS 端末内で安全に保存される"
+    },
+    {
+     "id": "modalClaudeKeyInput#desc.en",
+     "definition": "API key from [Anthropic Console](https://console.anthropic.com/settings/keys). Stored securely on this device."
+    },
+    {
+     "id": "modalClaudeKeyInput#pair.ja",
+     "definition": "linked: チャットドックのキー入力と同じキー"
+    },
+    {
+     "id": "modalClaudeKeyInput#pair.en",
+     "definition": "linked: Same key as the key field in the chat dock"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-key-config",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalClaudeModelSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalClaudeModelSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "モデル"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Model"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalClaudeModelSelect#desc.ja",
+     "definition": "Claude のチャットと書き換えに使うモデルを選択"
+    },
+    {
+     "id": "modalClaudeModelSelect#desc.en",
+     "definition": "Model used for Claude chat and rewriting."
+    },
+    {
+     "id": "modalClaudeModelSelect#pair.ja",
+     "definition": "reflected: チャットドックのモデルのボタンに出る名前"
+    },
+    {
+     "id": "modalClaudeModelSelect#pair.en",
+     "definition": "reflected: The name shown on the model button in the chat dock"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:edt:llm-model",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalDocumentNameSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalDocumentNameSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "新しい文書の名前"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Name of new documents"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalDocumentNameSelect#desc.ja",
+     "definition": "＋ 新規作成で作る文書の名前。タブとファイル名に使われる"
+    },
+    {
+     "id": "modalDocumentNameSelect#desc.en",
+     "definition": "The name of documents made with + New. It is used for the tab and the file name."
+    }
+   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
@@ -3763,11 +4994,11 @@
    "senses": [
     {
      "id": "modalDocumentFormatSelect#desc.ja",
-     "definition": "新しい文書の拡張子（.md または .txt）が決まります。文書ごとに、ステータスバーでいつでも切り替えられます"
+     "definition": "新しい文書の拡張子（.md または .txt）が決まる。文書ごとに、ステータスバーでいつでも切替えられる。Markdown の文書は、タブ行の右端にある目のボタンで、整形した表示（プレビュー）に切替えられる"
     },
     {
      "id": "modalDocumentFormatSelect#desc.en",
-     "definition": "Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar."
+     "definition": "Sets the file extension of new documents (.md or .txt). Each document can still be switched in the status bar.A Markdown document can be shown formatted (preview) with the eye button at the right end of the tab row."
     },
     {
      "id": "modalDocumentFormatSelect#pair.ja",
@@ -3788,11 +5019,11 @@
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalAutoSaveSelect",
+   "id": "c:ui-setting:btnOpenEditorOptions",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalAutoSaveSelect"
+     "value": "btnOpenEditorOptions"
     }
    ],
    "broader": [
@@ -3803,73 +5034,60 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "自動保存"
+     "text": "エディタオプション"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Autosave"
+     "text": "Editor options"
     }
    ],
    "senses": [
     {
-     "id": "modalAutoSaveSelect#desc.ja",
-     "definition": "書いている間、文書を自動で保存します"
+     "id": "btnOpenEditorOptions#desc.ja",
+     "definition": "このエディタは Monaco（Visual Studio Code のエディタ部品）を使っており、その設定を変更できる。設定項目は、右パネルの「エディタオプション」に並んでいる。「パネルを開く」を押すと、確認なしで設定を閉じてそのパネルを表示。「エディタの初期値に戻す」は、そこで変えた値をすべて戻す"
     },
     {
-     "id": "modalAutoSaveSelect#desc.en",
-     "definition": "Save the document automatically while you write."
+     "id": "btnOpenEditorOptions#desc.en",
+     "definition": "This editor is built on Monaco, the editor part of Visual Studio Code, and its options can be changed. They are listed in the Editor Options panel on the right. \"Open panel\" closes the settings without asking and shows that panel. \"Restore editor defaults\" puts back every value you changed there."
     },
     {
-     "id": "modalAutoSaveSelect#pair.ja",
-     "definition": "linked: 保存ボタンのメニュー内の自動保存スイッチと同じ値"
+     "id": "btnOpenEditorOptions#pair.ja",
+     "definition": "reflected: 設定を閉じて、右パネルのエディタオプションのカードを開く"
     },
     {
-     "id": "modalAutoSaveSelect#pair.en",
-     "definition": "linked: Same value as the AutoSave switch in the save button's menu"
+     "id": "btnOpenEditorOptions#pair.en",
+     "definition": "reflected: Closes the settings and opens the Editor Options card in the right panel"
     },
     {
-     "id": "modalAutoSaveIdleSelect#pair.ja",
-     "definition": "reflected: 保存ボタンの LED が状態を表示"
+     "id": "btnEditorOptionsReset#pair.ja",
+     "definition": "reflected: カードで変えた値をすべて初期値に戻す"
     },
     {
-     "id": "modalAutoSaveIdleSelect#pair.en",
-     "definition": "reflected: The lamp on the save button shows the state"
-    },
-    {
-     "id": "modalAutoSaveNewlineSelect#pair.ja",
-     "definition": "reflected: 保存ボタンの LED が状態を表示"
-    },
-    {
-     "id": "modalAutoSaveNewlineSelect#pair.en",
-     "definition": "reflected: The lamp on the save button shows the state"
+     "id": "btnEditorOptionsReset#pair.en",
+     "definition": "reflected: Puts back every value changed in the card"
     }
    ],
    "relations": [
     {
      "type": "alsoSee",
-     "target": "c:data-ui:edt:save",
+     "target": "c:data-ui:sbr:editor-options-card",
      "source": "internal"
     },
     {
      "type": "alsoSee",
-     "target": "c:data-ui:edt:save",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:save",
+     "target": "c:data-ui:sbr:editor-options-card",
      "source": "internal"
     }
    ],
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalLlmSwitchSelect",
+   "id": "c:ui-setting:modalLineHeightSelect",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalLlmSwitchSelect"
+     "value": "modalLineHeightSelect"
     }
    ],
    "broader": [
@@ -3880,87 +5098,33 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "LLM（クラウド AI）"
+     "text": "行の高さ"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "LLM (cloud AI)"
+     "text": "Line Height"
     }
    ],
    "senses": [
     {
-     "id": "modalLlmSwitchSelect#desc.ja",
-     "definition": "Gemini などクラウドの AI を使う機能（チャット、Ctrl+K、右クリックの LLM チャット）のオン／オフです。ヘッダーの LLM ボタンと同じ操作で、オンにするとチャット欄も開きます。先に API キーの設定が必要です"
+     "id": "modalLineHeightSelect#desc.ja",
+     "definition": "行の高さを、文字サイズの何倍かで選択。文字サイズを変えても比率が保たれる"
     },
     {
-     "id": "modalLlmSwitchSelect#desc.en",
-     "definition": "Turns the features that use a cloud AI such as Gemini on or off: chat, Ctrl+K and the LLM chat in the right-click menu. It does the same as the LLM button in the header, and turning it on also opens the chat dock. An API key must be set up first."
-    },
-    {
-     "id": "modalLlmSwitchSelect#pair.ja",
-     "definition": "linked: エディタ上部の LLM ボタンと同じ状態（Master AI は廃止。「LLM」に改名予定: planned.csv S04）"
-    },
-    {
-     "id": "modalLlmSwitchSelect#pair.en",
-     "definition": "linked: The same state as the LLM button above the editor (Master AI is removed; to be renamed LLM: planned.csv S04)"
+     "id": "modalLineHeightSelect#desc.en",
+     "definition": "Adjust the height of each line as a multiple of the font size, so it stays in proportion at every size."
     }
    ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:ai-toggle",
-     "source": "internal"
-    }
-   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalAiProviderSelect",
+   "id": "c:ui-setting:modalWordWrapSelect",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalAiProviderSelect"
-    }
-   ],
-   "broader": [
-    "c:ui-tab:Editor/tabEditor"
-   ],
-   "depth": 2,
-   "labels": [],
-   "senses": [
-    {
-     "id": "modalAiProviderSelect#desc.ja",
-     "definition": "エディタ下部のチャット欄と、右クリックからの書き換えや手直しの会話に使います。API キーを設定すると、チャットが使えるようになります"
-    },
-    {
-     "id": "modalAiProviderSelect#desc.en",
-     "definition": "Used for the editor's bottom chat panel and direct rewriting/refinement conversations via right-click. Setting an API key will unlock the chat functionality."
-    },
-    {
-     "id": "modalAiProviderSelect#pair.ja",
-     "definition": "linked: チャットドックのプロバイダー選択と同じ値"
-    },
-    {
-     "id": "modalAiProviderSelect#pair.en",
-     "definition": "linked: Same value as the provider choice in the chat dock"
-    }
-   ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:llm-dock",
-     "source": "internal"
-    }
-   ],
-   "facet": "F.concept"
-  },
-  {
-   "id": "c:ui-setting:modalGeminiKeyInput",
-   "notations": [
-    {
-     "scheme": "ui-setting",
-     "value": "modalGeminiKeyInput"
+     "value": "modalWordWrapSelect"
     }
    ],
    "broader": [
@@ -3971,47 +5135,33 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "Google Gemini の API キー"
+     "text": "折り返し"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Google Gemini API Key"
+     "text": "Word Wrap"
     }
    ],
    "senses": [
     {
-     "id": "modalGeminiKeyInput#desc.ja",
-     "definition": "Google AI Studio で取得した API キーを入力します。ローカル端末内にのみ安全に保存されます。"
+     "id": "modalWordWrapSelect#desc.ja",
+     "definition": "画面幅に応じたテキストの自動折り返しを切替え"
     },
     {
-     "id": "modalGeminiKeyInput#desc.en",
-     "definition": "Enter your Google AI Studio API key. Stored securely only on your local machine."
-    },
-    {
-     "id": "modalGeminiKeyInput#pair.ja",
-     "definition": "linked: チャットドックのキー入力と同じキー"
-    },
-    {
-     "id": "modalGeminiKeyInput#pair.en",
-     "definition": "linked: Same key as the key field in the chat dock"
+     "id": "modalWordWrapSelect#desc.en",
+     "definition": "Toggle automatic text wrapping based on viewport width."
     }
    ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:llm-key-config",
-     "source": "internal"
-    }
-   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalGeminiModelSelect",
+   "id": "c:ui-setting:modalLineNumbersSelect",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalGeminiModelSelect"
+     "value": "modalLineNumbersSelect"
     }
    ],
    "broader": [
@@ -4022,47 +5172,33 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "Gemini のモデル"
+     "text": "行番号"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Gemini Model"
+     "text": "Line Numbers"
     }
    ],
    "senses": [
     {
-     "id": "modalGeminiModelSelect#desc.ja",
-     "definition": "API キーを設定し「モデルを取得」を押すと、最新の Gemini モデル一覧を取得できます。一覧には文章を生成できるモデルだけを、新しい世代の順に、系統の見出し（Gemini 3 系など）で分けて出します。見出しを押すと、その系統を畳んだり開いたりできます（初めはすべて開いています）。各モデルは表の 1 行で、モデル名・用途（テキスト・音声・画像・ライブ・特殊用途）・入力上限・ティア・備考（プレビュー・NEW・思考の印）（Pro・Flash・Flash-Lite）を出します。表の上に、モデルの見方の短い説明（世代は数字が大きいほど新しい、ティアは性能と費用の段階で Pro ＞ Flash ＞ Flash-Lite、プレビューは試験版））を出します。Gemini と Gemma の違いは、系統の見出しの行に、その系統の説明として出ます。Gemini の見出しには「中身は非公開で、クラウドの API でだけ使えるため、文章は Google に送られる」、Gemma の見出しには「中身（重み）が公開されていて、自分のパソコンで動かせば文章は外に送られないが、この一覧では API で使うので Google に送られる」という説明が付きます。この一覧で選ぶと、どちらもクラウドの API で動きます。モデル ID は、目のボタンで表示を切り替えられます（隠している間は、ID の列は表に出ません。目のボタンは、隠している間はモデル名の見出しに、出している間は ID の見出しにあります）。コストの目安は系統から決めた段階で、金額ではありません。各行の右端の星のボタンでお気に入りに入れられ、一覧の上の「お気に入りのみ」で、お気に入りにしたモデルだけを表示できます。表の上に、無料プランでは最新のモデルや性能の高いモデルが、1 回の入力や出力だけで API の利用上限に達する可能性がある、という注意を出します。一覧の上に検索欄があります。絞り込みは、表の列の見出しの「▾」を押すと開くメニューで行います（モデル名・用途・ティア）。モデル名の列は、押すとモデル名順（A から Z、もう一度で Z から A）に並び、名前の系列（Gemini・Gemma・Nano Banana など）でも絞り込めます。プレビュー・NEW・思考は、備考の列の印で見分けます。メニューの先頭の「すべて」で、その列の絞り込みを外せます。用途とティアは、複数選ぶとどれかに当てはまるものが出ます。ティアのメニューは、Pro ＞ Flash ＞ Flash-Lite の順で並びます。用途は、テキストエディタで使うため、初めは「テキスト」がオンです。メニューの件数は、ほかの列の絞り込みを反映し、0 件のものは押せません。メニューは、外を押すか Esc キーで閉じます。件数の行の「絞り込みを解除」で、すべての絞り込みを外せます。バージョン（世代）の絞り込みはありません。世代は、名前と系統の見出しの数字で分かります。列の見出し（名前・入力上限・ティアなど）を押すとその列で並べ替わり、もう一度押すと逆順になります。「おすすめ順」を押すと元の並びに戻ります。使いたいモデルの「使う」を押すと切り替わります。"
+     "id": "modalLineNumbersSelect#desc.ja",
+     "definition": "行番号の表示・非表示を設定"
     },
     {
-     "id": "modalGeminiModelSelect#desc.en",
-     "definition": "Set the API key, then click \"Fetch Models\" to get the latest list of Gemini models."
-    },
-    {
-     "id": "modalGeminiModelSelect#pair.ja",
-     "definition": "reflected: チャットドックのモデル表示バッジ"
-    },
-    {
-     "id": "modalGeminiModelSelect#pair.en",
-     "definition": "reflected: The model badge in the chat dock"
+     "id": "modalLineNumbersSelect#desc.en",
+     "definition": "Configure visibility of line numbers."
     }
    ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:llm-dock",
-     "source": "internal"
-    }
-   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalOpenAiKeyInput",
+   "id": "c:ui-setting:modalStickyScrollSelect",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalOpenAiKeyInput"
+     "value": "modalStickyScrollSelect"
     }
    ],
    "broader": [
@@ -4073,60 +5209,33 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "OpenAI の API キー"
+     "text": "スティッキースクロール"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "OpenAI API Key"
+     "text": "Sticky Scroll"
     }
    ],
    "senses": [
     {
-     "id": "modalOpenAiKeyInput#desc.ja",
-     "definition": "OpenAI (sk-...) のシークレット API キーを入力します。ローカル端末内にのみ安全に保存されます。"
+     "id": "modalStickyScrollSelect#desc.ja",
+     "definition": "スクロール時に上位の見出しを上部に吸着固定"
     },
     {
-     "id": "modalOpenAiKeyInput#desc.en",
-     "definition": "Enter your OpenAI secret API key (sk-...). Stored securely only on your local machine."
-    },
-    {
-     "id": "modalOpenAiKeyInput#pair.ja",
-     "definition": "linked: チャットドックのキー入力と同じキー"
-    },
-    {
-     "id": "modalOpenAiKeyInput#pair.en",
-     "definition": "linked: Same key as the key field in the chat dock"
-    },
-    {
-     "id": "modalOpenAiModelSelect#pair.ja",
-     "definition": "reflected: チャットドックのモデル表示バッジ"
-    },
-    {
-     "id": "modalOpenAiModelSelect#pair.en",
-     "definition": "reflected: The model badge in the chat dock"
+     "id": "modalStickyScrollSelect#desc.en",
+     "definition": "Keep parent headings visible at top while scrolling."
     }
    ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:llm-key-config",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:llm-dock",
-     "source": "internal"
-    }
-   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:modalClaudeKeyInput",
+   "id": "c:ui-setting:modalLineHighlightSelect",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": "modalClaudeKeyInput"
+     "value": "modalLineHighlightSelect"
     }
    ],
    "broader": [
@@ -4137,52 +5246,62 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "Anthropic の API キー"
+     "text": "現在行のハイライト"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Anthropic API Key"
+     "text": "Current Line Highlight"
     }
    ],
    "senses": [
     {
-     "id": "modalClaudeKeyInput#desc.ja",
-     "definition": "Claude API の秘密鍵(sk-ant-...)を入力します。安全にローカル保存されます。"
+     "id": "modalLineHighlightSelect#desc.ja",
+     "definition": "カーソル行の強調スタイルを選択（行番号 / 下線 / 行全体 / なし）"
     },
     {
-     "id": "modalClaudeKeyInput#desc.en",
-     "definition": "Enter your sk-ant-... secret key. Stored securely on your local device."
-    },
-    {
-     "id": "modalClaudeKeyInput#pair.ja",
-     "definition": "linked: チャットドックのキー入力と同じキー"
-    },
-    {
-     "id": "modalClaudeKeyInput#pair.en",
-     "definition": "linked: Same key as the key field in the chat dock"
-    },
-    {
-     "id": "modalClaudeModelSelect#pair.ja",
-     "definition": "reflected: チャットドックのモデル表示バッジ"
-    },
-    {
-     "id": "modalClaudeModelSelect#pair.en",
-     "definition": "reflected: The model badge in the chat dock"
+     "id": "modalLineHighlightSelect#desc.en",
+     "definition": "Choose how the cursor line is highlighted (line number / underline / whole line / none)."
     }
    ],
-   "relations": [
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalWhitespaceSelect",
+   "notations": [
     {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:llm-key-config",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:edt:llm-dock",
-     "source": "internal"
+     "scheme": "ui-setting",
+     "value": "modalWhitespaceSelect"
     }
    ],
+   "broader": [
+    "c:ui-tab:Editor/tabEditor"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "空白の表示"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Render Whitespace"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalWhitespaceSelect#desc.ja",
+     "definition": "全角・半角スペースやタブの表示状態を切替"
+    },
+    {
+     "id": "modalWhitespaceSelect#desc.en",
+     "definition": "Show visible marks for spaces, tabs, and line breaks."
+    }
+   ],
+   "relations": [],
    "facet": "F.concept"
   },
   {
@@ -4208,6 +5327,43 @@
    "stub": true
   },
   {
+   "id": "c:ui-setting:modalSidebarStartSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalSidebarStartSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "パネルの開閉ボタン"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Panel open/close button"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalSidebarStartSelect#desc.ja",
+     "definition": "執筆エリアを広く使いたいときに使用。エディタとパネルの境界をマウスでドラッグすると、パネルの横幅を変えられる。アプリ起動時の開閉状態を選択"
+    },
+    {
+     "id": "modalSidebarStartSelect#desc.en",
+     "definition": "Use it when you want more room for writing. Drag the border between the editor and the panel with the mouse to change the panel width. Choose whether the panel is open or closed when the app starts."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
    "id": "c:ui-setting:modalEmbeddingAssistantSelect",
    "notations": [
     {
@@ -4223,22 +5379,22 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "埋め込みアシスタント"
+     "text": "埋め込みMODEL"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "Embedding assistant"
+     "text": "Embedding model"
     }
    ],
    "senses": [
     {
      "id": "modalEmbeddingAssistantSelect#desc.ja",
-     "definition": "サイドバーのリアルタイムの意味提案です。LLM とは別に、オン／オフできます。オフのときは、辞書の検索（LLM がオンなら Gemini の補助つき）で動きます"
+     "definition": "書いている文章に合う項目を、この PC の中で探す。文章を外へ送らない。サイドバーで、意味が近い語を提案。オフのときは、辞書の検索だけで提案"
     },
     {
      "id": "modalEmbeddingAssistantSelect#desc.en",
-     "definition": "Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."
+     "definition": "Finds items that match what you write, on this PC. Your text is not sent out. Finds suggestions by meaning in the sidebar. When it is off, suggestions come from dictionary lookup only."
     },
     {
      "id": "modalEmbeddingAssistantSelect#pair.ja",
@@ -4259,11 +5415,28 @@
    "facet": "F.concept"
   },
   {
-   "id": "c:ui-setting:",
+   "id": "c:ui-setting:btnGoToModelInstall",
    "notations": [
     {
      "scheme": "ui-setting",
-     "value": ""
+     "value": "btnGoToModelInstall"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [],
+   "senses": [],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLinterSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLinterSelect"
     }
    ],
    "broader": [
@@ -4274,25 +5447,353 @@
     {
      "kind": "pref",
      "lang": "ja",
-     "text": "AI コントロールセンター"
+     "text": "Linter (構文検証)"
     },
     {
      "kind": "pref",
      "lang": "en",
-     "text": "AI Control Center"
+     "text": "Real-time Validation (Linter)"
     }
    ],
    "senses": [
     {
-     "id": "#desc.ja",
-     "definition": "設定の前に、今の状態を確かめられます"
+     "id": "modalLinterSelect#desc.ja",
+     "definition": "入力中のドキュメント静的検証・警告波線の表示を切替"
     },
     {
-     "id": "#desc.en",
-     "definition": "Live status for verification before configuring."
+     "id": "modalLinterSelect#desc.en",
+     "definition": "Enable background document validation and error squiggles."
     }
    ],
    "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalTruncationSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalTruncationSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ベクトルを短くして合わせる"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Shorten vectors to fit"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalTruncationSelect#desc.ja",
+     "definition": "辞書とモデルでベクトルの長さが違っても、同じエンベディング空間なら、長い方を短い方に切り詰めて使う（近似になる）。オフのときは、その辞書をベクトル検索から外す"
+    },
+    {
+     "id": "modalTruncationSelect#desc.en",
+     "definition": "When a dictionary and the model differ in vector length but share one embedding space, cut the longer vectors to the shorter length (approximate). Off: such a dictionary is left out of vector search."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalSuggestTriggerSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalSuggestTriggerSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "サジェストのトリガーモード"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Suggestion Trigger Mode"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalSuggestTriggerSelect#desc.ja",
+     "definition": "テキストを選択した直後や、右クリックした際に、エディタ上に浮かぶメニューとして上位の検索結果だけを簡易的に表示"
+    },
+    {
+     "id": "modalSuggestTriggerSelect#desc.en",
+     "definition": "Control how vector suggestions are invoked: when you select text, from the right-click menu, or with the shortcut."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalMinScoreInput",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalMinScoreInput"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "最小類似度スコア (%)"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Similarity threshold (%)"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalMinScoreInput#desc.ja",
+     "definition": "この閾値未満の低類似度候補を除外"
+    },
+    {
+     "id": "modalMinScoreInput#desc.en",
+     "definition": "Ignore results below this similarity threshold."
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:score-filter",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLimitSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLimitSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "検索結果の件数"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Result limit"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLimitSelect#desc.ja",
+     "definition": "インスペクターに一度に表示する最大候補数"
+    },
+    {
+     "id": "modalLimitSelect#desc.en",
+     "definition": "Maximum number of suggestions returned."
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:limit-select",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalShowFullMetadataSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalShowFullMetadataSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "項目の詳細情報（メタデータ）も表示"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Show full metadata"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalShowFullMetadataSelect#desc.ja",
+     "definition": "カード内の詳細メタデータ属性を常に展開表示"
+    },
+    {
+     "id": "modalShowFullMetadataSelect#desc.en",
+     "definition": "Auto-expand key-value attributes in suggestion cards."
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:metadata-toggle",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalResultDescLinesSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalResultDescLinesSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "検索結果の説明の行数"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Description lines per search result"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalResultDescLinesSelect#desc.ja",
+     "definition": "提案カードに説明を何行まで出すかを選択。1 行のときは、全文をホバーで見せる"
+    },
+    {
+     "id": "modalResultDescLinesSelect#desc.en",
+     "definition": "How many lines of the description a suggestion card shows. With 1 line, the full text is shown on hover."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalResultTitleLinesSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalResultTitleLinesSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "検索結果の見出しの行数"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Heading lines per search result"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalResultTitleLinesSelect#desc.ja",
+     "definition": "提案カードに見出しを何行まで出すかを選択。全体を選ぶと、見出しを切らずに全部出す"
+    },
+    {
+     "id": "modalResultTitleLinesSelect#desc.en",
+     "definition": "How many lines of the heading a suggestion card shows. Full shows the whole heading without cutting it."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnModalImportDict",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnModalImportDict"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:Sidebar/tabAiSearch"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "辞書をインポート"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Add files"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnModalImportDict#desc.ja",
+     "definition": "専門分野の定義データ・ナレッジ(.json)をHNSWベクトルインデックスへ取込。"
+    },
+    {
+     "id": "btnModalImportDict#desc.en",
+     "definition": "Load custom domain terms, schema rules, or vector definitions into HNSW index."
+    },
+    {
+     "id": "btnModalImportDict#pair.ja",
+     "definition": "linked: サイドバーの辞書インポートと同じ操作"
+    },
+    {
+     "id": "btnModalImportDict#pair.en",
+     "definition": "linked: Same action as the import button in the sidebar"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sbr:import-dictionary",
+     "source": "internal"
+    }
+   ],
    "facet": "F.concept"
   },
   {
@@ -4343,7 +5844,7 @@
    "senses": [
     {
      "id": "btnGoToLlmConfig#desc.ja",
-     "definition": "精度を優先するときは、外部 API で意味検索ができます。通常は端末内の384次元検索を使います。先にエディタタブで API キーを設定してください。"
+     "definition": "精度を優先するときは、外部 API で意味検索ができる。通常は端末内の384次元検索を使う。先にエディタタブで API キーを設定"
     },
     {
      "id": "btnGoToLlmConfig#desc.en",
@@ -4351,72 +5852,6 @@
     }
    ],
    "relations": [],
-   "facet": "F.concept"
-  },
-  {
-   "id": "c:ui-setting:modalSuggestTriggerSelect",
-   "notations": [
-    {
-     "scheme": "ui-setting",
-     "value": "modalSuggestTriggerSelect"
-    }
-   ],
-   "broader": [
-    "c:ui-tab:Sidebar/tabAiSearch"
-   ],
-   "depth": 2,
-   "labels": [
-    {
-     "kind": "pref",
-     "lang": "ja",
-     "text": "サジェストのトリガーモード"
-    },
-    {
-     "kind": "pref",
-     "lang": "en",
-     "text": "Suggestion Trigger Mode"
-    }
-   ],
-   "senses": [
-    {
-     "id": "modalSuggestTriggerSelect#desc.ja",
-     "definition": "テキストを選択した直後や、右クリックした際に、エディタ上に浮かぶメニューとして上位の検索結果だけを簡易的に表示"
-    },
-    {
-     "id": "modalSuggestTriggerSelect#desc.en",
-     "definition": "Control how vector suggestions are invoked (Selection Auto / Context Menu / Shortcut)."
-    },
-    {
-     "id": "btnModalImportDict#pair.ja",
-     "definition": "linked: サイドバーの辞書インポートと同じ操作"
-    },
-    {
-     "id": "btnModalImportDict#pair.en",
-     "definition": "linked: Same action as the import button in the sidebar"
-    }
-   ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sbr:score-filter",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sbr:limit-select",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sbr:metadata-toggle",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sbr:import-dictionary",
-     "source": "internal"
-    }
-   ],
    "facet": "F.concept"
   },
   {
@@ -4440,6 +5875,564 @@
    ],
    "facet": "F.concept",
    "stub": true
+  },
+  {
+   "id": "c:ui-setting:log:clear",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "log:clear"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [],
+   "senses": [
+    {
+     "id": "log:clear#pair.ja",
+     "definition": "linked: ログパネルのクリアと同じ操作"
+    },
+    {
+     "id": "log:clear#pair.en",
+     "definition": "linked: Same action as Clear in the log panel"
+    },
+    {
+     "id": "log:copy#pair.ja",
+     "definition": "linked: ログパネルのコピーと同じ操作"
+    },
+    {
+     "id": "log:copy#pair.en",
+     "definition": "linked: Same action as Copy in the log panel"
+    },
+    {
+     "id": "log:download#pair.ja",
+     "definition": "linked: ログパネルの保存と同じ操作"
+    },
+    {
+     "id": "log:download#pair.en",
+     "definition": "linked: Same action as Save in the log panel"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-clear",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-copy",
+     "source": "internal"
+    },
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-download",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLogsOnStartSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLogsOnStartSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "起動時にログパネルを開く"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Open log panel at startup"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLogsOnStartSelect#desc.ja",
+     "definition": "アプリの起動時にログパネルを開く。オフの場合は、開くまで閉じたまま"
+    },
+    {
+     "id": "modalLogsOnStartSelect#desc.en",
+     "definition": "Open the log panel when the app starts. Off keeps it closed until you open it."
+    },
+    {
+     "id": "modalLogsOnStartSelect#pair.ja",
+     "definition": "reflected: 起動時のログパネルの開閉"
+    },
+    {
+     "id": "modalLogsOnStartSelect#pair.en",
+     "definition": "reflected: Whether the log panel is open at startup"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-console",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLogTimeFormatSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLogTimeFormatSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ログの時刻の表示形式"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Log time format"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLogTimeFormatSelect#desc.ja",
+     "definition": "ログの各行の時刻の表示方法です。表示だけが変わり、保存される時刻は同じです。例（UTC 16:47:01 の場合）: 24 時間: 16:47:01。12 時間: 04:47:01 PM。OS に従う: Windows の地域の形式に従います。ISO 8601: 2026-10-25T16:47:01.123Z（常に UTC）。"
+    },
+    {
+     "id": "modalLogTimeFormatSelect#desc.en",
+     "definition": "How each log time is shown. Only the display changes; the stored time is always the same. Examples for 16:47:01 UTC: 24 hours: 16:47:01. 12 hours: 04:47:01 PM. Follow OS: the format of your Windows region. ISO 8601: 2026-10-25T16:47:01.123Z (always UTC)."
+    },
+    {
+     "id": "modalLogTimeFormatSelect#pair.ja",
+     "definition": "reflected: ログの各行の時刻の表示形式（24 時間、12 時間、OS に従う、ISO 8601）"
+    },
+    {
+     "id": "modalLogTimeFormatSelect#pair.en",
+     "definition": "reflected: Time format of each log line (24 hours"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-console",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLogTimeZoneSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLogTimeZoneSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ログの時刻のタイムゾーン"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Log time zone"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLogTimeZoneSelect#desc.ja",
+     "definition": "ログの時刻のタイムゾーン。ローカルは、この PC のタイムゾーンを表示（既定）。UTC は協定世界時を表示。ISO 8601 は、この設定にかかわらず常に UTC"
+    },
+    {
+     "id": "modalLogTimeZoneSelect#desc.en",
+     "definition": "The time zone of the log times. Local shows this computer's time zone (the default). UTC shows Coordinated Universal Time. ISO 8601 is always UTC, whatever this is set to."
+    },
+    {
+     "id": "modalLogTimeZoneSelect#pair.ja",
+     "definition": "reflected: ログの時刻のタイムゾーン（ローカルか UTC か）"
+    },
+    {
+     "id": "modalLogTimeZoneSelect#pair.en",
+     "definition": "reflected: Time zone of the log times (local or UTC)"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-console",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLogLanguageSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLogLanguageSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ログの言語"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Log language"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLogLanguageSelect#desc.ja",
+     "definition": "ログの文の言語。英語（既定）は、アプリの言語にかかわらず、ログをいつも同じ言語にする。共有するときに向いている。アプリの言語に合わせるは、新しい行をアプリの言語で書く。すでに書いた行は、そのまま"
+    },
+    {
+     "id": "modalLogLanguageSelect#desc.en",
+     "definition": "The language of the log lines. English (the default) keeps every log the same whatever the app language is, which suits sharing it. Follow app language writes new lines in the app language. Lines already written stay as they are."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLogSaveModeSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLogSaveModeSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "ログの保存"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Save logs"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLogSaveModeSelect#desc.ja",
+     "definition": "ログを残す方法を選択。終了時に確認は、終了のたびに尋ねる。常に保存は、すべてのセッションを 30 日間残す。保存しないは、何も残さない"
+    },
+    {
+     "id": "modalLogSaveModeSelect#desc.en",
+     "definition": "Choose how the log is kept. Ask when exiting asks each time you quit. Always save keeps every session for 30 days. Do not save keeps nothing."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalLogSessionSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalLogSessionSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "保存されたログ"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Saved logs"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalLogSessionSelect#desc.ja",
+     "definition": "保存されたセッションを選ぶと、下に内容を表示。30 日を過ぎたセッションは、アプリの起動時に削除される"
+    },
+    {
+     "id": "modalLogSessionSelect#desc.en",
+     "definition": "Pick a saved session to read it below. Sessions older than 30 days are removed when the app starts."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:modalRememberLayoutSelect",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "modalRememberLayoutSelect"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "レイアウトを記憶"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Remember layout"
+    }
+   ],
+   "senses": [
+    {
+     "id": "modalRememberLayoutSelect#desc.ja",
+     "definition": "ログ・チャット欄の高さと、サイドバーの幅を記憶して、次の起動でも戻す。オフにすると記憶を消す"
+    },
+    {
+     "id": "modalRememberLayoutSelect#desc.en",
+     "definition": "Remembers the height of the log panel and the chat dock and the width of the sidebar, and restores them at the next start. Turning it off forgets them."
+    },
+    {
+     "id": "modalRememberLayoutSelect#pair.ja",
+     "definition": "reflected: ログ・チャット欄の高さとサイドバーの幅を記憶する（オフにすると記憶を消す）"
+    },
+    {
+     "id": "modalRememberLayoutSelect#pair.en",
+     "definition": "reflected: Remembers the log and chat heights and the sidebar width (off forgets them)"
+    }
+   ],
+   "relations": [
+    {
+     "type": "alsoSee",
+     "target": "c:data-ui:sys:log-console",
+     "source": "internal"
+    }
+   ],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnReloadEditor",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnReloadEditor"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "再読込"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Reload Editor Window"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnReloadEditor#desc.ja",
+     "definition": "エディタの画面だけを描き直す。アプリは動いたまま。画面の表示がおかしいときや、見た目を変えたあとに使う。何も削除されない"
+    },
+    {
+     "id": "btnReloadEditor#desc.en",
+     "definition": "Redraws the editor window only; the app keeps running. Use this when the screen looks wrong or after a UI change. Nothing is deleted."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnRestartApplication",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnRestartApplication"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "アプリを再起動"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Restart Application"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnRestartApplication#desc.ja",
+     "definition": "アプリ全体を終了して、もう一度起動(エンジンやバックグラウンド処理も含む)。更新のあとや、エンジンやモデルが反応しなくなったときに使う。設定、文書、モデルのキャッシュ、ナレッジスロット、暗号化した API キーは残る"
+    },
+    {
+     "id": "btnRestartApplication#desc.en",
+     "definition": "Closes the whole app and starts it again, including the engine and background processes. Use this after an update or when the engine or a model stops responding. Settings, documents, cached models, Knowledge Slots, and the encrypted API keys are kept."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnClearAppCache",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnClearAppCache"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "アプリのキャッシュを削除"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Clear Application Cache"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnClearAppCache#desc.ja",
+     "definition": "Electron のセッションキャッシュと一時ファイルを削除。文書、ナレッジスロット、設定、ダウンロード済みモデル、API キーは削除されない"
+    },
+    {
+     "id": "btnClearAppCache#desc.en",
+     "definition": "Clears Electron session cache and temporary renderer resources. It does not delete documents, Knowledge Slots, settings, downloaded model files, or API keys."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnResetSettings",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnResetSettings"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "すべての設定を初期化"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Restore all settings"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnResetSettings#desc.ja",
+     "definition": "すべてを初期状態に戻す（設定、読み込んだ KNOWLEDGE とガイドライン、API キー、ダウンロードしたモデル）。初回設定がもう一度表示される。押すと、確認が出る"
+    },
+    {
+     "id": "btnResetSettings#desc.en",
+     "definition": "Resets everything to the first-run state: preferences, the loaded KNOWLEDGE and guideline, the API keys and the downloaded models. The first-run setup shows again. Pressing it asks for confirmation first."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
+  },
+  {
+   "id": "c:ui-setting:btnResetSettingsDev",
+   "notations": [
+    {
+     "scheme": "ui-setting",
+     "value": "btnResetSettingsDev"
+    }
+   ],
+   "broader": [
+    "c:ui-tab:System/tabSystem"
+   ],
+   "depth": 2,
+   "labels": [
+    {
+     "kind": "pref",
+     "lang": "ja",
+     "text": "開発用の初期化"
+    },
+    {
+     "kind": "pref",
+     "lang": "en",
+     "text": "Dev reset"
+    }
+   ],
+   "senses": [
+    {
+     "id": "btnResetSettingsDev#desc.ja",
+     "definition": "上の初期化と同じだが、モデルのファイル、API キー、読み込んだ KNOWLEDGE とガイドライン、保存先フォルダを残す。初回設定はもう一度表示される。実行前に確認が出る"
+    },
+    {
+     "id": "btnResetSettingsDev#desc.en",
+     "definition": "Same as the reset above, but keeps the model files, the API keys, the loaded KNOWLEDGE and guideline, and the save folder. The first-run setup shows again. A confirmation appears first."
+    }
+   ],
+   "relations": [],
+   "facet": "F.concept"
   },
   {
    "id": "c:ui-setting:modalConfirmCloseSelect",
@@ -4468,177 +6461,11 @@
    "senses": [
     {
      "id": "modalConfirmCloseSelect#desc.ja",
-     "definition": "× で閉じるとき、先に確認します。誤クリックで閉じるのを防ぎます。未保存の変更があるタブは、この設定にかかわらず必ず確認します。"
+     "definition": "× で閉じるとき、先に確認。誤クリックで閉じるのを防ぐ。未保存の変更があるタブは、この設定にかかわらず必ず確認する"
     },
     {
      "id": "modalConfirmCloseSelect#desc.en",
      "definition": "Ask first when you close something with ×, so a stray click cannot close it. Tabs with unsaved changes are always asked about."
-    }
-   ],
-   "relations": [],
-   "facet": "F.concept"
-  },
-  {
-   "id": "c:ui-setting:modalLogsOnStartSelect",
-   "notations": [
-    {
-     "scheme": "ui-setting",
-     "value": "modalLogsOnStartSelect"
-    }
-   ],
-   "broader": [
-    "c:ui-tab:System/tabSystem"
-   ],
-   "depth": 2,
-   "labels": [
-    {
-     "kind": "pref",
-     "lang": "ja",
-     "text": "起動時のログパネル"
-    },
-    {
-     "kind": "pref",
-     "lang": "en",
-     "text": "Log panel at startup"
-    }
-   ],
-   "senses": [
-    {
-     "id": "modalLogsOnStartSelect#desc.ja",
-     "definition": "アプリの起動時に、ログパネルを開くかどうかです"
-    },
-    {
-     "id": "modalLogsOnStartSelect#desc.en",
-     "definition": "Whether the log panel is open when the app starts."
-    },
-    {
-     "id": "log:clear#pair.ja",
-     "definition": "linked: ログパネルのクリアと同じ操作"
-    },
-    {
-     "id": "log:clear#pair.en",
-     "definition": "linked: Same action as Clear in the log panel"
-    },
-    {
-     "id": "log:copy#pair.ja",
-     "definition": "linked: ログパネルのコピーと同じ操作"
-    },
-    {
-     "id": "log:copy#pair.en",
-     "definition": "linked: Same action as Copy in the log panel"
-    },
-    {
-     "id": "log:download#pair.ja",
-     "definition": "linked: ログパネルの保存と同じ操作"
-    },
-    {
-     "id": "log:download#pair.en",
-     "definition": "linked: Same action as Save in the log panel"
-    },
-    {
-     "id": "modalLogsOnStartSelect#pair.ja",
-     "definition": "reflected: 起動時のログパネルの開閉"
-    },
-    {
-     "id": "modalLogsOnStartSelect#pair.en",
-     "definition": "reflected: Whether the log panel is open at startup"
-    },
-    {
-     "id": "modalRememberLayoutSelect#pair.ja",
-     "definition": "reflected: ログ・チャット欄の高さとサイドバーの幅を記憶する（オフにすると記憶を消す）"
-    },
-    {
-     "id": "modalRememberLayoutSelect#pair.en",
-     "definition": "reflected: Remembers the log and chat heights and the sidebar width (off forgets them)"
-    },
-    {
-     "id": "modalLogTimeFormatSelect#pair.ja",
-     "definition": "reflected: ログの各行の時刻の表示形式（24 時間、12 時間、OS に従う、ISO 8601）"
-    },
-    {
-     "id": "modalLogTimeFormatSelect#pair.en",
-     "definition": "reflected: Time format of each log line (24 hours"
-    },
-    {
-     "id": "modalLogTimeZoneSelect#pair.ja",
-     "definition": "reflected: ログの時刻のタイムゾーン（ローカルか UTC か）"
-    },
-    {
-     "id": "modalLogTimeZoneSelect#pair.en",
-     "definition": "reflected: Time zone of the log times (local or UTC)"
-    }
-   ],
-   "relations": [
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sys:log-clear",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sys:log-copy",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sys:log-download",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sys:log-console",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sys:log-console",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sys:log-console",
-     "source": "internal"
-    },
-    {
-     "type": "alsoSee",
-     "target": "c:data-ui:sys:log-console",
-     "source": "internal"
-    }
-   ],
-   "facet": "F.concept"
-  },
-  {
-   "id": "c:ui-setting:btnReloadEditor",
-   "notations": [
-    {
-     "scheme": "ui-setting",
-     "value": "btnReloadEditor"
-    }
-   ],
-   "broader": [
-    "c:ui-tab:System/tabSystem"
-   ],
-   "depth": 2,
-   "labels": [
-    {
-     "kind": "pref",
-     "lang": "ja",
-     "text": "エディタ画面を再読み込み"
-    },
-    {
-     "kind": "pref",
-     "lang": "en",
-     "text": "Reload Editor Window"
-    }
-   ],
-   "senses": [
-    {
-     "id": "btnReloadEditor#desc.ja",
-     "definition": "エディタの画面だけを描き直します。アプリは動いたままです。画面の表示がおかしいときや、見た目を変えたあとに使います。何も削除されません。"
-    },
-    {
-     "id": "btnReloadEditor#desc.en",
-     "definition": "Redraws the editor window only; the app keeps running. Use this when the screen looks wrong or after a UI change. Nothing is deleted."
     }
    ],
    "relations": [],
