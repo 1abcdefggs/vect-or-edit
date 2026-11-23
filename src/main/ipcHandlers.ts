@@ -44,7 +44,7 @@ export async function handleSearchVector(payload: any, opts?: { timeoutMs?: numb
     return { success: true, data: results };
   } catch (err: any) {
     const message = err?.message ?? String(err);
-    // ADR-0005 Phase4.3: engine rejects queries from another vector space (e.g. LLM / cloud
+    // Engine rejects queries from another vector space (e.g. LLM / cloud
     // embedder vs. an e5-small KB). Renderer then uses Module 0 (dictionary quickResults).
     if (/dimension mismatch/i.test(message)) {
       return { success: false, error: { message, code: 'DIMENSION_MISMATCH', fallback: 'P.scan' } };

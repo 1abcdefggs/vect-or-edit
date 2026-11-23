@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { aiManager } from '../aiStateManager.js';
 import { canUseLlm, canUseEmbedding, knowledgeSources } from '../aiAccess.js';
 
-// ADR-11: LLM and Embedding are independent switches, and every AI feature asks aiAccess before it runs
+// LLM and Embedding are independent switches, and every AI feature asks aiAccess before it runs
 describe('aiAccess (LLM / Embedding independence)', () => {
   beforeEach(() => {
     aiManager.init({ llm: true, embed: true });
@@ -38,7 +38,7 @@ describe('aiAccess (LLM / Embedding independence)', () => {
     expect(canUseEmbedding()).toBe(true);
   });
 
-  it('lists the knowledge sources the way ADR-11 section 2.2 does', () => {
+  it('lists the knowledge sources as the knowledge source table does', () => {
     aiManager.setLlm(true);
     expect(knowledgeSources()).toEqual({ dictionary: true, vector: false, llm: true });
     aiManager.setEmbed(true);

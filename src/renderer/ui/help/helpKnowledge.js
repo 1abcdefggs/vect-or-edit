@@ -1,5 +1,5 @@
 /**
- * The built-in help knowledge: what the app can do, taken from the generated guide (the UI blueprint, ADR-11).
+ * The built-in help knowledge: what the app can do, taken from the generated guide (the UI blueprint).
  *
  * The chat assistant answers questions about VectOrEdit ("what is Embedding?", "can I change the font?") from this text
  * and not from guesses: the best matching cards of the guide are put in front of the question, with an instruction to

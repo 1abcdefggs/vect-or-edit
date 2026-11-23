@@ -1,7 +1,7 @@
 /**
  * Keeps the language-dependent Monaco options in step with the language of the document in the editor.
  * Runs when a tab is switched (the model changes) and, after a short pause, when the text changes (a file is opened,
- * text is pasted, or the auto detection turns over). Design: docs/monaco_document_language_design_2026_11_23.md.
+ * text is pasted, or the auto detection turns over).
  * A value the user set in the Editor Options panel is never touched.
  */
 import { detectDocumentLanguage, normalizeLanguage } from './documentLanguage.js';

@@ -1,5 +1,5 @@
 /**
- * Document language for the language-dependent Monaco options (design: docs/monaco_document_language_design_2026_11_23.md).
+ * Document language for the language-dependent Monaco options.
  * Pure module (no Monaco, no DOM), so the priority rules can be tested without starting the editor.
  *
  * Priority: manual choice > front matter `lang:` > auto detection > UI language.

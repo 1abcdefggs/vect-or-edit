@@ -1,5 +1,5 @@
 /**
- * aiAccess.ts - the one gate in front of every AI feature (ADR-11).
+ * aiAccess.ts - the one gate in front of every AI feature.
  *
  * A function that calls a cloud model, or runs the embedding model, asks here first and returns
  * without calling when the answer is false. Do not read the switches in aiStateManager directly.
@@ -27,7 +27,7 @@ export function canUseEmbedding(): boolean {
   return state.embed && state.embedConfigured;
 }
 
-/** Which sources may feed the Knowledge results right now (the table in ADR-11 section 2.2). */
+/** Which sources may feed the Knowledge results right now. */
 export function knowledgeSources(): KnowledgeSources {
   return { dictionary: true, vector: canUseEmbedding(), llm: canUseLlm() };
 }

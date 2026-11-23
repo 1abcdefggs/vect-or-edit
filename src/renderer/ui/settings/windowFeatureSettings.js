@@ -145,7 +145,7 @@ function bindAssistants() {
   if (!master || !embedding) return;
 
   // "master" is the settings-page control of the LLM switch (it keeps its element id until the rename in planned.csv S04).
-  // The two switches are independent (ADR-11).
+  // The two switches are independent.
   // The switch cannot be turned on before a provider is chosen and its key is stored (the same condition as the title-bar
   // button): it is locked and the text under it says which step is missing. Only the control is locked, so the text stays readable.
   const masterRow = master.closest('[data-setting-row]');

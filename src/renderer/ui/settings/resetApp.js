@@ -5,7 +5,7 @@ import { syncSettingsToBackend } from './settingsState.js';
 import { removeStorage } from '../../core/storage.js';
 
 /**
- * Reset (ADR-11 section 2.9).
+ * Reset.
  *
  * full: everything goes back to the first-run state: preferences, the loaded KNOWLEDGE and guideline, the API keys,
  *       the downloaded model files. The first-run setup shows again.

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.90] - 2026-11-23
+
+### Changed
+- Source comments and test names no longer point to documents that are not in the repository; the reasons stay in the comments
+
 ## [0.3.89] - 2026-11-23
 
 ### Added

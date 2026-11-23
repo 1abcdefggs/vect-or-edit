@@ -1,7 +1,7 @@
 /**
  * aiStateManager.ts - Deep Module for AI State Management
  *
- * LLM (cloud generation) and Embedding (local vector model) are two independent switches (ADR-11).
+ * LLM (cloud generation) and Embedding (local vector model) are two independent switches.
  * Neither one changes the other. Each also has a "configured" flag: the LLM needs a provider and a key,
  * the Embedding needs a ready local model. A switch cannot be ON while its flag is false.
  *

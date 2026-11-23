@@ -2,7 +2,7 @@
  * Whether a dictionary's vectors can be compared with the vectors of the selected embedding model.
  * The criterion is the embedding space (which model made the vectors), not the dimension: vectors of the same
  * length from different models mean nothing together. Pure functions of their arguments (no Electron, no storage),
- * shared by the main process and the tests. Design: docs/PROJECT/04_VECT_OR_EDITOR/04_10_ADR_EMBEDDING_SPACE_COMPATIBILITY.md
+ * shared by the main process and the tests.
  */
 import { REGISTRY, type EmbeddingModelEntry } from './embeddingCatalog';
 

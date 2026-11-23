@@ -1,5 +1,5 @@
 /**
- * panelResizer.ts - drag the top edge of a bottom panel to change its height (ADR-11 section 2.8).
+ * panelResizer.ts - drag the top edge of a bottom panel to change its height.
  *
  * One shared part for the log panel and the chat dock: a thin handle on the top edge, `ns-resize` cursor,
  * double-click goes back to the default height, the height is remembered through layoutMemory.

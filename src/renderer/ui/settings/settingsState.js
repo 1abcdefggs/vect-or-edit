@@ -2,7 +2,7 @@ import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { readStorage, writeStorage } from '../../core/storage.js';
 import { isApiKeyConfigured, SECRET_STORAGE_KEYS } from '../../core/apiKeyStore.js';
 
-/** The LLM is configured when a cloud provider is chosen and its key is stored (ADR-11). */
+/** The LLM is configured when a cloud provider is chosen and its key is stored. */
 export function isLlmConfigured() {
   const provider = readStorage(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
   if (provider === 'claude' || provider === 'gemini' || provider === 'openai') return isApiKeyConfigured(provider);

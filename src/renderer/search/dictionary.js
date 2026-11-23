@@ -270,7 +270,7 @@ export async function updateSemanticStateDisplay() {
     const slots = state?.slots || [];
     setLoadedSlotCount(slots.length, slots.filter((s) => s.compat?.state !== 'excluded').length);
 
-    // "Unload All" only makes sense with two or more files; with one file the row's X is the way (ADR-11)
+    // "Unload All" only makes sense with two or more files; with one file the row's X is the way
     if (btnClearAllSlots) {
       btnClearAllSlots.style.display = (state?.slots?.length ?? 0) >= 2 ? 'inline-flex' : 'none';
     }

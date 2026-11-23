@@ -162,7 +162,7 @@ export function bindAppActionEvents() {
 
   if (btnClearAllSlots) {
     btnClearAllSlots.addEventListener('click', async () => {
-      // Unload All always asks, whatever the close-confirmation setting says (ADR-11, review item R6)
+      // Unload All always asks, whatever the close-confirmation setting says
       const count = Number(document.getElementById('knowledgeSlotsCountBadge')?.textContent?.match(/\d+/)?.[0] || 0);
       const confirmed = await showConfirmModal({
         title: t('confirm_unload_all_title'),

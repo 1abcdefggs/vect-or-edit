@@ -1,5 +1,5 @@
 /**
- * Editor Options mode of the right panel (ADR-11, user decision 2026-10-23).
+ * Editor Options mode of the right panel.
  *
  * The toolbar button "Editor options" turns the right panel over: the dictionary side (Guidelines, Knowledge, results)
  * steps back and only the Editor Options card is shown, so every Monaco option can be tried live against the editor.

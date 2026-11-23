@@ -6,7 +6,7 @@ import { readStorage } from '../core/storage.js';
 import { readGeminiModel } from '../core/geminiModel.js';
 
 export async function fetchAiSuggestions(query, provider) {
-  // The LLM switch is the power for every cloud call (ADR-11): off means no request leaves the app
+  // The LLM switch is the power for every cloud call: off means no request leaves the app
   if (!canUseLlm()) return null;
   if (!provider) {
     provider = readStorage(STORAGE_KEYS.AI_PROVIDER) || DEFAULTS.AI_PROVIDER;

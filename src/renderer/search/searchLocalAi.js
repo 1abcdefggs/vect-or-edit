@@ -9,7 +9,7 @@ import { markModelDownloaded, getActiveModelId, getDownloadedModelIds } from './
 let isLocalAiReady = false;
 let isLocalAiDownloading = false;
 // The model that last reported ready. transformers.js sends "done" once per downloaded file and "ready" more than once,
-// so the ready line (and the pipeline log) is written once per model, not once per message (ADR-11 section 2.10)
+// so the ready line (and the pipeline log) is written once per model, not once per message
 let lastReadyModel = null;
 // The model asked for in the last init request, and the files already written to the log for it.
 // The log keeps milestones only (start, each file, then ready or error from setLedStatus); the percentage stays on the LED and the settings bar

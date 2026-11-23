@@ -1,7 +1,7 @@
 /**
  * Why the "Use AI chat" switch on the settings page cannot be turned on yet.
  *
- * The switch needs the same condition the window enforces for the title-bar button (ADR-11): a cloud provider
+ * The switch needs the same condition the window enforces for the title-bar button: a cloud provider
  * is chosen and its API key is stored. The reason names the first missing step, so the text says what to do.
  * Returns the locale key of the reason, or null when the switch is usable.
  */
