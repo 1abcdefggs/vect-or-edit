@@ -34,6 +34,17 @@ body.resizing-sidebar .workspace-resizer {
   flex-shrink: 0;
   height: 100%;
   max-height: 100%;
+  /* The width is set by the pane (not by the content), so the panel can be a size container for the top row */
+  container-type: inline-size;
+  container-name: suggestion-sidebar;
+}
+
+/* Top row: open/close button, embedding switch (with its name), JSON copy button and gear need 358px of content width
+   (measured with the Japanese name, 2026-11-19); below that the switch keeps only its icon, track and state dot, as the editor's LLM switch does */
+@container suggestion-sidebar (width < 358px) {
+  #btnSidebarEmbeddingModel .ai-switch-pill__name {
+    display: none;
+  }
 }
 
 .suggestion-sidebar.collapsed {

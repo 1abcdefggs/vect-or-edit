@@ -1,7 +1,7 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import { loadEnv, normalizePath } from 'vite';
 import { resolve, dirname } from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, statSync } from 'fs';
 
 // Versions shown in About, read from the installed packages at build time (their package.json is not importable at run time)
 const packageVersion = (name: string) =>
@@ -26,9 +26,32 @@ const resolveTsForJsImports = {
   }
 };
 
+// On Windows a relative import can get the drive letter in a different case (c: or C:) depending on the working
+// directory. Rollup then treats the same file as two modules, so one module state (such as the IPC trust state)
+// is set in one copy and read from the other. Resolve every relative import to one canonical id (upper-case drive).
+const canonicalWindowsIds = {
+  name: 'canonical-windows-ids',
+  // 'pre' so it runs before Vite's own resolver, which would otherwise answer first for extensionless imports
+  enforce: 'pre' as const,
+  resolveId(source: string, importer?: string) {
+    if (process.platform !== 'win32' || !importer || !(source.startsWith('./') || source.startsWith('../'))) return null;
+    const base = resolve(dirname(importer), source);
+    for (const candidate of [base, base + '.ts', base + '.js']) {
+      try {
+        if (statSync(candidate).isFile()) {
+          return normalizePath(candidate.replace(/^[a-z]:/, (drive) => drive.toUpperCase()));
+        }
+      } catch {
+        // not this candidate
+      }
+    }
+    return null;
+  }
+};
+
 export default defineConfig(({ mode }) => ({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin(), canonicalWindowsIds],
     define: {
       // core/vault/index.js reads it; a packaged app has no .env. Read from .env or the build environment
       'process.env.VECTOR_SHARED_APP_SECRET': JSON.stringify(loadEnv(mode, __dirname, 'VECTOR_SHARED_APP_SECRET').VECTOR_SHARED_APP_SECRET ?? '')

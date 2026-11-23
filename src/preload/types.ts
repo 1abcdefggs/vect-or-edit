@@ -152,8 +152,8 @@ export interface EngineAPI {
   saveLogSnapshot: (entries: SystemLogEntry[]) => Promise<{ id: string; written: number }>;
   listLogSessions: () => Promise<Array<{ id: string; modified: string; bytes: number }>>;
   readLogSession: (id: string) => Promise<SystemLogEntry[]>;
-  claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
-  geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
+  claudeSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string; requestId?: string }) => Promise<{ success: boolean; text?: string; error?: string; cancelled?: boolean }>;
+  geminiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string; requestId?: string }) => Promise<{ success: boolean; text?: string; error?: string; cancelled?: boolean }>;
   /** Encrypted API key store (OS key store) for every cloud LLM provider. */
   saveApiKey: (provider: ApiKeyProvider, apiKey: string) => Promise<{ success: boolean; error?: string }>;
   hasApiKey: (provider: ApiKeyProvider) => Promise<boolean>;
@@ -164,8 +164,12 @@ export interface EngineAPI {
   readUserFont: (file: string) => Promise<Uint8Array | null>;
   removeUserFont: (file: string) => Promise<{ success: boolean }>;
   getCursorBaseSize: () => Promise<number>;
+  listOpenAIModels: (apiKey?: string) => Promise<string[]>;
+  listClaudeModels: (apiKey?: string) => Promise<string[]>;
   listGeminiModels: (apiKey?: string) => Promise<Array<{ name: string; displayName?: string; description?: string; inputTokenLimit?: number; outputTokenLimit?: number; version?: string; thinking?: boolean; canGenerate: boolean }>>;
-  openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string }) => Promise<{ success: boolean; text?: string; error?: string }>;
+  openaiSemanticSuggest: (payload: { prompt: string; apiKey?: string; model?: string; requestId?: string }) => Promise<{ success: boolean; text?: string; error?: string; cancelled?: boolean }>;
+  /** Stops a send that was started with the same requestId; false when none is waiting. */
+  cancelAiSend: (requestId: string) => Promise<boolean>;
   /** LLM-as-Embedding: converts text to a pseudo-vector using an LLM provider. */
   llmEmbedding: (payload: { text: string; provider: 'gemini' | 'claude' | 'openai'; model?: string; apiKey?: string; dimensions?: number }) => Promise<{ success: boolean; vector?: number[]; error?: string }>;
   importKnowledgeBase: (customPaths?: string[]) => Promise<ImportKnowledgeBaseResponse>;

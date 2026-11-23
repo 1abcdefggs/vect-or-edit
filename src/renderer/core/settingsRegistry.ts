@@ -71,6 +71,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'sbr:limit-select': true,
     'sbr:metadata-toggle': true,
     'sbr:metadata-fields': true,
+    'sbr:panel-toggle': true,
     'sbr:quick-settings': true,
     'sbr:embedding-toggle': true,
     'sbr:import-dictionary': true,
@@ -361,6 +362,12 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     id: 'sb_metadata_fields',
     category: 'sidebar',
     visibilityKey: 'sbr:metadata-fields',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_panel_toggle',
+    category: 'sidebar',
+    visibilityKey: 'sbr:panel-toggle',
     controlType: 'none'
   },
   {

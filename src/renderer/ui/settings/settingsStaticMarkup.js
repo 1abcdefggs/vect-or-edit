@@ -11,13 +11,27 @@ export function cardHeadingMarkup({ icon, key, text }) {
   return `<span class="material-symbols-outlined">${icon}</span><span data-i18n="${key}">${text}</span>`;
 }
 
-/** The label and the description inside a row's text block. An optional icon (a Material Symbols name) stands before the label. */
-export function settingTextMarkup({ labelKey, labelText, descKey, descText, icon }) {
+/**
+ * A link under a description that opens another place of the settings page: a tab, and optionally a card of it
+ * (its heading key). It sits outside the description, because the description is re-rendered on a locale change.
+ */
+export function settingJumpMarkup({ key, text, tab, card }) {
+  return `<button type="button" class="settings-link settings-link--jump" data-open-settings-tab="${escapeAttr(tab)}"`
+    + `${card ? ` data-open-settings-card="${escapeAttr(card)}"` : ''}>`
+    + `<span data-i18n="${key}">${text}</span><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>`;
+}
+
+/**
+ * The label and the description inside a row's text block. An optional icon (a Material Symbols name) stands before the label.
+ * An optional jump ({ key, text, tab, card }) adds a link to another place of the settings page under the description.
+ */
+export function settingTextMarkup({ labelKey, labelText, descKey, descText, icon, jump }) {
   const label = icon
     ? `<div class="setting-label setting-label--icon"><span class="material-symbols-outlined setting-label-icon" aria-hidden="true">${icon}</span><span data-i18n="${labelKey}">${labelText}</span></div>`
     : `<div class="setting-label" data-i18n="${labelKey}">${labelText}</div>`;
   return label
-    + `<div class="setting-desc" data-i18n="${descKey}">${descText}</div>`;
+    + `<div class="setting-desc" data-i18n="${descKey}">${descText}</div>`
+    + (jump?.key && jump?.tab ? settingJumpMarkup(jump) : '');
 }
 
 /** Placeholder attributes for a card heading (used in settingsModal.html). */
@@ -55,7 +69,10 @@ export function renderStaticSettingsText(root = document) {
       labelText: el.dataset.labelText,
       icon: el.dataset.icon,
       descKey: el.dataset.descKey,
-      descText: el.dataset.descText
+      descText: el.dataset.descText,
+      jump: el.dataset.jumpKey
+        ? { key: el.dataset.jumpKey, text: el.dataset.jumpText ?? '', tab: el.dataset.jumpTab, card: el.dataset.jumpCard }
+        : undefined
     });
   });
   nameRowControls(root);

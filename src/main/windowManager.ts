@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: BrowserWindow, app, nativeTheme, shell
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import fs from 'node:fs';
 import path from 'node:path';
 import { app, BrowserWindow, nativeTheme, shell } from 'electron';
@@ -67,7 +72,7 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
       preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
-      // The preload only uses contextBridge, ipcRenderer and webFrame, which the sandbox allows
+      // The preload only uses contextBridge, ipcRenderer, webFrame and webUtils, which the sandbox allows
       sandbox: true
     },
     titleBarStyle: 'hidden',

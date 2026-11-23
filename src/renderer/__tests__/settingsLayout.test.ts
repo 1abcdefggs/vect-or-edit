@@ -13,6 +13,8 @@ interface LayoutTab {
   labelKey: string;
   titleKey: string;
   cards: string[];
+  /** Parent card key -> the card keys shown indented under it in the left nav (they stay in `cards`, in markup order) */
+  nested?: Record<string, string[]>;
 }
 
 const layout: { version: number; tabs: LayoutTab[] } = JSON.parse(
@@ -67,6 +69,22 @@ describe('settings-layout.json', () => {
     const cards = markupCards();
     for (const tab of layout.tabs) {
       expect(cards[tab.tab] ?? [], tab.tab).toEqual(tab.cards);
+    }
+  });
+
+  it('nests only cards that follow their parent directly, each under one parent', () => {
+    for (const tab of layout.tabs) {
+      const seen = new Set<string>();
+      for (const [parent, children] of Object.entries(tab.nested ?? {})) {
+        const at = tab.cards.indexOf(parent);
+        expect(at, `${tab.tab}: parent ${parent} is a card of the tab`).toBeGreaterThanOrEqual(0);
+        expect(tab.cards.slice(at + 1, at + 1 + children.length), `${tab.tab}: children of ${parent}`).toEqual(children);
+        for (const child of children) {
+          expect(Object.keys(tab.nested ?? {}), `${tab.tab}: ${child} is not itself a parent`).not.toContain(child);
+          expect(seen.has(child), `${tab.tab}: ${child} under one parent only`).toBe(false);
+          seen.add(child);
+        }
+      }
     }
   });
 

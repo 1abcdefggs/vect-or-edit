@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.76",
+  "version": "0.3.79",
   "description": "Next-Generation Vector-Native Semantic Knowledge Editor & Real-Time Linter. Organizes knowledge in a 10-layer DIKWP-based semantic model.",
   "keywords": [
     "electron",
@@ -40,6 +40,7 @@
     "build:win": "electron-vite build && node scripts/generate-notices.mjs && electron-builder --win",
     "dist": "electron-builder",
     "typecheck": "tsc --noEmit",
+    "check:api-source": "node scripts/check_api_source.mjs",
     "preview": "electron-vite preview",
     "test": "vitest run",
     "init:secret": "node scripts/init-secret.js",

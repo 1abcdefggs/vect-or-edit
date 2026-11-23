@@ -20,7 +20,8 @@
       "icon": "smart_toy",
       "labelKey": "tab_ai_search",
       "titleKey": "tip_tab_ai",
-      "cards": ["setting_embedding_assistant", "vector_search_ui_title"]
+      "cards": ["grp_sidebar_top","sidebar_overview_title","grp_sidebar_guidelines","grp_sidebar_knowledge","grp_sidebar_advanced"],
+      "nested": { "sidebar_overview_title": ["grp_sidebar_guidelines", "grp_sidebar_knowledge"] }
     },
     {
       "tab": "tabSystem",

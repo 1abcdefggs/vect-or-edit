@@ -1,3 +1,8 @@
+/**
+ * @api-source electron: BrowserWindow
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
 import electronUpdater from 'electron-updater';
 const { autoUpdater } = electronUpdater;
 import { BrowserWindow } from 'electron';

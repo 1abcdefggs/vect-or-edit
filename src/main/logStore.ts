@@ -1,4 +1,9 @@
 /**
+ * @api-source electron: app
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
+/**
  * Saved logs (main process). The renderer sends log entries; this module validates them, removes secrets,
  * and writes them under userData/logs. Each app start writes one session file (JSON Lines).
  *

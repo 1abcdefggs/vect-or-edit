@@ -75,7 +75,9 @@ export const STORAGE_KEYS = {
   /** Active Vectorizer source: 'local' | 'llm-embed-gemini' | 'llm-embed-claude' | 'llm-embed-openai' */
   EMBEDDING_SOURCE: 'vect_embedding_source',
   /** 'off': never cut dictionary or query vectors to a shorter length (docs 04_10); anything else allows it */
-  EMBEDDING_TRUNCATION: 'vect_embedding_truncation'
+  EMBEDDING_TRUNCATION: 'vect_embedding_truncation',
+  /** 'closed': the right panel (suggestion sidebar) starts closed; anything else starts it open */
+  SIDEBAR_START_STATE: 'vect_sidebar_start_state'
 } as const;
 
 export const TIMINGS = {

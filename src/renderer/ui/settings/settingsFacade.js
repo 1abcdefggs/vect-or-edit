@@ -779,6 +779,15 @@ export function initSettings(updateEditorCb) {
     });
   }
 
+  // Whether the right panel starts open or closed (read once at startup by appActionEvents.js)
+  const modalSidebarStartSelect = document.getElementById('modalSidebarStartSelect');
+  if (modalSidebarStartSelect) {
+    modalSidebarStartSelect.value = readStorage(STORAGE_KEYS.SIDEBAR_START_STATE) === 'closed' ? 'closed' : 'open';
+    modalSidebarStartSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.SIDEBAR_START_STATE, modalSidebarStartSelect.value);
+    });
+  }
+
   if (modalResultDescLinesSelect) {
     modalResultDescLinesSelect.value = readStorage(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2';
     modalResultDescLinesSelect.addEventListener('change', () => {
@@ -1236,11 +1245,23 @@ export function initSettings(updateEditorCb) {
       .filter(card => card && card.offsetParent !== null);
     navButtons = [];
     navRows = [];
-    navList.replaceChildren(...navCards.map(card => {
+    // A card listed under "nested" in the layout is shown indented under its parent card (a card entry, no settings of its own);
+    // navCards and navButtons keep the document order of all cards, so the scroll check does not depend on the nesting
+    const cardKey = (card) => card.querySelector(':scope > h4')?.getAttribute('data-key');
+    const shownKeys = new Set(navCards.map(cardKey));
+    const parentOf = new Map();
+    for (const [parentKey, childKeys] of Object.entries(tabLayout?.nested ?? {})) {
+      if (!shownKeys.has(parentKey)) continue;
+      for (const childKey of childKeys) if (shownKeys.has(childKey)) parentOf.set(childKey, parentKey);
+    }
+    const parentKeys = new Set(parentOf.values());
+    const entries = navCards.map(card => {
+      const key = cardKey(card);
+      const isChild = parentOf.has(key);
       const item = document.createElement('li');
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'settings-nav-item';
+      button.className = isChild ? 'settings-nav-item settings-nav-row' : 'settings-nav-item';
       // The card heading holds the icon glyph and the label; the nav item shows the same two, copied from it
       const heading = card.querySelector(':scope > h4');
       const glyph = document.createElement('span');
@@ -1252,7 +1273,9 @@ export function initSettings(updateEditorCb) {
       const label = document.createElement('span');
       label.className = 'settings-nav-label';
       label.textContent = labelSource.textContent.trim();
-      button.append(glyph, label);
+      // An indented entry shows its name only, like the setting entries (the icon stays on top-level entries)
+      if (isChild) button.append(label);
+      else button.append(glyph, label);
       button.addEventListener('click', () => {
         navSpyPausedUntil = Date.now() + 700;
         const offset = card.getBoundingClientRect().top - body.getBoundingClientRect().top;
@@ -1263,8 +1286,11 @@ export function initSettings(updateEditorCb) {
       });
       navButtons.push(button);
       item.appendChild(button);
-      // The settings of the card, one entry each, under the card's own entry (they scroll to the setting's row)
-      const rows = [...card.querySelectorAll('[data-setting-row]')].filter(r => r.querySelector('.setting-label'));
+      // The settings of the card, one entry each, under the card's own entry (they scroll to the setting's row);
+      // an indented card and a card that holds indented cards list no settings (its own rows only repeat the cards under it)
+      const rows = isChild || parentKeys.has(key)
+        ? []
+        : [...card.querySelectorAll('[data-setting-row]')].filter(r => r.querySelector('.setting-label'));
       if (rows.length) {
         const sub = document.createElement('ul');
         sub.className = 'settings-nav-items settings-nav-rows';
@@ -1289,14 +1315,40 @@ export function initSettings(updateEditorCb) {
         }
         item.append(sub);
       }
-      return item;
-    }));
+      return { key, item, button, isChild };
+    });
+    const entryByKey = new Map(entries.map((entry) => [entry.key, entry]));
+    const topItems = [];
+    for (const entry of entries) {
+      if (!entry.isChild) { topItems.push(entry.item); continue; }
+      const parent = entryByKey.get(parentOf.get(entry.key));
+      let sub = parent.item.querySelector(':scope > ul.settings-nav-rows');
+      if (!sub) {
+        sub = document.createElement('ul');
+        sub.className = 'settings-nav-items settings-nav-rows';
+        parent.item.append(sub);
+      }
+      const subItem = document.createElement('li');
+      subItem.append(entry.button);
+      sub.append(subItem);
+    }
+    navList.replaceChildren(...topItems);
     // The list stays in the left nav (under its title); the tabs are a row above the layout
     bindNavScrollOnce();
     updateNavCurrent();
   }
 
-  function openSettingsTab(tabId) {
+  // Puts the card whose heading has this key at the top of the body (the same 12px gap as a nav click)
+  function scrollSettingsToCard(cardKey) {
+    const body = settingsModal?.querySelector('.settings-modal-body');
+    const active = settingsModal?.querySelector('.settings-tab-content.active');
+    const card = active?.querySelector(`.settings-section-card > h4[data-key="${cardKey}"]`)?.parentElement;
+    if (!body || !card) return;
+    const offset = card.getBoundingClientRect().top - body.getBoundingClientRect().top;
+    body.scrollBy({ top: offset - 12 });
+  }
+
+  function openSettingsTab(tabId, cardKey) {
     if (!settingsModal) return;
     settingsModal.style.display = 'flex';
     modalTabs.forEach(b => {
@@ -1324,11 +1376,20 @@ export function initSettings(updateEditorCb) {
     fitThemeCards(document.getElementById('modalThemeCards'));
     fitThemeCards(document.getElementById('modalOverlayColorCards'));
     renderSettingsNav();
+    if (cardKey) scrollSettingsToCard(cardKey);
   }
 
+  // detail.card (optional): the heading key of the card to start at, for example 'grp_llm_assistant'
   window.addEventListener('app:openSettings', (e) => {
     const tabId = e.detail?.tab || 'tabAppearance';
-    openSettingsTab(tabId);
+    openSettingsTab(tabId, e.detail?.card);
+  });
+
+  // A jump link under a description (settingJumpMarkup) opens its tab at its card
+  settingsModal?.addEventListener('click', (e) => {
+    const jump = e.target.closest?.('[data-open-settings-tab]');
+    if (!jump) return;
+    openSettingsTab(jump.dataset.openSettingsTab, jump.dataset.openSettingsCard);
   });
 
   const btnBackToEditor = document.getElementById('btnBackToEditor');

@@ -12,7 +12,7 @@
         </svg>
         <span class="settings-nav-title-label" data-i18n="settings_title">Application Settings</span>
       </h3>
-      <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n-title="tip_tab_appearance"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">palette</span><span class="settings-tab-label" data-i18n="tab_appearance">Header</span></button>
+      <button class="settings-tab-btn active" data-tab="tabAppearance" data-i18n-title="tip_tab_appearance"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">palette</span><span class="settings-tab-label" data-i18n="tab_appearance">Title Bar</span></button>
       <button class="settings-tab-btn" data-tab="tabEditor" data-i18n-title="tip_tab_editor"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">edit_note</span><span class="settings-tab-label" data-i18n="tab_editor">Editor</span></button>
       <button class="settings-tab-btn" data-tab="tabAiSearch" data-i18n-title="tip_tab_ai"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">smart_toy</span><span class="settings-tab-label" data-i18n="tab_ai_search">Sidebar</span></button>
       <button class="settings-tab-btn" data-tab="tabSystem" data-i18n-title="tip_tab_system"><span class="material-symbols-outlined settings-tab-icon" aria-hidden="true">tune</span><span class="settings-tab-label" data-i18n="tab_system">System</span></button>
@@ -109,7 +109,7 @@
               </div>
               <!-- The gears as they are applied now, in each area: the same colour as the real gears -->
               <ul class="key-tone-areas" aria-label="Areas">
-                <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_header">Header</span></li>
+                <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_header">Title Bar</span></li>
                 <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_editor">Editor</span></li>
                 <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_sidebar">Sidebar</span></li>
                 <li><span class="material-symbols-outlined settings-key-icon" aria-hidden="true">settings</span><span data-i18n="key_tone_area_log">Log panel</span></li>
@@ -470,67 +470,39 @@
       <!-- Tab 3: Sidebar (sbr) - embedding, knowledge search and validation -->
       <div id="tabAiSearch" class="settings-tab-content">
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="neurology" data-key="setting_embedding_assistant" data-text="Embedding assistant"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_embedding_assistant" data-label-text="Embedding assistant" data-desc-key="setting_embedding_assistant_desc" data-desc-text="Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."></div>
+          <!-- The three controls at the top of the right panel, in the panel's order: panel button, embedding switch, gear -->
+          <h4 data-card-heading data-icon="right_panel_close" data-key="grp_sidebar_top" data-text="Panel top"></h4>
+          <div data-setting-row data-vis-target="sb_panel_toggle">
+            <div data-setting-text data-label-key="vis_sb_panel_toggle" data-label-text="Panel open/close button" data-desc-key="setting_sidebar_start_desc" data-desc-text="Opens or closes the right panel. Choose whether the panel is open or closed when the app starts."></div>
+            <select id="modalSidebarStartSelect" class="toolbar-select" data-i18n-title="tip_set_sidebar_start">
+              <option value="open" data-i18n="opt_sidebar_start_open">Open at start</option>
+              <option value="closed" data-i18n="opt_sidebar_start_closed">Closed at start</option>
+            </select>
+          </div>
+          <div data-setting-row data-vis-target="sb_embedding_toggle">
+            <div data-setting-text data-label-key="setting_embedding_assistant" data-label-text="Embedding model" data-desc-key="setting_embedding_assistant_desc" data-desc-text="Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."
+              data-jump-key="setting_embedding_llm_jump" data-jump-text="For the LLM: LLM assistant" data-jump-tab="tabEditor" data-jump-card="grp_llm_assistant"></div>
             <select id="modalEmbeddingAssistantSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_embedding_assistant">
               <option value="on" data-i18n="opt_toggle_on">On</option>
               <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_truncation" data-label-text="Shorten vectors to fit" data-desc-key="setting_truncation_desc" data-desc-text="When a dictionary and the model differ in vector length but share one embedding space, cut the longer vectors to the shorter length (approximate). Off: such a dictionary is left out of vector search."></div>
-            <select id="modalTruncationSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_truncation">
-              <option value="on" selected data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
-            </select>
+          <div data-setting-row data-vis-target="sb_quick_settings">
+            <div data-setting-text data-label-key="vis_sb_quick_settings" data-label-text="Sidebar settings button (gear)" data-desc-key="setting_sidebar_gear_desc" data-desc-text="Opens this tab of the settings page."></div>
           </div>
         </div>
 
-<section class="ai-control-overview" aria-label="AI system status" data-i18n-aria="aria_ai_status">
-          <div class="ai-overview-heading">
-            <div data-setting-text data-label-key="ai_overview_title" data-label-text="AI Control Center" data-desc-key="ai_overview_desc" data-desc-text="Shows whether the embedding model (local search) and the LLM (cloud) are ready. Check here before you configure."></div>
-          </div>
-          <p class="card-section-desc" data-i18n="ai_overview_processing">Search with a local embedding model runs on this device. When you use the LLM or a cloud embedding, text is sent to the cloud.</p>
-          <div class="ai-status-grid ai-status-grid--3">
-            <div class="ai-status-card" data-status-tone="neutral">
-              <span class="ai-status-kicker" data-i18n="ai_kicker_embedding">EMBEDDING</span>
-              <strong id="settingsEmbeddingStatus" data-i18n="ai_status_not_configured">Not configured</strong>
-              <span id="settingsEmbeddingDetail" data-i18n="ai_status_local_model">Local vector model</span>
-            </div>
-            <div class="ai-status-card" data-status-tone="neutral">
-              <span class="ai-status-kicker" data-i18n="ai_kicker_knowledge">KNOWLEDGE</span>
-              <strong id="settingsKnowledgeStatus" data-i18n="ai_status_not_loaded">Not loaded</strong>
-              <span id="settingsKnowledgeDetail" data-i18n="ai_status_add_slot">Add a JSON or VENC slot</span>
-            </div>
-            <div class="ai-status-card" data-status-tone="neutral">
-              <span class="ai-status-kicker" data-i18n="ai_kicker_generation">LLM / GENERATION</span>
-              <strong id="settingsGenerationStatus" data-i18n="ai_status_local_ai">Local AI</strong>
-              <span id="settingsGenerationDetail" data-i18n="ai_status_suggest_active">Suggestions use the active provider</span>
-            </div>
-          </div>
-          <div class="ai-structure-map" aria-label="AI processing structure" data-i18n-aria="aria_ai_structure">
-            <div class="ai-structure-column">
-              <span class="ai-structure-label" data-i18n="ai_kicker_input">INPUT</span>
-              <div class="ai-structure-node" data-i18n="ai_node_editor_text">Editor text</div>
-            </div>
-            <span class="ai-structure-connector" aria-hidden="true">+</span>
-            <div class="ai-structure-column">
-              <span class="ai-structure-label" data-i18n="ai_kicker_embedding">EMBEDDING</span>
-              <div class="ai-structure-node" id="settingsStructureEmbedding" data-i18n="ai_node_local_model">Local model</div>
-            </div>
-            <span class="ai-structure-connector" aria-hidden="true">+</span>
-            <div class="ai-structure-column">
-              <span class="ai-structure-label" data-i18n="ai_kicker_knowledge">KNOWLEDGE</span>
-              <div class="ai-structure-node" id="settingsStructureKnowledge" data-i18n="ai_node_hnsw">HNSW index</div>
-            </div>
-          </div>
-          <div class="ai-structure-caption">
-            <span data-i18n="ai_overview_caption">Local vector search and Cloud LLM features operate independently based on your active configuration.</span>
-          </div>
-        </section>
-
 <div id="panelEmbedding" class="ai-model-panel active">
+          <!-- Overview of the two parts below the tabs: a card with a heading and one row each (no control) -->
+          <div class="settings-section-card">
+            <h4 data-card-heading data-icon="format_list_bulleted" data-key="sidebar_overview_title" data-text="Collection"></h4>
+            <div data-setting-row>
+              <div data-setting-text data-icon="rule_folder" data-label-key="grp_sidebar_guidelines" data-label-text="Guidelines" data-desc-key="sidebar_overview_guidelines" data-desc-text="Checks the document in the background (Linter) and flags problems"></div>
+            </div>
+            <div data-setting-row>
+              <div data-setting-text data-icon="menu_book" data-label-key="grp_sidebar_knowledge" data-label-text="Knowledge" data-desc-key="sidebar_overview_knowledge" data-desc-text="Suggests candidates from dictionaries for the selected text. The embedding model powers the meaning-based search behind these suggestions"></div>
+            </div>
+          </div>
           <div class="ai-model-subtab-bar" role="tablist">
             <button type="button" class="ai-model-subtab-btn active" data-emb-subtab="local" id="btnSubTabLocal" data-i18n-title="tip_subtab_local">
               <span class="material-symbols-outlined">memory</span>
@@ -546,7 +518,7 @@
             <div id="embeddingConfigCard" class="settings-section-card">
               <h4>
                 <span class="material-symbols-outlined">menu_book</span>
-                <span data-i18n="heading_embedding_catalog">EMBEDDING CATALOG</span>
+                <span data-i18n="heading_embedding_catalog">EMBEDDING MODEL CATALOG</span>
                 <span class="card-badge card-badge--ok" data-i18n="ai_badge_offline">100% OFFLINE</span>
               </h4>
               <div class="setting-desc" data-i18n="embedding_card_desc">Used for the editor's specialized terminology dictionary, HNSW vector search, and real-time intelligence. Models are not required for normal dictionary and text input functionality.</div>
@@ -589,8 +561,21 @@
           </div>
         </div>
 
+        <!-- Guidelines card of the right panel -->
         <div class="settings-section-card">
-          <h4 data-card-heading data-icon="search" data-key="vector_search_ui_title" data-text="Vector Search &amp; Knowledge UI"></h4>
+          <h4 data-card-heading data-icon="rule_folder" data-key="grp_sidebar_guidelines" data-text="Guidelines"></h4>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_linter_enabled" data-label-text="Real-time Validation (Linter)" data-desc-key="setting_linter_enabled_desc" data-desc-text="Enable background document validation."></div>
+            <select id="modalLinterSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_linter">
+              <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
+              <option value="off" data-i18n="opt_linter_off">Disabled</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Knowledge card of the right panel: dictionaries and the suggestions they give -->
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="menu_book" data-key="grp_sidebar_knowledge" data-text="Knowledge"></h4>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_suggest_trigger" data-label-text="Suggestion Trigger Mode" data-desc-key="setting_suggest_trigger_desc" data-desc-text="Control how vector suggestions are invoked."></div>
             <select id="modalSuggestTriggerSelect" class="toolbar-select" data-i18n-title="tip_set_suggest_trigger">
@@ -632,19 +617,71 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_linter_enabled" data-label-text="Real-time Validation (Linter)" data-desc-key="setting_linter_enabled_desc" data-desc-text="Enable background document validation."></div>
-            <select id="modalLinterSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_linter">
-              <option value="on" selected data-i18n="opt_linter_on">Enabled (Automatic)</option>
-              <option value="off" data-i18n="opt_linter_off">Disabled</option>
-            </select>
-          </div>
-          <div data-setting-row>
             <div data-setting-text data-label-key="btn_import_dict" data-label-text="Import Dictionary / Knowledge (.json)" data-desc-key="import_dict_desc" data-desc-text="Load custom domain terms, schema rules, or vector definitions into HNSW index."></div>
             <button id="btnModalImportDict" class="settings-btn" type="button" data-i18n-title="tip_import_dictionary">
               <span data-i18n="btn_import_dict">Import Dictionary</span>
             </button>
           </div>
         </div>
+
+        <!-- Settings that matter only in special cases (for example a dictionary whose vectors differ in length) -->
+        <div class="settings-section-card">
+          <h4 data-card-heading data-icon="tune" data-key="grp_sidebar_advanced" data-text="Advanced"></h4>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_truncation" data-label-text="Shorten vectors to fit" data-desc-key="setting_truncation_desc" data-desc-text="When a dictionary and the model differ in vector length but share one embedding space, cut the longer vectors to the shorter length (approximate). Off: such a dictionary is left out of vector search."></div>
+            <select id="modalTruncationSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_truncation">
+              <option value="on" selected data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: System (sys) - closing, log, parts of the window and maintenance -->
+      <div id="tabSystem" class="settings-tab-content">
+        <!-- AI control center: the state of the embedding and the LLM together (moved from the Sidebar tab) -->
+        <section class="ai-control-overview" aria-label="AI system status" data-i18n-aria="aria_ai_status">
+          <div class="ai-overview-heading">
+            <div data-setting-text data-label-key="ai_overview_title" data-label-text="AI Control Center" data-desc-key="ai_overview_desc" data-desc-text="Shows whether the embedding model (local search) and the LLM (cloud) are ready. Check here before you configure."></div>
+          </div>
+          <p class="card-section-desc" data-i18n="ai_overview_processing">Search with a local embedding model runs on this device. When you use the LLM or a cloud embedding, text is sent to the cloud.</p>
+          <div class="ai-status-grid ai-status-grid--3">
+            <div class="ai-status-card" data-status-tone="neutral">
+              <span class="ai-status-kicker" data-i18n="ai_kicker_embedding">EMBEDDING</span>
+              <strong id="settingsEmbeddingStatus" data-i18n="ai_status_not_configured">Not configured</strong>
+              <span id="settingsEmbeddingDetail" data-i18n="ai_status_local_model">Local vector model</span>
+            </div>
+            <div class="ai-status-card" data-status-tone="neutral">
+              <span class="ai-status-kicker" data-i18n="ai_kicker_knowledge">KNOWLEDGE</span>
+              <strong id="settingsKnowledgeStatus" data-i18n="ai_status_not_loaded">Not loaded</strong>
+              <span id="settingsKnowledgeDetail" data-i18n="ai_status_add_slot">Add a JSON or VENC slot</span>
+            </div>
+            <div class="ai-status-card" data-status-tone="neutral">
+              <span class="ai-status-kicker" data-i18n="ai_kicker_generation">LLM / GENERATION</span>
+              <strong id="settingsGenerationStatus" data-i18n="ai_status_local_ai">Local AI</strong>
+              <span id="settingsGenerationDetail" data-i18n="ai_status_suggest_active">Suggestions use the active provider</span>
+            </div>
+          </div>
+          <div class="ai-structure-map" aria-label="AI processing structure" data-i18n-aria="aria_ai_structure">
+            <div class="ai-structure-column">
+              <span class="ai-structure-label" data-i18n="ai_kicker_input">INPUT</span>
+              <div class="ai-structure-node" data-i18n="ai_node_editor_text">Editor text</div>
+            </div>
+            <span class="ai-structure-connector" aria-hidden="true">+</span>
+            <div class="ai-structure-column">
+              <span class="ai-structure-label" data-i18n="ai_kicker_embedding">EMBEDDING</span>
+              <div class="ai-structure-node" id="settingsStructureEmbedding" data-i18n="ai_node_local_model">Local model</div>
+            </div>
+            <span class="ai-structure-connector" aria-hidden="true">+</span>
+            <div class="ai-structure-column">
+              <span class="ai-structure-label" data-i18n="ai_kicker_knowledge">KNOWLEDGE</span>
+              <div class="ai-structure-node" id="settingsStructureKnowledge" data-i18n="ai_node_hnsw">HNSW index</div>
+            </div>
+          </div>
+          <div class="ai-structure-caption">
+            <span data-i18n="ai_overview_caption">Local vector search and Cloud LLM features operate independently based on your active configuration.</span>
+          </div>
+        </section>
 
         <details class="settings-details">
           <summary data-i18n="grp_capability_help" data-i18n-title="tip_capability_help">What can each model do?</summary>
@@ -708,10 +745,7 @@
           </table>
           </div>
         </details>
-      </div>
 
-      <!-- Tab 4: System (sys) - closing, log, parts of the window and maintenance -->
-      <div id="tabSystem" class="settings-tab-content">
 <div class="settings-section-card">
           <h4>
             <span class="material-symbols-outlined">terminal</span>

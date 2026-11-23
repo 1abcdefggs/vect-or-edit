@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.79] - 2026-11-23
+
+### Added
+- A cloud chat send can be stopped: each send carries a request id, and the main process aborts it on `app:cancelAiSend`; Gemini uses the SDK abort signal, OpenAI and Claude abort their request
+- Model lists for OpenAI and Claude can be fetched with the saved key (`app:listOpenAIModels`, `app:listClaudeModels`); only the list parsing is covered by tests, the live APIs are not
+
+### Changed
+- API keys are read and written with the asynchronous safeStorage methods; a key stored in the old synchronous format is read once and stored again in the new format
+- The settings file is written to a temporary file and renamed over the old one, and saves run one after another
+
+### Fixed
+- On Windows a relative import whose drive letter differed in case could load the main-process IPC module twice, so the app could hang on the splash screen; relative imports now resolve to one id
+
+## [0.3.78] - 2026-11-23
+
+### Changed
+- UI text in the English and Japanese locale files: new strings for the settings page, the AI chat and the logs, and reworded strings; keys still used by the current code are kept
+
+## [0.3.77] - 2026-11-19
+
+### Added
+- Every source file that imports from `electron` starts with an `@api-source` tag (the Electron APIs it uses, the check date); `npm run check:api-source` fails when a tag and the imports disagree, so future work (people, agents, the `electron-api` skill) sees which Electron APIs a file touches
+- The right panel's open/close button has its own part key (`sbr:panel-toggle`), so it can be shown or hidden like the other parts
+- A setting chooses whether the right panel is open or closed when the app starts (Sidebar tab, "Panel top" card)
+- The embedding row in the settings has a link to the "LLM assistant" card of the Editor tab
+- A "Collection" card in the Sidebar tab of the settings names what the right panel loads (Guidelines and Knowledge), above the Local / Cloud tabs
+
+### Changed
+- When no LLM is set up, pressing the editor's LLM switch and choosing to open the settings now starts the Editor tab at the "LLM assistant" card instead of the top of the page
+- In the left nav of the settings (Sidebar tab), "Guidelines" and "Knowledge" are shown indented under "Collection" instead of repeating as two rows of the Collection card next to their own entries; `settings-layout.json` has an optional `nested` entry for this
+- The Sidebar tab of the settings follows the right panel from top to bottom: "Panel top" (open/close button, embedding switch, gear), "Collection", the embedding model catalog, "Guidelines" (real-time validation), "Knowledge" (dictionary import and suggestion results), and "Advanced"
+- The embedding card's heading and its first row no longer share one name: the heading belongs to the "Panel top" card and the row is called "Embedding model"; the catalog heading is "Embedding model catalog"
+- The right panel's embedding switch hides its name when the panel is narrower than 360 px, so that the top row (open/close button, switch, JSON copy button, gear) keeps fitting with the longer Japanese name
+- The title bar's collapse button is now described as "Collapse Title Bar" (it was "Minimize or expand the header"), so that it is not mixed up with the window's own minimize button
+- The Japanese text writes the verb as "切替え" and "切替わ" (it was "切り替え" and "切り替わ") in the UI strings; the welcome document is left as it is
+- The Japanese text now says "エンベディング" for the embedding everywhere (it was a mix of "埋め込み", "埋め込みモデル", "エンベディング" and "埋め込みMODEL")
+- "Shorten vectors to fit" moved to the "Advanced" card at the bottom of the Sidebar tab, because it matters only for a dictionary whose vectors differ in length from the model's
+- The AI control center and the "What can each model do?" table moved from the Sidebar tab to the top of the System tab, because they cover the LLM and the embedding together
+
 ## [0.3.76] - 2026-11-19
 
 ### Changed

@@ -1,4 +1,9 @@
 /**
+ * @api-source electron: app, session
+ * @api-table  local: electron_main_modules_map.csv
+ * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ */
+/**
  * Outbound network policy (default deny) for the whole app.
  *
  * Every http(s) and ws(s) request made through Chromium's network stack is checked here before it leaves:
