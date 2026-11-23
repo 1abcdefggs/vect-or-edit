@@ -1,6 +1,7 @@
 import { aiManager } from '../../core/aiStateManager.js';
 import { readStorage, writeStorage } from '../../core/storage.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import { llmSetupTargetId } from '../settings/llmSwitchLock.js';
 import { icons } from '../../core/icons.js';
 import { isApiKeyConfigured, saveApiKey } from '../../core/apiKeyStore.js';
 import { isLlmConfigured, isEmbedConfigured } from '../settings/settingsState.js';
@@ -13,8 +14,10 @@ import { readGeminiModel } from '../../core/geminiModel.js';
 import { llmProviderName } from '../../../shared/llmProviders';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
-import { confirmClose } from '../notifications/closeGuard.js';
+import { shouldSendOnKey } from './chatInputKeys.js';
+import { openModelQuickMenu } from './modelQuickMenu.js';
 import { queryLlmChat } from '../../search/searchProviders.js';
+import { buildChatMarkdown, chatExportFileName } from './chatExport.js';
 import { applyAiOutputToEditor, insertTextIntoEditor } from '../../editor/editorManager.js';
 
 const KEY_PLACEHOLDERS = { openai: 'sk-proj-...', claude: 'sk-ant-api03-...', gemini: 'AIzaSy... (Gemini)' };
@@ -25,6 +28,40 @@ function drawAiSwitch(button, on) {
   button.setAttribute('aria-checked', String(on));
   button.querySelector('[data-side="on"]')?.classList.toggle('is-lit', on);
   button.querySelector('[data-side="off"]')?.classList.toggle('is-lit', !on);
+}
+
+/**
+ * The embedding switch while its model is still being installed: neither word is lit, and the OFF word says it is preparing.
+ * Showing OFF lit would read as "switched off by the user", which is not the case.
+ */
+function paintEmbedSwitch(button, on) {
+  if (!button) return;
+  const installing = button.dataset.installing === 'true';
+  drawAiSwitch(button, on);
+  if (installing) {
+    button.querySelectorAll('.toggle-switch-word').forEach((word) => word.classList.remove('is-lit'));
+  }
+  const offWord = button.querySelector('[data-side="off"]');
+  if (offWord) offWord.textContent = installing ? t('embed_switch_preparing') : t('opt_toggle_off');
+}
+
+/** Opens the settings page at a card. Module level: both the chat dock and the switch use it */
+function openAiSettingsTab(tab = 'tabAiSearch', card, focus) {
+  window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab, card, focus } }));
+}
+
+/** Shown in the chat when a send needs a model that is not chosen yet. The prompt stays in the input */
+function showModelNeededNotice(chatMessages) {
+  const note = document.createElement('div');
+  note.className = 'llm-msg llm-msg-system';
+  note.innerHTML = `
+    <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
+    <span>${escapeHtml(t('llm_model_needed_msg'))}</span>
+    <button type="button" class="llm-action-btn btn-open-model-list">${escapeHtml(t('llm_open_model_list'))}</button>
+  `;
+  note.querySelector('.btn-open-model-list')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('app:openLogModels')));
+  chatMessages.appendChild(note);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 export function initAiControls() {
@@ -105,7 +142,7 @@ export function initAiControls() {
       btnSidebarEmbeddingModel.style.background = '';
       btnSidebarEmbeddingModel.style.borderColor = '';
       btnSidebarEmbeddingModel.style.color = '';
-      drawAiSwitch(btnSidebarEmbeddingModel, state.embed);
+      paintEmbedSwitch(btnSidebarEmbeddingModel, state.embed);
     }
     if (activeAiModelStatusDot) {
       activeAiModelStatusDot.style.opacity = state.embedConfigured ? '1' : '0.45';
@@ -135,14 +172,23 @@ export function initAiControls() {
     }
   }
 
-  function openAiSettingsTab(tab = 'tabAiSearch', card) {
-    window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab, card } }));
-  }
-
   updateSidebarEmbeddingLabel();
   drawAiSwitch(btnEditorAiToggle, aiManager.getState().llm);
-  drawAiSwitch(document.getElementById('btnSidebarEmbeddingModel'), aiManager.getState().embed);
+  const sidebarEmbedButton = document.getElementById('btnSidebarEmbeddingModel');
+  paintEmbedSwitch(sidebarEmbedButton, aiManager.getState().embed);
+  // The model download reports its progress as app:aiModelProgress; the switch is "preparing" until the model is ready or failed
+  window.addEventListener('app:aiModelProgress', (e) => {
+    const status = e.detail?.status;
+    if (!sidebarEmbedButton) return;
+    sidebarEmbedButton.dataset.installing = String(!['ready', 'done', 'error'].includes(status));
+    paintEmbedSwitch(sidebarEmbedButton, aiManager.getState().embed);
+  });
   updateSettingsOverview();
+  window.addEventListener('app:languageChanged', () => {
+    updateSettingsOverview();
+    updateSidebarEmbeddingLabel();
+    paintEmbedSwitch(sidebarEmbedButton, aiManager.getState().embed);
+  });
   window.addEventListener('app:settingsChanged', () => {
     aiManager.setConfigured({ llm: isLlmConfigured(), embed: isEmbedConfigured() });
     updateSidebarEmbeddingLabel();
@@ -175,8 +221,8 @@ export function initAiControls() {
         icon: 'cloud'
       });
       if (confirmed) {
-        // The LLM keys live in the Editor tab, in the LLM assistant card; the page starts at that card
-        openAiSettingsTab('tabEditor', 'grp_llm_assistant');
+        // The LLM keys live in the Editor tab, in the AI chat card. The page lands on what is missing: the key field of the chosen provider, or the provider choice
+        openAiSettingsTab('tabEditor', 'grp_llm_assistant', llmSetupTargetId(readStorage(STORAGE_KEYS.LLM_PROVIDER)));
       }
       return;
     }
@@ -227,10 +273,11 @@ function initLlmChatDock() {
   const chatInput = document.getElementById('llmChatInput');
   const btnSend = document.getElementById('btnLlmSend');
   const btnClear = document.getElementById('btnLlmClearChat');
-  const btnClose = document.getElementById('btnLlmCloseChat');
   const btnCollapse = document.getElementById('btnLlmToggleCollapse');
   const collapseIcon = document.getElementById('llmCollapseIcon');
-  const modelBadge = document.getElementById('llmDockModelBadge');
+  const modelButton = document.getElementById('btnLlmModel');
+  const dockSwitch = document.getElementById('btnLlmDockSwitch');
+  const btnDockSettings = document.getElementById('btnLlmQuickSettings');
   const btnKeyConfig = document.getElementById('btnLlmKeyConfig');
   const quickApiBanner = document.getElementById('llmQuickApiKeyBanner');
   const selQuickProvider = document.getElementById('selLlmQuickProvider');
@@ -239,37 +286,47 @@ function initLlmChatDock() {
   const btnSaveQuickKey = document.getElementById('btnSaveQuickApiKey');
   const chatStatus = document.getElementById('llmChatStatus');
   const chatStatusText = document.getElementById('llmChatStatusText');
+  const btnExport = document.getElementById('btnLlmExportChat');
+  const sendIcon = btnSend?.querySelector('.llm-send-icon');
+  const sendLabel = document.getElementById('llmSendLabel');
+  const destination = document.getElementById('llmChatDestination');
+  // The send that is waiting for its reply, if any: { requestId, stopped }
+  let activeSend = null;
+  // The conversation as sent and received, kept for saving. Cleared only by a confirmed reset
+  const chatLog = [];
 
   if (!dock || !chatInput) return;
 
-  function updateDockModelBadge() {
-    if (!modelBadge) return;
+  function updateDockModelButton() {
+    if (!modelButton) return;
     const provider = readStorage('llm_provider') || 'gemini';
     // The model the next request will use (same lookup as searchProviders.js)
     if (provider === 'gemini') {
       const model = readGeminiModel();
-      modelBadge.textContent = `Gemini (${model ? model.replace('gemini-', '') : t('gemini_model_unselected')})`;
+      modelButton.textContent = `Gemini (${model ? model.replace('gemini-', '') : t('gemini_model_unselected')})`;
     } else if (provider === 'openai') {
       const model = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
-      modelBadge.textContent = `OpenAI (${model})`;
+      modelButton.textContent = `OpenAI (${model})`;
     } else if (provider === 'claude') {
       const model = readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
-      modelBadge.textContent = `Claude (${model.replace('claude-', '')})`;
+      modelButton.textContent = `Claude (${model.replace('claude-', '')})`;
     } else {
-      modelBadge.textContent = t('llm_badge_cloud');
+      modelButton.textContent = t('llm_badge_cloud');
     }
+    // The line under the input names where the next message goes, so a change of service is always visible
+    if (destination) destination.textContent = t('llm_destination', { name: modelButton.textContent });
   }
 
-  // Auto-init model badge on startup, and follow model changes made in Settings
-  updateDockModelBadge();
-  window.addEventListener('app:settingsChanged', updateDockModelBadge);
-
-  // Model badge click: open settings LLM tab
-  if (modelBadge) {
-    modelBadge.addEventListener('click', () => {
-      openAiSettingsTab('tabAiChat');
-    });
-  }
+  // Auto-init the model button on startup, and follow model changes made in Settings
+  updateDockModelButton();
+  window.addEventListener('app:settingsChanged', updateDockModelButton);
+  // The button shows the model in use; a click opens a short menu to pick another one. The long list stays in the Models tab
+  // of the log panel (the last item of the menu). Not while a reply is awaited: the pending send keeps its model.
+  modelButton?.addEventListener('click', () => openModelQuickMenu(modelButton, {
+    canOpen: () => !activeSend,
+    onSetup: () => openAiSettingsTab('tabEditor', 'grp_llm_assistant')
+  }));
+  window.addEventListener('app:languageChanged', updateDockModelButton);
 
   // Update API Key button status icon (configured/unconfigured)
   function updateApiKeyButtonStatus() {
@@ -286,7 +343,7 @@ function initLlmChatDock() {
       statusIcon.style.color = 'var(--success-color, #10b981)';
     } else {
       statusIcon.textContent = 'key';
-      statusIcon.style.color = 'var(--accent-color, #38bdf8)';
+      statusIcon.style.color = 'var(--accent-text, var(--accent-color))';
     }
   }
 
@@ -328,6 +385,7 @@ function initLlmChatDock() {
 
   updateChatStatusBar();
   window.addEventListener('app:settingsChanged', updateChatStatusBar);
+  window.addEventListener('app:languageChanged', updateChatStatusBar);
 
   // Quick API Key Banner Logic
   function syncQuickApiKeyInput() {
@@ -411,7 +469,7 @@ function initLlmChatDock() {
       }
       quickApiKeyInput.value = '';
 
-      updateDockModelBadge();
+      updateDockModelButton();
       window.dispatchEvent(new Event('app:settingsChanged'));
       showToast(t('toast_api_key_saved', { provider: llmProviderName(provider) }), 'success');
       if (quickApiBanner) quickApiBanner.style.display = 'none';
@@ -427,7 +485,7 @@ function initLlmChatDock() {
     dock.style.display = 'flex';
     dock.classList.remove('collapsed');
     if (collapseIcon) collapseIcon.innerHTML = icons.minus;
-    updateDockModelBadge();
+    updateDockModelButton();
     if (initialPrompt) {
       chatInput.value = initialPrompt;
       chatInput.style.height = 'auto';
@@ -454,29 +512,71 @@ function initLlmChatDock() {
     const prompt = e.detail?.prompt || '';
     openDock(prompt);
   });
-  // The dock follows the LLM switch: it closes as soon as the LLM goes off
+  // The dock follows the LLM switch: it closes as soon as the LLM goes off, and its own switch shows the same state
+  const paintDockSwitch = (on) => {
+    drawAiSwitch(dockSwitch, on);
+    dockSwitch?.classList.toggle('active', on);
+  };
   window.addEventListener('app:aiStateChanged', (e) => {
     const state = e.detail.state;
+    paintDockSwitch(state.llm);
     if (!state.llm) {
       closeDock();
     }
   });
+  paintDockSwitch(aiManager.getState().llm);
+  // The dock is shown only while the LLM is on, so its switch turns it off. It is the same value as the title-bar button and the settings row
+  dockSwitch?.addEventListener('click', () => {
+    if (aiManager.getState().llm) aiManager.setLlm(false, 'dock');
+  });
+  // The gear opens the AI chat card of the settings page, where the detailed settings are
+  btnDockSettings?.addEventListener('click', () => openAiSettingsTab('tabEditor', 'grp_llm_assistant'));
 
-  if (btnClose) {
-    btnClose.addEventListener('click', async () => {
-      if (await confirmClose('chat')) closeDock();
-    });
-  }
   if (btnCollapse) btnCollapse.addEventListener('click', toggleCollapseDock);
 
   if (btnClear) {
-    btnClear.addEventListener('click', () => {
+    btnClear.addEventListener('click', async () => {
+      // Clearing removes the conversation for good, so it asks first; Cancel keeps it
+      const ok = await showConfirmModal({
+        title: t('llm_reset_confirm_title'),
+        message: t('llm_reset_confirm_message'),
+        confirmText: t('llm_reset_confirm_ok'),
+        cancelText: t('common_cancel'),
+        type: 'warning'
+      });
+      if (!ok) return;
+      chatLog.length = 0;
       chatMessages.innerHTML = `
         <div class="llm-msg llm-msg-system">
           <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
           <span>${t('llm_clear_chat_msg')}</span>
         </div>
       `;
+    });
+  }
+  if (btnExport) {
+    btnExport.addEventListener('click', async () => {
+      if (!chatLog.length) {
+        // Shown in the chat itself: a toast disappears after 10 seconds and was missed
+        const note = document.createElement('div');
+        note.className = 'llm-msg llm-msg-system';
+        note.innerHTML = `
+          <span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--accent-color, #38bdf8);">info</span>
+          <span>${escapeHtml(t('llm_export_empty'))}</span>
+        `;
+        chatMessages.appendChild(note);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return;
+      }
+      const content = buildChatMarkdown(chatLog, {
+        title: t('llm_export_title'),
+        youLabel: t('llm_export_you'),
+        assistantLabel: t('llm_export_assistant')
+      });
+      // forceDialog: the user always picks the place, so nothing is written to an earlier path
+      const res = await window.engineAPI?.saveFile?.(content, chatExportFileName(), true);
+      if (res?.success) showToast(t('toast_llm_chat_exported'), 'success');
+      else if (!res?.canceled) showToast(t('toast_llm_chat_export_failed'), 'warning');
     });
   }
   // Disable input while the LLM is OFF
@@ -486,7 +586,6 @@ function initLlmChatDock() {
     if (chatInput) chatInput.disabled = disabled;
     if (btnSend) btnSend.disabled = disabled;
     if (btnClear) btnClear.disabled = disabled;
-    if (btnClose) btnClose.disabled = disabled;
     dock.style.opacity = disabled ? '0.5' : '1';
   };
   // Listen for AI state changes
@@ -494,7 +593,29 @@ function initLlmChatDock() {
   // Initial state sync
   updateChatInputState();
 
+  /** While a send waits for its reply the Send button is a Stop button */
+  function showSendingState(on) {
+    btnSend.classList.toggle('is-stop', on);
+    btnSend.title = t(on ? 'tip_llm_stop' : 'tip_llm_send');
+    btnSend.dataset.i18nTitle = on ? 'tip_llm_stop' : 'tip_llm_send';
+    if (sendIcon) sendIcon.innerHTML = on ? icons.stop : icons.arrowUp;
+    if (sendLabel) {
+      sendLabel.dataset.i18n = on ? 'btn_stop' : 'btn_send';
+      sendLabel.textContent = t(on ? 'btn_stop' : 'btn_send');
+    }
+    btnSend.disabled = false;
+    chatInput.setAttribute('aria-busy', String(on));
+  }
+
+  function stopSend() {
+    if (!activeSend || activeSend.stopped) return;
+    activeSend.stopped = true;
+    window.engineAPI?.cancelAiSend?.(activeSend.requestId);
+  }
+
   async function handleSend() {
+    // One send at a time: Enter while waiting does not send a second message
+    if (activeSend) return;
     const prompt = chatInput.value.trim();
     if (!prompt) return;
 
@@ -507,12 +628,18 @@ function initLlmChatDock() {
       showToast(t('llm_off_hint'), 'warning');
       return;
     }
+    // Gemini needs a model the user has chosen in the model list; send nothing until then
+    if (readStorage(STORAGE_KEYS.LLM_PROVIDER) === 'gemini' && !readGeminiModel()) {
+      showModelNeededNotice(chatMessages);
+      return;
+    }
 
     // Append User Message
     const userMsgEl = document.createElement('div');
     userMsgEl.className = 'llm-msg llm-msg-user';
     userMsgEl.textContent = prompt;
     chatMessages.appendChild(userMsgEl);
+    chatLog.push({ role: 'user', text: prompt });
 
     chatInput.value = '';
     chatInput.style.height = '32px';
@@ -532,14 +659,27 @@ function initLlmChatDock() {
     chatMessages.appendChild(aiMsgEl);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    btnSend.disabled = true;
+    const requestId = crypto.randomUUID();
+    activeSend = { requestId, stopped: false };
+    showSendingState(true);
 
     try {
       // A question about the app is answered from the guide: its best matching cards go in front of the question
-      const response = await queryLlmChat(withHelpContext(prompt));
-      if (response && response.text) {
+      const response = await queryLlmChat(withHelpContext(prompt), null, { requestId });
+      if (response && response.cancelled) {
+        // Stopped by the user: say so, and give the text back so it can be edited and sent again
+        aiMsgEl.innerHTML = `
+          <div class="llm-msg-ai-header">
+            <span class="material-symbols-outlined" style="font-size: var(--fs-14);">info</span>
+            <span>${escapeHtml(t('llm_send_stopped_title'))}</span>
+          </div>
+          <div class="llm-ai-body">${escapeHtml(t('llm_send_stopped'))}</div>
+        `;
+        if (!chatInput.value) chatInput.value = prompt;
+      } else if (response && response.text) {
         const text = response.text;
         const modelName = response.model || 'AI Assistant';
+        chatLog.push({ role: 'assistant', text, model: response.model });
         aiMsgEl.innerHTML = `
           <div class="llm-msg-ai-header">
             <span style="display: flex; align-items: center; gap: 4px;">
@@ -607,19 +747,23 @@ function initLlmChatDock() {
         <div class="llm-ai-body" style="color: #ef4444;">${escapeHtml(e.message || t('llm_request_failed'))}</div>
       `;
     } finally {
-      btnSend.disabled = false;
+      const stopped = activeSend?.stopped;
+      activeSend = null;
+      showSendingState(false);
+      updateChatInputState();
       chatMessages.scrollTop = chatMessages.scrollHeight;
+      // Lets the sidebar tab of the chat show a dot when another tab is shown
+      if (!stopped) window.dispatchEvent(new CustomEvent('app:llmReply'));
     }
   }
 
-  if (btnSend) btnSend.addEventListener('click', handleSend);
+  if (btnSend) btnSend.addEventListener('click', () => (activeSend ? stopSend() : handleSend()));
 
+  // Enter sends, but not while an input method converts text. Escape does nothing here, so a habitual Escape cannot hide the chat
   chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (shouldSendOnKey(e)) {
       e.preventDefault();
       handleSend();
-    } else if (e.key === 'Escape') {
-      closeDock();
     }
   });
 

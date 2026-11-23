@@ -17,7 +17,7 @@ export interface AiState {
 }
 
 export type AiSwitch = 'llm' | 'embed';
-export type AiSwitchSource = 'toolbar' | 'sidebar' | 'settings' | 'config';
+export type AiSwitchSource = 'toolbar' | 'dock' | 'sidebar' | 'settings' | 'config';
 
 export interface AiSwitchChange {
   which: AiSwitch;

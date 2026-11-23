@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.83] - 2026-11-23
+
+### Added
+- Chat: the model button opens a quick menu of the model in use (OpenAI and Claude: their fixed lists; Gemini: the fetched list)
+- Chat placement: below the editor (default) or as a sidebar tab, set in Settings, by the chat header move button, or from the AI button menu
+- Chat: the Send button becomes Stop while a reply is awaited; a line under the input names the service and model
+- Chat: a save button writes the conversation to a Markdown file
+- Chat: the fixed model lists show the date they were last checked, as an English date
+
+### Changed
+- The AI chat switch in Settings is locked while no provider or key is set, with the missing step named in the text
+
 ## [0.3.82] - 2026-11-23
 
 ### Added

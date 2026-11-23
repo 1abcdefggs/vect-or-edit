@@ -1956,5 +1956,6 @@
   "tip_settings_search_guide": "各タブのヘルプ本文も検索",
   "tooltip_width_short": "短い（2行）",
   "tooltip_width_long": "長い",
-  "tip_set_tooltip_width": "ツールチップの行の長さを選択"
+  "tip_set_tooltip_width": "ツールチップの行の長さを選択",
+  "model_menu_checked": "固定リスト（{date} 確認）"
 }

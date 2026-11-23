@@ -5,6 +5,7 @@
  * The step bar (stepTabs.js) and the switches (toggleSwitch.js) are shared parts; this file only decides what they show.
  */
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
+import appLogoUrl from '../../assets/icon.png';
 import { readStorage, writeStorage } from '../../core/storage.js';
 import { showToast } from '../notifications/toastManager.js';
 import { applyI18n, currentLang, t } from '../../core/i18n';
@@ -62,6 +63,10 @@ function readDelaySeconds() {
   return Math.min(max, Math.max(min, Math.round(seconds * 2) / 2));
 }
 let localAiSwitch = null;
+/** True once the user has picked Yes or No for the embedding model in step 3. */
+function hasEmbedChoice() {
+  return Boolean(document.querySelector('input[name="setup_embed"]:checked'));
+}
 let saveLocation = null;
 // True while the Markdown format card shows its rendered view instead of its source
 let isSamplePreviewing = false;
@@ -78,6 +83,8 @@ export function showAiSetupModal() {
   const overlay = $('aiSetupModalOverlay');
   if (!overlay) return;
   isFinishing = false;
+  // The page HTML cannot name the bundled file (its name carries a hash in a build), so the logo URL comes from the import
+  overlay.querySelectorAll('img[data-app-logo]').forEach((img) => { img.src = appLogoUrl; });
   openingChoices = { lang: currentLang, theme: getStoredThemeSetting(), mode: getColorMode(), workspace: null };
   // The save folder held when setup opened (null in the browser build, where there is no folder).
   // The main process keeps its own copy of the saved choice, so cancel restores that and nothing from the renderer.
@@ -105,8 +112,8 @@ export function showAiSetupModal() {
     delayInput.max = String(AUTO_SAVE_DELAY_RANGE_MS.max / 1000);
     delayInput.value = String(getAutoSaveDelayMs() / 1000);
   }
-  // The embedding model is the core of the tool, so it starts switched on
-  localAiSwitch?.set(true);
+  // Nothing is chosen for the embedding model each time setup opens: the user answers Yes or No in step 3
+  document.querySelectorAll('input[name="setup_embed"]').forEach((radio) => { radio.checked = false; });
   saveLocation?.refresh();
   showInstallPath();
   renderLocalNotice();
@@ -203,9 +210,9 @@ function bindSetup() {
   // Embedding model choice: Y/N radio buttons (replaces the old toggle switch)
   const embedRadios = document.querySelectorAll('input[name="setup_embed"]');
   if (embedRadios.length > 0) {
-    // Initialize with "yes" checked
+    // Nothing is chosen at first: the user picks Yes or No, and the last button waits for that choice
     embedRadios.forEach(radio => {
-      radio.checked = radio.value === 'yes';
+      radio.checked = false;
       radio.addEventListener('change', () => {
         renderLocalNotice();
         renderStep();
@@ -214,10 +221,6 @@ function bindSetup() {
     // Provide a switch-like interface for compatibility with existing code
     localAiSwitch = {
       isChecked: () => document.querySelector('input[name="setup_embed"]:checked')?.value === 'yes',
-      set: (checked) => {
-        const radio = document.querySelector(`input[name="setup_embed"][value="${checked ? 'yes' : 'no'}"]`);
-        if (radio) radio.checked = true;
-      }
     };
   }
 
@@ -304,10 +307,19 @@ function renderStep() {
     $('btnSetupNextCaption').textContent = t('setup_btn_next_caption');
     $('btnSetupNextLabel').textContent = stepName(currentStep + 1);
   } else {
-    // The last button has no caption: it finishes the setup
+    // The last button has no caption: it finishes the setup, and waits until Yes or No is chosen
+    const chosen = hasEmbedChoice();
     $('btnSetupNextCaption').textContent = '';
-    $('btnSetupNextLabel').textContent = t(localAiSwitch?.isChecked() === false ? 'setup_btn_finish_no_model' : 'setup_btn_finish');
+    $('btnSetupNextLabel').textContent = t(chosen && !localAiSwitch.isChecked() ? 'setup_btn_finish_no_model' : 'setup_btn_finish');
+    // The button stays pressable: pressing it without a choice points at the embedding model question (see finishSetup)
+    $('btnSetupNext').disabled = false;
+    const hint = $('setupEmbedChoiceHint');
+    if (hint) {
+      hint.hidden = chosen;
+      if (chosen) hint.classList.remove('is-error');
+    }
   }
+  if (currentStep < TOTAL_STEPS) $('btnSetupNext').disabled = false;
   const dialog = document.querySelector('.first-run-dialog');
   if (dialog) dialog.setAttribute('aria-description', t('setup_step_label', { current: currentStep, total: TOTAL_STEPS }));
 }
@@ -376,7 +388,11 @@ function renderLocalNotice() {
   const notice = $('setupLocalNotice');
   const text = $('setupLocalNoticeText');
   if (!notice || !text) return;
-  const installing = localAiSwitch ? localAiSwitch.isChecked() : true;
+  // Before a choice is made the notice would describe an answer the user has not given, so it stays hidden
+  const chosen = hasEmbedChoice();
+  notice.hidden = !chosen;
+  if (!chosen) return;
+  const installing = localAiSwitch.isChecked();
   text.textContent = t(installing ? 'setup_ai_notice_on' : 'setup_ai_notice_off');
   notice.classList.toggle('is-warning', !installing);
 }
@@ -529,6 +545,17 @@ async function restoreOpeningChoices() {
 /** Stores the saving and AI choices and closes the setup. Reached only from the last step's button. */
 async function finishSetup() {
   if (isFinishing) return;
+  if (!hasEmbedChoice()) {
+    // Nothing chosen yet: stay on the step, say what to choose, and move the focus to the Yes / No buttons
+    const hint = $('setupEmbedChoiceHint');
+    if (hint) {
+      hint.hidden = false;
+      hint.classList.add('is-error');
+      hint.scrollIntoView({ block: 'nearest' });
+    }
+    document.querySelector('input[name="setup_embed"]')?.focus();
+    return;
+  }
   isFinishing = true;
 
   // The default folder is part of the defaults, so the first keystroke never asks for a location.

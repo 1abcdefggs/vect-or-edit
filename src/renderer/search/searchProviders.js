@@ -73,7 +73,12 @@ export async function fetchAiSuggestions(query, provider) {
   return null;
 }
 
-export async function queryLlmChat(prompt, userProvider = null) {
+/**
+ * One chat send. options.requestId lets the window stop the send (engineAPI.cancelAiSend); a stopped send
+ * resolves to { cancelled: true } so the caller can tell it from an error.
+ */
+export async function queryLlmChat(prompt, userProvider = null, options = {}) {
+  const { requestId } = options;
   if (!canUseLlm()) return { error: t('llm_off_hint') };
   const provider = userProvider || readStorage(STORAGE_KEYS.LLM_PROVIDER) || 'none';
   try {
@@ -82,21 +87,24 @@ export async function queryLlmChat(prompt, userProvider = null) {
       const model = readGeminiModel();
       if (!model) return { error: t('gemini_model_required') };
       if (window.engineAPI?.geminiSemanticSuggest) {
-        const res = await window.engineAPI.geminiSemanticSuggest({ prompt, model });
+        const res = await window.engineAPI.geminiSemanticSuggest({ prompt, model, requestId });
+        if (res && res.cancelled) return { cancelled: true };
         if (res && res.success && res.text) return { text: res.text, model: `Gemini (${model})` };
         if (res && res.error) throw new Error(res.error);
       }
     } else if (provider === 'openai') {
       const model = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
       if (window.engineAPI?.openaiSemanticSuggest) {
-        const res = await window.engineAPI.openaiSemanticSuggest({ prompt, model });
+        const res = await window.engineAPI.openaiSemanticSuggest({ prompt, model, requestId });
+        if (res && res.cancelled) return { cancelled: true };
         if (res && res.success && res.text) return { text: res.text, model: `OpenAI (${model})` };
         if (res && res.error) throw new Error(res.error);
       }
     } else if (provider === 'claude') {
       const model = readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
       if (window.engineAPI?.claudeSemanticSuggest) {
-        const res = await window.engineAPI.claudeSemanticSuggest({ prompt, model });
+        const res = await window.engineAPI.claudeSemanticSuggest({ prompt, model, requestId });
+        if (res && res.cancelled) return { cancelled: true };
         if (res && res.success && res.text) return { text: res.text, model: `Claude (${model})` };
         if (res && res.error) throw new Error(res.error);
       }
