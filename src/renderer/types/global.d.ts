@@ -56,6 +56,8 @@ declare global {
     'uiComponentsLoaded': Event;
     'app:languageChanged': CustomEvent<{ lang: string }>;
     'app:aiStateChanged': CustomEvent<{ state: any }>;
+    'app:chatPlacementChanged': CustomEvent<{ placement: string }>;
+    'app:llmReply': CustomEvent<void>;
     'app:settingsChanged': CustomEvent<void>;
     'app:requestLocalAiInit': CustomEvent<void>;
     'app:aiModelProgress': CustomEvent<{ pct: number; fileName?: string; status?: string }>;

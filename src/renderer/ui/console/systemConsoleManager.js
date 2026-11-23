@@ -3,11 +3,14 @@ import { saveTextToFile } from '../../editor/io/fileIO.js';
 import { settingsStore } from '../../core/settingsStore.js';
 import { formatLogTime } from '../../core/logTime.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
-import { t } from '../../core/i18n.js';
+import { t, tLog, setLogLanguageSource } from '../../core/i18n.js';
 import { showToast } from '../notifications/toastManager.js';
+import { initLogModelsTab } from './logModelsTab.js';
 
 // Saved-log helpers (module scope: also used by the saved-session view in Settings)
 const LOG_SAVE_PATH = 'system.logSaveMode';
+// The system log is English unless the log language setting follows the app language
+setLogLanguageSource(() => settingsStore.getPreference('system.logLanguage'));
 const SAVE_FLUSH_MS = 500;
 const SAVE_BATCH = 500;
 const SNAPSHOT_MAX = 5000;
@@ -120,6 +123,8 @@ export function initSystemConsole() {
   function appendLogEntry(entry) {
     logBuffer.push(entry);
     updateLogBadge();
+    // Deferred: entries can arrive while this module is still being set up, before the panel state exists
+    if (entry.level === 'ERROR') queueMicrotask(openLogsOnFirstError);
     if (settingsStore.getPreference(LOG_SAVE_PATH) === 'always') scheduleFlush();
     pendingRows.push(entry);
     if (!rowFrame) rowFrame = requestAnimationFrame(renderPendingRows);
@@ -158,7 +163,7 @@ export function initSystemConsole() {
     time: new Date().toISOString(),
     source: 'App:Init',
     level: 'INFO',
-    message: t('log_core_online')
+    message: tLog('log_core_online')
   });
 
   // Main-process entries arrive as a backlog (everything logged before this point) plus live pushes.
@@ -188,6 +193,18 @@ export function initSystemConsole() {
       });
   }
 
+  // The first-start note and the once-per-session error opening. Declared before the disclosure, which calls the note hook while it is set up.
+  const LOGS_INTRO_KEY = 'vect_logs_intro_seen';
+  const introEl = () => document.getElementById('systemLogIntro');
+  let openedForError = false;
+  function openLogsOnFirstError() {
+    if (openedForError || !logsDisclosure) return;
+    // The flag is set only when the panel really opens, so a later error can still open it
+    if (logsDisclosure.isOpen()) return;
+    openedForError = true;
+    logsDisclosure.set(true);
+  }
+
   // LOGS panel uses the shared disclosure toggle. Whether it starts open is a setting (System tab, default open).
   const logsDisclosure = (btnToggleConsole && systemLogPanel)
     ? createDisclosure({
@@ -195,6 +212,7 @@ export function initSystemConsole() {
         panel: systemLogPanel,
         animate: true,
         onChange: (open) => {
+          if (!open) introEl()?.setAttribute('hidden', '');
           btnToggleConsole.classList.toggle('btn-logs-closed', !open);
           btnToggleConsole.classList.toggle('toolbar-btn-active', open);
           const closeLogs = document.getElementById('btnCloseLogs');
@@ -205,6 +223,27 @@ export function initSystemConsole() {
         }
       })
     : null;
+
+  // Tabs of the panel: Log (the entries) and Models (the Gemini model list). Models is mounted the first time it opens
+  const logTabButtons = [...document.querySelectorAll('[data-log-tab]')];
+  function showLogTab(name) {
+    logTabButtons.forEach((button) => {
+      const on = button.dataset.logTab === name;
+      button.classList.toggle('is-active', on);
+      button.setAttribute('aria-selected', String(on));
+    });
+    const logView = document.getElementById('logLogView');
+    const modelsView = document.getElementById('logModelsView');
+    if (logView) logView.hidden = name !== 'log';
+    if (modelsView) modelsView.hidden = name !== 'models';
+    if (name === 'models') initLogModelsTab();
+  }
+  logTabButtons.forEach((button) => button.addEventListener('click', () => showLogTab(button.dataset.logTab)));
+  // Anything outside the panel (for example the chat, when no model is chosen) opens the Models tab directly
+  window.addEventListener('app:openLogModels', () => {
+    logsDisclosure?.set(true);
+    showLogTab('models');
+  });
 
   // Auto-open and auto-close log panel on first window load
   // The panel fades out for a moment before it closes, so the close does not go unnoticed (reduced motion skips the fade)
@@ -233,13 +272,24 @@ export function initSystemConsole() {
 
   // Runs once after the first window load (renderer.ts dispatches app:ready). The panel is only closed
   // again when it is open; the "collapse logs on startup" setting decides whether it opens at all
+  // The first start opens the panel with a note that it can be closed; it stays open until the user closes it.
+  // Later starts follow the startup setting (closed by default).
   let isFirstWindowLoad = true;
   window.addEventListener('app:ready', () => {
     if (isFirstWindowLoad && systemLogPanel) {
       isFirstWindowLoad = false;
+      let seen = false;
+      try { seen = localStorage.getItem(LOGS_INTRO_KEY) === '1'; } catch { seen = false; }
+      if (!seen) {
+        try { localStorage.setItem(LOGS_INTRO_KEY, '1'); } catch { /* the note simply shows again next start */ }
+        logsDisclosure?.set(true);
+        introEl()?.removeAttribute('hidden');
+        return;
+      }
       if (logsDisclosure?.isOpen()) scheduleAutoClose();
     }
   });
+
 
   // Cancel auto-close if user interacts with log panel
   btnClearLogs?.addEventListener('click', cancelAutoClose);

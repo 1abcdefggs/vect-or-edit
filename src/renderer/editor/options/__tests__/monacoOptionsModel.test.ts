@@ -3,12 +3,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import * as modelModule from '../monacoOptionsModel.js';
 import catalog from '../monacoOptions.catalog.json';
+import layout from '../monacoOptions.layout.json';
 import ja from '../../../locales/ja.json';
 import en from '../../../locales/en.json';
 
 // The model is plain JS; its inferred types are narrower than the data it really handles
 const model: any = modelModule;
-const controls: any[] = model.buildControls(catalog);
+const controls: any[] = model.buildControls(catalog, layout);
 const index = model.indexControls(controls);
 
 const DESCRIPTION_PREFIX = 'settings.editor.';
@@ -69,8 +70,13 @@ describe('monaco option controls', () => {
     }
   });
 
-  it('does not offer a name that contains a dot as an editable path', () => {
-    expect(index.get('semanticHighlighting.enabled')?.lock).toBe(model.LOCK_UNSUPPORTED);
+  it('keeps a flat dotted option name whole: editable, and never split into a nested path', () => {
+    const c = index.get('semanticHighlighting.enabled');
+    expect(c?.lock).toBeNull();
+    expect(c?.member).toBeNull();
+    expect(c?.kind).toBe('enum');
+    expect(model.toEditorOptions({ 'semanticHighlighting.enabled': 'configuredByTheme' })).toEqual({ 'semanticHighlighting.enabled': 'configuredByTheme' });
+    expect(model.readPath({ 'semanticHighlighting.enabled': false }, 'semanticHighlighting.enabled')).toBe(false);
   });
 
   it('marks the options Monaco reads only at creation', () => {
@@ -150,6 +156,46 @@ describe('monaco option overrides', () => {
     expect(model.parseTyped({ kind: 'json' }, '[80,')).toEqual({ ok: false });
     expect(model.parseTyped({ kind: 'text' }, ' x ')).toEqual({ ok: true, value: ' x ' });
   });
+});
+
+describe('monaco option layout', () => {
+  it('places every control under a sub-heading of its group with a weight from 0 to 3', () => {
+    const bad = controls.filter((c) => c.sub === null || !model.SUB_ORDER[c.group]?.includes(c.sub) || ![0, 1, 2, 3].includes(c.weight));
+    expect(bad.map((c) => c.path)).toEqual([]);
+  });
+
+  it('lists no option that Monaco does not have', () => {
+    const paths = new Set(controls.map((c) => c.path));
+    expect(Object.keys(layout.items).filter((p) => !paths.has(p))).toEqual([]);
+  });
+
+  it('keeps an option missing from the layout in its name-prefix group, without a sub-heading or weight', () => {
+    const extra = model.buildControls(catalog, { items: {} });
+    expect(extra.every((c: any) => c.sub === null && c.weight === null)).toBe(true);
+    expect(extra.find((c: any) => c.path === 'minimap.enabled').group).toBe('display');
+  });
+
+  it('has a heading text in both languages for every group, shown sub-heading and the folded block', () => {
+    const keys = ['monaco_rare', ...model.GROUP_ORDER.filter((g: string) => g !== 'advanced').map((g: string) => 'monaco_group_' + g),
+      // A group with one sub-heading shows its rows directly, so that sub-heading needs no text
+      ...Object.values(model.SUB_ORDER as Record<string, string[]>).filter((subs) => subs.length > 1).flat().map((s) => 'monaco_sub_' + s)];
+    const missing = keys.filter((k) => !(ja as Record<string, string>)[k] || !(en as Record<string, string>)[k]);
+    expect(missing).toEqual([]);
+  });
+
+  it('orders a sub-heading by weight and folds the weight-0 options away', () => {
+    const groups = model.groupControls(controls);
+    for (const { subs } of groups) {
+      for (const s of subs) {
+        const weights = s.main.map((c: any) => c.weight);
+        expect([...weights].sort((a: number, b: number) => b - a)).toEqual(weights);
+        expect(s.main.some((c: any) => c.weight === 0)).toBe(false);
+        expect(s.rare.every((c: any) => c.weight === 0)).toBe(true);
+        expect(s.main.length + s.rare.length).toBe(s.controls.length);
+      }
+    }
+  });
+
 });
 
 describe('monaco option search and grouping', () => {

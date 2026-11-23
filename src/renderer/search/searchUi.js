@@ -7,6 +7,7 @@ import { resolveItemCode, resolveItemTitle, resolveItemDescription } from './sea
 import { escapeHtml } from '../core/escape.js';
 import { removeContextMenu } from '../editor/ui/contextMenuManager.js';
 import { aiManager } from '../core/aiStateManager.js';
+import { FULL_METADATA_EVENT, isFullMetadataOn } from './fullMetadataSetting.js';
 
 // Number of loaded knowledge slots, pushed by dictionary.js after each state read (0 until the first read)
 let loadedSlotCount = 0;
@@ -97,7 +98,7 @@ export function resetVectorSearchResultsUi(debounceTimer, backendTimer) {
   removeContextMenu();
 }
 
-let showFullMetadata = typeof localStorage !== 'undefined' ? (readStorage(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true') : false;
+let showFullMetadata = isFullMetadataOn();
 
 // Field names ticked in the field list (shown on every card even when Full Meta is off)
 const selectedMetaFields = new Set((() => {
@@ -141,15 +142,11 @@ export function initSearchUi() {
   window.addEventListener('app:resultDescLinesChanged', reRenderWithCurrentResults);
   window.addEventListener('app:resultTitleLinesChanged', reRenderWithCurrentResults);
 
-  const chkFullMeta = document.getElementById('chkShowFullMetadata');
-  if (chkFullMeta) {
-    chkFullMeta.checked = showFullMetadata;
-    chkFullMeta.addEventListener('change', (e) => {
-      showFullMetadata = e.target.checked;
-      localStorage.setItem(STORAGE_KEYS.SHOW_FULL_METADATA, showFullMetadata ? 'true' : 'false');
-      reRenderWithCurrentResults();
-    });
-  }
+  // Both switches (settings page and sidebar) are wired in settingsFacade.js; the cards follow the stored value
+  window.addEventListener(FULL_METADATA_EVENT, (e) => {
+    showFullMetadata = Boolean(e.detail?.on);
+    reRenderWithCurrentResults();
+  });
 
 }
 

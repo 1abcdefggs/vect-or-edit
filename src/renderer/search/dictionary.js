@@ -4,6 +4,8 @@ import { icons } from '../core/icons.js';
 import { i18n, t } from '../core/i18n.js';
 import { confirmClose } from '../ui/notifications/closeGuard.js';
 import { setLoadedSlotCount } from './searchUi.js';
+import { getActiveModelId, getEmbeddingModel } from './embeddingModels.js';
+import { setSettingRowLocked, setDictionaryCount } from '../ui/settings/settingsLocks.js';
 
 export const allKnowledgeItems = [];
 export const allDictEntries = [];
@@ -139,15 +141,74 @@ export function setKnowledgeItems(kbItems) {
   }
 }
 
+/** The settings page's Guidelines and Knowledge cards say in text whether anything is loaded (not only by colour) */
+function renderSettingsCollectionStatus(state) {
+  const rules = Array.isArray(state?.activeGoal?.rules) ? state.activeGoal.rules.length : 0;
+  const guidelineText = state?.activeGoal
+    ? t('settings_guideline_status_set', { count: rules })
+    : t('settings_guideline_status_none');
+  const guidelineEl = document.getElementById('settingsCollectionGuidelineStatus');
+  if (guidelineEl) guidelineEl.textContent = guidelineText;
+  // The sidebar card says the same in text, and shows the line only while nothing is loaded
+  const sidebarGuidelineEl = document.getElementById('sidebarGuidelineStatus');
+  if (sidebarGuidelineEl) {
+    sidebarGuidelineEl.textContent = guidelineText;
+    sidebarGuidelineEl.hidden = rules > 0;
+  }
+  // The Linter checks the document against the guideline rules, so it is locked while no rules are loaded
+  const hasRules = Array.isArray(state?.activeGoal?.rules) && state.activeGoal.rules.length > 0;
+  setSettingRowLocked('modalLinterSelect', !hasRules);
+  setDictionaryCount(state?.slots?.length || 0);
+  const count = state?.slots?.length || 0;
+  const knowledgeText = count > 0
+    ? t('settings_knowledge_status_set', { count })
+    : t('settings_knowledge_status_none');
+  const knowledgeEl = document.getElementById('settingsCollectionKnowledgeStatus');
+  if (knowledgeEl) knowledgeEl.textContent = knowledgeText;
+  const sidebarKnowledgeEl = document.getElementById('sidebarKnowledgeStatus');
+  if (sidebarKnowledgeEl) {
+    sidebarKnowledgeEl.textContent = knowledgeText;
+    sidebarKnowledgeEl.hidden = count > 0;
+  }
+
+  // The dictionaries in use, one line each: name, item count, and the compatibility note when there is one
+  const inUseEl = document.getElementById('knowledgeInUseList');
+  if (inUseEl) {
+    inUseEl.replaceChildren(...(state?.slots || []).map((slot) => {
+      const li = document.createElement('li');
+      const note = slotCompatNote(slot);
+      li.textContent = `${slot.name} (${(slot.itemCount ?? 0).toLocaleString()})${note ? ` · ${note}` : ''}`;
+      return li;
+    }));
+  }
+
+  // The model in use: its dimensions, and how many loaded dictionaries can be searched with it
+  const dimEl = document.getElementById('knowledgeEmbeddingModelDims');
+  if (dimEl) {
+    const dim = getEmbeddingModel(getActiveModelId())?.dim;
+    dimEl.textContent = dim ? t('settings_model_dim_value', { dim }) : '';
+  }
+  const fitEl = document.getElementById('knowledgeDictionaryFit');
+  if (fitEl) {
+    const slots = state?.slots || [];
+    const usable = slots.filter((s) => s.compat?.state === 'ok' || s.compat?.state === 'approximate').length;
+    fitEl.textContent = slots.length > 0 ? t('settings_dictionary_fit', { usable, total: slots.length }) : '';
+  }
+}
+
 export async function updateSemanticStateDisplay() {
   const btnInsertTemplate = document.getElementById('btnInsertTemplate');
   const slotsListEl = document.getElementById('knowledgeSlotsList');
 
-  if (!window.engineAPI?.getSemanticState) return;
+  if (!window.engineAPI?.getSemanticState) {
+    renderSettingsCollectionStatus(null);
+    return;
+  }
 
   try {
     const state = await window.engineAPI.getSemanticState();
-    
+    renderSettingsCollectionStatus(state);
+
     // 1. Update Profile Display (Guideline vs Preset Adaptive View)
     if (state?.activeGoal) {
       const g = state.activeGoal;
@@ -209,7 +270,7 @@ export async function updateSemanticStateDisplay() {
     const slots = state?.slots || [];
     setLoadedSlotCount(slots.length, slots.filter((s) => s.compat?.state !== 'excluded').length);
 
-    // "Unload All" only makes sense with two or more files; with one file the row's X is the way (ADR-11)
+    // "Unload All" only makes sense with two or more files; with one file the row's X is the way
     if (btnClearAllSlots) {
       btnClearAllSlots.style.display = (state?.slots?.length ?? 0) >= 2 ? 'inline-flex' : 'none';
     }
@@ -625,4 +686,6 @@ export function getQuickMatches(query, limit = 5) {
 // The selected embedding model changed what can be compared: draw the dictionary list again
 if (typeof window !== 'undefined') {
   window.addEventListener('app:slotCompatChanged', () => { updateSemanticStateDisplay(); });
+  // The hints of the empty Guidelines and Knowledge cards are built in code (t()), so they are drawn again in the new language
+  window.addEventListener('app:languageChanged', () => { updateSemanticStateDisplay(); });
 }

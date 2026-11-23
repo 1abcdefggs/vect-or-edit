@@ -8,7 +8,7 @@ import { syncSettingsToBackend } from '../settings/settingsState.js';
  * One place for "are you sure?" on every × that closes something, so a stray click cannot close it.
  * The user can turn it off in Settings (System tab): the × then closes at once.
  */
-export type CloseTarget = 'app' | 'tab' | 'chat' | 'settings' | 'update' | 'about' | 'toast' | 'slot';
+export type CloseTarget = 'app' | 'tab' | 'settings' | 'update' | 'about' | 'toast' | 'slot';
 
 export function isCloseConfirmEnabled(): boolean {
   try {

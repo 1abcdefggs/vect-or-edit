@@ -1,0 +1,1536 @@
+{
+ "generatedBy": "editor options review sheet (kept outside the repository)",
+ "source": "editor options review sheet (kept outside the repository)",
+ "items": {
+  "allowVariableLineHeights": [
+   "display",
+   "font",
+   1
+  ],
+  "rulers": [
+   "display",
+   "guides",
+   1
+  ],
+  "lineNumbers": [
+   "display",
+   "linenumbers",
+   3
+  ],
+  "renderFinalNewline": [
+   "display",
+   "linenumbers",
+   1
+  ],
+  "lineNumbersMinChars": [
+   "display",
+   "linenumbers",
+   1
+  ],
+  "glyphMargin": [
+   "display",
+   "linenumbers",
+   0
+  ],
+  "lineDecorationsWidth": [
+   "display",
+   "linenumbers",
+   1
+  ],
+  "extraEditorClassName": [
+   "display",
+   "rendering",
+   0
+  ],
+  "renderValidationDecorations": [
+   "display",
+   "marks",
+   1
+  ],
+  "stickyScroll.enabled": [
+   "display",
+   "sticky",
+   3
+  ],
+  "stickyScroll.maxLineCount": [
+   "display",
+   "sticky",
+   1
+  ],
+  "stickyScroll.defaultModel": [
+   "display",
+   "sticky",
+   1
+  ],
+  "stickyScroll.scrollWithEditor": [
+   "display",
+   "sticky",
+   1
+  ],
+  "minimap.enabled": [
+   "display",
+   "minimap",
+   2
+  ],
+  "minimap.autohide": [
+   "display",
+   "minimap",
+   1
+  ],
+  "minimap.side": [
+   "display",
+   "minimap",
+   1
+  ],
+  "minimap.size": [
+   "display",
+   "minimap",
+   1
+  ],
+  "minimap.showSlider": [
+   "display",
+   "minimap",
+   1
+  ],
+  "minimap.renderCharacters": [
+   "display",
+   "minimap",
+   1
+  ],
+  "minimap.maxColumn": [
+   "display",
+   "minimap",
+   1
+  ],
+  "minimap.scale": [
+   "display",
+   "minimap",
+   1
+  ],
+  "minimap.showRegionSectionHeaders": [
+   "display",
+   "minimap",
+   0
+  ],
+  "minimap.showMarkSectionHeaders": [
+   "display",
+   "minimap",
+   0
+  ],
+  "minimap.markSectionHeaderRegex": [
+   "display",
+   "minimap",
+   0
+  ],
+  "minimap.sectionHeaderFontSize": [
+   "display",
+   "minimap",
+   0
+  ],
+  "minimap.sectionHeaderLetterSpacing": [
+   "display",
+   "minimap",
+   0
+  ],
+  "fontLigatures": [
+   "display",
+   "font",
+   0
+  ],
+  "fontVariations": [
+   "display",
+   "font",
+   1
+  ],
+  "disableLayerHinting": [
+   "display",
+   "rendering",
+   1
+  ],
+  "disableMonospaceOptimizations": [
+   "display",
+   "rendering",
+   1
+  ],
+  "wordWrap": [
+   "display",
+   "wrap",
+   3
+  ],
+  "wordWrapOverride1": [
+   "display",
+   "wrap",
+   0
+  ],
+  "wordWrapOverride2": [
+   "display",
+   "wrap",
+   0
+  ],
+  "wordWrapColumn": [
+   "display",
+   "wrap",
+   2
+  ],
+  "wordWrapBreakBeforeCharacters": [
+   "display",
+   "wrap",
+   1
+  ],
+  "wordWrapBreakAfterCharacters": [
+   "display",
+   "wrap",
+   1
+  ],
+  "folding": [
+   "display",
+   "folding",
+   2
+  ],
+  "foldingStrategy": [
+   "display",
+   "folding",
+   1
+  ],
+  "foldingHighlight": [
+   "display",
+   "folding",
+   1
+  ],
+  "foldingImportsByDefault": [
+   "display",
+   "folding",
+   0
+  ],
+  "foldingMaximumRegions": [
+   "display",
+   "folding",
+   1
+  ],
+  "showFoldingControls": [
+   "display",
+   "folding",
+   1
+  ],
+  "unfoldOnClickAfterEndOfLine": [
+   "display",
+   "folding",
+   1
+  ],
+  "experimentalGpuAcceleration": [
+   "display",
+   "rendering",
+   1
+  ],
+  "experimentalWhitespaceRendering": [
+   "display",
+   "rendering",
+   1
+  ],
+  "renderWhitespace": [
+   "display",
+   "whitespace",
+   3
+  ],
+  "renderControlCharacters": [
+   "display",
+   "whitespace",
+   1
+  ],
+  "renderLineHighlight": [
+   "display",
+   "currentline",
+   3
+  ],
+  "renderLineHighlightOnlyWhenFocus": [
+   "display",
+   "currentline",
+   1
+  ],
+  "fontFamily": [
+   "display",
+   "font",
+   3
+  ],
+  "fontWeight": [
+   "display",
+   "font",
+   2
+  ],
+  "fontSize": [
+   "display",
+   "font",
+   3
+  ],
+  "lineHeight": [
+   "display",
+   "font",
+   3
+  ],
+  "letterSpacing": [
+   "display",
+   "font",
+   2
+  ],
+  "showUnused": [
+   "display",
+   "marks",
+   0
+  ],
+  "placeholder": [
+   "display",
+   "marks",
+   1
+  ],
+  "showDeprecated": [
+   "display",
+   "marks",
+   0
+  ],
+  "guides.bracketPairs": [
+   "display",
+   "guides",
+   1
+  ],
+  "guides.bracketPairsHorizontal": [
+   "display",
+   "guides",
+   1
+  ],
+  "guides.highlightActiveBracketPair": [
+   "display",
+   "guides",
+   1
+  ],
+  "guides.indentation": [
+   "display",
+   "guides",
+   1
+  ],
+  "guides.highlightActiveIndentation": [
+   "display",
+   "guides",
+   1
+  ],
+  "wordSegmenterLocales": [
+   "cursor",
+   "selection",
+   2
+  ],
+  "wordSeparators": [
+   "cursor",
+   "selection",
+   1
+  ],
+  "selectionClipboard": [
+   "cursor",
+   "selection",
+   0
+  ],
+  "cursorSurroundingLines": [
+   "cursor",
+   "cursorshape",
+   1
+  ],
+  "cursorSurroundingLinesStyle": [
+   "cursor",
+   "cursorshape",
+   1
+  ],
+  "selectOnLineNumbers": [
+   "cursor",
+   "selection",
+   2
+  ],
+  "roundedSelection": [
+   "cursor",
+   "selection",
+   1
+  ],
+  "cursorBlinking": [
+   "cursor",
+   "cursorshape",
+   2
+  ],
+  "mouseWheelZoom": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "mouseStyle": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "cursorSmoothCaretAnimation": [
+   "cursor",
+   "cursorshape",
+   1
+  ],
+  "cursorStyle": [
+   "cursor",
+   "cursorshape",
+   2
+  ],
+  "cursorWidth": [
+   "cursor",
+   "cursorshape",
+   1
+  ],
+  "cursorHeight": [
+   "cursor",
+   "cursorshape",
+   1
+  ],
+  "stopRenderingLineAfter": [
+   "display",
+   "rendering",
+   1
+  ],
+  "mouseWheelScrollSensitivity": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "columnSelection": [
+   "cursor",
+   "selection",
+   1
+  ],
+  "multiCursorModifier": [
+   "cursor",
+   "multicursor",
+   1
+  ],
+  "multiCursorMergeOverlapping": [
+   "cursor",
+   "multicursor",
+   1
+  ],
+  "multiCursorPaste": [
+   "cursor",
+   "multicursor",
+   1
+  ],
+  "multiCursorLimit": [
+   "cursor",
+   "multicursor",
+   1
+  ],
+  "dragAndDrop": [
+   "cursor",
+   "mouse",
+   2
+  ],
+  "emptySelectionClipboard": [
+   "cursor",
+   "selection",
+   2
+  ],
+  "copyWithSyntaxHighlighting": [
+   "cursor",
+   "selection",
+   1
+  ],
+  "dropIntoEditor.enabled": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "dropIntoEditor.showDropSelector": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "pasteAs.enabled": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "pasteAs.showPasteSelector": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "unusualLineTerminators": [
+   "editing",
+   "input",
+   1
+  ],
+  "linkedEditing": [
+   "editing",
+   "input",
+   0
+  ],
+  "renameOnType": [
+   "editing",
+   "input",
+   0
+  ],
+  "overtypeCursorStyle": [
+   "cursor",
+   "cursorshape",
+   1
+  ],
+  "overtypeOnPaste": [
+   "editing",
+   "input",
+   1
+  ],
+  "wrappingIndent": [
+   "display",
+   "wrap",
+   2
+  ],
+  "wrappingStrategy": [
+   "display",
+   "wrap",
+   2
+  ],
+  "wordBreak": [
+   "display",
+   "wrap",
+   2
+  ],
+  "comments.insertSpace": [
+   "editing",
+   "input",
+   0
+  ],
+  "comments.ignoreEmptyLines": [
+   "editing",
+   "input",
+   0
+  ],
+  "autoClosingBrackets": [
+   "editing",
+   "input",
+   2
+  ],
+  "autoClosingComments": [
+   "editing",
+   "input",
+   0
+  ],
+  "autoClosingQuotes": [
+   "editing",
+   "input",
+   2
+  ],
+  "autoClosingDelete": [
+   "editing",
+   "input",
+   1
+  ],
+  "autoClosingOvertype": [
+   "editing",
+   "input",
+   1
+  ],
+  "autoSurround": [
+   "editing",
+   "input",
+   1
+  ],
+  "autoIndent": [
+   "editing",
+   "indent",
+   2
+  ],
+  "autoIndentOnPaste": [
+   "editing",
+   "indent",
+   1
+  ],
+  "autoIndentOnPasteWithinString": [
+   "editing",
+   "indent",
+   0
+  ],
+  "stickyTabStops": [
+   "editing",
+   "indent",
+   1
+  ],
+  "formatOnType": [
+   "editing",
+   "indent",
+   0
+  ],
+  "formatOnPaste": [
+   "editing",
+   "indent",
+   0
+  ],
+  "matchBrackets": [
+   "display",
+   "guides",
+   1
+  ],
+  "useTabStops": [
+   "editing",
+   "indent",
+   1
+  ],
+  "trimWhitespaceOnDelete": [
+   "editing",
+   "indent",
+   1
+  ],
+  "unicodeHighlight.nonBasicASCII": [
+   "display",
+   "marks",
+   1
+  ],
+  "unicodeHighlight.invisibleCharacters": [
+   "display",
+   "marks",
+   1
+  ],
+  "unicodeHighlight.ambiguousCharacters": [
+   "display",
+   "marks",
+   1
+  ],
+  "unicodeHighlight.includeComments": [
+   "display",
+   "marks",
+   1
+  ],
+  "unicodeHighlight.includeStrings": [
+   "display",
+   "marks",
+   1
+  ],
+  "unicodeHighlight.allowedCharacters": [
+   "display",
+   "marks",
+   1
+  ],
+  "unicodeHighlight.allowedLocales": [
+   "display",
+   "marks",
+   1
+  ],
+  "bracketPairColorization.enabled": [
+   "display",
+   "guides",
+   1
+  ],
+  "bracketPairColorization.independentColorPoolPerBracketType": [
+   "display",
+   "guides",
+   1
+  ],
+  "tabSize": [
+   "editing",
+   "indent",
+   2
+  ],
+  "insertSpaces": [
+   "editing",
+   "indent",
+   2
+  ],
+  "detectIndentation": [
+   "editing",
+   "indent",
+   1
+  ],
+  "trimAutoWhitespace": [
+   "editing",
+   "indent",
+   1
+  ],
+  "largeFileOptimizations": [
+   "editing",
+   "indent",
+   1
+  ],
+  "hover.enabled": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "hover.delay": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "hover.sticky": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "hover.hidingDelay": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "hover.above": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "hover.showLongLineWarning": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "links": [
+   "suggest",
+   "hover",
+   2
+  ],
+  "colorDecorators": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "colorDecoratorsActivatedOn": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "colorDecoratorsLimit": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "suggest.insertMode": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.filterGraceful": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.snippetsPreventQuickSuggestions": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.localityBonus": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.shareSuggestSelections": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.selectionMode": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showIcons": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showStatusBar": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.preview": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.previewMode": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showInlineDetails": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showMethods": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showFunctions": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showConstructors": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showDeprecated": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.matchOnWordStartOnly": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showFields": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showVariables": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showClasses": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showStructs": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showInterfaces": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showModules": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showProperties": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showEvents": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showOperators": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showUnits": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showValues": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showConstants": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showEnums": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showEnumMembers": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showKeywords": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showWords": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showColors": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showFiles": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showReferences": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showFolders": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showTypeParameters": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showIssues": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showUsers": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggest.showSnippets": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.enabled": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.mode": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.showToolbar": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.syntaxHighlightingEnabled": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.suppressSuggestions": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.minShowDelay": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.suppressInSnippetMode": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.keepOnBlur": [
+   "suggest",
+   "list",
+   0
+  ],
+  "inlineSuggest.fontFamily": [
+   "suggest",
+   "list",
+   0
+  ],
+  "smartSelect.selectLeadingAndTrailingWhitespace": [
+   "cursor",
+   "selection",
+   1
+  ],
+  "smartSelect.selectSubwords": [
+   "cursor",
+   "selection",
+   1
+  ],
+  "gotoLocation.multiple": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.multipleDefinitions": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.multipleTypeDefinitions": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.multipleDeclarations": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.multipleImplementations": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.multipleReferences": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.multipleTests": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.alternativeDefinitionCommand": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.alternativeTypeDefinitionCommand": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.alternativeDeclarationCommand": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.alternativeImplementationCommand": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.alternativeReferenceCommand": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "gotoLocation.alternativeTestsCommand": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "quickSuggestions.other": [
+   "suggest",
+   "list",
+   0
+  ],
+  "quickSuggestions.comments": [
+   "suggest",
+   "list",
+   0
+  ],
+  "quickSuggestions.strings": [
+   "suggest",
+   "list",
+   0
+  ],
+  "quickSuggestionsDelay": [
+   "suggest",
+   "list",
+   0
+  ],
+  "parameterHints.enabled": [
+   "suggest",
+   "list",
+   0
+  ],
+  "parameterHints.cycle": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggestOnTriggerCharacters": [
+   "suggest",
+   "list",
+   0
+  ],
+  "acceptSuggestionOnEnter": [
+   "suggest",
+   "list",
+   0
+  ],
+  "acceptSuggestionOnCommitCharacter": [
+   "suggest",
+   "list",
+   0
+  ],
+  "snippetSuggestions": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggestSelection": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggestFontSize": [
+   "suggest",
+   "list",
+   0
+  ],
+  "suggestLineHeight": [
+   "suggest",
+   "list",
+   0
+  ],
+  "tabCompletion": [
+   "suggest",
+   "list",
+   0
+  ],
+  "lightbulb.enabled": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "codeActionsOnSaveTimeout": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "peekWidgetDefaultFocus": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "definitionLinkOpensInPeek": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "inlayHints.enabled": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "inlayHints.fontSize": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "inlayHints.fontFamily": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "inlayHints.padding": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "inlayHints.maximumLength": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "inlineCompletionsAccessibilityVerbose": [
+   "suggest",
+   "list",
+   1
+  ],
+  "wordBasedSuggestions": [
+   "suggest",
+   "list",
+   1
+  ],
+  "wordBasedSuggestionsOnlySameLanguage": [
+   "suggest",
+   "list",
+   1
+  ],
+  "semanticHighlighting.enabled": [
+   "display",
+   "rendering",
+   1
+  ],
+  "find.cursorMoveOnType": [
+   "find",
+   "find",
+   2
+  ],
+  "find.findOnType": [
+   "find",
+   "find",
+   2
+  ],
+  "find.seedSearchStringFromSelection": [
+   "find",
+   "find",
+   2
+  ],
+  "find.autoFindInSelection": [
+   "find",
+   "find",
+   1
+  ],
+  "find.addExtraSpaceOnTop": [
+   "find",
+   "find",
+   1
+  ],
+  "find.loop": [
+   "find",
+   "find",
+   2
+  ],
+  "find.closeOnResult": [
+   "find",
+   "find",
+   1
+  ],
+  "selectionHighlight": [
+   "find",
+   "find",
+   2
+  ],
+  "selectionHighlightMultiline": [
+   "find",
+   "find",
+   1
+  ],
+  "selectionHighlightMaxLength": [
+   "find",
+   "find",
+   1
+  ],
+  "occurrencesHighlight": [
+   "find",
+   "find",
+   2
+  ],
+  "occurrencesHighlightDelay": [
+   "find",
+   "find",
+   1
+  ],
+  "revealHorizontalRightPadding": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.arrowSize": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.vertical": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.horizontal": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.useShadows": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.verticalHasArrows": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.horizontalHasArrows": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.handleMouseWheel": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.alwaysConsumeMouseWheel": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.horizontalScrollbarSize": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.verticalScrollbarSize": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.verticalSliderSize": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.horizontalSliderSize": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.scrollByPage": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollbar.ignoreHorizontalScrollbarInContentHeight": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "overviewRulerLanes": [
+   "scroll",
+   "overview",
+   1
+  ],
+  "overviewRulerBorder": [
+   "scroll",
+   "overview",
+   1
+  ],
+  "hideCursorInOverviewRuler": [
+   "scroll",
+   "overview",
+   1
+  ],
+  "scrollBeyondLastLine": [
+   "scroll",
+   "scrollbar",
+   2
+  ],
+  "scrollOnMiddleClick": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollBeyondLastColumn": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "smoothScrolling": [
+   "scroll",
+   "scrollbar",
+   2
+  ],
+  "fastScrollSensitivity": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "scrollPredominantAxis": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "padding.top": [
+   "scroll",
+   "overview",
+   1
+  ],
+  "padding.bottom": [
+   "scroll",
+   "overview",
+   1
+  ],
+  "allowVariableFonts": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "allowVariableFontsInAccessibilityMode": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "ariaLabel": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "ariaRequired": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "screenReaderAnnounceInlineSuggestion": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "accessibilitySupport": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "accessibilityPageSize": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "tabFocusMode": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "inDiffEditor": [
+   "managed",
+   "managed",
+   0
+  ],
+  "tabIndex": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "readOnly": [
+   "managed",
+   "managed",
+   0
+  ],
+  "readOnlyMessage.value": [
+   "managed",
+   "managed",
+   0
+  ],
+  "readOnlyMessage.isTrusted": [
+   "managed",
+   "managed",
+   0
+  ],
+  "readOnlyMessage.supportThemeIcons": [
+   "managed",
+   "managed",
+   0
+  ],
+  "readOnlyMessage.supportHtml": [
+   "managed",
+   "managed",
+   0
+  ],
+  "readOnlyMessage.baseUri": [
+   "managed",
+   "managed",
+   0
+  ],
+  "readOnlyMessage.uris": [
+   "managed",
+   "managed",
+   0
+  ],
+  "domReadOnly": [
+   "managed",
+   "managed",
+   0
+  ],
+  "fixedOverflowWidgets": [
+   "managed",
+   "managed",
+   0
+  ],
+  "allowOverflow": [
+   "display",
+   "rendering",
+   0
+  ],
+  "defaultColorDecorators": [
+   "suggest",
+   "hover",
+   0
+  ],
+  "automaticLayout": [
+   "managed",
+   "managed",
+   0
+  ],
+  "wrapOnEscapedLineFeeds": [
+   "display",
+   "wrap",
+   0
+  ],
+  "contextmenu": [
+   "managed",
+   "managed",
+   0
+  ],
+  "inertialScroll": [
+   "scroll",
+   "scrollbar",
+   1
+  ],
+  "mouseMiddleClickAction": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "doubleClickSelectsBlock": [
+   "cursor",
+   "mouse",
+   1
+  ],
+  "codeLens": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "codeLensFontFamily": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "codeLensFontSize": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "matchOnWordStartOnly": [
+   "suggest",
+   "list",
+   0
+  ],
+  "useShadowDOM": [
+   "display",
+   "rendering",
+   0
+  ],
+  "editContext": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "renderRichScreenReaderContent": [
+   "accessibility",
+   "assist",
+   1
+  ],
+  "stablePeek": [
+   "suggest",
+   "goto",
+   0
+  ],
+  "maxTokenizationLineLength": [
+   "display",
+   "rendering",
+   1
+  ],
+  "theme": [
+   "managed",
+   "managed",
+   0
+  ],
+  "autoDetectHighContrast": [
+   "accessibility",
+   "assist",
+   1
+  ]
+ }
+}

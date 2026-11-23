@@ -316,6 +316,8 @@
   position: relative;
   z-index: 10;
   animation: slideUpChat 0.15s ease-out;
+  /* The header answers to the width of the dock, not of the window (the dock can sit in a narrow column) */
+  container: llm-dock / inline-size;
 }
 
 @keyframes slideUpChat {
@@ -323,24 +325,32 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Header of the chat area.
+   Background: the theme's header token, not a fixed black overlay (that turned a muddy grey on light themes and was
+   almost the same as the body on dark ones). The accent line on the top edge marks where the chat starts and that it is
+   in use. */
 .llm-dock-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 10px;
-  background: rgba(0, 0, 0, 0.25);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--header-bg, var(--bg-secondary));
+  border-top: var(--accent-line) solid var(--accent-text);
   border-bottom: var(--border-width) solid var(--border-color);
 }
 
 .llm-dock-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .llm-dock-icon {
   font-size: var(--fs-16);
-  color: var(--accent-color, #38bdf8);
+  color: var(--accent-text);
 }
 
 .llm-dock-label {
@@ -348,63 +358,112 @@
   font-weight: 700;
   color: var(--text-main);
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
-.llm-model-badge {
-  /* About the size of the heading text next to it (style_rules.csv model-badge) */
-  font-size: var(--fs-13);
-  font-family: var(--font-mono, monospace);
-  padding: 1px 8px;
-  background: rgba(56, 189, 248, 0.15);
-  color: var(--accent-color, #38bdf8);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 4px;
-}
-
-.llm-model-badge--button {
+/* Text buttons of the header (model, API key): one form, the height of the icon buttons beside them.
+   The model name is a button, not a badge: a badge made the text small and hard to read. */
+.llm-head-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  height: var(--icon-btn-size);
+  padding: 0 var(--spacing-sm);
+  border: var(--border-width) solid var(--control-border);
+  border-radius: var(--radius-sm);
   background: transparent;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  color: var(--text-main);
   font-family: inherit;
+  font-size: var(--fs-13);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.llm-model-badge--button:hover {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: rgba(56, 189, 248, 0.5);
+.llm-head-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent-text);
 }
 
-.llm-model-badge--button:active {
-  background: rgba(56, 189, 248, 0.3);
+.llm-head-btn:focus-visible,
+.llm-dock-btn:focus-visible {
+  outline: var(--border-width) solid var(--accent-color, #38bdf8);
+}
+
+/* The model name can be long: it gives way first when the header is narrow */
+.llm-model-btn {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.llm-key-btn .llm-key-icon {
+  font-size: var(--icon-text-size);
+  color: var(--accent-text);
 }
 
 .llm-dock-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
 }
 
+/* Icon-only buttons (clear, save, minimize): the shared icon-button box, as the gear buttons of the other areas.
+   No turning on hover: the gear turns, these icons do not. */
 .llm-dock-btn {
-  padding: 2px 6px;
-  height: 22px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  border: var(--border-width) solid var(--border-color);
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .llm-dock-btn .material-symbols-outlined {
-  font-size: var(--fs-16);
+  font-size: var(--icon-text-size);
   line-height: 1;
+}
+
+/* Every inline icon of the header has the same size, whatever width its source SVG carries */
+.llm-dock-btn svg {
+  width: 1em;
+  height: 1em;
 }
 
 .llm-dock-btn:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover-bg);
+}
+
+/* The use switch of the header is the same pill as the title bar; only its place differs */
+.llm-dock-switch {
+  flex-shrink: 0;
+}
+
+/* Narrow dock: the API key button keeps its status icon and drops its text (the icon and the tooltip say the same);
+   below that the heading text goes too, and the model name gives way first. The controls are never dropped. */
+@container llm-dock (max-width: 439px) {
+  .llm-key-btn {
+    width: var(--icon-btn-size);
+    padding: 0;
+    justify-content: center;
+  }
+  .llm-key-btn [data-i18n] {
+    display: none;
+  }
+}
+
+@container llm-dock (max-width: 359px) {
+  .llm-dock-label {
+    display: none;
+  }
 }
 
 /* Inline Quick API Key Banner */
@@ -521,15 +580,18 @@
 
 .llm-chat-input-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.35);
+  /* The same theme token as the header: a fixed black overlay made the text on it hard to read on light themes */
+  background: var(--header-bg, var(--bg-secondary));
   border-top: var(--border-width) solid var(--border-color);
 }
 
 .llm-chat-input {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   resize: none;
   height: 32px;
   padding: 6px 10px;
@@ -569,10 +631,35 @@
   opacity: 0.9;
 }
 
+.llm-send-icon {
+  display: inline-flex;
+  font-size: var(--fs-16);
+}
+
+/* While a send waits for its reply the same button is Stop: an outlined button, so it does not read as another Send */
+.llm-send-btn.is-stop {
+  background: transparent;
+  color: var(--text-main);
+  border: var(--border-width) solid var(--accent-text);
+}
+
+/* Where the next message goes (cloud service and model), under the input box */
+.llm-chat-destination {
+  order: 3;
+  flex: 1 0 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-12);
+  color: var(--text-main);
+}
+
 /* Monaco Editor Bottom LLM Chat Dock Collapsed state */
+/* Only the header bar stays: its height follows the buttons, so the switch and the gear stay reachable */
 .editor-llm-chat-dock.collapsed {
-  height: 38px !important;
-  min-height: 38px !important;
+  height: auto !important;
+  min-height: 0 !important;
 }
 
 .editor-llm-chat-dock.collapsed .llm-chat-messages,

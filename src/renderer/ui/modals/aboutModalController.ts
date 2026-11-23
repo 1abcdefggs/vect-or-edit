@@ -115,6 +115,16 @@ export function hideAboutModal(): void {
   }
 }
 
+// The dialog's fixed texts (tagline, close tip, buttons) are written once when it is built, so a language change rebuilds it.
+// Kept open if it was open, so the new language shows at once.
+window.addEventListener('app:languageChanged', () => {
+  if (!modalInstance) return;
+  const wasOpen = modalInstance.style.display !== 'none';
+  modalInstance.remove();
+  modalInstance = null;
+  if (wasOpen) showAboutModal();
+});
+
 function createAboutModalElement(): HTMLElement {
   const div = document.createElement('div');
   div.id = 'aboutModal';

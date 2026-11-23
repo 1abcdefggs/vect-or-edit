@@ -59,7 +59,7 @@ export function isUserModel(id) {
 
 /** Adds an entry from fetchModelInfo. Refuses a duplicate or a built-in model. */
 export function addUserModel(entry) {
-  if (builtInIds().has(entry.id)) throw new ImportError('inCatalogue');
+  if (builtInIds().has(entry.id)) throw new ImportError('inBuiltinList');
   const list = loadUserModels();
   if (list.some((m) => m.id === entry.id)) throw new ImportError('duplicate');
   saveUserModels([...list, entry]);
@@ -120,8 +120,8 @@ export async function fetchModelInfo(id) {
   }
 }
 
-/** The picker's catalogue: the built-in registry, then the models the user added */
-export function catalogueModels() {
+/** The picker's list: the built-in registry, then the models the user added */
+export function modelList() {
   const extra = loadUserModels()
     .filter((m) => !builtInIds().has(m.id))
     .map((m) => ({

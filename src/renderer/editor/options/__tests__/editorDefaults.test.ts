@@ -108,3 +108,42 @@ describe('editorDefaults.js source', () => {
     expect(source).not.toMatch(/[\u3040-\u30ff\u3400-\u9fff\uff00-\uffef]/);
   });
 });
+
+describe('language-dependent defaults', () => {
+  it('adds the decided Japanese options and keeps the base for other languages', async () => {
+    const { LANGUAGE_DEFAULTS, languageOptions } = await import('../editorDefaults.js');
+    const ja: any = buildMonacoBaseOptions({ ...runtime, documentLanguage: 'ja' });
+    expect(ja.wordSegmenterLocales).toEqual(['ja']);
+    expect(ja.wordSeparators).toContain('、');
+    expect(ja.wordSeparators.startsWith('`~!@#$%^&*()-=+[{]}')).toBe(true);
+    expect(ja.wrappingStrategy).toBe('advanced');
+    expect(ja.wrappingIndent).toBe('none');
+    expect(ja.unicodeHighlight).toEqual({
+      ambiguousCharacters: false, invisibleCharacters: false, nonBasicASCII: false,
+      allowedLocales: { _os: true, _vscode: true, ja: true }
+    });
+    for (const lang of ['en', undefined, 'ko']) {
+      const o: any = buildMonacoBaseOptions({ ...runtime, documentLanguage: lang });
+      expect(o.wrappingStrategy).toBeUndefined();
+      expect(o.unicodeHighlight.allowedLocales).toBeUndefined();
+    }
+    expect(Object.keys(LANGUAGE_DEFAULTS)).toEqual(['ja']);
+    expect(languageOptions('xx')).toEqual({});
+  });
+  it('returns copies, so a caller cannot change the shared table', async () => {
+    const { languageOptions, LANGUAGE_DEFAULTS } = await import('../editorDefaults.js');
+    (languageOptions('ja') as any).wordSegmenterLocales.push('x');
+    expect((LANGUAGE_DEFAULTS as any).ja.wordSegmenterLocales).toEqual(['ja']);
+  });
+});
+
+describe('languagePathValues', () => {
+  it('lists every language-dependent path for every language', async () => {
+    const { languagePathValues, LANGUAGE_PATHS } = await import('../editorDefaults.js');
+    const ja: any = languagePathValues('ja'); const en: any = languagePathValues('en');
+    expect(Object.keys(ja)).toEqual([...LANGUAGE_PATHS]);
+    expect(ja.wrappingStrategy).toBe('advanced');
+    expect(en.wrappingStrategy).toBe('simple');
+    expect(en['unicodeHighlight.allowedLocales']).toEqual({ _os: true, _vscode: true });
+  });
+});

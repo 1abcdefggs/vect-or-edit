@@ -7,6 +7,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.92] - 2026-11-23
+
+### Added
+- Editor Options: a "Show changed only" toggle with a filter icon beside the search, which lists only the options that were changed
+- Editor Options: semanticHighlighting.enabled is editable again as a three-way choice (a flat dotted option name is no longer split into a nested path)
+
+### Changed
+- Editor Options: the header is its own area (left aligned, tinted, framed down both sides and along the bottom), and the intro text is shorter
+- Editor Options: names, descriptions, the search box, the count line and the controls use 16px text; the search box takes the settings page style
+- Editor Options: each row shows what the option does first, then its name, with the default under the value column; values sit in one fixed-width column
+- Editor Options: counts read name first ("Options 80", "Changed 5"); "shown / all" appears only while a filter hides options
+- Editor Options: rows are indented under the heading text, and a value equal to its default is no longer stored as a change
+
+### Removed
+- Editor Options: the options the app fixes and the ones one input cannot express (14 entries, the "Managed by the app" group) are no longer listed
+
+## [0.3.91] - 2026-11-23
+
+### Added
+- Select menu: a select can ask for a larger list through data-menu-class (ui-select-menu--lg, 16px text)
+
+### Fixed
+- Select menu: the selected item keeps its own surface when it is also the active item, so its light text is no longer shown on a pale background
+
+## [0.3.90] - 2026-11-23
+
+### Changed
+- Source comments and test names no longer point to documents that are not in the repository; the reasons stay in the comments
+
+## [0.3.89] - 2026-11-23
+
+### Added
+- npm script `jump:build` regenerates the settings jump table (generated/jump_targets.json) from the ui_blueprint CSV
+
+## [0.3.88] - 2026-11-23
+
+### Added
+- About dialog: rebuilt on a language change and kept open, so the new language shows at once
+
+### Changed
+- Tooltip text: each sentence after the first starts a new bulleted line (split at the Japanese full stop); commas stay inside their sentence
+- Close guard: the chat is no longer a close target
+- Styling: sidebar, popups, modals, buttons, selection and layout rules adjusted (see the commit diff)
+
+### Removed
+- The update dialog markup and script (updateModal.html, updateModal.js)
+
+## [0.3.87] - 2026-11-23
+
+### Added
+- Log language setting (Logs card): English (default) or follow the app language; the system log is written in English unless set
+- Log panel: a Models tab lists the models and chooses the model, the same choice as the settings page
+
+### Changed
+- Pipeline lamp texts are dictionary keys: the tooltip is redrawn in the UI language when the language changes and the log line stays in English
+
+## [0.3.86] - 2026-11-23
+
+### Fixed
+- Settings page layout tokens (nav width, page padding, card gap, label and icon size) are defined in the shared token file, so the settings CSS no longer uses undefined variables
+
+## [0.3.85] - 2026-11-23
+
+### Added
+- Settings: a search box at the top of the page; the text is left-aligned, the hint right-aligned
+- Right-click on a window part offers "Open settings for this item", which opens the settings card that controls it (jump table: ui_blueprint jump_targets)
+
+### Changed
+- The choice controls of the settings page (switch, segmented buttons) follow the disabled state of their select, so a disabled one cannot be clicked or reached by keyboard
+
+## [0.3.84] - 2026-11-23
+
+### Added
+- Editor options: each option has a weight and a generated panel layout (monacoOptions.layout.json)
+- Document language: the language of the open document is detected on open, paste and tab switch; the language-dependent options follow it
+- Status bar: the document language control shows the language and whether it is automatic (for example JA, auto)
+
+### Changed
+- Editor options panel: the sub-headings and the weight-0 options are folded at the end of each group
+
 ## [0.3.83] - 2026-11-23
 
 ### Added

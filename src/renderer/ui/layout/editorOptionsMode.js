@@ -1,5 +1,5 @@
 /**
- * Editor Options mode of the right panel (ADR-11, user decision 2026-10-23).
+ * Editor Options mode of the right panel.
  *
  * The toolbar button "Editor options" turns the right panel over: the dictionary side (Guidelines, Knowledge, results)
  * steps back and only the Editor Options card is shown, so every Monaco option can be tried live against the editor.
@@ -45,4 +45,11 @@ export function initEditorOptionsMode() {
   };
 
   button.addEventListener('click', () => setMode(!document.body.classList.contains(MODE_CLASS)));
+
+  // The × in the card header leaves the mode the same way as the toolbar button; focus goes back to that button
+  const closeButton = card.querySelector('.mo-mode-close');
+  closeButton?.addEventListener('click', () => {
+    setMode(false);
+    button.focus();
+  });
 }

@@ -5,6 +5,14 @@
   box-shadow: none;
 }
 
+/* A card or panel inside a card steps one surface level (the text colour mixed in a little), so the boundary shows
+   by the surface and not only by a 1px line. Calculated step from the token values: about 1.2:1 in dark and 1.17:1 in light (not yet measured in the app). */
+:root { --surface-nested: color-mix(in srgb, var(--text-main) 8%, var(--bg-card)); }
+.settings-modal-body .settings-section-card .settings-section-card,
+.settings-modal-body .settings-section-card .settings-subpanel {
+  background: var(--surface-nested);
+}
+
 .settings-section-card > h4 .card-badge,
 .card-badge {
   margin-left: auto;
@@ -22,9 +30,30 @@
 .card-badge--inline { margin-left: 8px; }
 
 .settings-section-card > h4 .material-symbols-outlined {
-  font-size: var(--fs-18);
+  font-size: var(--settings-icon-size);
   color: var(--text-main);
 }
+
+/* Show/hide of a card (ui/settings/cardCollapse.js): sits at the right end of its heading */
+.settings-section-card > h4 .card-collapse-btn {
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.settings-section-card > h4 .card-collapse-btn:hover { color: var(--text-main); border-color: var(--accent-color); }
+.settings-section-card > h4 .card-collapse-btn:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.settings-section-card > h4 .card-collapse-btn .material-symbols-outlined { font-size: var(--fs-18); color: inherit; }
+.settings-section-card.is-collapsed > :not(h4) { display: none; }
 
 .settings-section-card > .setting-desc {
   margin-bottom: 12px;
@@ -54,6 +83,12 @@
 }
 
 .setting-item--stack > *:last-child { justify-content: flex-start; }
+
+/* A narrow settings page: a row whose label and control do not fit side by side puts the control under the label,
+   and a control group wider than the row wraps its parts, so the page does not scroll sideways. */
+.settings-modal-body .setting-item:not(.setting-item--stack) { flex-wrap: wrap; }
+.settings-modal-body .setting-item:not(.setting-item--stack) > :last-child { flex-wrap: wrap; max-width: 100%; }
+.settings-modal-body .ai-capability-table-wrap { min-width: 0; max-width: 100%; }
 
 .setting-item-head {
   display: flex;
@@ -121,10 +156,13 @@
   color: var(--overlay-accent);
 }
 
-/* Every theme card is as wide as the widest name (set by fitThemeCards); equal columns, as many per row as fit */
+/* Every theme card has the same fixed width, as many per row as fit; a long name is cut with an ellipsis */
 .settings-theme-cards {
-  grid-template-columns: repeat(auto-fill, minmax(var(--theme-card-w, 7rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
 }
+/* modals.css sets display:flex on the last child of every setting item, which would turn this grid into a flex row
+   of text-sized cards. This selector outweighs that rule, so the columns above apply. */
+.settings-modal-body .theme-card-grid.settings-theme-cards { display: grid; }
 
 /* A row whose action cannot be undone (reset): the red frame marks the whole row, not only the button */
 .setting-item--danger {
@@ -146,6 +184,25 @@
 
 .settings-link .material-symbols-outlined { font-size: var(--fs-13); }
 
+/* A jump to another tab or card: a text link in the accent colour with an underline and an arrow, not a grey button.
+   The reset clears the browser's button background and border. */
+.settings-link--jump {
+  margin-top: 4px;
+  padding: 2px 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: var(--fs-13);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-text, #38bdf8) 60%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.settings-link--jump:hover { text-decoration-color: var(--accent-text, #38bdf8); }
+.settings-link--jump:focus-visible { outline: 2px solid var(--accent-color, #38bdf8); outline-offset: 2px; border-radius: 2px; }
+.settings-link--jump .material-symbols-outlined { font-size: var(--fs-16); }
+
 /* Inline links in descriptions */
 .settings-link--inline {
   color: var(--accent-text, #38bdf8);
@@ -156,6 +213,20 @@
 
 .settings-link--inline:hover {
   text-decoration-color: var(--accent-text, #38bdf8);
+}
+
+/* A link that leaves the app shows the external-link icon after its text. Drawn as a mask (not a font glyph: the icon font has no open_in_new),
+   so it takes the link colour. Every external link built by linkify() in i18n.ts uses this class. */
+.settings-link--external::after {
+  content: "";
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-left: 0.25em;
+  vertical-align: -0.1em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6'/%3E%3Cpath d='M20 4l-9 9'/%3E%3Cpath d='M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6'/%3E%3Cpath d='M20 4l-9 9'/%3E%3Cpath d='M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .api-key-field {
@@ -276,7 +347,8 @@
 /* Segmented buttons: the active one is filled */
 .ui-segmented {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 2px;
   gap: 2px;
   border-radius: 8px;
@@ -286,7 +358,7 @@
 
 .ui-segmented button {
   padding: 5px 12px;
-  font-size: var(--fs-12);
+  font-size: var(--settings-label-size);
   color: var(--text-muted);
   background: transparent;
   border: none;
@@ -296,6 +368,25 @@
 }
 
 .ui-segmented button:hover { color: var(--text-main); }
+/* One row per option group (an <option data-group="...">); a row wraps only when it is too narrow */
+.ui-segment-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+/* The row heading names the unit (秒 or 分) once for all buttons in its row */
+.ui-segment-row-label {
+  min-width: 2.5em;
+  padding: 5px 8px;
+  font-size: var(--settings-label-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+  background: var(--bg-secondary);
+  border-right: var(--border-width) solid var(--border-color);
+  border-radius: 6px 0 0 6px;
+}
 
 .ui-segmented button.active {
   color: var(--text-on-accent, #ffffff);
@@ -369,23 +460,27 @@
   border-bottom: var(--border-width) solid var(--border-color);
 }
 
-/* Back to the editor: the right end of the title and tab row, where the other windows put their close control */
+/* Back to the editor: a back arrow at the left end of the title, where back navigation sits in other apps */
 .settings-back-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 0 var(--spacing-xs) auto;
-  gap: 6px;
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: var(--fs-18);
-  font-weight: 700;
-  border-radius: 8px;
+  flex-shrink: 0;
+  padding: var(--spacing-xs);
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  color: var(--text-on-accent, #ffffff);
-  background: var(--accent-color, #38bdf8);
-  border: 1px solid var(--accent-color, #38bdf8);
 }
-.settings-back-btn:hover { filter: brightness(1.08); }
+.settings-back-icon { font-size: var(--icon-size); }
+/* The word "Back" is plain English in every language (like OFF / ON). It shows only while the title has its full width (page 62rem or wider); narrower, the arrow stands alone */
+.settings-back-btn { gap: var(--spacing-xs); font-size: var(--fs-18); }
+.settings-back-btn .settings-back-label { font-weight: 700; }
+@container settings-page (width < 62rem) {
+  .settings-back-label { display: none; }
+}
+.settings-back-btn:hover { background: var(--hover-bg, rgba(255, 255, 255, 0.06)); }
 .settings-back-btn:focus-visible { outline: 2px solid var(--text-main); outline-offset: 2px; }
 
 
@@ -425,31 +520,51 @@
 }
 
 .settings-modal-body .has-eye > .vis-toggle-wrapper { grid-column: 1; grid-row: 1; justify-content: center; width: var(--vis-switch-w); }
-.settings-modal-body .has-eye > .vis-toggle-wrapper .vis-toggle-btn { width: 100%; }
+.settings-modal-body .has-eye > .vis-toggle-wrapper .vis-segmented { width: 100%; }
 
-/* "Shown / Hidden" switch of a part of the window: both words are visible, the current one is lit */
-.settings-modal-body { --vis-switch-w: 5rem; }
-.settings-modal-body .vis-toggle-btn {
+/* Shown / Hidden of a part of the window: two side-by-side choices, both always visible; the current one is filled */
+.settings-modal-body { --vis-switch-w: 10rem; }
+.settings-modal-body .vis-segmented {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 2px 8px;
-  font: inherit;
-  background: transparent;
+  width: 100%;
+  padding: 2px;
+  gap: 2px;
+  border-radius: 8px;
   border: var(--border-width) solid var(--border-color);
-  border-radius: 999px;
+}
+.settings-modal-body .vis-choice {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 2px 6px;
+  font: inherit;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  white-space: nowrap;
   cursor: pointer;
 }
-.settings-modal-body .vis-toggle-btn[aria-checked="true"] { border-color: var(--accent-color); }
-.settings-modal-body .vis-state-word {
-  font-size: var(--fs-12);
-  font-weight: 700;
-  white-space: nowrap;
-  color: var(--text-muted);
-  opacity: 0.55;
-}
-.settings-modal-body .vis-state-word.is-lit { color: var(--text-main); opacity: 1; }
+.settings-modal-body .vis-choice .material-symbols-outlined { font-size: var(--fs-15); }
+.settings-modal-body .vis-choice:hover { background: color-mix(in srgb, var(--text-main) 8%, transparent); }
+.settings-modal-body .vis-choice.is-current { background: var(--accent-color); color: var(--text-on-accent); }
+/* A row that carries its own reason keeps its text at full strength (the next rule dims only its control); an opacity on the row would also dim the reason to about 2:1 */
+.settings-modal-body [data-setting-row].is-inactive:not(:has(.setting-reason)) { opacity: 0.45; }
+.settings-modal-body .collection-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 0 0 var(--settings-card-gap); }
+.settings-modal-body .collection-flow-col { display: flex; flex-direction: column; align-items: stretch; gap: 4px; min-width: 0; }
+.settings-modal-body .collection-flow-node { padding: 6px 10px; border: var(--border-width) solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); color: var(--text-main); font-size: var(--fs-13); text-align: center; }
+.settings-modal-body .collection-flow-arrow { align-self: center; color: var(--text-subtle); font-size: var(--fs-20); line-height: 1; }
+.settings-modal-body .settings-subhead { margin: 12px 0 4px; font-size: var(--fs-13); font-weight: 600; color: var(--text-muted); }
+.settings-modal-body .result-lines-preview { margin: 6px 0 4px; padding: 10px 12px; border: var(--border-width) solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); max-width: min(100%, 360px); }
+.settings-modal-body .result-lines-preview .result-card__title { color: var(--text-main); font-weight: 600; }
+.settings-modal-body .result-lines-preview .result-card__desc { color: var(--text-muted); }
+.settings-modal-body .settings-inuse-list {margin: 0; padding-left: 20px; font-size: var(--fs-12); color: var(--text-muted); line-height: 1.6; }
+.settings-modal-body .settings-model-name {font-family: var(--font-mono); font-size: var(--fs-13); color: var(--text-muted); overflow-wrap: anywhere; text-align: right; }
+.settings-modal-body .vis-choice:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
 .settings-modal-body .vis-state-required {
   display: inline-flex;
   align-items: center;
@@ -487,7 +602,7 @@
 .desc-list li { margin: 1px 0; line-height: 1.45; }
 .desc-list li::marker { color: var(--text-muted); }
 
-/* Settings on the left; the generated guide opens on the right on request (the Guide button, ADR-11 / layout plan 2026-10-23).
+/* Settings on the left; the generated guide opens on the right on request (the Guide button).
    The page is a container, so the layout follows the width of the page and not of the window.
    Widths come from the layout solver: the guide is 40% of the page, never narrower than 22.85rem or wider than 33.6rem;
    below 52.85rem (about 846px) there is no room for both, so the guide opens over the settings as a drawer. */
@@ -496,8 +611,10 @@
   flex: 1 1 auto;
   min-height: 0;
   position: relative;
-  container: settings-page / inline-size;
 }
+
+/* The container is the whole page (tab row and split), so the tab row can collapse to icons too */
+#settingsModal .settings-modal-dialog { container: settings-page / inline-size; }
 
 .settings-split > .settings-modal-body {
   flex: 1 1 0;
@@ -510,7 +627,9 @@
 /* Settings page text sizes: card headings and item names are 18px (--fs-18); descriptions are 16px (--fs-16).
    Scoped to the settings body, because .setting-label is shared with other screens. */
 .settings-modal-body .settings-section-card h4 { font-size: var(--fs-18); }
-.settings-modal-body .setting-label { font-size: var(--fs-18); }
+.settings-modal-body .setting-label { font-size: var(--settings-label-size); }
+/* Selects and text fields in the settings body use the item name size (the toolbar keeps its own size) */
+.settings-modal-body .toolbar-select { font-size: var(--settings-label-size); }
 /* Back to the top: a sticky anchor at the end of the page body, so the button stays in view at the bottom right */
 .settings-to-top-anchor {
   position: sticky;
@@ -536,12 +655,14 @@
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+.settings-to-top[hidden] { display: none; }
 .settings-to-top:hover { background: var(--hover-bg); }
 .settings-to-top:focus-visible { outline: 2px solid var(--sel-edge); outline-offset: 2px; }
 
 /* A label with a gear: the gear takes the settings-gear colour, so it matches the gears that open these settings */
 .setting-label--icon { display: flex; align-items: center; gap: 6px; }
-.setting-label-icon { font-size: var(--fs-18); color: var(--settings-key-fg); }
+/* Sized as the label text (the icon names the row, so it must read at a glance); the Material Symbols glyph is small at 18px */
+.setting-label-icon { font-size: var(--settings-icon-size); color: var(--settings-key-fg); }
 
 /* The colour choice: one gear per option, shown in its own colour, and the gears of the four areas as they are applied now */
 .key-tone-picker { display: flex; flex-direction: column; gap: var(--spacing-sm); align-items: flex-end; }
@@ -583,6 +704,22 @@
 :root { --settings-index-bg: color-mix(in srgb, var(--bg-primary) 82%, #000); }
 :root.light-theme { --settings-index-bg: color-mix(in srgb, var(--bg-primary) 90%, #000); }
 .settings-nav { background: var(--settings-index-bg); }
+/* One row height for the left list and the search field above it */
+#settingsModal { --settings-nav-row-h: 2.14rem; }
+.settings-nav-item { min-height: var(--settings-nav-row-h); }
+/* Its own zone above the list: a divider and space below, so it reads as separate from the sections */
+.settings-nav > .settings-search { flex: none; padding: var(--spacing-sm); margin-bottom: var(--spacing-sm); border-bottom: var(--border-width) solid var(--border-color); }
+/* Equal inset on both sides: the zone takes the full list width; the search icon is the section icon size; the guide checkbox sits right */
+/* The list reserves 8px padding and a 6px scrollbar gutter on the right; the zone spans them so both sides have the same 8px inset */
+.settings-nav > .settings-search { width: calc(100% + 14px); box-sizing: border-box; }
+.settings-nav > .settings-search .settings-search-icon { font-size: var(--icon-size); left: 8px; }
+.settings-nav > .settings-search .settings-search-input { padding-left: 34px; }
+.settings-nav > .settings-search .settings-search-guide { margin-left: auto; }
+.settings-nav > .settings-search .settings-search-input { height: var(--settings-nav-row-h); box-sizing: border-box; }
+/* Full width of the list column at rest, so the field has the room the list has */
+.settings-nav > .settings-search .settings-search-field { flex: 1 1 100%; max-width: 100%; }
+.settings-nav > .settings-search .settings-search-field .settings-search-input { width: 100%; font-size: var(--fs-18); text-align: left; }
+.settings-nav > .settings-search .settings-search-field .settings-search-input::placeholder { text-align: right; }
 /* The heading is a band across the top of its card, in the index tone, with the card's round top corners */
 .settings-modal-body .settings-section-card > h4 {
   margin: calc(-1 * 14px) calc(-1 * 18px) var(--spacing-md);
@@ -598,25 +735,35 @@
 .settings-nav { border-right: var(--border-width) solid var(--sel-surface); }
 
 /* Icons only: the labels move to the title tooltip. Used on a narrow page, or with the Guide open
-   (the Guide takes 22.85rem to 33.6rem, so the list column would leave too little room for the rows). */
+   (the Guide takes 22.85rem to 33.6rem, so the list column would leave too little room for the rows).
+   48.1rem is the width the tab row needs with icons and labels on one line;
+   below it the row would wrap to two lines, so the labels go first. The list column stays until 40rem. */
 @container settings-page (width < 40rem) {
-  .settings-nav { flex-basis: 3rem; }
-  .settings-nav .settings-tab-label,
-  .settings-nav .settings-nav-items,
-  .settings-nav .settings-guide-label,
-  .settings-nav .settings-back-label,
-  .settings-nav .settings-nav-title-label { display: none; }
-  .settings-nav .settings-tab-btn { justify-content: center; padding: var(--spacing-sm) 0; border-left-width: 2px; }
+  .settings-nav { display: none; }
+}
+
+@container settings-page (width < 48.1rem) {
+  .settings-modal-tabs .settings-nav-title { flex-basis: auto; }
+  .settings-modal-tabs .settings-nav-title-label,
+  .settings-modal-tabs .settings-tab-label,
+  .settings-modal-tabs .settings-guide-label,
+  .settings-modal-tabs .settings-nav-title > svg { display: none; }
+  .settings-modal-tabs .settings-tab-btn { justify-content: center; padding: var(--spacing-sm); }
+}
+
+/* Narrower than the title, Guide and tabs need: the title takes only its own width, so the tab row keeps one line longer */
+@container settings-page (48.1rem <= width < 62rem) {
+  .settings-modal-tabs .settings-nav-title { flex: 0 0 auto; }
 }
 
 @container settings-page (width < 62rem) {
-  #settingsModal.guide-open .settings-nav { flex-basis: 3rem; }
-  #settingsModal.guide-open .settings-nav .settings-tab-label,
-  #settingsModal.guide-open .settings-nav .settings-nav-items,
-  #settingsModal.guide-open .settings-nav .settings-guide-label,
-  #settingsModal.guide-open .settings-nav .settings-back-label,
-  #settingsModal.guide-open .settings-nav .settings-nav-title-label { display: none; }
-  #settingsModal.guide-open .settings-nav .settings-tab-btn { justify-content: center; padding: var(--spacing-sm) 0; border-left-width: 2px; }
+  #settingsModal.guide-open .settings-nav { display: none; }
+  #settingsModal.guide-open .settings-modal-tabs .settings-nav-title { flex-basis: auto; }
+  #settingsModal.guide-open .settings-modal-tabs .settings-nav-title-label,
+  #settingsModal.guide-open .settings-modal-tabs .settings-tab-label,
+  #settingsModal.guide-open .settings-modal-tabs .settings-guide-label,
+  #settingsModal.guide-open .settings-modal-tabs .settings-nav-title > svg { display: none; }
+  #settingsModal.guide-open .settings-modal-tabs .settings-tab-btn { justify-content: center; padding: var(--spacing-sm); }
 }
 
 .settings-help-pane { display: none; }
@@ -639,7 +786,8 @@
   #settingsModal.guide-open .setting-item .setting-desc { display: none; }
   #settingsModal.guide-open .setting-item { padding: 4px 0; min-height: 0; }
   #settingsModal.guide-open .settings-modal-body .has-eye > .setting-label { padding-top: 0; padding-bottom: 0; }
-  #settingsModal.guide-open .settings-section-card { padding-top: 8px; padding-bottom: 8px; margin-bottom: 8px; }
+  #settingsModal.guide-open .settings-tab-content { --settings-card-gap: 8px; }
+  #settingsModal.guide-open .settings-section-card { padding-top: 8px; padding-bottom: 8px; }
   #settingsModal.guide-open .settings-section-card > h4 { margin-bottom: 4px; padding-bottom: 4px; }
 }
 
@@ -663,25 +811,27 @@
   .settings-help-pane .panel-resizer { display: none; }
 }
 
-/* The Guide button sits at the foot of the left column (it is a page-level action, not a header one) */
+/* The Guide button sits in the tab row, at its right end (a page-level action, not a header one); it is hidden on a tab that has no guide text */
 .settings-guide-btn {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
   margin: auto var(--spacing-sm) var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 7px 10px;
   justify-content: center;
-  font-size: var(--fs-16);
+  font-size: var(--fs-18);
   color: var(--text-main);
   background: var(--log-btn-bg, transparent);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px;
 }
 .settings-guide-btn[aria-pressed="true"] {
   color: var(--accent-color);
   border-color: var(--accent-color);
 }
-.settings-guide-btn .material-symbols-outlined { font-size: var(--fs-16); }
+.settings-guide-btn .material-symbols-outlined { font-size: var(--icon-size); }
+/* .log-panel-btn sets 12px; the guide button takes the tab label size and icon size, like the tabs */
+#settingsModal .settings-guide-btn { font-size: var(--fs-18); }
 /* The guide sits in the top tab row, just before "Back to Editor" */
 .settings-modal-tabs .settings-guide-btn { margin: 0 var(--spacing-sm) 0 auto; }
 #settingsModal:not(.has-help-pane) .settings-guide-btn { display: none; }
@@ -801,13 +951,22 @@
 /* The theme cards take the full width of their row, under the label (the 4-column grid needs the room) */
 /* An inactive row dims its control; the reason is written in the text row after it, never by grey alone */
 [data-setting-row].is-inactive > :not([data-setting-text]) { opacity: 0.45; }
-.autosave-delay-custom { display: inline-flex; align-items: center; gap: var(--spacing-sm); }
-.autosave-delay-custom[hidden] { display: none; }
-.autosave-delay-reason { margin-top: calc(-1 * var(--spacing-sm)); color: var(--text-muted); }
+/* The short note beside a locked switch says what is missing; it stays at full strength (the rule above dims only the control) */
+.setting-inline-note { font-size: var(--fs-12); font-weight: 600; color: var(--text-main); text-align: right; }
+[data-setting-row].is-inactive > .setting-inline-note { opacity: 1; }
+.input-clock { width: 6em; text-align: center; }
+/* The reason inside a row's text block, under the description: same size and colour as the description, no pull onto the divider */
+.setting-reason { margin-top: var(--spacing-xs, 4px); font-size: var(--fs-16); line-height: 1.4; color: var(--text-muted); }
+/* A pointer to another tab at the end of a card: text and a link, set apart from the rows above by a rule */
+.settings-pointer { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-sm); margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: var(--border-width) solid var(--border-color); }
+/* A reason that covers several rows below it (it stands alone, under a sub-heading, not inside one row) */
+.settings-group-reason { margin-bottom: var(--spacing-sm); color: var(--text-muted); }
 [data-setting-row]:has(> #modalThemeCards),
 [data-setting-row]:has(> #modalFontCards),
 [data-setting-row]:has(> #modalLineHeightCards),
 [data-setting-row]:has(> #modalToneCards) { flex-direction: column; align-items: stretch; gap: var(--spacing-sm); }
+/* The saved-session list keeps the width of its longest entry; the label beside it gives up the room instead */
+#modalLogSessionSelect { flex: 0 0 auto; max-width: 100%; }
 
 /* Danger Zone: one red frame around the developer reset; the row inside has no frame of its own, so the frame is not cut */
 .danger-zone { margin-top: var(--spacing-sm); }
@@ -821,7 +980,7 @@
 /* Parts list: the eye column has a fixed width, so the names and switches stay in one column whatever the state text */
 [data-vis-item] { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); }
 [data-vis-item] .vis-toggle-wrapper,
-[data-vis-item] .vis-state-required { width: 120px; justify-content: flex-end; }
+[data-vis-item] .vis-state-required { width: var(--vis-switch-w, 10rem); justify-content: flex-end; }
 
 /* Zoom in settings: the same slider as the header, with the value beside it */
 .zoom-slider-control { display: inline-flex; align-items: center; gap: var(--spacing-sm); }
@@ -875,15 +1034,16 @@
 /* The generic row-control rule (.settings-modal-body .setting-row > :last-child) centres the control and pushes it to the end, which moved the legend and the rows off the label edge; the id outranks it */
 #modalToneCards { align-items: stretch; justify-content: flex-start; }
 .tone-group { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); align-items: start; gap: var(--spacing-sm); }
-.tone-group-title { padding-top: 8px; font-size: var(--fs-12); font-weight: 600; color: var(--text-muted); }
-/* About 44rem at most, so the four cards do not stretch to 348px each in a wide window (owner decision 2026-11-19) */
+.tone-group-title { padding-top: 8px; font-size: var(--fs-15); font-weight: 600; color: var(--text-muted); }
+/* About 44rem at most, so the four cards do not stretch to 348px each in a wide window */
 .tone-card-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; max-width: 44rem; }
 .tone-card { position: relative; }
 .tone-card-sample { align-items: center; justify-content: center; min-height: 2.6rem; font-size: var(--fs-14); text-align: center; }
 .tone-card-name { white-space: normal; }
 .tone-card-contrast { font-size: var(--fs-12); font-variant-numeric: tabular-nums; opacity: 0.85; }
 .tone-card-state { display: none; font-size: var(--fs-12); font-weight: 700; }
-.tone-card[aria-pressed="true"] .tone-card-state { display: inline; }
+.tone-card[aria-pressed="true"] .tone-card-state,
+.font-card[aria-pressed="true"] .tone-card-state { display: inline; }
 .tone-legend { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--spacing-sm); }
 .tone-legend p { margin: 0; }
 .tone-status.is-override { color: var(--text-main); font-weight: 600; }
@@ -908,6 +1068,7 @@
 }
 
 /* AI chat inside the LLM assistant card: a sub-block under the LLM switch, set apart by a rule and its own title */
+.llm-card-steps { margin: 0 0 var(--spacing-sm); padding-left: 1.4em; }
 .llm-chat-block { margin-top: var(--spacing-lg); padding-top: var(--spacing-md); border-top: var(--border-width) solid var(--border-color); }
 .llm-chat-title { display: flex; align-items: center; gap: var(--spacing-xs); margin-bottom: var(--spacing-sm); font-size: var(--fs-16); font-weight: 700; color: var(--text-main); }
 .provider-choice-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; margin-top: var(--spacing-sm); }
@@ -917,8 +1078,10 @@
 .font-card-cell { display: flex; flex-direction: column; gap: var(--spacing-xs); min-width: 0; }
 .font-card-cell > .font-card { flex: 1; }
 .font-card-remove { align-self: flex-start; }
-.font-add-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
-.font-add-row > .setting-desc { flex: 1 1 18rem; min-width: 0; }
+/* The add button sits on its own line at the left edge of the font cards; the notes under it start at the same edge */
+/* Scoped under .settings-modal-body so it outranks .setting-item > *:last-child (modals.css), which centres children */
+.settings-modal-body .font-add-row { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: var(--spacing-sm); }
+.font-add-row > .setting-desc { align-self: stretch; min-width: 0; }
 
 /* Delete the saved key: on its own line at the right end, set apart from the check button so the two are not pressed by mistake */
 .api-key-clear { display: flex; align-items: center; justify-content: flex-end; gap: var(--spacing-sm); margin-top: var(--spacing-md); padding-top: var(--spacing-sm); border-top: var(--border-width) solid var(--border-color); }
@@ -927,3 +1090,24 @@
 
 /* The small heading above the provider choice */
 .llm-provider-title { margin-top: var(--spacing-sm); font-size: var(--fs-14); font-weight: 600; color: var(--text-main); }
+
+/* Names of tabs, settings and cards are labels: uppercase with spacing (tokens in design-tokens.css).
+   Sentences (descriptions, guide text) keep their case. Scoped to the settings modal. */
+#settingsModal .settings-tab-label,
+#settingsModal .settings-nav-title-label,
+#settingsModal .settings-modal-body .setting-label,
+#settingsModal .settings-modal-body .settings-section-card h4 {
+  text-transform: var(--label-transform);
+  letter-spacing: var(--label-tracking);
+}
+
+/* A card inside a card (Guidelines and Knowledge inside Collection): no border of its own; it shows by the surface step
+   (--surface-nested, set above) and keeps the divider line on top. */
+.settings-modal-body .settings-section-card .settings-section-card {
+  border: 0;
+  border-top: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: none;
+  padding: var(--spacing-md) var(--spacing-md) 0;
+  margin-bottom: var(--spacing-md);
+}

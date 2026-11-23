@@ -22,7 +22,6 @@ export interface SidebarPreferences {
   maxSuggestionsLimit: number;
   searchTrigger: 'selection' | 'contextmenu' | 'manual';
   contextMenuLayout: 'pattern_a' | 'pattern_b';
-  fullMetadata: boolean;
   linterEnabled: boolean;
 }
 
@@ -30,6 +29,8 @@ export interface SystemPreferences {
   collapseLogsOnStartup: boolean;
   logTimeFormat: 'h24' | 'h12' | 'os' | 'iso';
   logTimeZone: 'local' | 'utc';
+  /** en: the log is always English (default); ui: it follows the UI language */
+  logLanguage: 'en' | 'ui';
   /** ask: question on exit (default); always: keep every session; never: keep nothing */
   logSaveMode: 'ask' | 'always' | 'never';
 }
@@ -49,6 +50,7 @@ export type HeaderUiKey =
   | 'hdr:menu-view'
   | 'hdr:menu-window'
   | 'hdr:menu-help'
+  | 'hdr:menu-about'
   | 'hdr:menu-overflow'
   | 'hdr:theme-select'
   | 'hdr:color-mode'
@@ -67,12 +69,17 @@ export type EditorUiKey =
   | 'edt:tab-bar'
   | 'edt:status-bar'
   | 'edt:document-format'
+  | 'edt:document-language'
   | 'edt:markdown-preview'
   | 'edt:llm-dock'
   | 'edt:llm-key-config'
   | 'edt:llm-clear-chat'
+  | 'edt:llm-export-chat'
   | 'edt:llm-collapse'
-  | 'edt:llm-close';
+  | 'edt:llm-model'
+  | 'edt:llm-switch'
+  | 'edt:llm-settings'
+  | 'edt:llm-move';
 
 export type SidebarUiKey =
   | 'sbr:sidebar'
@@ -86,6 +93,9 @@ export type SidebarUiKey =
   | 'sbr:import-dictionary'
   | 'sbr:add-slot'
   | 'sbr:rail'
+  | 'sbr:tab-collection'
+  | 'sbr:tab-chat'
+  | 'sbr:collection'
   | 'sbr:guideline-card'
   | 'sbr:knowledge-card'
   | 'sbr:editor-options-card';
@@ -99,6 +109,9 @@ export type SystemUiKey =
   | 'sys:log-clear'
   | 'sys:log-copy'
   | 'sys:log-download'
+  | 'sys:log-tab-log'
+  | 'sys:log-tab-models'
+  | 'sys:log-models-fetch'
   | 'sys:update-status'
   | 'sys:save-status';
 

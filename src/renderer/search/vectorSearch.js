@@ -75,7 +75,7 @@ export function triggerSearchAndRender(query) {
         return;
       }
 
-      // Gate (ADR-11): the dictionary search above always runs; vector search needs Embedding ON,
+      // Gate: the dictionary search above always runs; vector search needs Embedding ON,
       // and cloud suggestions need LLM ON. With both off, the dictionary result is final.
       const sources = knowledgeSources();
       if (!sources.vector && !sources.llm) {
@@ -152,7 +152,7 @@ export function triggerMonacoVectorSearch(query, selectionRange, targetEditor, m
       const isAiSetup = readStorage(STORAGE_KEYS.AI_SETUP_COMPLETED) === 'true';
       if (!isAiSetup) return;
 
-      // Gate (ADR-11): the widget's vector search follows the Embedding switch, not the LLM
+      // Gate: the widget's vector search follows the Embedding switch, not the LLM
       if (!canUseEmbedding()) return;
 
       // Guard: Only proceed if the local model is fully downloaded and ready

@@ -85,6 +85,15 @@ function attachGuideResizer(pane) {
   });
 }
 
+// The info marks keep the tooltip they were made with; the language change writes it again
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:languageChanged', () => {
+    document.querySelectorAll('.setting-info-btn').forEach((button) => {
+      button.title = formatTipText('tip_open_guide_item', t('tip_open_guide_item'));
+    });
+  });
+}
+
 /** Puts the info mark on every setting that the guide describes, and takes it off those it does not. */
 function syncInfoButtons(body, pane) {
   body.querySelectorAll('.settings-tab-content.active .setting-item').forEach((item) => {

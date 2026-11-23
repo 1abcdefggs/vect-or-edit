@@ -1,7 +1,7 @@
 import { setEditorContent, focusEditor } from '../../editor/editorManager.js';
 import { changeGoalProfile, resetGoalProfile, insertActiveTemplate, addKnowledgeSlot, clearAllKnowledgeSlots, importDictionary } from '../../search/dictionary.js';
 import { enableFileDrop } from './fileDrop.js';
-import { setLedStatus } from '../../core/statusManager.js';
+import { setLedStatus, led } from '../../core/statusManager.js';
 import { showToast } from '../notifications/toastManager.js';
 import { showConfirmModal } from '../notifications/confirmModal.js';
 import { t } from '../../core/i18n.js';
@@ -135,7 +135,7 @@ export function bindAppActionEvents() {
         // Show what was just set: open the Knowledge card (search collapses it to make room for results)
         document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
-        setLedStatus('kb', true, t('led_kb_indexed', { count: res.totalCount?.toLocaleString() }));
+        setLedStatus('kb', true, led('led_kb_indexed', { count: res.totalCount?.toLocaleString() }));
       }
     };
     btnAddSlot.addEventListener('click', handleAddSlot);
@@ -151,7 +151,7 @@ export function bindAppActionEvents() {
     if (added) {
       document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
       showToast(t('toast_kb_updated', { count: added.totalCount, slots: added.slots?.length || 0 }), 'success');
-      setLedStatus('kb', true, t('led_kb_indexed', { count: added.totalCount?.toLocaleString() }));
+      setLedStatus('kb', true, led('led_kb_indexed', { count: added.totalCount?.toLocaleString() }));
     }
   });
 
@@ -162,7 +162,7 @@ export function bindAppActionEvents() {
 
   if (btnClearAllSlots) {
     btnClearAllSlots.addEventListener('click', async () => {
-      // Unload All always asks, whatever the close-confirmation setting says (ADR-11, review item R6)
+      // Unload All always asks, whatever the close-confirmation setting says
       const count = Number(document.getElementById('knowledgeSlotsCountBadge')?.textContent?.match(/\d+/)?.[0] || 0);
       const confirmed = await showConfirmModal({
         title: t('confirm_unload_all_title'),
@@ -174,7 +174,7 @@ export function bindAppActionEvents() {
       if (!confirmed) return;
       await clearAllKnowledgeSlots();
       showToast(t('toast_all_slots_unloaded'), 'info');
-      setLedStatus('kb', 'standby', t('led_kb_unloaded'));
+      setLedStatus('kb', 'standby', led('led_kb_unloaded'));
     });
   }
 
@@ -184,7 +184,7 @@ export function bindAppActionEvents() {
       if (res?.success) {
         const profileName = res.profile?.domain_name || res.fileName || 'Preset';
         showToast(t('toast_goal_set', { name: profileName }), 'success');
-        setLedStatus('guideline', true, t('led_guideline_loaded', { profile: profileName }));
+        setLedStatus('guideline', true, led('led_guideline_loaded', { profile: profileName }));
       }
       setTimeout(() => focusEditor(), 50);
     };

@@ -11,8 +11,26 @@
 const MENU_CLASS = 'ui-select-menu';
 const OPTION_CLASS = 'ui-select-option';
 const ENHANCED_ATTR = 'data-ui-select';
+/** Draws each option's label in its own style. The value of the attribute names the style; see registerOptionStyle. */
+const OPTION_STYLE_ATTR = 'data-option-style';
 const VIEWPORT_MARGIN = 6;
 const MAX_MENU_HEIGHT = 280;
+
+export type OptionStyle = (value: string, label: HTMLElement) => void;
+
+const OPTION_STYLES = new Map<string, OptionStyle>([
+  // The option's value is a CSS font stack.
+  ['font-family', (value, label) => { label.style.fontFamily = value; }],
+]);
+
+/**
+ * Registers how a kind of option is drawn in the menu. A <select> opts in with data-option-style="<kind>";
+ * apply gets the option's value and its label element. The owner of the data registers its own kind,
+ * so the menu itself stays free of domain rules.
+ */
+export function registerOptionStyle(kind: string, apply: OptionStyle): void {
+  OPTION_STYLES.set(kind, apply);
+}
 
 interface OpenState {
   select: HTMLSelectElement;
@@ -99,6 +117,8 @@ function openMenu(select: HTMLSelectElement): void {
   const menu = document.createElement('div');
   menu.className = MENU_CLASS;
   menu.setAttribute('role', 'listbox');
+  // A select can ask for a variant of the list (for example a larger text size) through data-menu-class
+  if (select.dataset.menuClass) menu.classList.add(select.dataset.menuClass);
 
   const items: HTMLButtonElement[] = [];
   Array.from(select.options).forEach((option, index) => {
@@ -113,6 +133,9 @@ function openMenu(select: HTMLSelectElement): void {
     const label = document.createElement('span');
     label.className = 'ui-select-option__label';
     label.textContent = (option.textContent || option.value).trim();
+    const styleKind = select.getAttribute(OPTION_STYLE_ATTR);
+    const applyStyle = styleKind ? OPTION_STYLES.get(styleKind) : undefined;
+    if (applyStyle) applyStyle(option.value, label);
     const check = document.createElement('span');
     check.className = 'material-symbols-outlined ui-select-option__check';
     check.textContent = 'check';

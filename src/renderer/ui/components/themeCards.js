@@ -63,6 +63,9 @@ export function renderThemeCards(container, options) {
 
     const label = document.createElement('span');
     label.className = 'theme-card-name';
+    // Kept on the element so the language change can write the name again
+    label.dataset.themeName = name;
+    if (isCustom) label.dataset.custom = 'true';
     label.textContent = isCustom ? t('theme_custom') : name;
     button.append(sample, label);
     button.addEventListener('click', () => (isCustom ? onPickCustom() : onPickTheme(name)));
@@ -84,19 +87,11 @@ export function renderThemeCards(container, options) {
   return { refresh };
 }
 
-/**
- * Gives every card the width of the widest name, so the cards match in size.
- * Measured from the text itself; a hidden container has no size, so the call is skipped and the stylesheet default applies.
- */
-export function fitThemeCards(container) {
-  if (!container) return;
-  const widths = [...container.querySelectorAll('.theme-card-name')].map((label) => {
-    const range = document.createRange();
-    range.selectNodeContents(label);
-    return range.getBoundingClientRect().width;
+// The theme card names are written when the cards are built; this writes them again on a language change
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:languageChanged', () => {
+    document.querySelectorAll('.theme-card-name[data-theme-name]').forEach((label) => {
+      label.textContent = label.dataset.custom ? t('theme_custom') : (label.dataset.themeName ?? '');
+    });
   });
-  const widest = Math.max(0, ...widths);
-  if (widest <= 0) return;
-  // card padding and border on both sides
-  container.style.setProperty('--theme-card-w', `${Math.ceil(widest) + 24}px`);
 }

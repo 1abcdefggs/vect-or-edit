@@ -173,7 +173,7 @@ body.ai-standby .header-full-border-line {
 }
 
 .settings-modal-body {
-  padding: 20px 24px;
+  padding: var(--settings-page-pad);
   overflow-y: auto;
   flex: 1;
 }

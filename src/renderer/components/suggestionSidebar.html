@@ -44,7 +44,35 @@
       </button>
     </div>
 
+    <!-- The two sides of the right panel: Collection and the AI chat. Shown only while the chat is placed in the sidebar (settings: Chat position) -->
+    <div id="sidebarTabs" class="sidebar-tabs" role="tablist" hidden>
+      <button id="btnSidebarTabCollection" data-ui="sbr:tab-collection" class="sidebar-tab active" type="button" role="tab" aria-selected="true" data-i18n-title="tip_sidebar_tab_collection">
+        <span class="material-symbols-outlined">format_list_bulleted</span>
+        <span data-i18n="sidebar_overview_title">Collection</span>
+      </button>
+      <button id="btnSidebarTabChat" data-ui="sbr:tab-chat" class="sidebar-tab" type="button" role="tab" aria-selected="false" data-i18n-title="tip_sidebar_tab_chat">
+        <span class="material-symbols-outlined">cloud</span>
+        <span data-i18n="llm_chat_dock_title">AI Chat</span>
+        <span class="sidebar-tab__dot" aria-hidden="true">●</span>
+      </button>
+    </div>
+
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
+      <!-- Embedding model in use: Guidelines and Knowledge search with it, so it sits above Collection. Read only: change it in settings -->
+      <div class="sidebar-model-info">
+        <p class="sidebar-module-status"><span data-i18n="setting_knowledge_model">Embedding model in use</span>: <span id="sidebarEmbeddingModelName"></span></p>
+        <p id="sidebarEmbeddingModelDims" class="sidebar-module-status"></p>
+        <p class="sidebar-module-status" data-i18n="settings_model_dim_desc">Dimensions: the number of values that describe one text. A dictionary can be searched with this model only when it was built in the same embedding space.</p>
+      </div>
+
+      <!-- Collection: the parent of the Guidelines and Knowledge cards (same name as the settings card) -->
+      <section class="collection-group" data-ui="sbr:collection" aria-labelledby="collectionGroupTitle">
+        <div class="collection-group-header semantic-module-title">
+          <span class="material-symbols-outlined collection-group-icon">format_list_bulleted</span>
+          <span class="module-title-separator semantic-module-sep">|</span>
+          <span id="collectionGroupTitle" data-i18n="sidebar_overview_title">Collection</span>
+        </div>
+        <div class="collection-group-body">
       <!-- 1. Guidelines & Presets Section (Active) (card rules: module-cards.css) -->
       <div id="guidelineModuleCard" data-ui="sbr:guideline-card" class="profile-control-card semantic-module-card has-body">
         <div class="semantic-module-header" data-i18n-title="tip_section_guideline">
@@ -72,6 +100,7 @@
           </div>
           <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="true"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
         </div>
+        <p id="sidebarGuidelineStatus" class="sidebar-module-status" hidden></p>
       </div>
 
       <!-- 2. Knowledge Section -->
@@ -96,6 +125,8 @@
           </div>
           <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="true" aria-controls="knowledgeModuleBody"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
         </div>
+
+        <p id="sidebarKnowledgeStatus" class="sidebar-module-status" hidden></p>
 
         <div class="semantic-module-body" id="knowledgeModuleBody">
           <!-- Dynamic Slots List (SLOT 1, SLOT 2, ...) -->
@@ -128,21 +159,26 @@
               <span data-i18n="filter_help_limit">The maximum number of matched items to show.</span>
             </div>
 
-            <label data-ui="sbr:metadata-toggle"
-              style="display: flex; align-items: center; gap: 4px; font-size: var(--fs-12); color: var(--text-muted); cursor: pointer; user-select: none;" data-i18n-title="tip_show_full_metadata">
-              <input type="checkbox" id="chkShowFullMetadata"
-                style="accent-color: var(--accent-color, #818cf8); cursor: pointer;" data-i18n-title="tip_show_full_metadata">
-              <span data-i18n="opt_show_full_metadata">Full Meta</span>
-            </label>
+            <div data-ui="sbr:metadata-toggle"
+              style="display: flex; align-items: center; gap: 6px; font-size: var(--fs-12); color: var(--text-muted);" data-i18n-title="tip_show_full_metadata">
+              <span id="lblShowFullMetadata" data-i18n="opt_show_full_metadata">Full Meta</span>
+              <select id="selShowFullMetadata" class="toolbar-select" data-ui-control="switch" aria-labelledby="lblShowFullMetadata" data-i18n-title="tip_show_full_metadata">
+                <option value="on" data-i18n="opt_toggle_on">On</option>
+                <option value="off" selected data-i18n="opt_toggle_off">Off</option>
+              </select>
+            </div>
             <div id="metaFieldChecks" data-ui="sbr:metadata-fields" style="display: none; flex-wrap: wrap; gap: 4px 12px; padding-left: 18px;"></div>
           </div>
         </div>
       </div>
+        </div>
+      </section>
     </div>
   </div>
   <!-- Editor Options: every Monaco option, shown live in the main editor. Outside the header so it can use the height below it (collapsed until opened) -->
   <div id="monacoOptionsCard" data-ui="sbr:editor-options-card" class="monaco-options-card semantic-module-card collapsed">
     <div class="semantic-module-header" data-i18n-title="tip_section_editor_options">
+      <span class="material-symbols-outlined semantic-module-back" aria-hidden="true" data-i18n-title="tip_monaco_opts_back">chevron_left</span>
       <span class="semantic-module-title">
         <span class="material-symbols-outlined semantic-module-icon">tune</span>
         <span class="module-title-separator semantic-module-sep">|</span>
@@ -154,12 +190,16 @@
         </button>
       </div>
       <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="false" aria-controls="monacoOptionsBody"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
+      <button type="button" class="mo-mode-close" data-i18n-title="tip_editor_options_close" data-i18n-aria="tip_editor_options_close" data-svg-icon="close" aria-label="Close Editor Options"></button>
     </div>
     <div id="monacoOptionsBody" class="semantic-module-body monaco-options-body">
       <p class="monaco-options-intro" data-i18n="monaco_opts_intro">This editor is Monaco. You can change its options here.</p>
-      <div class="monaco-options-search-wrap">
-        <span class="material-symbols-outlined monaco-options-search-icon" aria-hidden="true">search</span>
-        <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
+      <div class="monaco-options-search-row">
+        <div class="monaco-options-search-wrap">
+          <span class="material-symbols-outlined monaco-options-search-icon" aria-hidden="true">search</span>
+          <input type="search" id="monacoOptionsSearch" class="monaco-options-search" autocomplete="off" spellcheck="false" data-i18n-placeholder="monaco_opts_search_placeholder" data-i18n-title="tip_monaco_opts_search">
+        </div>
+        <button type="button" id="btnMonacoOptionsChangedOnly" class="monaco-options-filter" aria-pressed="false" data-i18n-title="tip_monaco_opts_changed_only"><span class="material-symbols-outlined monaco-options-filter-icon" data-svg-icon="filter" aria-hidden="true"></span><span data-i18n="monaco_opts_changed_only">Show changed only</span></button>
       </div>
       <div id="monacoOptionsCount" class="monaco-options-count" role="status" aria-live="polite"></div>
       <div id="monacoOptionsList" class="monaco-options-list"></div>
@@ -167,6 +207,14 @@
   </div>
 
   <div id="vectorResultsList" class="results-list" style="flex: 1; overflow-y: auto; padding: 6px;"></div>
+
+  <!-- The AI chat, when it is placed in the sidebar: the chat element is moved here (ui/ai/chatPlacement.js) -->
+  <div id="sidebarChatPane" class="sidebar-chat-pane" hidden>
+    <div id="sidebarChatOff" class="sidebar-chat-off" hidden>
+      <p data-i18n="sidebar_chat_off_msg">AI chat is off.</p>
+      <button id="btnSidebarChatOn" class="llm-head-btn" type="button" data-i18n="sidebar_chat_on_btn" data-i18n-title="tip_sidebar_chat_on">Turn on AI chat</button>
+    </div>
+  </div>
 
   <!-- Collapsed Rail: Shown only when .suggestion-sidebar.collapsed is active -->
   <div id="sidebarCollapsedRail" data-ui="sbr:rail" class="sidebar-collapsed-rail">

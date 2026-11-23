@@ -3,7 +3,7 @@ import { searchHelp, withHelpContext, isHelpQuestion } from '../helpKnowledge.js
 // Japanese questions live in the fixture file (data, not code), so the English-invariant guard stays strict
 import cases from './helpKnowledge.cases.json';
 
-// The chat answers questions about the app from the generated guide (ADR-11, item 33)
+// The chat answers questions about the app from the generated guide
 describe('helpKnowledge', () => {
   it('finds the zoom card for a question about enlarging the whole window', () => {
     const hits = searchHelp(cases.zoomQuestion, { lang: 'ja' });

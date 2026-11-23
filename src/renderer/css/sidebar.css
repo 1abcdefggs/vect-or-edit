@@ -94,3 +94,136 @@ body.resizing-sidebar .workspace-resizer {
 .rail-icon-btn:active {
   transform: scale(0.95);
 }
+.sidebar-module-status {
+  margin: 0;
+  padding: 0 12px 6px;
+  color: var(--text-muted);
+  font-size: var(--fs-12);
+  line-height: 1.5;
+}
+
+.sidebar-module-status[hidden] {
+  display: none;
+}
+
+/* ==========================================================================
+   AI chat in the sidebar: the tab row and the chat pane (ui/ai/chatPlacement.js)
+   The tab row sits under the top row of the sidebar. Collection and AI chat share the panel; one is shown at a time.
+   ========================================================================== */
+.sidebar-tabs {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.sidebar-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  height: var(--icon-btn-size);
+  padding: 0 var(--spacing-sm);
+  border: none;
+  border-bottom: var(--accent-line) solid transparent;
+  background: transparent;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: var(--fs-13);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.sidebar-tab .material-symbols-outlined {
+  font-size: var(--icon-text-size);
+  color: var(--accent-text);
+}
+
+.sidebar-tab:hover {
+  background: var(--hover-bg);
+}
+
+.sidebar-tab:focus-visible {
+  outline: var(--border-width) solid var(--accent-color, #38bdf8);
+}
+
+/* The shown tab: bold with the accent line, so the state does not rest on colour alone */
+.sidebar-tab.active {
+  font-weight: 700;
+  border-bottom-color: var(--accent-text);
+}
+
+/* The dot of the chat tab: lit while the chat is on; accent and bold when a reply came while the other tab was shown */
+.sidebar-tab__dot {
+  display: none;
+  font-size: var(--fs-10);
+  color: var(--text-muted);
+}
+
+.sidebar-tab.is-on .sidebar-tab__dot,
+.sidebar-tab.has-unread .sidebar-tab__dot {
+  display: inline;
+}
+
+.sidebar-tab.has-unread {
+  font-weight: 700;
+}
+
+.sidebar-tab.has-unread .sidebar-tab__dot {
+  color: var(--accent-text);
+}
+
+/* The chat tab is shown: the Collection side steps back (the same way the Editor Options mode does it) */
+body.sidebar-chat-mode:not(.sidebar-options-mode) #suggestionSidebar .semantic-control-container,
+body.sidebar-chat-mode:not(.sidebar-options-mode) #suggestionSidebar #vectorResultsList,
+body.sidebar-chat-mode:not(.sidebar-options-mode) #suggestionSidebar #monacoOptionsCard {
+  /* !important: the container carries its display in a style attribute */
+  display: none !important;
+}
+
+/* The Editor Options mode has no tabs and no chat pane: it takes the whole panel */
+body.sidebar-options-mode #sidebarTabs,
+body.sidebar-options-mode #sidebarChatPane,
+.suggestion-sidebar.collapsed #sidebarChatPane {
+  display: none !important;
+}
+
+.sidebar-chat-pane {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+body.sidebar-chat-mode .sidebar-chat-pane {
+  display: flex;
+}
+
+/* The chat element fills the pane: the sidebar has no drag handle for its height and no minimize */
+.sidebar-chat-pane .editor-llm-chat-dock {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  border-bottom: none;
+}
+
+body.chat-in-sidebar .editor-llm-chat-dock > .panel-resizer,
+body.chat-in-sidebar #btnLlmToggleCollapse {
+  display: none;
+}
+
+/* The tab above already says AI chat: the heading text repeats it, so it gives way to the model name (the cloud icon stays) */
+body.chat-in-sidebar .llm-dock-label {
+  display: none;
+}
+
+/* The chat is off while its tab is shown: a short note and a way to switch it on */
+.sidebar-chat-off {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  color: var(--text-main);
+  font-size: var(--fs-13);
+}

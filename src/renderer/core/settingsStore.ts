@@ -1,6 +1,7 @@
 import { AppSettings, AppPreferences, AppVisibility, UiKey } from '../types/settings';
 import { DEFAULT_SETTINGS, SETTINGS_REGISTRY } from './settingsRegistry';
 import { readStorage, writeStorage } from './storage.js';
+import { syncSettingsToBackend } from '../ui/settings/settingsState.js';
 
 type Listener<T> = (val: T) => void;
 
@@ -61,7 +62,16 @@ export class SettingsStore {
       try {
         const res = await (window as any).engineAPI.loadSettings();
         if (res?.success && res.settings && Object.keys(res.settings).length > 0) {
-          const s = res.settings;
+          // The file is the snapshot of stored values; this store's part is the JSON text under vect_settings_v3.
+          // An older file holds {preferences, visibility} at the top level: both forms are read.
+          let s = res.settings;
+          if (typeof s.vect_settings_v3 === 'string') {
+            try {
+              s = JSON.parse(s.vect_settings_v3);
+            } catch {
+              s = {};
+            }
+          }
           if (s.preferences || s.visibility) {
             this.settings = {
               version: DEFAULT_SETTINGS.version,
@@ -174,11 +184,11 @@ export class SettingsStore {
           console.warn('[SettingsStore] Could not save to local storage:', err);
         }
       }
-      if (typeof window !== 'undefined' && (window as any).engineAPI?.saveSettings) {
-        (window as any).engineAPI.saveSettings(this.settings).catch((err: any) => {
-          console.error('[SettingsStore] File persistence failed:', err);
-        });
-      }
+      // One writer for .settings.json: the snapshot of every stored value (this store's own value is in it as vect_settings_v3).
+      // Writing {version, preferences, visibility} here used to replace the whole file and drop every other value.
+      syncSettingsToBackend().catch((err: any) => {
+        console.error('[SettingsStore] File persistence failed:', err);
+      });
     }, 200);
   }
 

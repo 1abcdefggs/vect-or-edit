@@ -86,7 +86,7 @@ export function resolveProfilePathForKb(kbPath: string): string | null {
 /**
  * Hand the profile file to the Rust linter (validateSync / validate). Previously Edit only
  * kept the profile in TS (substring checks in semantics:query), so the engine ran with an
- * empty Profile. Engine >= this change adapts guideline_*.json (ADR-0005 Q5) and keeps the
+ * empty Profile. Engine >= this change adapts guideline_*.json and keeps the
  * loaded KB; failure is non-fatal (TS-side checks still run).
  */
 async function pushProfileToEngine(profilePath: string, data: any): Promise<void> {

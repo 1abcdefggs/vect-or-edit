@@ -1,5 +1,5 @@
 /**
- * layoutMemory.ts - remembers the size of resizable areas (ADR-11 section 2.8).
+ * layoutMemory.ts - remembers the size of resizable areas.
  *
  * One switch ("Remember layout", System tab, default ON) decides whether sizes are stored and restored.
  * Sizes live in localStorage, which the settings dual-sync already copies to .settings.json.

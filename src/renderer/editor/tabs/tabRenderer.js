@@ -253,3 +253,7 @@ function updateCloseAllMenuItem() {
 // Bind event bus listeners
 editorEvents.on('onTabRenderNeeded', renderTabs);
 editorEvents.on('triggerRpgSavedExpFloat', triggerRpgSavedExpFloat);
+// Tab labels, tooltips and the new-tab button are built with t(), so they are rebuilt in the new language
+if (typeof window !== 'undefined') {
+  window.addEventListener('app:languageChanged', () => renderTabs());
+}

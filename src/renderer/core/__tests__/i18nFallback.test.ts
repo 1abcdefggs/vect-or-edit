@@ -5,7 +5,7 @@ vi.mock('../../locales/ja.json', () => ({ default: { some_japanese_key: 'x' } })
 vi.mock('../../locales/en.json', () => ({
   default: { only_in_english: 'English text', shared_key: 'English shared' }
 }));
-vi.mock('../statusManager', () => ({ setLedStatus: () => {} }));
+vi.mock('../statusManager', () => ({ setLedStatus: () => {}, led: (key: string) => key }));
 
 function stubBrowser(lang: string) {
   const store = new Map<string, string>([['app_lang', lang]]);

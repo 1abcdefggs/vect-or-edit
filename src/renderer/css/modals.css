@@ -183,21 +183,36 @@
 .settings-nav {
   display: flex;
   flex-direction: column;
-  flex: 0 0 18rem;
+  flex: 0 0 var(--settings-nav-w);
   min-height: 0;
   overflow-y: auto;
   /* Room on the right so the current-item surface and long names do not touch the nav edge */
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px) var(--spacing-xs, 4px) 0;
+  /* Top and bottom equal the page padding, so the first nav item starts at the height of the first card */
+  padding: var(--settings-page-pad) var(--spacing-sm, 8px) var(--settings-page-pad) 0;
   background: var(--bg-primary, rgba(0, 0, 0, 0.25));
   border-right: var(--border-width) solid var(--border-color);
 }
 
 /* The title sits at the left end of the tab row: same size as the tabs, no own band */
 .settings-modal-tabs .settings-nav-title {
-  padding: 0 var(--spacing-md, 16px) 0 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0;
+  /* Same width as the nav column below it, so the title and the list read as one left column */
+  flex: 0 0 var(--settings-nav-w);
+  box-sizing: border-box;
+  padding: 7px 0;
   font-size: var(--fs-18);
   border-bottom: none;
   white-space: nowrap;
+}
+
+/* The title's gear uses the same icon size as the tab icons, so the two read as one row */
+.settings-modal-tabs .settings-nav-title svg {
+  width: calc(var(--icon-text-size) * var(--icon-text-scale));
+  height: calc(var(--icon-text-size) * var(--icon-text-scale));
+  flex-shrink: 0;
 }
 
 /* The tabs are one row above the settings layout (Header, Editor, Sidebar, System) */
@@ -210,6 +225,20 @@
   padding: 8px var(--spacing-md, 16px) 0;
   border-bottom: var(--border-width) solid var(--border-color);
   flex-shrink: 0;
+}
+
+/* The one sentence at the top of the settings page; the gear inside a sentence follows the text size */
+.settings-gear-intro {
+  margin: 0 0 var(--spacing-sm, 8px);
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.settings-gear-intro .settings-key-icon,
+.setting-desc .settings-key-icon {
+  font-size: 1.2em;
+  vertical-align: text-bottom;
 }
 
 .settings-tab-desc {
@@ -228,7 +257,6 @@
   width: auto;
   background: transparent;
   border: none;
-  border-bottom: 3px solid transparent;
   border-radius: 6px;
   padding: 7px 10px;
   font-size: var(--fs-18);
@@ -241,11 +269,11 @@
 }
 
 .settings-tab-icon {
-  font-size: var(--fs-18);
+  font-size: var(--icon-size);
   flex-shrink: 0;
 }
 
-/* Cards of the active tab, nested under that tab's button (a tree line on the left) */
+/* Lists of the left nav (a tree line on the left; the outer list resets it below) */
 .settings-nav-items {
   list-style: none;
   margin: 0 0 6px 19px;
@@ -255,6 +283,13 @@
   flex-direction: column;
   gap: 1px;
   border-left: var(--border-width) solid var(--border-color);
+}
+
+/* The outer list (the cards of the active tab) hangs from nothing now that the tabs are in the top row, so it has no tree line and no inset; only the inner lists (the settings of a card) keep the line */
+#settingsNavItems {
+  margin: 0 0 6px 0;
+  padding: 2px var(--spacing-xs, 4px);
+  border-left: none;
 }
 
 .settings-nav-items li[hidden] { display: none; }
@@ -287,7 +322,7 @@
 }
 
 .settings-nav-icon {
-  font-size: var(--fs-16);
+  font-size: var(--settings-icon-size);
   flex-shrink: 0;
 }
 
@@ -338,7 +373,7 @@
 .settings-tab-content {
   display: none;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--settings-card-gap);
 }
 
 .settings-tab-content.active {
@@ -426,9 +461,13 @@
   background: rgba(15, 23, 42, 0.72);
   border: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: 10px;
-  padding: 14px 18px;
-  margin-bottom: 14px;
+  padding: var(--settings-card-pad);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* A card inside a card: the parent has no flex gap, so the nested cards keep the same gap between them */
+.settings-section-card .settings-section-card:not(:last-child) {
+  margin-bottom: var(--settings-card-gap);
 }
 
 .settings-section-card h4 {
@@ -867,6 +906,12 @@
   margin: 0;
 }
 
+/* STEP 3 starts its heading at STEP 2's height (40px at 1920x1040, where STEP 2 gets it from space-evenly) */
+.first-run-step--start-offset {
+  justify-content: flex-start;
+  padding-top: 40px;
+}
+
 .first-run-section {
   display: flex;
   flex-direction: column;
@@ -936,16 +981,6 @@
   font-size: var(--fs-14);
   font-weight: 400;
   color: var(--text-muted);
-}
-
-.first-run-badge {
-  padding: 3px 10px;
-  border: var(--border-width) solid var(--accent-color);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
-  font-size: var(--fs-12);
-  font-weight: 600;
-  color: var(--item-code-text, var(--text-main));
 }
 
 .first-run-field {
@@ -1849,110 +1884,55 @@
   cursor: pointer;
 }
 
-/* Step 3's picture of the editor: the left pane is what the user writes (writing assist below it), the right pane is the
-   dictionary the embedding model reads inside it. The panes are drawn, not forms; the controls sit inside them */
-/* The picture, its caption and the notice run to the step's own left edge, level with the heading's marker */
-.first-run-section:not(.first-run-section--row) > .setup-ai-window,
-.first-run-section:not(.first-run-section--row) > .setup-ai-flow,
-.first-run-section:not(.first-run-section--row) > .first-run-notice {
+/* Step 3: the required choice (embedding model) and, folded under it, the optional writing assist.
+   Both run to the step's own left edge, level with the heading's marker */
+.first-run-section:not(.first-run-section--row) > .setup-ai-optional {
   margin-left: 0;
 }
 
-.setup-ai-window {
-  overflow: hidden;
-  border: var(--border-width) solid var(--border-color);
-  border-radius: 10px;
+/* The question is a surface of its own: the editor's canvas color, without a border */
+[data-setup-step="3"] .first-run-setting {
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
   background: var(--bg-primary, rgba(0, 0, 0, 0.2));
 }
 
-/* The app's own title bar (layout.css .app-header), so the picture reads as the desktop window */
-.setup-ai-window-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: var(--header-height);
-  padding: 0 12px;
-  background-color: var(--header-bg, #080c16);
-  color: var(--header-fg, var(--text-main));
-}
-
-.setup-ai-panes {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr);
-}
-
-.setup-ai-pane {
+/* The question, the buttons, the hint and the notice stack, so the notice stays right under the buttons */
+[data-setup-step="3"] .first-run-choice-row {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-width: 0;
-  padding: 14px;
+  align-items: stretch;
 }
 
-.setup-ai-pane--dict {
-  background: color-mix(in srgb, var(--accent-color) 7%, transparent);
+[data-setup-step="3"] .first-run-choice-buttons {
+  justify-content: flex-start;
+  width: 100%;
 }
 
-.setup-ai-pane-head {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+[data-setup-step="3"] .first-run-choice-button {
+  flex: 1;
+  max-width: 160px;
 }
 
-.setup-ai-pane-title {
-  font-size: var(--fs-14);
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.setup-ai-pane-role {
+[data-setup-step="3"] .first-run-facts {
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 2px 12px;
   font-size: var(--fs-12);
-  line-height: 1.4;
-  color: var(--text-muted);
 }
 
-/* Drawn bars that stand in for words; they carry no text of their own */
-.setup-ai-page {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 4px 0;
+/* The writing assist is optional: it is folded under the picture, so the one required choice stays alone above it */
+.setup-ai-optional {
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px 14px;
 }
 
-.setup-ai-line {
-  display: block;
-  flex-shrink: 0;
-  height: 6px;
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--text-muted) 35%, transparent);
-}
-
-.setup-ai-line.is-long {
-  width: 88%;
-}
-
-.setup-ai-line.is-mid {
-  width: 62%;
-}
-
-.setup-ai-line.is-short {
-  width: 36%;
-}
-
-.setup-ai-caret {
-  width: 2px;
-  height: 16px;
-  background: var(--accent-color);
-}
-
-/* The writing assist sits at the foot of the editor pane, where the text it helps with would be */
-.setup-ai-assist {
+.setup-ai-optional[open] {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: auto;
-  padding-top: 12px;
 }
 
 .setup-ai-assist-head {
@@ -1960,6 +1940,7 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: 4px 8px;
+  cursor: pointer;
 }
 
 .setup-ai-assist-title {
@@ -1968,94 +1949,14 @@
   color: var(--text-main);
 }
 
-/* Inside a pane the provider and key fields stack, one above the other */
-.setup-ai-assist .first-run-key-grid {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 8px;
-}
-
-.setup-ai-assist .first-run-key {
+.setup-ai-optional .first-run-key {
   height: 40px;
 }
 
-.setup-ai-assist .first-run-hint {
+.setup-ai-optional .first-run-hint {
   font-size: var(--fs-12);
 }
 
-/* The toggle row is a surface of its own on the dictionary tint: the editor's canvas color, without a border */
-.setup-ai-pane--dict .first-run-setting {
-  padding: 10px 12px;
-  border: 0;
-  background: var(--bg-primary, rgba(0, 0, 0, 0.2));
-}
-
-/* In the dictionary pane, stack the question and buttons vertically due to limited width */
-.setup-ai-pane--dict .first-run-choice-row {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: stretch;
-}
-
-.setup-ai-pane--dict .first-run-choice-buttons {
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.setup-ai-pane--dict .first-run-choice-button {
-  flex: 1;
-  max-width: 160px;
-}
-
-.setup-ai-pane .first-run-facts {
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 2px 12px;
-  font-size: var(--fs-12);
-}
-
-.setup-ai-entries {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: auto 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.setup-ai-entries li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Each dictionary entry is a dot (its vector) and a bar (its text) */
-.setup-ai-entries i {
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent-color);
-}
-
-/* The arrow runs from the dictionary to the editor: the embedding results come back to the text.
-   No rule around it; the gutter is the editor's own background, so the two panes meet by color alone */
-.setup-ai-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-text);
-}
-
-.setup-ai-link .material-symbols-outlined {
-  font-size: var(--fs-20);
-}
-
-.setup-ai-flow {
-  margin: 0;
-  font-size: var(--fs-13);
-  line-height: 1.5;
-  color: var(--text-muted);
-}
 
 .first-run-footer {
   display: flex;
@@ -2225,19 +2126,6 @@
   .first-run-footer {
     flex-wrap: wrap;
   }
-
-  /* Narrow: the dictionary goes under the editor, and the arrow points up at it */
-  .setup-ai-panes {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .setup-ai-link {
-    height: 32px;
-  }
-
-  .setup-ai-link .material-symbols-outlined {
-    transform: rotate(90deg);
-  }
 }
 
 /* ==========================================================================
@@ -2334,4 +2222,86 @@
 }
 .setting-item[hidden] {
   display: none;
+}
+
+/* Settings search: input, the guide switch, and the suggestion list under the tab row */
+.settings-search {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 100%;
+  padding-bottom: 8px;
+}
+.settings-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+.settings-search-icon {
+  position: absolute;
+  left: 6px;
+  font-size: var(--fs-16);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+/* Border at least 3:1 against the surface (WCAG 1.4.11), made from the text colour so it follows every theme */
+.settings-search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 4px 8px 4px 26px;
+  /* Accent frame at rest: the search is the first control of the settings page (T10) */
+  border: var(--border-width) solid var(--accent-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-main);
+  font: inherit;
+}
+.settings-search-input::placeholder { color: var(--text-muted); opacity: 1; }
+.settings-search-input:focus-visible {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 1px var(--accent-color);
+}
+.settings-search-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.settings-search-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  max-height: 60vh;
+  overflow: auto;
+  background: var(--tooltip-bg, #f1f5f9);
+  color: var(--tooltip-fg, #0f172a);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.settings-search-list[hidden] { display: none; }
+.settings-search-list li[role="option"] {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.settings-search-list li[aria-selected="true"] { background: var(--tab-active-bg, rgba(56, 189, 248, 0.18)); }
+.settings-search-path { font-size: var(--fs-14); opacity: 0.75; }
+.settings-search-empty { padding: 6px 10px; opacity: 0.75; }
+.settings-search-list li.is-search-hit,
+.is-search-hit {
+  outline: 2px solid var(--accent, #38bdf8);
+  outline-offset: 2px;
+  transition: outline-color 0.4s;
 }

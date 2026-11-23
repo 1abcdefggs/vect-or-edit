@@ -9,15 +9,19 @@ import { aiManager } from '../../core/aiStateManager.js';
 import { settingsStore } from '../../core/settingsStore.js';
 import { showToast } from '../notifications/toastManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
+import { setSettingRowLocked, applySuggestFunctionLock } from './settingsLocks.js';
+import { readStorage } from '../../core/storage.js';
+import { STORAGE_KEYS } from '../../core/constants.js';
+import { llmSwitchReasonKey, llmSwitchNoteKey } from './llmSwitchLock.js';
+import { getChatPlacement, setChatPlacement } from '../ai/chatPlacement.js';
 import {
   CUSTOM,
   DELAY_PRESETS_MS,
   UNIT_MS,
-  UNIT_RANGE,
-  formatDelayLabel,
-  presetValueFor,
-  splitForCustom,
-  toMs
+  formatClock,
+  formatDelayAmount,
+  parseClock,
+  presetValueFor
 } from './autoSaveDelayOptions.js';
 import { isLayoutRemembered, setLayoutRemembered } from '../layout/layoutMemory.js';
 import {
@@ -34,6 +38,7 @@ import {
 const LOGS_PATH = 'system.collapseLogsOnStartup';
 const LOG_TIME_PATH = 'system.logTimeFormat';
 const LOG_TIME_ZONE_PATH = 'system.logTimeZone';
+const LOG_LANGUAGE_PATH = 'system.logLanguage';
 const LOG_SAVE_PATH = 'system.logSaveMode';
 const onOff = (value) => (value ? 'on' : 'off');
 
@@ -43,48 +48,52 @@ function bindAutoSave() {
   const newline = document.getElementById('modalAutoSaveNewlineSelect');
   const delay = document.getElementById('modalAutoSaveDelayInput');
   const delayPreset = document.getElementById('modalAutoSaveDelaySelect');
-  const delayUnit = document.getElementById('modalAutoSaveDelayUnit');
-  const customBox = document.getElementById('autoSaveDelayCustom');
-  if (!all || !idle || !newline || !delay || !delayPreset || !delayUnit || !customBox) return;
+  if (!all || !idle || !newline || !delay || !delayPreset) return;
 
-  // The pause is a preset or the user's own amount in seconds or minutes; it is stored in milliseconds either way
+  // The pause is a preset or the user's own m:ss value; it is stored in milliseconds either way
   const buildPresets = () => {
-    const names = { sec: t('autosave_unit_sec'), min: t('autosave_unit_min') };
+    const unitLabel = { sec: t('autosave_unit_sec'), min: t('autosave_unit_min') };
     const chosen = delayPreset.value;
+    // Seconds, minutes and the own value are separate groups (rows); the first option of a unit group carries the row heading
+    const withGroup = (option, group, heading) => {
+      option.dataset.group = group;
+      if (heading) option.dataset.groupLabel = heading;
+      return option;
+    };
+    const presetOptions = DELAY_PRESETS_MS.map((ms) => {
+      const unit = ms >= UNIT_MS.min ? 'min' : 'sec';
+      const first = unit === 'sec' ? DELAY_PRESETS_MS.find((p) => p < UNIT_MS.min) : DELAY_PRESETS_MS.find((p) => p >= UNIT_MS.min);
+      return withGroup(new Option(formatDelayAmount(ms), String(ms)), unit, ms === first ? unitLabel[unit] : '');
+    });
     delayPreset.replaceChildren(
-      ...DELAY_PRESETS_MS.map((ms) => new Option(formatDelayLabel(ms, names), String(ms))),
-      new Option(t('autosave_delay_custom'), CUSTOM)
+      ...presetOptions,
+      withGroup(new Option(t('autosave_delay_custom'), CUSTOM), 'custom', '')
     );
     delayPreset.value = chosen;
   };
-  const applyUnit = (unit) => {
-    const range = UNIT_RANGE[unit];
-    delay.min = String(range.min);
-    delay.max = String(range.max);
-    delay.step = String(range.step);
-    delay.dispatchEvent(new Event('input', { bubbles: true })); // the stepper re-reads the limits
-  };
+  // The typed field is always shown beside the list, so the value can be typed without choosing "自分で指定" first
   const showDelay = (ms, custom) => {
     delayPreset.value = custom ? CUSTOM : presetValueFor(ms);
-    customBox.hidden = delayPreset.value !== CUSTOM;
-    const { unit, amount } = splitForCustom(ms);
-    delayUnit.value = unit;
-    applyUnit(unit);
-    delay.value = String(amount);
+    delay.value = formatClock(ms);
   };
 
-  // The wait only applies to "Save when typing pauses": with that off the row is inactive and says why in text
+  // With Autosave off, the trigger and the wait do nothing: those rows are locked and say why in text.
+  // The wait also needs "Save when typing pauses" on.
   const delayRow = delay.closest('[data-setting-row]');
   const delayReason = document.getElementById('autoSaveDelayReason');
+  const offReason = document.getElementById('autoSaveOffReason');
   const syncDelayState = () => {
-    const inactive = idle.value !== 'on';
+    const masterOff = all.value !== 'on';
+    const idleOff = idle.value !== 'on';
+    setSettingRowLocked('modalAutoSaveIdleSelect', masterOff);
+    setSettingRowLocked('modalAutoSaveNewlineSelect', masterOff);
+    if (offReason) offReason.hidden = !masterOff;
+    const inactive = masterOff || idleOff;
     delayRow?.classList.toggle('is-inactive', inactive);
-    if (delayReason) delayReason.hidden = !inactive;
+    if (delayReason) delayReason.hidden = masterOff || !idleOff;
     delayRow?.querySelectorAll('input, select, button').forEach((el) => {
       if (!el.closest('[data-setting-text]')) el.disabled = inactive; // the info button of the label stays usable
     });
-    // Back on: let the stepper set its − and + buttons to their own limits again
-    if (!inactive) delay.dispatchEvent(new Event('input', { bubbles: true }));
   };
 
   const refresh = () => {
@@ -100,7 +109,10 @@ function bindAutoSave() {
   // The toolbar switch changes the same values
   window.addEventListener('app:autosaveChanged', refresh);
 
-  all.addEventListener('change', () => setAutoSaveEnabled(all.value === 'on'));
+  all.addEventListener('change', () => {
+    setAutoSaveEnabled(all.value === 'on');
+    syncDelayState();
+  });
   const saveTriggers = () => {
     setTriggers({ idle: idle.value === 'on', newline: newline.value === 'on' });
     syncSettingsToBackend();
@@ -110,21 +122,20 @@ function bindAutoSave() {
   idle.addEventListener('change', saveTriggers);
   newline.addEventListener('change', saveTriggers);
   delayPreset.addEventListener('change', () => {
-    if (delayPreset.value !== CUSTOM) setAutoSaveDelayMs(Number(delayPreset.value));
+    if (delayPreset.value === CUSTOM) {
+      delay.focus(); // the typed field is already visible: choosing the custom preset moves focus to it
+      return;
+    }
+    setAutoSaveDelayMs(Number(delayPreset.value));
     syncSettingsToBackend();
-    showDelay(getAutoSaveDelayMs(), delayPreset.value === CUSTOM);
+    showDelay(getAutoSaveDelayMs(), false);
   });
-  // Typed amount or unit: kept to the allowed range, and shown again in the unit the user chose
-  const commitCustomDelay = () => {
-    const ms = toMs(delay.value, delayUnit.value);
+  // Typed m:ss value: kept to the allowed range by setAutoSaveDelayMs; text that is not m:ss is dropped and the stored value is shown again
+  delay.addEventListener('change', () => {
+    const ms = parseClock(delay.value);
     if (Number.isFinite(ms)) setAutoSaveDelayMs(ms);
     syncSettingsToBackend();
-    delay.value = String(getAutoSaveDelayMs() / UNIT_MS[delayUnit.value]);
-  };
-  delay.addEventListener('change', commitCustomDelay);
-  delayUnit.addEventListener('change', () => {
-    applyUnit(delayUnit.value);
-    commitCustomDelay();
+    delay.value = formatClock(getAutoSaveDelayMs());
   });
 }
 
@@ -134,11 +145,46 @@ function bindAssistants() {
   if (!master || !embedding) return;
 
   // "master" is the settings-page control of the LLM switch (it keeps its element id until the rename in planned.csv S04).
-  // The two switches are independent (ADR-11).
+  // The two switches are independent.
+  // The switch cannot be turned on before a provider is chosen and its key is stored (the same condition as the title-bar
+  // button): it is locked and the text under it says which step is missing. Only the control is locked, so the text stays readable.
+  const masterRow = master.closest('[data-setting-row]');
+  const masterReason = document.getElementById('llmSwitchReason');
+  // The missing step also stands beside the switch, where the eye goes after pressing it; the full reason stays in the text block
+  const syncMasterNote = (noteKey) => {
+    let note = masterRow?.querySelector('.setting-inline-note');
+    if (!noteKey) { note?.remove(); return; }
+    if (!note) {
+      note = document.createElement('span');
+      note.className = 'setting-inline-note';
+      // querySelector can return a descendant, which insertBefore rejects; insert beside the switch element itself
+      const switchEl = masterRow?.querySelector('.ui-switch');
+      const anchor = switchEl && switchEl.parentElement === masterRow ? switchEl : master;
+      anchor.before(note);
+    }
+    note.dataset.i18n = noteKey;
+    note.textContent = t(noteKey);
+  };
+  const syncMasterLock = (state) => {
+    const reasonKey = llmSwitchReasonKey(readStorage(STORAGE_KEYS.LLM_PROVIDER), state.llmConfigured);
+    const locked = reasonKey !== null;
+    master.disabled = locked;
+    masterRow?.classList.toggle('is-inactive', locked);
+    syncMasterNote(llmSwitchNoteKey(reasonKey));
+    if (masterReason) {
+      masterReason.hidden = !locked;
+      if (locked) {
+        masterReason.dataset.i18n = reasonKey;
+        masterReason.textContent = t(reasonKey);
+      }
+    }
+  };
   const refresh = () => {
     const state = aiManager.getState();
     master.value = onOff(state.llm);
     embedding.value = onOff(state.embed);
+    syncMasterLock(state);
+    applySuggestFunctionLock();
   };
   refresh();
   window.addEventListener('app:aiStateChanged', refresh);
@@ -160,11 +206,22 @@ function bindAssistants() {
     try {
       if (wantOn && !aiManager.getState().embedConfigured) throw new Error(t('toast_embed_not_ready'));
       aiManager.setEmbed(wantOn, 'settings');
+      applySuggestFunctionLock();
     } catch (err) {
       showToast(err instanceof Error ? err.message : String(err), 'warning');
       refresh();
     }
   });
+}
+
+/** The place of the AI chat: the same value as the move button in the chat header and the right-click items. */
+function bindChatPlacement() {
+  const select = document.getElementById('modalChatPlacementSelect');
+  if (!select) return;
+  const refresh = () => { select.value = getChatPlacement(); };
+  refresh();
+  window.addEventListener('app:chatPlacementChanged', refresh);
+  select.addEventListener('change', () => setChatPlacement(select.value));
 }
 
 function bindLogsOnStart() {
@@ -186,6 +243,13 @@ function bindLogTimeZone() {
   if (!select) return;
   select.value = settingsStore.getPreference(LOG_TIME_ZONE_PATH) || 'local';
   select.addEventListener('change', () => settingsStore.updatePreference(LOG_TIME_ZONE_PATH, select.value));
+}
+
+function bindLogLanguage() {
+  const select = document.getElementById('modalLogLanguageSelect');
+  if (!select) return;
+  select.value = settingsStore.getPreference(LOG_LANGUAGE_PATH) || 'en';
+  select.addEventListener('change', () => settingsStore.updatePreference(LOG_LANGUAGE_PATH, select.value));
 }
 
 function bindLogSaveMode() {
@@ -219,6 +283,8 @@ function bindLogSessions() {
     select.replaceChildren(...options);
   };
   refresh();
+  // The empty-state option is a sentence written with t(), so it is written again in the new language
+  window.addEventListener('app:languageChanged', refresh);
 
   open.addEventListener('click', async () => {
     if (!select.value) return;
@@ -246,9 +312,11 @@ export function initWindowFeatureSettings() {
   bound = true;
   bindAutoSave();
   bindAssistants();
+  bindChatPlacement();
   bindLogsOnStart();
   bindLogTimeFormat();
   bindLogTimeZone();
+  bindLogLanguage();
   bindLogSaveMode();
   bindLogSessions();
   bindRememberLayout();

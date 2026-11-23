@@ -2,8 +2,9 @@ import { icons } from '../../core/icons.js';
 import { readGeminiModel } from '../../core/geminiModel.js';
 import { readStorage, removeStorage, writeStorage } from '../../core/storage.js';
 import { changeLanguage, currentLang, i18n, t } from '../../core/i18n.js';
-import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode, OVERLAY_COLORS, getOverlayColor } from '../../editor/core/themeLoader.js';
-import { setLedStatus } from '../../core/statusManager.js';
+import { loadTheme, availableThemes, getMonacoThemeId, getStoredThemeSetting, COLOR_MODES, getColorMode, OVERLAY_COLORS, getOverlayColor, getThemePreview } from '../../editor/core/themeLoader.js';
+import { registerOptionStyle } from '../components/selectMenu';
+import { setLedStatus, led } from '../../core/statusManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { DOCUMENT_FORMATS } from '../../../shared/documentFormat';
 import { NAME_TOKENS, composeName, sanitizeNameTokens } from '../../../shared/documentName';
@@ -11,15 +12,16 @@ import { EDITOR_DEFAULTS } from '../../editor/options/editorDefaults.js';
 import { importDictionary } from '../../search/dictionary.js';
 import { applyEditorCanvasTone, exportWorkspaceBundle, importWorkspaceBundle, hasUnsavedTabs, refreshLinter, updateAutoSaveUI } from '../../editor/editorManager.js';
 import { syncSettingsToBackend } from './settingsState.js';
+import { setSettingRowLocked } from './settingsLocks.js';
 import { showToast } from '../notifications/toastManager.js';
 import { notifyEmbeddingModelsChanged } from '../../search/searchLocalAi.js';
-import { getActiveModelId, getDownloadedModelIds } from '../../search/embeddingModels.js';
+import { getActiveModelId, getDownloadedModelIds, getEmbeddingModel } from '../../search/embeddingModels.js';
 import { bindEmbeddingModelEvents, renderEmbeddingModelList } from './embeddingModelList.js';
 import { initEmbeddingSourceController } from './embeddingSourceController.js';
 import settingsLayout from './settings-layout.json';
-import { renderThemeCards, fitThemeCards } from '../components/themeCards.js';
-import { pickCurrentCard } from './settingsNavCurrent.js';
-import { fillToneSelect, renderToneCards } from './editorTonePicker.js';
+import { renderThemeCards } from '../components/themeCards.js';
+import { pickCurrentCard, navScrollTopFor, pageEndDirection } from './settingsNavCurrent.js';
+import { fillToneSelect, renderToneCards, editorToneNote } from './editorTonePicker.js';
 import { renderFontCards } from './fontFamilyPicker.js';
 import { renderLineHeightCards } from './lineHeightPicker.js';
 import { createUserFontManager } from './userFontManager.js';
@@ -34,9 +36,14 @@ import { showConfirmModal } from '../notifications/confirmModal.js';
 import { resetApp } from './resetApp.js';
 import { initWindowFeatureSettings } from './windowFeatureSettings.js';
 import { initChoiceControls } from './choiceControls.js';
+import { FULL_METADATA_EVENT, isFullMetadataOn, setFullMetadata } from '../../search/fullMetadataSetting.js';
 import { initSettingsHelpPane } from './settingsHelpPane.js';
 import { createGeminiModelPicker, usableGeminiModels, isValidGeminiModelId, rememberGeminiModels } from './geminiModelPicker.js';
 import { initApiKeyInput } from './apiKeyInputBase.js';
+import { getTooltipWidth, setTooltipWidth } from '../tooltips/tooltipWidth.js';
+import { getTooltipGap, setTooltipGap } from '../tooltips/tooltipGap.js';
+import { isTooltipEnabled, setTooltipEnabled } from '../tooltips/tooltipEnabled.js';
+import { initSettingsSearch } from './settingsSearch.js';
 
 function setAndSync(key, value) {
   writeStorage(key, value);
@@ -57,6 +64,24 @@ export { getStoredThemeSetting, getColorMode };
 
 
 /** Fills a theme select with every theme, keeping its current value. A theme's light or dark face follows the mode. */
+// A theme option's label is drawn as a sample of that theme's background and text colours.
+registerOptionStyle('theme', (value, label) => {
+  const preview = getThemePreview(value);
+  label.classList.add('ui-select-option__sample');
+  label.style.background = preview.background;
+  label.style.color = preview.foreground;
+});
+
+// A font size option's label is drawn at its own size (capped, so a large own value does not blow up the list), in the editor's font.
+const SIZE_PREVIEW_CAP_PX = 32;
+registerOptionStyle('font-size', (value, label) => {
+  const px = Number(value);
+  if (!Number.isFinite(px)) return;
+  label.style.fontSize = `${Math.min(px, SIZE_PREVIEW_CAP_PX)}px`;
+  const family = document.getElementById('fontFamilySelect')?.value;
+  if (family) label.style.fontFamily = family;
+});
+
 export function populateThemeDropdown(selectEl) {
   if (!selectEl) return;
   const currentVal = selectEl.value;
@@ -140,7 +165,6 @@ export function renderOverlayColorCards() {
     button.addEventListener('click', () => applyOverlayColor(value));
     return button;
   }));
-  fitThemeCards(box);
   refreshOverlayColorControl();
 }
 
@@ -214,6 +238,7 @@ export function initSettings(updateEditorCb) {
   initChoiceControls();
   // The generated guide beside the settings follows the open tab
   initSettingsHelpPane();
+  initSettingsSearch();
 
   // Autosave, AI assistants and the log panel: settings for features the window also has
   initWindowFeatureSettings();
@@ -386,7 +411,7 @@ export function initSettings(updateEditorCb) {
   const themeSelect = document.getElementById('themeSelect');
   const numMinScore = document.getElementById('numMinScore');
   const selSearchLimit = document.getElementById('selSearchLimit');
-  const chkShowFullMetadata = document.getElementById('chkShowFullMetadata');
+  const selShowFullMetadata = document.getElementById('selShowFullMetadata');
 
   // Modal UI Elements
   const btnSettings = document.getElementById('btnSettings');
@@ -421,7 +446,7 @@ export function initSettings(updateEditorCb) {
 
   const modalMinScoreInput = document.getElementById('modalMinScoreInput');
   const modalLimitSelect = document.getElementById('modalLimitSelect');
-  const modalShowFullMetadataChk = document.getElementById('modalShowFullMetadataChk');
+  const modalShowFullMetadataSelect = document.getElementById('modalShowFullMetadataSelect');
   const modalLinterSelect = document.getElementById('modalLinterSelect');
   const modalTruncationSelect = document.getElementById('modalTruncationSelect');
   const modalResultDescLinesSelect = document.getElementById('modalResultDescLinesSelect');
@@ -478,6 +503,33 @@ export function initSettings(updateEditorCb) {
   document.querySelectorAll('#colorModeSwitch [data-mode]').forEach((seg) => seg.addEventListener('click', () => applyColorMode(seg.dataset.mode)));
   refreshOverlayColorControl();
   renderOverlayColorCards();
+  const tooltipWidthSelect = document.getElementById('modalTooltipWidthSelect');
+  if (tooltipWidthSelect) {
+    tooltipWidthSelect.value = getTooltipWidth();
+    tooltipWidthSelect.addEventListener('change', () => setTooltipWidth(tooltipWidthSelect.value));
+  }
+  const tooltipOnSelect = document.getElementById('modalTooltipEnabledSelect');
+  // The width and the distance only shape our own tooltip, so they are locked while Tooltips is off
+  const syncTooltipLock = () => {
+    const off = !isTooltipEnabled();
+    setSettingRowLocked('modalTooltipWidthSelect', off);
+    setSettingRowLocked('modalTooltipGapSelect', off);
+    const reason = document.getElementById('tooltipOffReason');
+    if (reason) reason.hidden = !off;
+  };
+  if (tooltipOnSelect) {
+    tooltipOnSelect.value = isTooltipEnabled() ? 'on' : 'off';
+    tooltipOnSelect.addEventListener('change', () => {
+      setTooltipEnabled(tooltipOnSelect.value === 'on');
+      syncTooltipLock();
+    });
+  }
+  syncTooltipLock();
+  const tooltipGapSelect = document.getElementById('modalTooltipGapSelect');
+  if (tooltipGapSelect) {
+    tooltipGapSelect.value = getTooltipGap();
+    tooltipGapSelect.addEventListener('change', () => setTooltipGap(tooltipGapSelect.value));
+  }
   window.addEventListener('app:languageChanged', renderOverlayColorCards);
 
   // Language toggle & 2-way sync. Any language change (header, settings, first-run setup) ends in app:languageChanged.
@@ -621,12 +673,27 @@ export function initSettings(updateEditorCb) {
   const syncToneTitle = () => {
     if (quickEditorToneSelect && toneStatusEl) quickEditorToneSelect.title = toneStatusEl.textContent;
   };
+  // The title-bar appearance controls say, in their tooltips, that a chosen colour pair keeps the editor as it is
+  const toneNoteTargets = document.querySelectorAll('#colorModeSwitch .color-mode-switch__seg, [data-ui="hdr:theme-select"]');
+  const syncToneNote = () => {
+    const note = editorToneNote(modalEditorBgSelect?.value);
+    toneNoteTargets.forEach((el) => {
+      const key = el.getAttribute('data-i18n-title');
+      if (!key) return;
+      el.title = note ? `${t(key)}\n${note}` : t(key);
+    });
+  };
   syncToneTitle();
+  syncToneNote();
+  modalEditorBgSelect?.addEventListener('change', syncToneNote);
+  quickEditorToneSelect?.addEventListener('change', syncToneNote);
+  window.addEventListener('app:editorToneChanged', syncToneNote);
   window.addEventListener('app:languageChanged', () => {
     fillToneSelect(modalEditorBgSelect, 'opt_bg_default');
     fillToneSelect(quickEditorToneSelect);
     toneCards?.rebuild();
     syncToneTitle();
+    syncToneNote();
   });
   // The first card shows the theme's own editor colours, so it follows a theme change
   window.addEventListener('app:themeApplied', () => toneCards?.rebuild());
@@ -751,14 +818,9 @@ export function initSettings(updateEditorCb) {
     if (source === 'front') {
       if (modalMinScoreInput && numMinScore) modalMinScoreInput.value = numMinScore.value;
       if (modalLimitSelect && selSearchLimit) modalLimitSelect.value = selSearchLimit.value;
-      if (modalShowFullMetadataChk && chkShowFullMetadata) modalShowFullMetadataChk.checked = chkShowFullMetadata.checked;
     } else {
       if (numMinScore && modalMinScoreInput) numMinScore.value = modalMinScoreInput.value;
       if (selSearchLimit && modalLimitSelect) selSearchLimit.value = modalLimitSelect.value;
-      if (chkShowFullMetadata && modalShowFullMetadataChk) {
-        chkShowFullMetadata.checked = modalShowFullMetadataChk.checked;
-        setAndSync('vect_show_full_metadata', String(chkShowFullMetadata.checked));
-      }
     }
     // Both sides hold the same values now; keep them for the next start
     if (numMinScore) setAndSync(STORAGE_KEYS.MIN_SCORE_PCT, numMinScore.value);
@@ -793,6 +855,7 @@ export function initSettings(updateEditorCb) {
     modalResultDescLinesSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.RESULT_DESC_LINES, modalResultDescLinesSelect.value);
       window.dispatchEvent(new CustomEvent('app:resultDescLinesChanged'));
+      updateResultLinesPreview();
     });
   }
 
@@ -802,8 +865,18 @@ export function initSettings(updateEditorCb) {
     modalResultTitleLinesSelect.addEventListener('change', () => {
       setAndSync(STORAGE_KEYS.RESULT_TITLE_LINES, modalResultTitleLinesSelect.value);
       window.dispatchEvent(new CustomEvent('app:resultTitleLinesChanged'));
+      updateResultLinesPreview();
     });
   }
+
+  // The sample card under the two line settings shows the chosen line counts, with the real card's classes
+  function updateResultLinesPreview() {
+    const preview = document.getElementById('resultLinesPreview');
+    if (!preview) return;
+    preview.querySelector('.result-card__title')?.setAttribute('data-lines', modalResultTitleLinesSelect?.value ?? '2');
+    preview.querySelector('.result-card__desc')?.setAttribute('data-lines', modalResultDescLinesSelect?.value ?? '2');
+  }
+  updateResultLinesPreview();
 
   if (modalLinterSelect) {
     modalLinterSelect.value = readStorage(STORAGE_KEYS.LINTER_ENABLED) === 'off' ? 'off' : 'on';
@@ -817,8 +890,15 @@ export function initSettings(updateEditorCb) {
   if (modalMinScoreInput) modalMinScoreInput.addEventListener('input', () => syncSearchSettings('modal'));
   if (selSearchLimit) selSearchLimit.addEventListener('change', () => syncSearchSettings('front'));
   if (modalLimitSelect) modalLimitSelect.addEventListener('change', () => syncSearchSettings('modal'));
-  if (chkShowFullMetadata) chkShowFullMetadata.addEventListener('change', () => syncSearchSettings('front'));
-  if (modalShowFullMetadataChk) modalShowFullMetadataChk.addEventListener('change', () => syncSearchSettings('modal'));
+  // Show Full Metadata: one stored key, a switch in the sidebar and one in the settings page; a change in either moves both
+  const fullMetaSelects = [selShowFullMetadata, modalShowFullMetadataSelect].filter(Boolean);
+  fullMetaSelects.forEach((sel) => sel.addEventListener('change', () => {
+    setFullMetadata(sel.value === 'on');
+    syncSettingsToBackend();
+  }));
+  window.addEventListener(FULL_METADATA_EVENT, (e) => {
+    fullMetaSelects.forEach((sel) => { sel.value = e.detail?.on ? 'on' : 'off'; });
+  });
 
   // Tab 3 AI Provider & Model Settings
   const modalAiProviderSelect = document.getElementById('modalAiProviderSelect');
@@ -889,6 +969,27 @@ export function initSettings(updateEditorCb) {
       setAndSync(STORAGE_KEYS.LLM_PROVIDER, val);
       updateAiProviderVisibility(val);
       // choiceControls.js handles .active class and button rendering
+    });
+    // The first-run setup (or the sidebar) can change the provider and the key after this page was built: follow them
+    window.addEventListener('app:settingsChanged', () => {
+      const current = readStorage(STORAGE_KEYS.LLM_PROVIDER) || DEFAULTS.LLM_PROVIDER;
+      if (modalAiProviderSelect.value !== current) {
+        modalAiProviderSelect.value = current;
+        updateAiProviderVisibility(current);
+      }
+      showKeyState();
+      // The model menu of the chat header writes these two choices: show them here too
+      if (modalOpenAiModelSelect) modalOpenAiModelSelect.value = readStorage(STORAGE_KEYS.OPENAI_MODEL) || DEFAULTS.OPENAI_MODEL;
+      if (modalClaudeModelSelect) modalClaudeModelSelect.value = readStorage(STORAGE_KEYS.CLAUDE_MODEL) || DEFAULTS.CLAUDE_MODEL;
+      // The list and the choice can also change in the log panel's Models tab: show the cached list and the stored choice here too
+      let cachedModels = null;
+      try { cachedModels = JSON.parse(readStorage('cached_gemini_models') || 'null'); } catch { cachedModels = null; }
+      if (geminiModelPicker && Array.isArray(cachedModels) && cachedModels.length > 0) {
+        showGeminiModels(cachedModels, { persist: false });
+      } else {
+        const savedModel = readGeminiModel();
+        if (savedModel) geminiModelPicker?.setValue(savedModel);
+      }
     });
     document.getElementById('btnClearAiProvider')?.addEventListener('click', () => {
       modalAiProviderSelect.value = 'none';
@@ -1112,6 +1213,22 @@ export function initSettings(updateEditorCb) {
     bindEmbeddingModelEvents(embeddingModelList, { onUse: useEmbeddingModel });
     renderEmbeddingModelList(embeddingModelList, { onUse: useEmbeddingModel });
   }
+  // The Knowledge card shows which model it searches with, and so does the sidebar; both follow every change of the active model
+  const renderKnowledgeModelName = () => {
+    const modelId = getActiveModelId();
+    const name = modelId.split('/').pop();
+    const nameEl = document.getElementById('knowledgeEmbeddingModelName');
+    if (nameEl) nameEl.textContent = name;
+    const sidebarNameEl = document.getElementById('sidebarEmbeddingModelName');
+    if (sidebarNameEl) sidebarNameEl.textContent = name;
+    const sidebarDimEl = document.getElementById('sidebarEmbeddingModelDims');
+    if (sidebarDimEl) {
+      const dim = getEmbeddingModel(modelId)?.dim;
+      sidebarDimEl.textContent = dim ? t('settings_model_dim_value', { dim }) : '';
+    }
+  };
+  renderKnowledgeModelName();
+  window.addEventListener('app:embeddingModelsChanged', renderKnowledgeModelName);
 
   const btnModalImportDict = document.getElementById('btnModalImportDict');
   if (btnModalImportDict) {
@@ -1159,10 +1276,21 @@ export function initSettings(updateEditorCb) {
     });
   }
 
+  const btnGoToModelInstall = document.getElementById('btnGoToModelInstall');
+  if (btnGoToModelInstall) {
+    btnGoToModelInstall.addEventListener('click', () => {
+      // The catalog card sits in the Local sub-tab; switch to it when the Cloud sub-tab is showing
+      if (!document.getElementById('subpanelEmbLocal')?.classList.contains('active')) {
+        document.getElementById('btnSubTabLocal')?.click();
+      }
+      document.getElementById('embeddingConfigCard')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+
   // Restore Search Settings
-  const savedFullMeta = readStorage(STORAGE_KEYS.SHOW_FULL_METADATA) === 'true';
-  if (chkShowFullMetadata) chkShowFullMetadata.checked = savedFullMeta;
-  if (modalShowFullMetadataChk) modalShowFullMetadataChk.checked = savedFullMeta;
+  const savedFullMeta = isFullMetadataOn() ? 'on' : 'off';
+  if (selShowFullMetadata) selShowFullMetadata.value = savedFullMeta;
+  if (modalShowFullMetadataSelect) modalShowFullMetadataSelect.value = savedFullMeta;
 
   const savedTriggerMode = readStorage(STORAGE_KEYS.SUGGEST_TRIGGER_MODE) || DEFAULTS.SUGGEST_TRIGGER_MODE;
   if (modalSuggestTriggerSelect) {
@@ -1202,6 +1330,39 @@ export function initSettings(updateEditorCb) {
     });
   }
 
+  // The left nav follows the body: its own scrollTop is set so the current entry stays in view (not scrollIntoView, which would move the page too)
+  function followCurrentInNav() {
+    const nav = settingsModal?.querySelector('.settings-nav');
+    if (!nav) return;
+    const current = [...nav.querySelectorAll('.settings-nav-item.is-current')].pop();
+    if (!current) return;
+    const navRect = nav.getBoundingClientRect();
+    const rect = current.getBoundingClientRect();
+    const top = rect.top - navRect.top + nav.scrollTop;
+    nav.scrollTop = navScrollTopFor(nav.scrollTop, nav.clientHeight, top, top + rect.height);
+  }
+
+  // One button at the bottom of the page: it scrolls to the bottom from the upper half and back to the top from the lower half
+  function updatePageEndButton() {
+    const body = settingsModal?.querySelector('.settings-modal-body');
+    const button = document.getElementById('btnSettingsToTop');
+    if (!body || !button) return;
+    const direction = pageEndDirection(body.scrollTop, body.clientHeight, body.scrollHeight);
+    button.hidden = direction === 'none';
+    if (direction === 'none' || button.dataset.direction === direction) return;
+    button.dataset.direction = direction;
+    const tipKey = direction === 'down' ? 'tip_settings_to_bottom' : 'tip_settings_to_top';
+    button.setAttribute('data-i18n-title', tipKey);
+    button.setAttribute('data-i18n-aria', tipKey);
+    const text = i18n?.[tipKey];
+    if (text) {
+      button.title = text;
+      button.setAttribute('aria-label', text);
+    }
+    const glyph = button.querySelector('.material-symbols-outlined');
+    if (glyph) glyph.textContent = direction === 'down' ? 'arrow_downward' : 'arrow_upward';
+  }
+
   function updateNavCurrent() {
     const body = settingsModal?.querySelector('.settings-modal-body');
     if (!body || !navCards.length || Date.now() < navSpyPausedUntil) return;
@@ -1213,9 +1374,15 @@ export function initSettings(updateEditorCb) {
     navRows.forEach(({ row, button }) => { button.parentElement.hidden = row.offsetParent === null; });
     const shown = navRows.map((entry, index) => ({ ...entry, index })).filter(({ row }) => row.offsetParent !== null);
     const rowTops = shown.map(({ row }) => row.getBoundingClientRect().top - bodyTop);
-    const picked = shown.length ? pickCurrentCard(rowTops, 24, atBottom) : -1;
+    // The first row still in view (its bottom is below the top edge), so a row scrolled out above is never lit
+    const firstInView = rowTops.findIndex((_, i) => shown[i].row.getBoundingClientRect().bottom > bodyTop + 24);
+    const picked = !shown.length ? -1 : atBottom ? shown.length - 1 : Math.max(firstInView, 0);
     setNavRowCurrent(picked === -1 ? -1 : shown[picked].index);
+    followCurrentInNav();
   }
+
+  // The nav labels are copied from the card headings when the nav is drawn, so it is drawn again after the headings change language
+  window.addEventListener('app:languageChanged', () => setTimeout(renderSettingsNav, 0));
 
   // One scroll listener for the page, however often the nav is rebuilt
   function bindNavScrollOnce() {
@@ -1229,8 +1396,11 @@ export function initSettings(updateEditorCb) {
       navFrame = requestAnimationFrame(() => {
         navFrame = 0;
         updateNavCurrent();
+        updatePageEndButton();
       });
     }, { passive: true });
+    // A window or Guide size change changes whether the tab fits, so the end button is checked again
+    window.addEventListener('resize', () => requestAnimationFrame(updatePageEndButton));
   }
 
   function renderSettingsNav() {
@@ -1336,6 +1506,7 @@ export function initSettings(updateEditorCb) {
     // The list stays in the left nav (under its title); the tabs are a row above the layout
     bindNavScrollOnce();
     updateNavCurrent();
+    requestAnimationFrame(updatePageEndButton);
   }
 
   // Puts the card whose heading has this key at the top of the body (the same 12px gap as a nav click)
@@ -1344,11 +1515,29 @@ export function initSettings(updateEditorCb) {
     const active = settingsModal?.querySelector('.settings-tab-content.active');
     const card = active?.querySelector(`.settings-section-card > h4[data-key="${cardKey}"]`)?.parentElement;
     if (!body || !card) return;
-    const offset = card.getBoundingClientRect().top - body.getBoundingClientRect().top;
-    body.scrollBy({ top: offset - 12 });
+    // Place the card 12px under the top, then measure once more after the layout settles (the nav update needs the card within 24px)
+    const place = () => {
+      const offset = card.getBoundingClientRect().top - body.getBoundingClientRect().top;
+      if (Math.abs(offset - 12) > 1) body.scrollBy({ top: offset - 12 });
+      updateNavCurrent();
+    };
+    place();
+    requestAnimationFrame(place);
   }
 
-  function openSettingsTab(tabId, cardKey) {
+  /** Brings one control into view and puts the cursor in it (the settings page was opened for that control). */
+  function focusSettingsControl(id) {
+    const target = document.getElementById(id);
+    if (!target || !settingsModal?.contains(target)) return;
+    const reveal = () => {
+      target.scrollIntoView({ block: 'center' });
+      target.focus({ preventScroll: true });
+    };
+    reveal();
+    requestAnimationFrame(reveal);
+  }
+
+  function openSettingsTab(tabId, cardKey, focusId) {
     if (!settingsModal) return;
     settingsModal.style.display = 'flex';
     modalTabs.forEach(b => {
@@ -1372,17 +1561,16 @@ export function initSettings(updateEditorCb) {
       settingsTabDesc.textContent = t(TAB_DESC_KEYS[tabId]);
       settingsTabDesc.setAttribute('data-i18n', TAB_DESC_KEYS[tabId]);
     }
-    // The cards can only be measured once their tab is shown
-    fitThemeCards(document.getElementById('modalThemeCards'));
-    fitThemeCards(document.getElementById('modalOverlayColorCards'));
     renderSettingsNav();
     if (cardKey) scrollSettingsToCard(cardKey);
+    if (focusId) focusSettingsControl(focusId);
   }
 
   // detail.card (optional): the heading key of the card to start at, for example 'grp_llm_assistant'
+  // detail.focus (optional): the id of a control to bring into view and focus once the card is placed
   window.addEventListener('app:openSettings', (e) => {
     const tabId = e.detail?.tab || 'tabAppearance';
-    openSettingsTab(tabId, e.detail?.card);
+    openSettingsTab(tabId, e.detail?.card, e.detail?.focus);
   });
 
   // A jump link under a description (settingJumpMarkup) opens its tab at its card
@@ -1421,9 +1609,13 @@ export function initSettings(updateEditorCb) {
     }
   };
 
-  // Back to the top of the settings page (the body scrolls, the tab row stays)
-  document.getElementById('btnSettingsToTop')?.addEventListener('click', () => {
-    settingsModal?.querySelector('.settings-modal-body')?.scrollTo({ top: 0, behavior: 'smooth' });
+  // One button for the end of the page (the body scrolls, the tab row stays): down at the top, up at the bottom
+  document.getElementById('btnSettingsToTop')?.addEventListener('click', (e) => {
+    const body = settingsModal?.querySelector('.settings-modal-body');
+    if (!body) return;
+    const goDown = e.currentTarget.dataset.direction === 'down';
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    body.scrollTo({ top: goDown ? body.scrollHeight : 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   });
 
   if (btnBackToEditor) {
@@ -1439,11 +1631,18 @@ export function initSettings(updateEditorCb) {
   };
   document.getElementById('btnOpenEditorOptions')?.addEventListener('click', openEditorOptionsPanel);
 
-  // Keyboard shortcut Esc to return to editor (same confirmation as the back button)
+  // Keyboard shortcut Esc to return to editor (same confirmation as the back button).
+  // Esc closes the topmost layer first: the search list (its own handler, marked as handled), then the Guide, then the page.
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && settingsModal && (settingsModal.style.display === 'flex' || settingsModal.style.display === 'block')) {
-      requestCloseSettings();
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
+    if (!settingsModal || !(settingsModal.style.display === 'flex' || settingsModal.style.display === 'block')) return;
+    const searchList = document.getElementById('settingsSearchList');
+    if (searchList && !searchList.hidden) return;
+    if (settingsModal.classList.contains('guide-open')) {
+      document.getElementById('btnSettingsGuide')?.click();
+      return;
     }
+    requestCloseSettings();
   });
 
 
@@ -1461,8 +1660,6 @@ export function initSettings(updateEditorCb) {
       }
       const body = settingsModal?.querySelector('.settings-modal-body');
       if (body) body.scrollTop = 0;
-      fitThemeCards(document.getElementById('modalThemeCards'));
-    fitThemeCards(document.getElementById('modalOverlayColorCards'));
       renderSettingsNav();
     });
   });
@@ -1561,7 +1758,7 @@ export function initSettings(updateEditorCb) {
 
   // Initial apply
   applyEditorSettings();
-  setLedStatus('conf', true, t('led_conf_restored'));
+  setLedStatus('conf', true, led('led_conf_restored'));
 }
 
 export function getTheme() {

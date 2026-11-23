@@ -9,6 +9,7 @@ import { syncSettingsToBackend } from '../../ui/settings/settingsState.js';
 import { buildControls, indexControls, sanitizeOverrides, toEditorOptions, readPath } from './monacoOptionsModel.js';
 
 let catalogPromise = null;
+let layoutPromise = null;
 let controlsPromise = null;
 let baseline = null;
 
@@ -19,10 +20,16 @@ export function loadCatalog() {
   return catalogPromise;
 }
 
+/** The panel layout (monacoOptions.layout.json, generated from the editor options review sheet kept outside the repository). */
+export function loadLayout() {
+  layoutPromise ||= import('./monacoOptions.layout.json').then((layout) => layout.default ?? layout);
+  return layoutPromise;
+}
+
 /** Flat controls and their index by path. */
 export function loadControls() {
-  controlsPromise ||= loadCatalog().then(({ catalog }) => {
-    const controls = buildControls(catalog);
+  controlsPromise ||= Promise.all([loadCatalog(), loadLayout()]).then(([{ catalog }, layout]) => {
+    const controls = buildControls(catalog, layout);
     return { controls, index: indexControls(controls) };
   });
   return controlsPromise;
@@ -50,6 +57,24 @@ export function captureBaseline(editor) {
 
 export function getBaseline() {
   return baseline;
+}
+
+/** The paths the user has overridden (stored synchronously, so a caller can skip them without waiting for the catalog). */
+export function getOverriddenPaths() {
+  return new Set(Object.keys(readStored()));
+}
+
+/** Writes values into the baseline, so a reset returns to what the app now chooses (for example after the document language changed). */
+export function setBaselinePaths(values) {
+  if (!baseline) return;
+  for (const [path, value] of Object.entries(values)) {
+    const [top, member] = path.split('.');
+    if (member === undefined) baseline[top] = value;
+    else {
+      if (typeof baseline[top] !== 'object' || baseline[top] === null) baseline[top] = {};
+      baseline[top][member] = value;
+    }
+  }
 }
 
 function readStored() {

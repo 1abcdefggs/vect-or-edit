@@ -196,7 +196,7 @@ export function initAiControls() {
   });
 
   // One announcer for every switch change, whoever caused it (header chip, sidebar, settings page, lost key):
-  // the toast and the log carry the same sentence (ADR-11 section 2.5).
+  // the toast and the log carry the same sentence.
   window.addEventListener('app:aiSwitchChanged', (e) => {
     const { which, from, to, source } = e.detail.change;
     const name = which === 'llm' ? 'LLM' : 'Embedding';

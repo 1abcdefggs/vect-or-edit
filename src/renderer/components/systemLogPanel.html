@@ -5,6 +5,12 @@
     <!-- System Log Output Window -->
     <div style="position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column;">
       <div id="logToastStrip" class="log-toast-strip" style="display: none;"></div>
+      <p id="systemLogIntro" class="system-log-intro" data-ui="set:log-intro" hidden data-i18n="logs_intro_first_run">Close this log with the × at the top right. Reopen it any time with the Logs button.</p>
+      <div class="log-tabs" role="tablist">
+        <button type="button" role="tab" class="log-tab is-active" aria-selected="true" data-log-tab="log" data-ui="sys:log-tab-log" data-i18n="log_tab_log" data-i18n-title="tip_log_tab_log">Log</button>
+        <button type="button" role="tab" class="log-tab" aria-selected="false" data-log-tab="models" data-ui="sys:log-tab-models" data-i18n="log_tab_models" data-i18n-title="tip_log_tab_models">Models</button>
+      </div>
+      <div id="logLogView" class="log-view">
       <div class="log-head">
         <span data-i18n="log_head_time">Time</span><span data-i18n="log_head_level">Level</span><span data-i18n="log_head_source">Source</span><span data-i18n="log_head_message">Message</span>
         <div class="log-head-actions">
@@ -20,5 +26,16 @@
         </div>
       </div>
       <div id="logEntriesContainer" class="log-entries-container" style="flex: 1; min-height: 0;"></div>
+      </div>
+      <div id="logModelsView" class="log-view log-models-view" hidden>
+        <div class="log-models-bar">
+          <button type="button" id="btnLogFetchModels" data-ui="sys:log-models-fetch" class="log-panel-btn btn-phi" data-i18n-title="tip_fetch_gemini_models">
+            <span class="material-symbols-outlined" aria-hidden="true">sync</span><span class="log-btn-label" data-i18n="btn_fetch_models">Fetch Models</span>
+          </button>
+          <span id="logModelsStatus" class="log-models-status" aria-live="polite"></span>
+        </div>
+        <p class="log-models-hint" data-i18n="log_models_hint">Choose the Gemini model here. The same choice is used on the settings page.</p>
+        <div id="logModelsPicker"></div>
+      </div>
     </div>
   </div>

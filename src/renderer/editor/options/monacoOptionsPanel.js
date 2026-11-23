@@ -12,7 +12,8 @@ import {
   setOverride,
   resetOverride,
   resetAllOverrides,
-  snapshotOptions
+  snapshotOptions,
+  getBaseline
 } from './monacoOptionsStore.js';
 import {
   encodeValue,
@@ -22,8 +23,7 @@ import {
   groupControls,
   readPath,
   defaultValueOf,
-  LOCK_SETTINGS,
-  LOCK_APP
+  LOCK_SETTINGS
 } from './monacoOptionsModel.js';
 
 const SEARCH_DELAY_MS = 120;
@@ -34,7 +34,8 @@ const state = {
   overrides: {},
   snapshot: {},
   rows: new Map(),
-  groups: []
+  groups: [],
+  onlyChanged: false
 };
 
 const getEditor = () => window.__monacoEditorInstance || null;
@@ -60,6 +61,12 @@ function valueOf(control) {
   return given !== undefined ? given : defaultValueOf(control);
 }
 
+/** The value a reset returns to: what the app chose, else the option's default. */
+function resetValueOf(control) {
+  const chosen = readPath(getBaseline(), control.path);
+  return chosen !== undefined ? chosen : defaultValueOf(control);
+}
+
 function refreshSnapshot() {
   state.snapshot = snapshotOptions(getEditor());
 }
@@ -78,16 +85,31 @@ function updateSummary() {
       if (!state.rows.get(c.path)?.element.hidden) groupShown++;
       if (c.path in state.overrides) groupChanged++;
     }
-    // Numbers in their own right-aligned cells, so the digits of every heading line up in columns
-    const parts = [];
-    if (groupChanged) parts.push(el('span', 'mo-group-changed', t('monaco_group_changed', { changed: groupChanged })));
-    parts.push(el('span', 'mo-group-num', String(groupShown)), el('span', 'mo-group-slash', '/'), el('span', 'mo-group-num', String(controls.length)));
-    countEl.replaceChildren(...parts);
+    // Name first, then the number, each in a fixed right-aligned cell, so every heading lines up in two columns.
+    // The "shown / all" form appears only while a filter hides some options (otherwise both numbers are the same)
+    const total = controls.length;
+    const items = groupShown === total
+      ? t('monaco_group_items', { shown: groupShown })
+      : t('monaco_group_items_filtered', { shown: groupShown, total });
+    countEl.replaceChildren(
+      el('span', 'mo-group-changed', groupChanged ? t('monaco_group_changed', { changed: groupChanged }) : ''),
+      el('span', 'mo-group-items', items)
+    );
   }
   const count = document.getElementById('monacoOptionsCount');
-  if (count) count.textContent = shown ? t('monaco_opts_count', { shown, total, changed }) : t('monaco_opts_empty');
+  if (count) {
+    count.textContent = !shown ? t('monaco_opts_empty')
+      : shown === total ? t('monaco_opts_count', { total, changed })
+      : t('monaco_opts_count_filtered', { shown, total, changed });
+  }
   const resetAll = document.getElementById('btnMonacoOptionsResetAll');
   if (resetAll) resetAll.hidden = !changed;
+  // The filter needs something changed to show; its tooltip says why it is off (the count line above reads "changed 0")
+  const onlyBtn = document.getElementById('btnMonacoOptionsChangedOnly');
+  if (onlyBtn) {
+    onlyBtn.disabled = !changed && !state.onlyChanged;
+    onlyBtn.title = onlyBtn.disabled ? t('tip_monaco_opts_changed_only_none') : t('tip_monaco_opts_changed_only');
+  }
 }
 
 /** Builds the control for one option and returns {node, setValue}. */
@@ -107,6 +129,7 @@ function buildInput(control, onCommit) {
     input.addEventListener('change', () => onCommit(input.checked));
   } else if (control.kind === 'enum') {
     input = el('select', 'mo-select');
+    input.dataset.menuClass = 'ui-select-menu--lg'; // the open list takes the panel's 16px text
     const build = (current) => {
       input.textContent = '';
       // An unknown value gets a blank entry; a value outside the documented choices is listed first so it stays visible
@@ -153,11 +176,17 @@ function buildRow(control) {
   name.title = tooltipOf(control);
 
   const { node, setValue } = buildInput(control, (value) => {
+    // A value equal to the reset value is no change: drop the override instead of storing it
+    if (JSON.stringify(value) === JSON.stringify(resetValueOf(control))) {
+      reset.click();
+      return;
+    }
     setOverride(getEditor(), control.path, value, { live: !control.createOnly });
     state.overrides[control.path] = value;
     row.dataset.overridden = 'true';
     reset.hidden = false;
     updateSummary();
+    if (state.onlyChanged) applyFilter();
   });
   const holder = el('div', 'mo-control');
   holder.appendChild(node);
@@ -176,22 +205,21 @@ function buildRow(control) {
     refreshSnapshot();
     setValue(valueOf(control));
     updateSummary();
+    if (state.onlyChanged) applyFilter();
   });
 
   const text = el('div', 'mo-desc', describe(control));
-  const lockText = control.lock === LOCK_SETTINGS ? t('monaco_opt_lock_settings')
-    : control.lock === LOCK_APP ? t('monaco_opt_lock_app')
-    : control.lock ? t('monaco_opt_lock_unsupported') : '';
+  const lockText = control.lock ? t('monaco_opt_lock_settings') : '';
   if (lockText) text.prepend(el('span', 'mo-lock', lockText));
   else if (control.createOnly) text.prepend(el('span', 'mo-lock', t('monaco_opt_restart')));
-  if (control.defaultText && !control.lock) {
-    const hint = el('span', 'mo-default', t('monaco_opt_default', { value: control.defaultText }));
-    text.appendChild(hint);
-  }
 
   const side = el('div', 'mo-side');
   side.append(holder, reset);
   row.append(name, side, text);
+  // The default sits under the value column, so the value and what it started as are read together
+  if (control.defaultText && !control.lock) {
+    row.append(el('div', 'mo-default', t('monaco_opt_default', { value: control.defaultText })));
+  }
 
   return {
     element: row,
@@ -206,35 +234,69 @@ function buildRow(control) {
   };
 }
 
+/** A folding block (<details>) with a title and a right-aligned count; the caller adds its rows to `body`. */
+function buildFold(className, titleText, controls) {
+  const details = el('details', className);
+  const summary = el('summary', className === 'mo-group' ? 'mo-group-title' : `mo-group-title ${className}-title`, titleText);
+  const countEl = el('span', 'mo-group-count', '');
+  summary.appendChild(countEl);
+  details.appendChild(summary);
+  const body = el('div', 'mo-group-body');
+  details.appendChild(body);
+  state.groups.push({ details, controls, countEl });
+  return { details, body };
+}
+
+function addRows(body, controls) {
+  for (const control of controls) {
+    const row = buildRow(control);
+    state.rows.set(control.path, row);
+    body.appendChild(row.element);
+    row.refresh();
+  }
+}
+
+/** The options a writer may judge, then the weight-0 ones folded away under one heading (the search still opens it). */
+function addSub(body, { main, rare }) {
+  addRows(body, main);
+  if (!rare.length) return;
+  const fold = buildFold('mo-rare', t('monaco_rare'), rare);
+  addRows(fold.body, rare);
+  body.appendChild(fold.details);
+}
+
 function render() {
   const list = document.getElementById('monacoOptionsList');
   if (!list) return;
   list.textContent = '';
   state.rows.clear();
   state.groups = [];
-  for (const { group, controls } of groupControls(state.controls)) {
-    const details = el('details', 'mo-group');
-    const summary = el('summary', 'mo-group-title', t(`monaco_group_${group}`));
-    const countEl = el('span', 'mo-group-count', '');
-    summary.appendChild(countEl);
-    details.appendChild(summary);
-    const body = el('div', 'mo-group-body');
-    for (const control of controls) {
-      const row = buildRow(control);
-      state.rows.set(control.path, row);
-      body.appendChild(row.element);
-      row.refresh();
+  for (const { group, controls, subs } of groupControls(state.controls)) {
+    const section = buildFold('mo-group', t(`monaco_group_${group}`), controls);
+    // A group with one sub-heading (or none) shows its rows directly: a sub-heading that repeats the group name adds nothing
+    for (const sub of subs) {
+      if (subs.length === 1 || sub.sub === null) {
+        addSub(section.body, sub);
+      } else {
+        const fold = buildFold('mo-sub', t(`monaco_sub_${sub.sub}`), sub.controls);
+        addSub(fold.body, sub);
+        section.body.appendChild(fold.details);
+      }
     }
-    details.appendChild(body);
-    list.appendChild(details);
-    state.groups.push({ details, controls, countEl });
+    list.appendChild(section.details);
   }
   applyFilter();
 }
 
 function applyFilter() {
+  // With nothing left changed the filter would show an empty list, so it switches itself off
+  if (state.onlyChanged && !Object.keys(state.overrides).length) {
+    state.onlyChanged = false;
+    document.getElementById('btnMonacoOptionsChangedOnly')?.setAttribute('aria-pressed', 'false');
+  }
   const query = document.getElementById('monacoOptionsSearch')?.value || '';
   const matched = new Set(filterControls(state.controls, query, describe).map((c) => c.path));
+  if (state.onlyChanged) for (const path of [...matched]) if (!(path in state.overrides)) matched.delete(path);
   for (const [path, row] of state.rows) row.element.hidden = !matched.has(path);
   for (const { details, controls } of state.groups) {
     const any = controls.some((c) => matched.has(c.path));
@@ -257,7 +319,9 @@ async function ensureBuilt() {
   state.built = true;
   try {
     const [{ controls }, overrides] = await Promise.all([loadControls(), getOverrides()]);
-    state.controls = controls;
+    // Only what a writer can change, or what the settings page owns (shown read-only). The options the app fixes
+    // and the ones one input cannot express (the "managed" group of the layout) are not listed; MONACO_OPTIONS.md lists them.
+    state.controls = controls.filter((c) => !c.lock || c.lock === LOCK_SETTINGS);
     state.overrides = overrides;
     refreshSnapshot();
     render();
@@ -276,6 +340,7 @@ async function resetEditorOptions() {
     for (const row of state.rows.values()) row.refresh();
   }
   updateSummary();
+  if (state.onlyChanged) applyFilter();
 }
 
 export function initMonacoOptionsPanel() {
@@ -309,6 +374,13 @@ export function initMonacoOptionsPanel() {
   document.getElementById('monacoOptionsSearch')?.addEventListener('input', () => {
     clearTimeout(timer);
     timer = setTimeout(applyFilter, SEARCH_DELAY_MS);
+  });
+
+  const onlyBtn = document.getElementById('btnMonacoOptionsChangedOnly');
+  onlyBtn?.addEventListener('click', () => {
+    state.onlyChanged = !state.onlyChanged;
+    onlyBtn.setAttribute('aria-pressed', String(state.onlyChanged));
+    applyFilter();
   });
 
   // The panel's header button and the settings page row both put every panel change back to its default

@@ -39,6 +39,8 @@ export const AUTO_SAVE_DELAY_RANGE_MS = { min: adhap.MIN_DELAY_MS, max: adhap.MA
 
 const autoSaveTimers = new Map();
 const pendingTargets = new Set();
+/** Tabs whose file write is in progress; a new line does not start a second write meanwhile. */
+const savingTabs = new Set();
 const declinedTargets = new Set();
 /** Tabs whose latest write failed. The failure toast shows once per streak, not on every keystroke. */
 const failingTabs = new Set();
@@ -166,7 +168,13 @@ async function executeSave(tab) {
     return;
   }
 
-  const result = await commitTabToFile(tab);
+  savingTabs.add(tab.id);
+  let result;
+  try {
+    result = await commitTabToFile(tab);
+  } finally {
+    savingTabs.delete(tab.id);
+  }
   editorEvents.emit('onTabRenderNeeded');
 
   if (result.ok) {
@@ -257,7 +265,8 @@ export function triggerAdaptiveAutoSave(tab, immediate = false) {
   }
 
   if (immediate && isNewlineAutoSaveEnabled()) {
-    executeSave(tab);
+    // A new line saves at once, but not while an earlier save of this tab is still writing: repeated Enter presses do not queue more writes
+    if (!savingTabs.has(tab.id)) executeSave(tab);
     return;
   }
 
