@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.89] - 2026-11-23
+
+### Added
+- npm script `jump:build` regenerates the settings jump table (generated/jump_targets.json) from the ui_blueprint CSV
+
 ## [0.3.88] - 2026-11-23
 
 ### Added

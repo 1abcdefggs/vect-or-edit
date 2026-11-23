@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vect-or-edit",
-  "version": "0.3.88",
+  "version": "0.3.89",
   "description": "Next-Generation Vector-Native Semantic Knowledge Editor & Real-Time Linter. Organizes knowledge in a 10-layer DIKWP-based semantic model.",
   "keywords": [
     "electron",
@@ -29,6 +29,7 @@
   },
   "license": "MIT",
   "scripts": {
+    "jump:build": "node scripts/build-jump-targets.mjs",
     "clean": "node -e \"const fs=require('fs'); const cp=require('child_process'); try{cp.execSync('taskkill /F /IM electron.exe /T',{stdio:'ignore'});}catch(e){} try{cp.execSync('taskkill /F /IM VectOrEdit.exe /T',{stdio:'ignore'});}catch(e){} ['dist','out','release','bin-release','build-dist','installer-release'].forEach(d => { try{fs.rmSync(d, {recursive:true, force:true});}catch(e){} }); const appData=process.env.APPDATA ? require('path').join(process.env.APPDATA,'vect-or-edit') : ''; if(appData && fs.existsSync(appData)){ try{fs.rmSync(appData, {recursive:true, force:true});}catch(e){} }\"",
     "clear": "npm run clean",
     "prebuild": "npm run clean",
