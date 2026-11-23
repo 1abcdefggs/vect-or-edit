@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.86] - 2026-11-23
+
+### Fixed
+- Settings page layout tokens (nav width, page padding, card gap, label and icon size) are defined in the shared token file, so the settings CSS no longer uses undefined variables
+
 ## [0.3.85] - 2026-11-23
 
 ### Added

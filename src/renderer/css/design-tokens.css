@@ -27,11 +27,30 @@
   --icon-size-ui: 18px;
   /* Icons that sit beside text (labels, menus, status pills): one size for all of them */
   --icon-text-size: var(--fs-18);
+  /* Optical correction: Material Symbols draws smaller than text at the same font size */
+  --icon-text-scale: 1.35;
+  /* Short names (tabs, setting names, card titles) read apart from sentences by case and spacing.
+     The text itself is not changed: the transform is only a CSS rule, so search and translation keep the source text. */
+  /* Settings page: the nav column width, and its icon-only width in a narrow page. The title above the nav uses the same. */
+  --settings-nav-w: 18rem;
+  --settings-nav-icon-w: 3rem;
+  /* Settings page spacing: one value each. The page padding is the same on all four sides and above the nav list; the gap sits between cards (cards have no margin of their own) */
+  --settings-page-pad: 16px;
+  --settings-card-gap: 12px;
+  --settings-card-pad: 12px 16px;
+  /* Settings page icons: one size, the size of the label beside them (card heading, nav entry, setting row).
+     The tab icon is the exception: it keeps the shared 24px icon size. */
+  --settings-label-size: var(--fs-18);
+  --settings-icon-size: var(--settings-label-size);
+  --label-transform: uppercase;
+  --label-tracking: 0.04em;
   /* Button padding from the font size alone (golden ratio, em based): vertical 1/phi^3, horizontal 1/phi.
      Exact forms: phi = (1 + sqrt 5) / 2, 1/phi = (sqrt 5 - 1) / 2, 1/phi^3 = sqrt 5 - 2.
      Used with class btn-phi. Basis: layout-core docs/control-sizing-evidence.md sections 8 and 10. */
   /* Smallest clickable height (WCAG 2.2 target size, level AA). A control that looks smaller gets a transparent hit strip. */
   --hit-min: 24px;
+  /* Accent line on the top edge of a header that marks the area in use (chat area header) */
+  --accent-line: 2px;
   --btn-pad-y: calc(1em * (sqrt(5) - 2));
   --btn-pad-x: calc(1em * (sqrt(5) - 1) / 2);
   /* The brand face for the product name (the header logo wordmark and the About title). */
