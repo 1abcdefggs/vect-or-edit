@@ -3,7 +3,7 @@ import { loadTheme, registerAllMonacoThemes } from './themeLoader.js';
 import { applyEditorCanvasTone, updateEditorOptions, TONE_COLORS } from './editorTheme.js';
 import { registerMonacoSuggestAction, registerTabManagementActions } from './editorActions.js';
 import { initializeKnowledgeExtensions, refreshLinter } from './editorExtensions.js';
-import { setLedStatus } from '../../core/statusManager.js';
+import { setLedStatus, led } from '../../core/statusManager.js';
 import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
@@ -167,7 +167,7 @@ export async function initEditor() {
   });
   editorEvents.emit('onStatusBarUpdateNeeded');
 
-  setLedStatus('monaco', true, t('led_monaco_ready'));
+  setLedStatus('monaco', true, led('led_monaco_ready'));
 
   window.__monacoEditorInstance = monacoEditorInstance;
 

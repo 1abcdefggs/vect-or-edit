@@ -1,9 +1,10 @@
-import { setLedStatus } from './statusManager';
+import { setLedStatus, led } from './statusManager';
 import { readStorage, writeStorage } from './storage.js';
 import { STORAGE_KEYS, DEFAULTS } from './constants';
 import { formatTipText } from './tipFormat';
 import jaLocale from '../locales/ja.json';
 import enLocale from '../locales/en.json';
+import { GEAR_TOKEN, withGearIcons } from './gearToken';
 
 const LOCALES: Record<string, Record<string, string>> = {
   ja: jaLocale as Record<string, string>,
@@ -45,14 +46,14 @@ export async function loadLocales(): Promise<void> {
     i18n = composeDictionary(lang);
     console.log(`[i18n] Applying locale: ${lang} (keys: ${Object.keys(i18n).length})`);
     applyI18n();
-    setLedStatus('i18n', true, t('led_i18n_loaded', { lang }));
+    setLedStatus('i18n', true, led('led_i18n_loaded', { lang }));
     window.dispatchEvent(new CustomEvent('app:languageChanged', { detail: { lang } }));
   } catch (err) {
     console.error('[i18n] Failed to apply locale:', err);
     currentLang = 'en';
     i18n = LOCALES.en;
     applyI18n();
-    setLedStatus('i18n', 'error', t('led_i18n_error'));
+    setLedStatus('i18n', 'error', led('led_i18n_error'));
   }
 }
 
@@ -66,11 +67,28 @@ export async function changeLanguage(langCode: string): Promise<void> {
   await loadLocales();
 }
 
-export function t(key: string, params: Record<string, any> = {}): string {
-  const template = i18n[key] ?? key;
+function fill(template: string, params: Record<string, any>): string {
   return String(template).replace(/\{{1,2}\s*(\w+)\s*\}{1,2}/g, (_, p) => {
     return params[p] !== undefined ? String(params[p]) : '';
   });
+}
+
+export function t(key: string, params: Record<string, any> = {}): string {
+  return fill(i18n[key] ?? key, params);
+}
+
+/** Where the log language setting is read from (registered by the console module, which owns the settings store). */
+let logLanguageSource: () => string | undefined = () => undefined;
+export function setLogLanguageSource(source: () => string | undefined): void { logLanguageSource = source; }
+
+/** Text for the system log: English by default; the log language setting 'ui' follows the UI language instead. */
+export function tLog(key: string, params: Record<string, any> = {}): string {
+  return logLanguageSource() === 'ui' ? t(key, params) : tEn(key, params);
+}
+
+/** English text whatever the UI language is: the system log is always written in English, so a pasted log reads the same everywhere. */
+export function tEn(key: string, params: Record<string, any> = {}): string {
+  return fill(LOCALES.en[key] ?? key, params);
 }
 
 /**
@@ -86,7 +104,7 @@ function linkify(text: string): DocumentFragment {
   while ((match = re.exec(text)) !== null) {
     // Append text before the link
     if (match.index > last) {
-      frag.append(text.slice(last, match.index));
+      frag.append(withGearIcons(text.slice(last, match.index)));
     }
 
     // Create and append the link
@@ -94,8 +112,13 @@ function linkify(text: string): DocumentFragment {
     a.href = match[2];
     a.textContent = match[1];
     a.target = '_blank';
-    a.rel = 'noopener';
-    a.className = 'settings-link--inline';
+    // Opens in the OS browser (the main process sends the URL to shell.openExternal, so no Referer header is sent);
+    // the attributes keep the page from leaking its address or window if the link is ever opened another way
+    a.rel = 'noopener noreferrer';
+    a.referrerPolicy = 'no-referrer';
+    a.title = t('tip_external_link');
+    // The class draws the external-link icon after the text
+    a.className = 'settings-link--inline settings-link--external';
     frag.append(a);
 
     last = re.lastIndex;
@@ -103,7 +126,7 @@ function linkify(text: string): DocumentFragment {
 
   // Append remaining text
   if (last < text.length) {
-    frag.append(text.slice(last));
+    frag.append(withGearIcons(text.slice(last)));
   }
 
   return frag;
@@ -134,6 +157,8 @@ export function applyI18n(): void {
           el.placeholder = i18n[key];
         } else if (el.classList.contains('setting-desc') && el.closest('.setting-item') && !el.hasAttribute('data-no-list')) {
           renderAsList(el, i18n[key]);
+        } else if (i18n[key].includes(GEAR_TOKEN)) {
+          el.replaceChildren(withGearIcons(i18n[key]));
         } else {
           el.textContent = i18n[key];
         }

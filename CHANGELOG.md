@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.87] - 2026-11-23
+
+### Added
+- Log language setting (Logs card): English (default) or follow the app language; the system log is written in English unless set
+- Log panel: a Models tab lists the models and chooses the model, the same choice as the settings page
+
+### Changed
+- Pipeline lamp texts are dictionary keys: the tooltip is redrawn in the UI language when the language changes and the log line stays in English
+
 ## [0.3.86] - 2026-11-23
 
 ### Fixed

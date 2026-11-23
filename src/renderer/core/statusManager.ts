@@ -10,7 +10,7 @@
  * 7. AI-MODEL (Embeddings Transformers Worker)
  */
 
-import { t } from './i18n';
+import { t, tLog } from './i18n';
 
 export type SubsystemType = 'bin' | 'kb' | 'conf' | 'thm' | 'i18n' | 'monaco' | 'ai';
 export type SubsystemStatus = boolean | 'ready' | 'loading' | 'pending' | 'standby' | 'unloaded' | 'error';
@@ -72,18 +72,31 @@ function getCachedBadges(type: SubsystemType): CachedBadge[] {
  * Main Status & Diagnostic Setter
  * Updates the 7-stage HTML badge indicators in the top/bottom SYSTEM LOG RUNTIME bar
  */
-const lastTooltips: Partial<Record<SubsystemType, string>> = {};
+const lastTooltips: Partial<Record<SubsystemType, LedText>> = {};
 
-export function setLedStatus(type: SubsystemType | string, status: SubsystemStatus, tooltipText?: string): void {
+/**
+ * A lamp text is a dictionary key (with its values) or a plain string. A key is shown in the UI language,
+ * redrawn when the language changes, and written to the log in English; a plain string is used as it is.
+ */
+export type LedText = string | { key: string; params?: Record<string, any> };
+
+/** Builds a lamp text from a dictionary key; use it in place of t() when calling setLedStatus. */
+export function led(key: string, params?: Record<string, any>): LedText {
+  return { key, params };
+}
+
+export function setLedStatus(type: SubsystemType | string, status: SubsystemStatus, text?: LedText, writeLog = true): void {
   if (typeof document === 'undefined') return;
 
   const subType = type as SubsystemType;
 
-  if (tooltipText !== undefined) {
-    lastTooltips[subType] = tooltipText;
+  if (text !== undefined) {
+    lastTooltips[subType] = text;
   } else {
-    tooltipText = lastTooltips[subType] || '';
+    text = lastTooltips[subType] || '';
   }
+  const tooltipText = typeof text === 'string' ? text : t(text.key, text.params);
+  const logText = typeof text === 'string' ? text : tLog(text.key, text.params);
 
   // Deep Status Classification
   const isReady = status === true || status === 'ready';
@@ -144,10 +157,11 @@ export function setLedStatus(type: SubsystemType | string, status: SubsystemStat
 
   if (tooltipText) {
     const prefix = isReady ? '[OK]' : (isError ? '[ERROR]' : (isStandby ? '[STANDBY]' : '[LOADING]'));
-    const msg = `[Pipeline] ${prefix} ${tooltipText}`;
+    const msg = `[Pipeline] ${prefix} ${logText}`;
     // Suppress spamming log lines during download progress (handled by progress bar row)
     const isDownloadingProgress = subType === 'ai' && status === 'loading'; // only the model download reports 'loading' for ai
-    if ((window as any).appendSystemLog && !isDownloadingProgress) {
+    // A language change only redraws the tooltips; it adds nothing to the log
+    if (writeLog && (window as any).appendSystemLog && !isDownloadingProgress) {
       (window as any).appendSystemLog(msg, isError ? 'error' : (isReady ? 'success' : 'info'));
     }
 
@@ -275,25 +289,25 @@ export function getSubsystemStates(): Record<SubsystemType, boolean> {
  */
 export function initAllLedTooltips(): void {
   if (subsystemState.conf !== 'ready' && subsystemState.conf !== true) {
-    setLedStatus('conf', 'loading', t('led_conf_loading'));
+    setLedStatus('conf', 'loading', led('led_conf_loading'));
   }
   if (subsystemState.thm !== 'ready' && subsystemState.thm !== true) {
-    setLedStatus('thm', 'loading', t('led_thm_loading'));
+    setLedStatus('thm', 'loading', led('led_thm_loading'));
   }
   if (subsystemState.i18n !== 'ready' && subsystemState.i18n !== true) {
-    setLedStatus('i18n', 'loading', t('led_i18n_loading'));
+    setLedStatus('i18n', 'loading', led('led_i18n_loading'));
   }
   if (subsystemState.monaco !== 'ready' && subsystemState.monaco !== true) {
-    setLedStatus('monaco', 'loading', t('led_monaco_loading'));
+    setLedStatus('monaco', 'loading', led('led_monaco_loading'));
   }
   if (subsystemState.bin !== 'ready' && subsystemState.bin !== true) {
-    setLedStatus('bin', 'loading', t('led_bin_loading'));
+    setLedStatus('bin', 'loading', led('led_bin_loading'));
   }
   if (subsystemState.ai !== 'ready' && subsystemState.ai !== true) {
-    setLedStatus('ai', 'standby', t('led_ai_standby'));
+    setLedStatus('ai', 'standby', led('led_ai_standby'));
   }
   if (subsystemState.kb !== 'ready' && subsystemState.kb !== true) {
-    setLedStatus('kb', 'standby', t('led_kb_unloaded'));
+    setLedStatus('kb', 'standby', led('led_kb_unloaded'));
   }
 
   document.getElementById('btnPipelineToggle')?.addEventListener('click', openPipelineStrip);
@@ -306,7 +320,7 @@ export function initAllLedTooltips(): void {
 if (typeof window !== 'undefined') {
   window.addEventListener('app:languageChanged', () => {
     (Object.keys(subsystemState) as SubsystemType[]).forEach(type => {
-      setLedStatus(type, subsystemState[type], lastTooltips[type]);
+      setLedStatus(type, subsystemState[type], lastTooltips[type], false);
     });
   });
 }
