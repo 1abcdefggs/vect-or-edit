@@ -1,7 +1,7 @@
 /**
  * @api-source electron: app, net, safeStorage
  * @api-table  local: electron_main_modules_map.csv
- * @api-check  2026-11-19 (checked against the breaking-changes page; skill electron-api)
+ * @api-check  2026-11-21 (safe-storage page read; async methods only; skill electron-api)
  */
 import { app, net, safeStorage } from 'electron';
 import { GoogleGenAI } from '@google/genai';
@@ -10,12 +10,16 @@ import path from 'node:path';
 import { isValidGeminiModelId, toGeminiModelInfo, type GeminiModelInfo } from '../../shared/geminiModels';
 import { AI_HOSTS, withAiEgress } from '../net/egressPolicy';
 import { AI_SEND_TIMEOUT_MS, abortAfterTimeout, timeoutMessage } from './sendTimeout';
+import { beginSend, CANCELLED_MESSAGE } from './sendCancel';
 
 export type { GeminiModelInfo };
 
 // Cloud LLM API keys are encrypted with the OS key store (safeStorage) and kept in userData/secrets/, one file per provider.
 // They never go to localStorage or .settings.json; requests read them here in the main process.
 export type ApiKeyProvider = 'gemini' | 'openai' | 'claude';
+
+/** The reply of a chat send. cancelled is set when the user stopped it (sendCancel.ts). */
+export type ChatSendResult = { success: boolean; text?: string; error?: string; cancelled?: boolean };
 
 const API_KEY_FILES: Record<ApiKeyProvider, string> = {
   gemini: 'gemini-api-key.bin',
@@ -36,11 +40,27 @@ function apiKeyPath(provider: ApiKeyProvider): string {
 }
 
 async function loadStoredApiKey(provider: ApiKeyProvider): Promise<string | undefined> {
-  if (!safeStorage.isEncryptionAvailable()) return undefined;
+  if (!(await safeStorage.isAsyncEncryptionAvailable())) return undefined;
 
   try {
     const encrypted = await fs.readFile(apiKeyPath(provider));
-    return safeStorage.decryptString(encrypted);
+    let result: string;
+    let shouldReEncrypt: boolean;
+    try {
+      ({ result, shouldReEncrypt } = await safeStorage.decryptStringAsync(encrypted));
+    } catch {
+      // Files written by the earlier sync encryptString may not open with the async method: read them once the old way,
+      // then store them again in the async format. Remove this branch when the sync methods are gone (Electron 46).
+      result = safeStorage.decryptString(encrypted);
+      shouldReEncrypt = true;
+    }
+    if (shouldReEncrypt) {
+      // The OS key was rotated: store the key again under the new one. Best effort; reading never fails because of it.
+      try {
+        await fs.writeFile(apiKeyPath(provider), await safeStorage.encryptStringAsync(result));
+      } catch { /* keep the old file */ }
+    }
+    return result;
   } catch {
     return undefined;
   }
@@ -53,13 +73,13 @@ export async function hasStoredApiKey(provider: ApiKeyProvider): Promise<boolean
 export async function saveApiKey(provider: ApiKeyProvider, apiKey: string): Promise<{ success: boolean; error?: string }> {
   const trimmedKey = (apiKey || '').trim();
   if (!trimmedKey) return { success: false, error: 'API key is required.' };
-  if (!safeStorage.isEncryptionAvailable()) {
+  if (!(await safeStorage.isAsyncEncryptionAvailable())) {
     return { success: false, error: 'OS secure storage is unavailable.' };
   }
 
   try {
     await fs.mkdir(secretsDir(), { recursive: true });
-    await fs.writeFile(apiKeyPath(provider), safeStorage.encryptString(trimmedKey));
+    await fs.writeFile(apiKeyPath(provider), await safeStorage.encryptStringAsync(trimmedKey));
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message || `Failed to save the ${provider} API key.` };
@@ -140,7 +160,68 @@ async function listGeminiModelsWith(token: string): Promise<GeminiModelInfo[]> {
   });
 }
 
-export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string, model?: string) {
+/**
+ * Lists the model ids of OpenAI or Claude with the user's key (GET /v1/models). Requests go through net.request,
+ * so the egress policy applies. Untested against the live APIs: only the parsing is covered by unit tests.
+ */
+function requestModelIds(url: string, headers: Record<string, string>, label: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const request = net.request({ method: 'GET', url });
+    for (const [name, value] of Object.entries(headers)) request.setHeader(name, value);
+    const stopTimer = abortAfterTimeout(request, () => reject(new Error(timeoutMessage(label))));
+    let data = '';
+    request.on('response', (response) => {
+      response.on('data', (chunk) => { data += chunk.toString(); });
+      response.on('end', () => {
+        stopTimer();
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) return reject(new Error(parsed.error.message || `${label} error`));
+          if (response.statusCode < 200 || response.statusCode >= 300) {
+            return reject(new Error(`${label} returned HTTP ${response.statusCode}`));
+          }
+          resolve(parseModelIds(parsed));
+        } catch (e: any) {
+          reject(new Error(`Failed to parse ${label} models response: ${e.message}`));
+        }
+      });
+    });
+    request.on('error', (err) => { stopTimer(); reject(err); });
+    request.end();
+  });
+}
+
+/** Reads the ids from a { data: [{ id }] } body; anything else gives an empty list. Exported for tests. */
+export function parseModelIds(body: unknown): string[] {
+  const data = (body as { data?: unknown })?.data;
+  if (!Array.isArray(data)) return [];
+  const ids = data
+    .map((item) => (item as { id?: unknown })?.id)
+    .filter((id): id is string => typeof id === 'string' && id.length > 0 && id.length <= 200);
+  return [...new Set(ids)].sort();
+}
+
+export async function listOpenAIModels(apiKey?: string): Promise<string[]> {
+  const token = (typeof apiKey === 'string' ? apiKey.trim() : '') || await loadStoredApiKey('openai');
+  if (!token) throw new Error('OpenAI API key is not set.');
+  return withAiEgress(AI_HOSTS.openai, () => requestModelIds(
+    'https://api.openai.com/v1/models',
+    { Authorization: `Bearer ${token}` },
+    'OpenAI API'
+  ));
+}
+
+export async function listClaudeModels(apiKey?: string): Promise<string[]> {
+  const token = (typeof apiKey === 'string' ? apiKey.trim() : '') || await loadStoredApiKey('claude');
+  if (!token) throw new Error('Anthropic API key is not set.');
+  return withAiEgress(AI_HOSTS.claude, () => requestModelIds(
+    'https://api.anthropic.com/v1/models?limit=1000', // the endpoint pages at 20 by default; 1000 is its maximum
+    { 'x-api-key': token, 'anthropic-version': '2023-06-01' },
+    'Anthropic API'
+  ));
+}
+
+export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string, model?: string, requestId?: string): Promise<ChatSendResult> {
   const token = apiKey || await loadStoredApiKey('claude') || process.env.ANTHROPIC_API_KEY;
   if (!token) {
     throw new Error('Anthropic API key is not set. Please provide it in settings or ANTHROPIC_API_KEY environment variable.');
@@ -150,8 +231,13 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
   // On a safety decline the API reruns the request on a fallback model it picks by category (Opus and Sonnet 5.5 only)
   const useFallback = modelName === 'claude-opus-5-5' || modelName === 'claude-sonnet-5-5';
   console.log(`[Main] Calling Claude API (${modelName})`);
+  const send = beginSend(requestId);
+  if (send.signal?.aborted) {
+    send.end();
+    return { success: false, cancelled: true, error: CANCELLED_MESSAGE };
+  }
 
-  return withAiEgress(AI_HOSTS.claude, () => new Promise<{ success: boolean; text?: string; error?: string }>((resolve) => {
+  return withAiEgress(AI_HOSTS.claude, () => new Promise<ChatSendResult>((resolve) => {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'x-api-key': token,
@@ -164,6 +250,11 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
       headers
     });
     const stopTimer = abortAfterTimeout(request, () => resolve({ success: false, error: timeoutMessage('Anthropic API') }));
+    send.signal?.addEventListener('abort', () => {
+      stopTimer();
+      request.abort();
+      resolve({ success: false, cancelled: true, error: CANCELLED_MESSAGE });
+    }, { once: true });
 
     request.on('response', (response) => {
       let data = '';
@@ -205,10 +296,10 @@ export async function fetchClaudeSemanticSuggest(prompt: string, apiKey?: string
       ...(useFallback ? { fallbacks: 'default' } : {})
     }));
     request.end();
-  }));
+  }).finally(send.end));
 }
 
-export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string, model?: string) {
+export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string, model?: string, requestId?: string): Promise<ChatSendResult> {
   const token = apiKey || await loadStoredGeminiApiKey() || process.env.GEMINI_API_KEY;
   if (!token) {
     throw new Error('Gemini API key is not set. Please provide it in settings or GEMINI_API_KEY environment variable.');
@@ -224,12 +315,18 @@ export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string
   }
   const modelName = model;
   console.log(`[Main] Calling Gemini API (${modelName})`);
+  const send = beginSend(requestId);
+  if (send.signal?.aborted) {
+    send.end();
+    return { success: false, cancelled: true, error: CANCELLED_MESSAGE };
+  }
   try {
     const ai = geminiClient(token);
     // Use proper request format: an array of content objects with role and text parts
     const response = await withAiEgress(AI_HOSTS.gemini, () => ai.models.generateContent({
       model: modelName,
-      contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      config: send.signal ? { abortSignal: send.signal } : undefined
     }));
     // Extract text from response, handling possible missing fields
     const text = (response && (response.text || (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts && response.candidates[0].content.parts[0] && response.candidates[0].content.parts[0].text))) || '';
@@ -239,11 +336,14 @@ export async function fetchGeminiSemanticSuggest(prompt: string, apiKey?: string
     }
     return { success: true, text };
   } catch (error: any) {
+    if (send.signal?.aborted) return { success: false, cancelled: true, error: CANCELLED_MESSAGE };
     return { success: false, error: error.message || 'Gemini request failed.' };
+  } finally {
+    send.end();
   }
 }
 
-export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string, model?: string) {
+export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string, model?: string, requestId?: string): Promise<ChatSendResult> {
   const token = apiKey || await loadStoredApiKey('openai') || process.env.OPENAI_API_KEY;
   if (!token) {
     throw new Error('OpenAI API key is not set. Please provide it in settings or OPENAI_API_KEY environment variable.');
@@ -251,8 +351,13 @@ export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string
 
   const modelName = model || 'gpt-4o-mini';
   console.log(`[Main] Calling OpenAI API (${modelName})`);
+  const send = beginSend(requestId);
+  if (send.signal?.aborted) {
+    send.end();
+    return { success: false, cancelled: true, error: CANCELLED_MESSAGE };
+  }
 
-  return withAiEgress(AI_HOSTS.openai, () => new Promise<{ success: boolean; text?: string; error?: string }>((resolve) => {
+  return withAiEgress(AI_HOSTS.openai, () => new Promise<ChatSendResult>((resolve) => {
     const request = net.request({
       method: 'POST',
       url: 'https://api.openai.com/v1/chat/completions',
@@ -262,6 +367,11 @@ export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string
       }
     });
     const stopTimer = abortAfterTimeout(request, () => resolve({ success: false, error: timeoutMessage('OpenAI API') }));
+    send.signal?.addEventListener('abort', () => {
+      stopTimer();
+      request.abort();
+      resolve({ success: false, cancelled: true, error: CANCELLED_MESSAGE });
+    }, { once: true });
 
     request.on('response', (response) => {
       let data = '';
@@ -292,7 +402,7 @@ export async function fetchOpenAISemanticSuggest(prompt: string, apiKey?: string
       messages: [{ role: 'user', content: prompt }]
     }));
     request.end();
-  }));
+  }).finally(send.end));
 }
 
 // ---------------------------------------------------------------------------

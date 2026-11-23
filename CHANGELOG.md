@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.79] - 2026-11-23
+
+### Added
+- A cloud chat send can be stopped: each send carries a request id, and the main process aborts it on `app:cancelAiSend`; Gemini uses the SDK abort signal, OpenAI and Claude abort their request
+- Model lists for OpenAI and Claude can be fetched with the saved key (`app:listOpenAIModels`, `app:listClaudeModels`); only the list parsing is covered by tests, the live APIs are not
+
+### Changed
+- API keys are read and written with the asynchronous safeStorage methods; a key stored in the old synchronous format is read once and stored again in the new format
+- The settings file is written to a temporary file and renamed over the old one, and saves run one after another
+
+### Fixed
+- On Windows a relative import whose drive letter differed in case could load the main-process IPC module twice, so the app could hang on the splash screen; relative imports now resolve to one id
+
 ## [0.3.78] - 2026-11-23
 
 ### Changed

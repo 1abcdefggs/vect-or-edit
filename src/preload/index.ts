@@ -69,7 +69,10 @@ const engineAPI: EngineAPI = {
   removeUserFont: (file: string) => ipcRenderer.invoke('fonts:remove', file),
   getCursorBaseSize: () => ipcRenderer.invoke('app:getCursorBaseSize') as Promise<number>,
   listGeminiModels: (apiKey?: string) => ipcRenderer.invoke('app:listGeminiModels', apiKey),
+  listOpenAIModels: (apiKey?: string) => ipcRenderer.invoke('app:listOpenAIModels', apiKey),
+  listClaudeModels: (apiKey?: string) => ipcRenderer.invoke('app:listClaudeModels', apiKey),
   openaiSemanticSuggest: (payload) => ipcRenderer.invoke('app:openaiSemanticSuggest', payload),
+  cancelAiSend: (requestId) => ipcRenderer.invoke('app:cancelAiSend', requestId),
   llmEmbedding: (payload) => ipcRenderer.invoke('app:llmEmbedding', payload),
   importKnowledgeBase: (customPaths?: string[]) => ipcRenderer.invoke('engine:importKnowledgeBase', customPaths),
   // Drag and drop: Electron no longer exposes File.path, so the real path comes from webUtils

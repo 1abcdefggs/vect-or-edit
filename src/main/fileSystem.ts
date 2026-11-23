@@ -396,15 +396,27 @@ export async function loadSettings() {
   }
 }
 
-export async function saveSettings(settings: any) {
-  try {
-    const ws = await getDefaultWorkspace(true);
-    if (!ws.success) return { success: false, error: ws.error };
-    const settingsPath = path.join(ws.path as string, '.settings.json');
-    await fsPromises.writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf-8');
-    return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err.message };
-  }
+// Saves run one after another, and each writes a temporary file and renames it over .settings.json.
+// Two saves in flight (the settings store, the first-run setup, closing the page) can no longer interleave
+// their bytes, and a crash in the middle leaves the old file whole.
+let settingsSaveChain: Promise<unknown> = Promise.resolve();
+
+export function saveSettings(settings: any): Promise<{ success: boolean; error?: string }> {
+  const run = async (): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const ws = await getDefaultWorkspace(true);
+      if (!ws.success) return { success: false, error: ws.error };
+      const settingsPath = path.join(ws.path as string, '.settings.json');
+      const tempPath = `${settingsPath}.tmp`;
+      await fsPromises.writeFile(tempPath, JSON.stringify(settings, null, 2), 'utf-8');
+      await fsPromises.rename(tempPath, settingsPath);
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+  const result = settingsSaveChain.then(run, run);
+  settingsSaveChain = result;
+  return result;
 }
 

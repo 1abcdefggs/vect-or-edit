@@ -35,7 +35,8 @@ import {
 import { handleSearchVector, handleValidateDocument } from './ipcHandlers';
 import { truncateAndNormalize } from '../shared/embeddingSpace';
 import { addUserFonts, listUserFonts, readUserFont, removeUserFont } from './userFonts';
-import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
+import { cancelSend } from './ai/sendCancel';
+import { fetchClaudeSemanticSuggest, fetchGeminiSemanticSuggest, fetchOpenAISemanticSuggest, fetchLLMEmbedding, listGeminiModels, listOpenAIModels, listClaudeModels, isApiKeyProvider, saveApiKey, hasStoredApiKey, clearApiKey } from './ai/aiServices';
 import { createWindow, getMainWindow, saveColorMode } from './windowManager';
 import { saveFile, openFile, openWorkspace, getDefaultWorkspace, chooseDefaultWorkspace, renameDefaultWorkspace, resetDefaultWorkspace, snapshotOpeningWorkspace, restoreDefaultWorkspace, loadSettings, saveSettings } from './fileSystem';
 import { getCursorBaseSize } from './cursorSize';
@@ -153,8 +154,10 @@ if (!gotTheLock) {
 
     // --- AI Suggest IPC ---
     // Keys are never taken from the renderer: every request reads the encrypted key stored in the main process.
-    handleTrusted('app:claudeSemanticSuggest', (_event, payload) => fetchClaudeSemanticSuggest(payload.prompt, undefined, payload.model));
-    handleTrusted('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, undefined, payload.model));
+    // A send can carry a requestId, so the chat window can stop it with app:cancelAiSend while it waits for its reply
+    handleTrusted('app:claudeSemanticSuggest', (_event, payload) => fetchClaudeSemanticSuggest(payload.prompt, undefined, payload.model, payload.requestId));
+    handleTrusted('app:geminiSemanticSuggest', (_event, payload) => fetchGeminiSemanticSuggest(payload.prompt, undefined, payload.model, payload.requestId));
+    handleTrusted('app:cancelAiSend', (_event, requestId: unknown) => cancelSend(requestId));
     handleTrusted('app:saveApiKey', (_event, provider: unknown, apiKey: string) =>
       isApiKeyProvider(provider) ? saveApiKey(provider, apiKey) : { success: false, error: 'Unknown provider.' });
     handleTrusted('app:hasApiKey', (_event, provider: unknown) => isApiKeyProvider(provider) ? hasStoredApiKey(provider) : false);
@@ -166,7 +169,9 @@ if (!gotTheLock) {
     handleTrusted('fonts:remove', (_event, file: unknown) => removeUserFont(file));
     handleTrusted('app:getCursorBaseSize', () => getCursorBaseSize());
     handleTrusted('app:listGeminiModels', (_event, apiKey?: string) => listGeminiModels(apiKey));
-    handleTrusted('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, undefined, payload.model));
+    handleTrusted('app:listOpenAIModels', (_event, apiKey?: string) => listOpenAIModels(apiKey));
+    handleTrusted('app:listClaudeModels', (_event, apiKey?: string) => listClaudeModels(apiKey));
+    handleTrusted('app:openaiSemanticSuggest', (_event, payload) => fetchOpenAISemanticSuggest(payload.prompt, undefined, payload.model, payload.requestId));
     // LLM-as-Embedding: converts text → pseudo-vector via LLM response
     handleTrusted('app:llmEmbedding', (_event, payload) =>
       fetchLLMEmbedding(payload.text, payload.provider, payload.model, undefined, payload.dimensions)
