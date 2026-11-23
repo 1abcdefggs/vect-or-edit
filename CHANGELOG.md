@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.93] - 2026-11-23
+
+### Changed
+- Editor Options: only the top count line names its numbers ("Options 293  Changed 7"); each heading shows the bare numbers, right aligned in the same two columns
+
 ## [0.3.92] - 2026-11-23
 
 ### Added

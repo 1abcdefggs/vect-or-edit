@@ -71,6 +71,24 @@ function refreshSnapshot() {
   state.snapshot = snapshotOptions(getEditor());
 }
 
+/**
+ * The two count cells: the total first, then the changed ones, each a fixed-width cell whose last digits line up.
+ * Only the top line names them (withLabels); the group headings show the bare numbers under the same columns.
+ * "shown / all" appears only while a filter hides some options (otherwise both numbers are the same).
+ */
+function countCells(shown, total, changed, withLabels = false) {
+  const cell = (cls, label, value) => {
+    const node = el('span', `mo-count-cell ${cls}`);
+    if (withLabels) node.append(el('span', 'mo-count-label', label));
+    node.append(el('span', 'mo-count-num', value));
+    return node;
+  };
+  return [
+    cell('mo-count-items', t('monaco_label_items'), shown === total ? String(total) : `${shown} / ${total}`),
+    changed ? cell('mo-count-changed', t('monaco_label_changed'), String(changed)) : el('span', 'mo-count-cell mo-count-changed')
+  ];
+}
+
 function updateSummary() {
   const total = state.controls.length;
   let shown = 0;
@@ -85,23 +103,10 @@ function updateSummary() {
       if (!state.rows.get(c.path)?.element.hidden) groupShown++;
       if (c.path in state.overrides) groupChanged++;
     }
-    // Name first, then the number, each in a fixed right-aligned cell, so every heading lines up in two columns.
-    // The "shown / all" form appears only while a filter hides some options (otherwise both numbers are the same)
-    const total = controls.length;
-    const items = groupShown === total
-      ? t('monaco_group_items', { shown: groupShown })
-      : t('monaco_group_items_filtered', { shown: groupShown, total });
-    countEl.replaceChildren(
-      el('span', 'mo-group-changed', groupChanged ? t('monaco_group_changed', { changed: groupChanged }) : ''),
-      el('span', 'mo-group-items', items)
-    );
+    countEl.replaceChildren(...countCells(groupShown, controls.length, groupChanged));
   }
   const count = document.getElementById('monacoOptionsCount');
-  if (count) {
-    count.textContent = !shown ? t('monaco_opts_empty')
-      : shown === total ? t('monaco_opts_count', { total, changed })
-      : t('monaco_opts_count_filtered', { shown, total, changed });
-  }
+  if (count) count.replaceChildren(...(shown ? countCells(shown, total, changed, true) : [t('monaco_opts_empty')]));
   const resetAll = document.getElementById('btnMonacoOptionsResetAll');
   if (resetAll) resetAll.hidden = !changed;
   // The filter needs something changed to show; its tooltip says why it is off (the count line above reads "changed 0")
