@@ -263,6 +263,11 @@ export function initAiControls() {
     });
   }
 
+  // The change button beside the embedding model in use: the model list of the settings page
+  document.getElementById('btnSidebarChangeEmbeddingModel')?.addEventListener('click', () => {
+    openAiSettingsTab('tabAiSearch', 'heading_embedding_models');
+  });
+
   // --- LLM Chat & Rewrite Dock Controller ---
   initLlmChatDock();
 }

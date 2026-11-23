@@ -80,6 +80,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'sbr:panel-toggle': true,
     'sbr:quick-settings': true,
     'sbr:embedding-toggle': true,
+    'sbr:embedding-model-change': true,
     'sbr:import-dictionary': true,
     'sbr:add-slot': true,
     'sbr:rail': true,
@@ -456,6 +457,12 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     id: 'sb_embedding_toggle',
     category: 'sidebar',
     visibilityKey: 'sbr:embedding-toggle',
+    controlType: 'none'
+  },
+  {
+    id: 'sb_embedding_model_change',
+    category: 'sidebar',
+    visibilityKey: 'sbr:embedding-model-change',
     controlType: 'none'
   },
   {

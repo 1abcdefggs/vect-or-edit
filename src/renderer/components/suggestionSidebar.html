@@ -58,9 +58,12 @@
     </div>
 
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
-      <!-- Embedding model in use: Guidelines and Knowledge search with it, so it sits above Collection. Read only: change it in settings -->
+      <!-- Embedding model in use: Guidelines and Knowledge search with it, so it sits above Collection. The button opens the model list of the settings page -->
       <div class="sidebar-model-info">
-        <p class="sidebar-module-status"><span data-i18n="setting_knowledge_model">Embedding model in use</span>: <span id="sidebarEmbeddingModelName"></span></p>
+        <div class="sidebar-model-row">
+          <p class="sidebar-module-status"><span data-i18n="setting_knowledge_model">Embedding model in use</span>: <span id="sidebarEmbeddingModelName"></span></p>
+          <button type="button" id="btnSidebarChangeEmbeddingModel" class="settings-btn" data-ui="sbr:embedding-model-change" data-i18n="btn_sidebar_change_model" data-i18n-title="tip_sidebar_change_embedding_model">Change</button>
+        </div>
         <p id="sidebarEmbeddingModelDims" class="sidebar-module-status"></p>
         <p class="sidebar-module-status" data-i18n="settings_model_dim_desc">Dimensions: the number of values that describe one text. A dictionary can be searched with this model only when it was built in the same embedding space.</p>
       </div>

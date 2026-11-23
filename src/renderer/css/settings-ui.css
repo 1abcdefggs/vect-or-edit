@@ -481,7 +481,7 @@
   .settings-back-label { display: none; }
 }
 .settings-back-btn:hover { background: var(--hover-bg, rgba(255, 255, 255, 0.06)); }
-.settings-back-btn:focus-visible { outline: 2px solid var(--text-main); outline-offset: 2px; }
+.settings-back-btn:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
 
 
 /* Sizes of controls and small parts */
@@ -825,9 +825,25 @@
   border: 1px solid var(--border-color);
   border-radius: 6px;
 }
-.settings-guide-btn[aria-pressed="true"] {
+/* BACK and the guide button are the two page-level actions of the settings page: accent text and frame make them stand out from the tabs */
+.settings-back-btn,
+.settings-guide-btn {
   color: var(--accent-color);
-  border-color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+}
+/* A gap and a thin rule after BACK, so the framed button is not read as one block with the title (gear and name) beside it */
+.settings-back-btn { padding: 7px 10px; margin-inline-end: var(--spacing-md); position: relative; }
+.settings-back-btn::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: calc(var(--spacing-md) / -2 - 0.5px);
+  top: 15%;
+  bottom: 15%;
+  border-inline-start: 1px solid var(--border-color);
+}
+.settings-guide-btn[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
 }
 .settings-guide-btn .material-symbols-outlined { font-size: var(--icon-size); }
 /* .log-panel-btn sets 12px; the guide button takes the tab label size and icon size, like the tabs */

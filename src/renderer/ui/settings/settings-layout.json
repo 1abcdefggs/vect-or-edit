@@ -28,7 +28,7 @@
       "icon": "tune",
       "labelKey": "tab_system",
       "titleKey": "tip_tab_system",
-      "cards": ["settings_group_logs", "vis_group_title", "maint_title", "settings_group_closing"]
+      "cards": ["settings_group_logs", "vis_group_title", "maint_title"]
     }
   ]
 }

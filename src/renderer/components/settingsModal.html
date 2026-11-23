@@ -102,6 +102,13 @@
               <option value="far" data-i18n="tooltip_gap_far">Far</option>
             </select>
           </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_confirm_close" data-label-text="Confirm before closing" data-desc-key="setting_confirm_close_desc" data-desc-text="Ask first when you close something with ×, so a stray click cannot close it. Tabs with unsaved changes are always asked about."></div>
+            <select id="modalConfirmCloseSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_confirm_close">
+              <option value="on" selected data-i18n="opt_confirm_close_on">Ask first (recommended)</option>
+              <option value="off" data-i18n="opt_confirm_close_off">Close at once</option>
+            </select>
+          </div>
         </div>
 
         <div class="settings-section-card">
@@ -286,14 +293,6 @@
             </select>
           </div>
 
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_chat_placement" data-label-text="Chat position" data-desc-key="setting_chat_placement_desc" data-desc-text="Where the AI chat area sits: below the editor, or as a tab of the right sidebar next to Collection. The move button in the chat header changes it too."></div>
-            <select id="modalChatPlacementSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_chat_placement">
-              <option value="below" selected data-i18n="opt_chat_below">Below the editor</option>
-              <option value="sidebar" data-i18n="opt_chat_sidebar">Right sidebar</option>
-            </select>
-          </div>
-
           <!-- The AI chat belongs to the LLM switch above, so it sits inside the same card -->
           <div id="llmConfigCard" class="llm-chat-block">
             <div class="llm-chat-title">
@@ -407,6 +406,14 @@
                 </select>
               </div>
             </div>
+          </div>
+
+          <div data-setting-row>
+            <div data-setting-text data-label-key="setting_chat_placement" data-label-text="Chat position" data-desc-key="setting_chat_placement_desc" data-desc-text="Where the AI chat area sits: below the editor, or as a tab of the right sidebar next to Collection. The move button in the chat header changes it too."></div>
+            <select id="modalChatPlacementSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_chat_placement">
+              <option value="below" selected data-i18n="opt_chat_below">Below the editor</option>
+              <option value="sidebar" data-i18n="opt_chat_sidebar">Right sidebar</option>
+            </select>
           </div>
 
           <!-- The embedding model is a separate setting, in the Sidebar tab: a pointer to it, not a row of this card -->
@@ -929,17 +936,6 @@
           </div>
             </div>
           </details>
-        </div>
-
-        <div class="settings-section-card">
-          <h4 data-card-heading data-icon="close" data-key="settings_group_closing" data-text="Closing"></h4>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="setting_confirm_close" data-label-text="Confirm before closing" data-desc-key="setting_confirm_close_desc" data-desc-text="Ask first when you close something with ×, so a stray click cannot close it. Tabs with unsaved changes are always asked about."></div>
-            <select id="modalConfirmCloseSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_confirm_close">
-              <option value="on" selected data-i18n="opt_confirm_close_on">Ask first (recommended)</option>
-              <option value="off" data-i18n="opt_confirm_close_off">Close at once</option>
-            </select>
-          </div>
         </div>
       </div>
       <!-- Go to the end of the page: one button, down at the top and up at the bottom (settingsFacade.js); it stays in view while the page scrolls -->
