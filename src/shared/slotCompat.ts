@@ -79,3 +79,24 @@ export function decideSlots(slots: SlotFacts[], model: ActiveModel | null, allow
   }
   return { verdicts, queryCutTo: target < model.dimensions ? target : null };
 }
+
+/** What the header of one loaded file says about its version (absent in old dictionaries) */
+export interface SlotVersion {
+  name: string;
+  knowledgeVersion?: string;
+}
+
+/**
+ * Names of the dictionaries that are loaded in two or more different knowledgeVersions (the same name, different
+ * versions). Files without a stated version do not count. Pure; shared with the tests.
+ */
+export function versionConflicts(slots: SlotVersion[]): string[] {
+  const byName = new Map<string, Set<string>>();
+  for (const s of slots) {
+    if (!s.knowledgeVersion) continue;
+    const set = byName.get(s.name) ?? new Set<string>();
+    set.add(s.knowledgeVersion);
+    byName.set(s.name, set);
+  }
+  return [...byName.entries()].filter(([, versions]) => versions.size > 1).map(([name]) => name);
+}

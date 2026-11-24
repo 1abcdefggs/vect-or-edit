@@ -234,12 +234,14 @@ export async function readStrippedKnowledgeItems(targetPath: string): Promise<an
   }
 }
 
-/** The header fields that say which embedding space the vectors are in (absent in old dictionaries) */
-function readSpaceHeader(payload: any): { spaceId?: string; model?: string } {
+/** The header fields that say which embedding space the vectors are in, and which version the file is (absent in old dictionaries) */
+function readSpaceHeader(payload: any): { spaceId?: string; model?: string; knowledgeVersion?: string; generatorVersion?: string } {
   if (!payload || Array.isArray(payload)) return {};
   return {
     ...(typeof payload.spaceId === 'string' ? { spaceId: payload.spaceId } : {}),
-    ...(typeof payload.model === 'string' ? { model: payload.model } : {})
+    ...(typeof payload.model === 'string' ? { model: payload.model } : {}),
+    ...(typeof payload.knowledgeVersion === 'string' ? { knowledgeVersion: payload.knowledgeVersion } : {}),
+    ...(typeof payload.generatorVersion === 'string' ? { generatorVersion: payload.generatorVersion } : {})
   };
 }
 
@@ -251,7 +253,7 @@ function logNormalized(slotName: string, payload: any): any[] {
 }
 
 /** One readable slot; innerMismatch is true when its own items do not all have the same vector length */
-type LoadedSlot = { slot: KnowledgeSlotExt; items: any[]; header: { spaceId?: string; model?: string }; dimension: number; innerMismatch: boolean };
+type LoadedSlot = { slot: KnowledgeSlotExt; items: any[]; header: { spaceId?: string; model?: string; knowledgeVersion?: string; generatorVersion?: string }; dimension: number; innerMismatch: boolean };
 
 /**
  * Decides, per slot, whether its vectors can enter the one combined index of the selected model, and cuts the ones
@@ -269,6 +271,7 @@ function selectSlotsForIndex(loaded: LoadedSlot[]): any[] {
   loaded.forEach((l, i) => {
     const v = decision.verdicts[i];
     l.slot.compat = { ...v.compat, kbModel: l.header.model || l.header.spaceId, kbDimension: l.dimension, ...(_activeModel ? { modelId: _activeModel.id, modelDimension: _activeModel.dimensions } : {}) };
+    l.slot.version = { knowledgeVersion: l.header.knowledgeVersion, generatorVersion: l.header.generatorVersion };
     if (!v.inIndex) {
       console.warn(`[App] ${l.slot.name} left out of the vector index (${v.compat.reason})`);
       return;

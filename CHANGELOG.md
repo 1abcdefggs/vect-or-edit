@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Knowledge slots: each row shows the `knowledgeVersion` its file header states (or "version not stated"); two loaded versions of the same dictionary name are flagged in the row (`versionConflicts` in `src/shared/slotCompat.ts`, labels in `en.json` and `ja.json`)
 - Knowledge slots: the compatibility state of every file is decided in one function (`src/shared/slotCompat.ts`, with a table test and a check that the files in use share one length); a file with no vectors now says so (`no-vectors`) instead of giving a length reason
 - Knowledge slots: the info view of a file shows the model it names, the selected model and its state; a file left out at the moment it is added raises a warning toast with the reason; the HNSW lamp shows how many files are in use and how many are left out; the search error names the file's model and the selected model
 - Embedding registry: every model has an explicit `spaceId` (the model id when it had none), so "same space" no longer depends on a default

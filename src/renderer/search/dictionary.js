@@ -7,6 +7,15 @@ import { setLoadedSlotCount } from './searchUi.js';
 import { getActiveModelId, getEmbeddingModel } from './embeddingModels.js';
 import { showToast } from '../ui/notifications/toastManager.js';
 import { setSettingRowLocked, setDictionaryCount } from '../ui/settings/settingsLocks.js';
+import { versionConflicts } from '../../shared/slotCompat';
+
+/** The version line of one slot row; a second loaded version of the same name is said in text, not by colour */
+function slotVersionNote(slot, conflictingNames) {
+  const version = slot.version?.knowledgeVersion;
+  const parts = [version ? t('dictionary_version', { version }) : t('dictionary_version_unknown')];
+  if (conflictingNames.includes(slot.name)) parts.push(t('dictionary_version_conflict'));
+  return parts.join(' · ');
+}
 
 export const allKnowledgeItems = [];
 export const allDictEntries = [];
@@ -353,6 +362,8 @@ export async function updateSemanticStateDisplay() {
             detailLine.textContent += ` · ${compatNote}`;
             detailLine.title = compatNote;
           }
+          const versionNote = slotVersionNote(slot, versionConflicts(slots.map((s) => ({ name: s.name, knowledgeVersion: s.version?.knowledgeVersion }))));
+          detailLine.textContent += ` · ${versionNote}`;
           infoCol.appendChild(infoSpan);
           infoCol.appendChild(detailLine);
 

@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { decideSlots, type SlotFacts } from '../slotCompat';
+﻿import { describe, it, expect } from 'vitest';
+import { decideSlots, versionConflicts, type SlotFacts } from '../slotCompat';
 
 const models = [
   { id: 'm384', spaceId: 'sp-a', matryoshka: false },
@@ -52,5 +52,31 @@ describe('decideSlots', () => {
         r.verdicts.forEach((v) => expect(v.compat.state === 'excluded').toBe(!v.inIndex));
       }
     }
+  });
+});
+
+describe('versionConflicts', () => {
+  it('names a dictionary loaded in two different knowledgeVersions', () => {
+    expect(versionConflicts([
+      { name: 'kb_a', knowledgeVersion: '2.0.0' },
+      { name: 'kb_a', knowledgeVersion: '2.1.0' },
+      { name: 'kb_b', knowledgeVersion: '1.0.0' },
+    ])).toEqual(['kb_a']);
+  });
+
+  it('does not count the same version twice, or files without a stated version', () => {
+    expect(versionConflicts([
+      { name: 'kb_a', knowledgeVersion: '2.0.0' },
+      { name: 'kb_a', knowledgeVersion: '2.0.0' },
+      { name: 'kb_a' },
+      { name: 'kb_a' },
+    ])).toEqual([]);
+  });
+
+  it('keeps different names apart', () => {
+    expect(versionConflicts([
+      { name: 'kb_a', knowledgeVersion: '1.0.0' },
+      { name: 'kb_b', knowledgeVersion: '2.0.0' },
+    ])).toEqual([]);
   });
 });

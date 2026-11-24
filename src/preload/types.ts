@@ -104,6 +104,8 @@ export interface KnowledgeSlot {
   itemCount: number;
   vencPassword?: string;
   compat?: KnowledgeSlotCompat;
+  /** The version the file's header states; absent when the file has none (old dictionaries) */
+  version?: { knowledgeVersion?: string; generatorVersion?: string };
 }
 
 export interface SemanticState {
