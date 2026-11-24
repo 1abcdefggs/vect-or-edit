@@ -20,11 +20,9 @@ function legacySecrets() {
   return ["VECTOR_APP_DEFAULT_SECRET_2026", process.env.VECTOR_APP_SECRET, "default_dev_secret_fallback"].filter(Boolean);
 }
 
-// File header: "VEN2" is the current format (the password goes to Argon2id as it is, the app secret as its secret
-// input); "VENC" is the earlier format (HMAC of the password first). Earlier files keep opening; nothing new is
-// written in the earlier format.
+// File header: "VEN2" is the only format (the password goes to Argon2id as it is, the app secret as its secret input).
+// Files of the earlier "VENC" format are no longer read.
 const MAGIC_CURRENT = "VEN2";
-const MAGIC_EARLIER = "VENC";
 
 /**
  * Derive an AES‑256‑GCM key from the user's password and a random salt.
@@ -36,21 +34,6 @@ async function deriveArgon2Key(userPassword, salt, appSecret) {
     password: userPassword,
     salt,
     secret: appSecret,
-    parallelism: 1,
-    iterations: 3,
-    memorySize: 65536, // 64 MiB
-    hashLength: 32,
-    outputType: "hex",
-  });
-  return Buffer.from(keyHex, "hex");
-}
-
-/** Key of the earlier format (files that start with "VENC"): Argon2id over the HMAC of the password. Decrypt only. */
-async function deriveEarlierKey(userPassword, salt, appSecret) {
-  const blended = crypto.createHmac("sha256", appSecret).update(userPassword).digest("hex");
-  const keyHex = await argon2id({
-    password: blended,
-    salt,
     parallelism: 1,
     iterations: 3,
     memorySize: 65536, // 64 MiB
@@ -84,8 +67,7 @@ export async function encryptKnowledgeBase(jsonData, userPassword) {
 /** Decrypt a ".venc" Buffer back to a JSON object. */
 export async function decryptKnowledgeBase(fileBuffer, userPassword) {
   const magic = fileBuffer.subarray(0, 4).toString("utf8");
-  if (magic !== MAGIC_CURRENT && magic !== MAGIC_EARLIER) throw new Error("Invalid file format.");
-  const derive = magic === MAGIC_CURRENT ? deriveArgon2Key : deriveEarlierKey;
+  if (magic !== MAGIC_CURRENT) throw new Error("Invalid file format.");
 
   const salt = fileBuffer.subarray(4, 20);
   const iv = fileBuffer.subarray(20, 32);
@@ -95,7 +77,7 @@ export async function decryptKnowledgeBase(fileBuffer, userPassword) {
   let lastError = null;
   for (const secret of [sharedAppSecret(), ...legacySecrets()].filter(Boolean)) {
     try {
-      const key = await derive(userPassword, salt, secret);
+      const key = await deriveArgon2Key(userPassword, salt, secret);
       const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
       decipher.setAuthTag(authTag);
       const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
