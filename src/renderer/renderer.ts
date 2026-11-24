@@ -124,7 +124,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       if (status.kbReady) {
-        setLedStatus('kb', true, led('led_kb_indexed', { count: status.count.toLocaleString() }));
+        setLedStatus('kb', true, status.kbSlotsOut ? led('led_kb_indexed_out', { count: status.count.toLocaleString(), used: status.kbSlotsUsed ?? 0, out: status.kbSlotsOut }) : led('led_kb_indexed', { count: status.count.toLocaleString() }));
+      } else if (status.kbFailed) {
+        setLedStatus('kb', 'error', led('led_kb_failed'));
       } else {
         setLedStatus('kb', 'standby', led('led_kb_unloaded'));
       }
@@ -140,7 +142,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       if (status?.kbReady) {
-        setLedStatus('kb', true, led('led_kb_indexed', { count: status.count.toLocaleString() }));
+        setLedStatus('kb', true, status.kbSlotsOut ? led('led_kb_indexed_out', { count: status.count.toLocaleString(), used: status.kbSlotsUsed ?? 0, out: status.kbSlotsOut }) : led('led_kb_indexed', { count: status.count.toLocaleString() }));
+      } else if (status?.kbFailed) {
+        setLedStatus('kb', 'error', led('led_kb_failed'));
       } else {
         setLedStatus('kb', 'standby', led('led_kb_unloaded'));
       }

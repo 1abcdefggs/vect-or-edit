@@ -20,16 +20,20 @@ function legacySecrets() {
   return ["VECTOR_APP_DEFAULT_SECRET_2026", process.env.VECTOR_APP_SECRET, "default_dev_secret_fallback"].filter(Boolean);
 }
 
+// File header: "VEN2" is the only format (the password goes to Argon2id as it is, the app secret as its secret input).
+// Files of the earlier "VENC" format are no longer read.
+const MAGIC_CURRENT = "VEN2";
+
 /**
  * Derive an AES‑256‑GCM key from the user's password and a random salt.
- * The app secret is blended via HMAC, so guessing a password also needs the secret.
+ * The app secret enters Argon2id as its secret input, so guessing a password also needs the secret.
  * A shipped build can give the secret up, so the password stays the last defence.
  */
 async function deriveArgon2Key(userPassword, salt, appSecret) {
-  const blended = crypto.createHmac("sha256", appSecret).update(userPassword).digest("hex");
   const keyHex = await argon2id({
-    password: blended,
+    password: userPassword,
     salt,
+    secret: appSecret,
     parallelism: 1,
     iterations: 3,
     memorySize: 65536, // 64 MiB
@@ -56,14 +60,14 @@ export async function encryptKnowledgeBase(jsonData, userPassword) {
   const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
   const authTag = cipher.getAuthTag();
 
-  const magic = Buffer.from("VENC");
+  const magic = Buffer.from(MAGIC_CURRENT);
   return Buffer.concat([magic, salt, iv, authTag, encrypted]);
 }
 
 /** Decrypt a ".venc" Buffer back to a JSON object. */
 export async function decryptKnowledgeBase(fileBuffer, userPassword) {
   const magic = fileBuffer.subarray(0, 4).toString("utf8");
-  if (magic !== "VENC") throw new Error("Invalid file format.");
+  if (magic !== MAGIC_CURRENT) throw new Error("Invalid file format.");
 
   const salt = fileBuffer.subarray(4, 20);
   const iv = fileBuffer.subarray(20, 32);

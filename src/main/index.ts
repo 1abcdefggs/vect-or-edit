@@ -19,8 +19,11 @@ import {
   slotItemsCache,
   getActiveProfile,
   isRustEngineReady,
+  isRustEngineLoadFailed,
+  getSlotUseCounts,
   getRustEngineItemCount,
   loadProfileFile,
+  detectFileKind,
   resolveProfilePathForKb,
   readStrippedKnowledgeItems,
   normalizeKbPayload,
@@ -51,6 +54,9 @@ function sendEngineStatus(fields: { count: number; fileName: string; profileName
   win.webContents.send('engine:status', {
     binReady: isRustBinaryLoaded(),
     kbReady: fields.kbReady ?? isRustEngineReady(),
+    kbFailed: isRustEngineLoadFailed(),
+    kbSlotsUsed: getSlotUseCounts().used,
+    kbSlotsOut: getSlotUseCounts().out,
     count: fields.count,
     fileName: fields.fileName,
     profileName: fields.profileName
@@ -179,7 +185,11 @@ if (!gotTheLock) {
 
     // --- Engine IPC ---
     handleTrusted('engine:searchVector', async (_event, vector: number[], limit = 5) => {
-      if (!isRustEngineReady()) return { success: false, error: 'Knowledge base not ready' };
+      if (!isRustEngineReady()) {
+        // Name the cause when a file was left out for its model: which model made it and which one is selected
+        const cause = knowledgeSlots.map((s: any) => s.compat).find((c: any) => c?.state === 'excluded' && c.reason === 'space-mismatch');
+        return { success: false, error: cause ? `Knowledge base not ready: a file was made with ${cause.kbModel ?? 'another model'}, the selected model is ${cause.modelId ?? 'unknown'}` : 'Knowledge base not ready' };
+      }
       // The index holds shorter vectors than the model makes (same space): cut the query the same way
       const cutTo = getQueryTruncateTo();
       const query = cutTo && vector.length > cutTo ? truncateAndNormalize(vector, cutTo) : vector;
@@ -331,7 +341,7 @@ if (!gotTheLock) {
         const _vault = getVault();
 
         for (const fp of filePathsToProcess) {
-          if (fp.includes('profile') && !fp.endsWith('.venc') && !getActiveProfile()) {
+          if (!getActiveProfile() && (await detectFileKind(fp)) === 'profile') {
             const profile = await loadProfileFile(fp);
             setActiveProfile(profile);
             continue;
@@ -502,10 +512,15 @@ if (!gotTheLock) {
           filePaths = picked.filePaths;
         }
 
+        // An encrypted file needs a password: only Add asks for one. Refuse before the current slots are cleared.
+        if (filePaths.some((p) => p.toLowerCase().endsWith('.venc'))) {
+          return { success: false, encrypted: true, error: mainT('main_error_import_encrypted') };
+        }
+
         clearKnowledgeSlots();
 
         for (const fp of filePaths) {
-          if (fp.includes('profile')) {
+          if ((await detectFileKind(fp)) === 'profile') {
             const profile = await loadProfileFile(fp);
             setActiveProfile(profile);
             continue;
@@ -534,7 +549,6 @@ if (!gotTheLock) {
         for (const items of slotItemsCache.values()) allStripped.push(...items);
 
         sendEngineStatus({
-          kbReady: true,
           count: totalCount,
           fileName: knowledgeSlots.map(s => s.name).join(', '),
           profileName: getActiveProfile()?.domain_name || null
@@ -630,6 +644,9 @@ if (!gotTheLock) {
       return {
         binReady: isRustBinaryLoaded(),
         kbReady: isRustEngineReady(),
+        kbFailed: isRustEngineLoadFailed(),
+        kbSlotsUsed: getSlotUseCounts().used,
+        kbSlotsOut: getSlotUseCounts().out,
         count: getRustEngineItemCount(),
         fileName: knowledgeSlots.map(s => s.name).join(', ') || 'No Knowledge Base',
         profileName: getActiveProfile()?.domain_name || null
