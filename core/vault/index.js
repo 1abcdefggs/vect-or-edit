@@ -22,14 +22,15 @@ function legacySecrets() {
 
 /**
  * Derive an AES‑256‑GCM key from the user's password and a random salt.
- * The app secret is blended via HMAC, so guessing a password also needs the secret.
- * A shipped build can give the secret up, so the password stays the last defence.
+ * The app secret is blended as Argon2 "secret" (pepper), so guessing a password
+ * also needs the secret. A shipped build can give the secret up, so the password
+ * stays the last defence.
  */
 async function deriveArgon2Key(userPassword, salt, appSecret) {
-  const blended = crypto.createHmac("sha256", appSecret).update(userPassword).digest("hex");
   const keyHex = await argon2id({
-    password: blended,
+    password: userPassword,
     salt,
+    secret: Buffer.from(appSecret, "utf8"),
     parallelism: 1,
     iterations: 3,
     memorySize: 65536, // 64 MiB
