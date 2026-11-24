@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Knowledge slots: the compatibility state of every file is decided in one function (`src/shared/slotCompat.ts`, with a table test and a check that the files in use share one length); a file with no vectors now says so (`no-vectors`) instead of giving a length reason
+- Knowledge slots: the info view of a file shows the model it names, the selected model and its state; a file left out at the moment it is added raises a warning toast with the reason; the HNSW lamp shows how many files are in use and how many are left out; the search error names the file's model and the selected model
+- Embedding registry: every model has an explicit `spaceId` (the model id when it had none), so "same space" no longer depends on a default
+
+### Removed
+- 117 unused keys from `en.json` and `ja.json` (no reference in the source, tests, docs, blueprint or tools; the `settings.*` keys, which the settings and Monaco option pages build from names, and keys named in docs or tests were kept)
+
+### Changed
+- Guideline naming: the screen text now says Guideline where it said Goal or Profile for the same file (the toast after loading, the lamp text, the file dialog title, the unload tooltip in Japanese); the unused key `btn_change_profile` is removed. Internal names (`activeGoal`, `profile_id`) stay
+- Vault: new .venc files start with `VEN2` and give the password to Argon2id as it is, with the app secret as Argon2id's secret input, instead of hashing the password with HMAC-SHA256 first (the code scanning alert `js/insufficient-password-hash`). Files that start with `VENC` still open; an older app cannot open a `VEN2` file
+
+### Added
+- Knowledge slots: a file that cannot be read (missing, encrypted without a password, damaged) now shows its own "not in use" note on the slot row instead of nothing
+- Engine status: when the engine refuses to build the index, the HNSW lamp says so ("Index failed") instead of "Unloaded"
+
+### Fixed
+- Knowledge index: one knowledge file whose own entries differ in vector length no longer stops vector search for all files; only that file is left out, with its reason. Without an announced model, a file of another vector length than the first one is left out the same way
+- Knowledge import and Add: a lint profile is now recognised by its content (an object with a rules list, and no entries with vectors), not by the word "profile" in the path; a knowledge file kept in a folder named like that is no longer taken for a profile, and `guideline_*.json` files are recognised; an explicit top-level `kind` ("guideline" or "knowledge") decides first; without it a Guideline is recognised by a top-level `rules` array, so a file with nested rules and no `kind` is still taken for a knowledge file
+- Knowledge import: encrypted (.venc) files chosen in the import dialog are refused with a message to use Add; the current slots are no longer cleared first
+- Knowledge index: when the engine fails to load the combined index, the status now says not ready instead of leaving the previous index answering searches
+- Knowledge import: the status after importing knowledge files follows the engine, so it no longer says ready when every file was left out of the index
+- Knowledge slots: a file that cannot be read on a reload no longer keeps the compatibility note or the text-search items of an earlier load
+
 ## [0.3.95] - 2026-11-24
 
 ### Added

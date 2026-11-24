@@ -43,6 +43,66 @@ describe('combined_knowledge_base.json hand-off file', () => {
     expect(fs.existsSync(tempFile())).toBe(false);
   });
 
+  it('reports not-ready after a load that worked once and then fails', async () => {
+    engine.loadKnowledgeBaseFromString.mockResolvedValueOnce(1);
+    expect(await km.reloadCombinedKnowledgeIndex()).toBe(1);
+    expect(km.isRustEngineReady()).toBe(true);
+    engine.loadKnowledgeBaseFromString.mockRejectedValueOnce(new Error('boom'));
+    expect(await km.reloadCombinedKnowledgeIndex()).toBe(0);
+    expect(km.isRustEngineReady()).toBe(false);
+    expect(km.isRustEngineLoadFailed()).toBe(true);
+    engine.loadKnowledgeBaseFromString.mockResolvedValueOnce(1);
+    await km.reloadCombinedKnowledgeIndex();
+    expect(km.isRustEngineLoadFailed()).toBe(false);
+  });
+
+  it('marks a slot whose file is gone as unreadable and drops its old state', async () => {
+    engine.loadKnowledgeBaseFromString.mockResolvedValue(1);
+    await km.reloadCombinedKnowledgeIndex();
+    const slot = km.knowledgeSlots[0] as any;
+    slot.compat = { state: 'ok' };
+    fs.rmSync(slot.filePath);
+    await km.reloadCombinedKnowledgeIndex();
+    expect(slot.compat).toEqual({ state: 'unreadable', reason: 'missing' });
+    expect(km.slotItemsCache.has(slot.id)).toBe(false);
+  });
+
+  it('marks a file that is not valid JSON as unreadable (format)', async () => {
+    engine.loadKnowledgeBaseFromString.mockResolvedValue(1);
+    const slot = km.knowledgeSlots[0] as any;
+    fs.writeFileSync(slot.filePath, '{ not json');
+    await km.reloadCombinedKnowledgeIndex();
+    expect(slot.compat).toEqual({ state: 'unreadable', reason: 'format' });
+  });
+
+  const addSlot = (id: string, items: unknown[]) => {
+    const file = path.join(userData, id + '.json');
+    fs.writeFileSync(file, JSON.stringify(items));
+    const slot = { id, name: id, filePath: file, itemCount: items.length };
+    km.knowledgeSlots.push(slot);
+    return slot as any;
+  };
+
+  it('leaves out only the slot whose own entries differ in vector length', async () => {
+    let received = '';
+    engine.loadKnowledgeBaseFromString.mockImplementation(async (json: string) => { received = json; return JSON.parse(json).length; });
+    const bad = addSlot('bad', [{ id: 'x', vector: [1, 0] }, { id: 'y', vector: [1, 0, 0] }]);
+    expect(await km.reloadCombinedKnowledgeIndex()).toBe(1);
+    expect(JSON.parse(received).map((it: any) => it.id)).toEqual(['a']);
+    expect(bad.compat).toMatchObject({ state: 'excluded', reason: 'dim-inconsistent' });
+    expect(km.isRustEngineReady()).toBe(true);
+  });
+
+  it('keeps one vector length when the model is not announced: the later slot of another length is left out', async () => {
+    let received = '';
+    engine.loadKnowledgeBaseFromString.mockImplementation(async (json: string) => { received = json; return JSON.parse(json).length; });
+    const longer = addSlot('longer', [{ id: 'z', vector: [1, 0, 0] }]);
+    expect(await km.reloadCombinedKnowledgeIndex()).toBe(1);
+    expect(JSON.parse(received).map((it: any) => it.id)).toEqual(['a']);
+    expect(longer.compat).toMatchObject({ state: 'excluded', reason: 'dim-mismatch-mixed' });
+    expect((km.knowledgeSlots[0] as any).compat).toMatchObject({ state: 'unchecked' });
+  });
+
   it('removeCombinedKbTempFile clears a leftover and tolerates a missing file', async () => {
     fs.writeFileSync(tempFile(), '[]');
     await km.removeCombinedKbTempFile();

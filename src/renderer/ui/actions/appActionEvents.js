@@ -135,7 +135,8 @@ export function bindAppActionEvents() {
         // Show what was just set: open the Knowledge card (search collapses it to make room for results)
         document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
         showToast(t('toast_kb_updated', { count: res.totalCount, slots: res.slots?.length || 0 }), 'success');
-        setLedStatus('kb', true, led('led_kb_indexed', { count: res.totalCount?.toLocaleString() }));
+        // The engine status event sets the lamp; only confirm it when something is indexed
+        if (res.totalCount > 0) setLedStatus('kb', true, led('led_kb_indexed', { count: res.totalCount.toLocaleString() }));
       }
     };
     btnAddSlot.addEventListener('click', handleAddSlot);
@@ -151,7 +152,7 @@ export function bindAppActionEvents() {
     if (added) {
       document.getElementById('knowledgeModuleCard')?.classList.remove('collapsed');
       showToast(t('toast_kb_updated', { count: added.totalCount, slots: added.slots?.length || 0 }), 'success');
-      setLedStatus('kb', true, led('led_kb_indexed', { count: added.totalCount?.toLocaleString() }));
+      if (added.totalCount > 0) setLedStatus('kb', true, led('led_kb_indexed', { count: added.totalCount.toLocaleString() }));
     }
   });
 
@@ -182,7 +183,7 @@ export function bindAppActionEvents() {
     const handleImportPreset = async () => {
       const res = await changeGoalProfile();
       if (res?.success) {
-        const profileName = res.profile?.domain_name || res.fileName || 'Preset';
+        const profileName = res.profile?.domain_name || res.fileName || t('active_guideline_preset_label');
         showToast(t('toast_goal_set', { name: profileName }), 'success');
         setLedStatus('guideline', true, led('led_guideline_loaded', { profile: profileName }));
       }

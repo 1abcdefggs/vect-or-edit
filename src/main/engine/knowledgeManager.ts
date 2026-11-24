@@ -10,7 +10,8 @@ import { app } from 'electron';
 import { getEngine, getVault } from './rustEngine';
 import type { KnowledgeSlot } from '../../preload/types';
 import { REGISTRY } from '../../shared/embeddingCatalog';
-import { decideSpace, truncateAndNormalize } from '../../shared/embeddingSpace';
+import { truncateAndNormalize } from '../../shared/embeddingSpace';
+import { decideSlots } from '../../shared/slotCompat';
 
 export interface KnowledgeSlotExt extends KnowledgeSlot {
   vencPassword?: string;
@@ -21,6 +22,8 @@ export const slotItemsCache: Map<string, any[]> = new Map();
 
 let _activeProfile: any = null;
 let _rustEngineReady = false;
+// True when the engine refused the last load (the files were readable, the index was not built)
+let _rustEngineLoadFailed = false;
 let _rustEngineItemCount = 0;
 
 // The embedding model the renderer has selected. Null until it says so: slots are then loaded as before, unchecked.
@@ -46,6 +49,20 @@ export function setActiveEmbeddingModel(modelId: string, allowTruncation = true)
 
 export function getActiveProfile() {
   return _activeProfile;
+}
+
+/** How many knowledge files are in the vector index and how many are left out or unreadable */
+export function getSlotUseCounts(): { used: number; out: number } {
+  let used = 0;
+  for (const s of knowledgeSlots) {
+    const st = (s as KnowledgeSlotExt).compat?.state;
+    if (st === 'ok' || st === 'approximate' || st === 'unverified' || st === 'unchecked') used++;
+  }
+  return { used, out: knowledgeSlots.length - used };
+}
+
+export function isRustEngineLoadFailed() {
+  return _rustEngineLoadFailed;
 }
 
 export function isRustEngineReady() {
@@ -98,6 +115,26 @@ async function pushProfileToEngine(profilePath: string, data: any): Promise<void
     console.log(`[App] Rust linter profile loaded: ${path.basename(profilePath)}`);
   } catch (err: any) {
     console.warn(`[App] Rust linter did not accept ${path.basename(profilePath)}: ${err?.message || err}`);
+  }
+}
+
+/**
+ * Tells a Guideline file (the lint file; internally still called a profile) from a knowledge file by what is inside, not by the file name or folder: a profile is an
+ * object with a rules list; anything with entries that carry vectors is a knowledge file, also when it has rules
+ * too. Encrypted and unreadable files count as knowledge files (the slot path reports them).
+ * An explicit top-level `kind` ("guideline" or "knowledge") decides first. Without it, a Guideline is recognised by a
+ * top-level `rules` array: a file that keeps its rules nested is classed as a knowledge file (design doc 15.2 #9).
+ */
+export async function detectFileKind(filePath: string): Promise<'profile' | 'knowledge'> {
+  if (filePath.toLowerCase().endsWith('.venc')) return 'knowledge';
+  try {
+    const data = JSON.parse(await fsPromises.readFile(filePath, 'utf-8'));
+    if (data && !Array.isArray(data) && data.kind === 'guideline') return 'profile';
+    if (data && !Array.isArray(data) && data.kind === 'knowledge') return 'knowledge';
+    if (!data || Array.isArray(data) || !Array.isArray(data.rules)) return 'knowledge';
+    return normalizeKbPayload(data).items.length > 0 ? 'knowledge' : 'profile';
+  } catch {
+    return 'knowledge';
   }
 }
 
@@ -213,50 +250,31 @@ function logNormalized(slotName: string, payload: any): any[] {
   return n.items;
 }
 
+/** One readable slot; innerMismatch is true when its own items do not all have the same vector length */
+type LoadedSlot = { slot: KnowledgeSlotExt; items: any[]; header: { spaceId?: string; model?: string }; dimension: number; innerMismatch: boolean };
+
 /**
  * Decides, per slot, whether its vectors can enter the one combined index of the selected model, and cuts the ones
  * that need it. Sets slot.compat for the UI. A slot of another embedding space is left out (its entries still serve
  * the dictionary text search); the others stay in use.
  */
-function selectSlotsForIndex(
-  loaded: { slot: KnowledgeSlotExt; items: any[]; header: { spaceId?: string; model?: string }; dimension: number }[]
-): any[] {
-  _queryTruncateTo = null;
-  const model = _activeModel;
-  if (!model) {
-    // Model not announced yet: the old behaviour, every slot goes in unchecked
-    for (const l of loaded) l.slot.compat = { state: 'unchecked' };
-    return loaded.flatMap((l) => l.items);
-  }
-
-  const decided = loaded.map((l) => ({ l, d: decideSpace({ ...l.header, dimension: l.dimension }, model, undefined, _allowTruncation) }));
-
-  // Slots made for a shorter vector than the model gives (same space): the whole index follows the shortest one
-  const queryCut = decided.filter((x) => x.d.action === 'truncate-query').map((x) => (x.d as { to: number }).to);
-  const keepsModelLength = decided.some((x) => x.d.action === 'use' || x.d.action === 'truncate-kb');
-  const target = !keepsModelLength && queryCut.length > 0 ? Math.min(...queryCut) : model.dimensions;
-  if (target < model.dimensions) _queryTruncateTo = target;
-
+function selectSlotsForIndex(loaded: LoadedSlot[]): any[] {
+  const decision = decideSlots(
+    loaded.map((l) => ({ header: l.header, dimension: l.dimension, innerMismatch: l.innerMismatch })),
+    _activeModel,
+    _allowTruncation
+  );
+  _queryTruncateTo = decision.queryCutTo;
   const items: any[] = [];
-  for (const { l, d } of decided) {
-    if (d.action === 'exclude') {
-      l.slot.compat = { state: 'excluded', reason: d.reason };
-      console.warn(`[App] ${l.slot.name} left out of the vector index (${d.reason})`);
-      continue;
+  loaded.forEach((l, i) => {
+    const v = decision.verdicts[i];
+    l.slot.compat = { ...v.compat, kbModel: l.header.model || l.header.spaceId, kbDimension: l.dimension, ...(_activeModel ? { modelId: _activeModel.id, modelDimension: _activeModel.dimensions } : {}) };
+    if (!v.inIndex) {
+      console.warn(`[App] ${l.slot.name} left out of the vector index (${v.compat.reason})`);
+      return;
     }
-    if (d.action === 'truncate-query' && target === model.dimensions) {
-      // A shorter slot beside slots at the model's length cannot share one index
-      l.slot.compat = { state: 'excluded', reason: 'dim-mismatch-mixed' };
-      continue;
-    }
-    if (l.dimension !== target) {
-      l.slot.compat = { state: 'approximate' };
-      items.push(...l.items.map((it: any) => ({ ...it, vector: truncateAndNormalize(it.vector, target) })));
-    } else {
-      l.slot.compat = l.header.spaceId || l.header.model ? { state: target < model.dimensions ? 'approximate' : 'ok' } : { state: 'unverified' };
-      items.push(...l.items);
-    }
-  }
+    items.push(...(v.cutTo ? l.items.map((it: any) => ({ ...it, vector: truncateAndNormalize(it.vector, v.cutTo as number) })) : l.items));
+  });
   return items;
 }
 
@@ -270,11 +288,15 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
     return 0;
   }
 
+  _rustEngineLoadFailed = false;
   const _vault = getVault();
   // One entry per readable slot; the decision on which of them enter the index comes after all are read
-  const loaded: { slot: KnowledgeSlotExt; items: any[]; header: { spaceId?: string; model?: string }; dimension: number }[] = [];
+  const loaded: LoadedSlot[] = [];
 
   for (const slot of knowledgeSlots) {
+    // A slot that cannot be read this time must not keep the state of an earlier load
+    delete slot.compat;
+    slotItemsCache.delete(slot.id);
     try {
       if (fs.existsSync(slot.filePath)) {
         let payload: any;
@@ -282,10 +304,12 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
         if (slot.filePath.endsWith('.venc')) {
           if (!_vault) {
             console.warn(`[App] Vault not ready, cannot decrypt ${slot.name}`);
+            slot.compat = { state: 'unreadable', reason: 'locked' };
             continue;
           }
           if (!slot.vencPassword) {
             console.warn(`[App] No password stored for encrypted slot ${slot.name}`);
+            slot.compat = { state: 'unreadable', reason: 'locked' };
             continue;
           }
           const rawBuf = await fsPromises.readFile(slot.filePath);
@@ -299,11 +323,16 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
           const { vector, ...rest } = it;
           return rest;
         }));
+        const lengths = new Set(parsed.map((it: any) => (Array.isArray(it.vector) ? it.vector.length : 0)));
         const first = parsed[0]?.vector;
-        loaded.push({ slot, items: parsed, header: readSpaceHeader(payload), dimension: Array.isArray(first) ? first.length : 0 });
+        loaded.push({ slot, items: parsed, header: readSpaceHeader(payload), dimension: Array.isArray(first) ? first.length : 0, innerMismatch: lengths.size > 1 });
+      } else {
+        slot.compat = { state: 'unreadable', reason: 'missing' };
       }
     } catch (e: any) {
       console.warn(`[App] Error reading slot ${slot.id} (${slot.name}):`, e?.message || e);
+      // An encrypted file that fails here is most often a wrong password; any other file has a damaged or foreign format
+      slot.compat = { state: 'unreadable', reason: slot.filePath.endsWith('.venc') ? 'locked' : 'format' };
     }
   }
 
@@ -320,11 +349,16 @@ export async function reloadCombinedKnowledgeIndex(): Promise<number> {
     const count = await engine.loadKnowledgeBaseFromString(JSON.stringify(allItems));
     await engine.buildIndex();
     _rustEngineReady = true;
+    _rustEngineLoadFailed = false;
     _rustEngineItemCount = count;
     console.log(`[App] Successfully rebuilt combined HNSW index across ${knowledgeSlots.length} slot(s) with ${count} total items`);
     return count;
   } catch (err) {
     console.error("[App] Failed to rebuild combined HNSW index:", err);
+    // The engine may still answer from the previous index; say not-ready instead
+    _rustEngineReady = false;
+    _rustEngineLoadFailed = true;
+    _rustEngineItemCount = 0;
     return 0;
   }
 }

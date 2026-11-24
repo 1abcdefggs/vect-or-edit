@@ -5,6 +5,7 @@ import { i18n, t } from '../core/i18n.js';
 import { confirmClose } from '../ui/notifications/closeGuard.js';
 import { setLoadedSlotCount } from './searchUi.js';
 import { getActiveModelId, getEmbeddingModel } from './embeddingModels.js';
+import { showToast } from '../ui/notifications/toastManager.js';
 import { setSettingRowLocked, setDictionaryCount } from '../ui/settings/settingsLocks.js';
 
 export const allKnowledgeItems = [];
@@ -21,8 +22,12 @@ function slotCompatNote(slot) {
   const c = slot?.compat;
   if (!c) return '';
   if (c.state === 'excluded') {
-    const key = c.reason === 'space-mismatch' ? 'slot_compat_space' : c.reason === 'dim-mismatch-mixed' ? 'slot_compat_mixed' : c.reason === 'truncation-off' ? 'slot_compat_trunc_off' : 'slot_compat_dim';
+    const key = c.reason === 'space-mismatch' ? 'slot_compat_space' : c.reason === 'dim-mismatch-mixed' ? 'slot_compat_mixed' : c.reason === 'dim-inconsistent' ? 'slot_compat_inner' : c.reason === 'no-vectors' ? 'slot_compat_empty' : c.reason === 'truncation-off' ? 'slot_compat_trunc_off' : 'slot_compat_dim';
     return slotText(key, 'Left out of vector search');
+  }
+  if (c.state === 'unreadable') {
+    const key = c.reason === 'missing' ? 'slot_unreadable_missing' : c.reason === 'locked' ? 'slot_unreadable_locked' : 'slot_unreadable_format';
+    return slotText(key, 'Cannot be read: not in use');
   }
   if (c.state === 'approximate') return slotText('slot_compat_approx', 'Approximate: vectors are cut');
   if (c.state === 'unverified') return slotText('slot_compat_unverified', 'Embedding model not recorded');
@@ -101,6 +106,29 @@ async function renderSlotInfo(container, slot) {
     table.appendChild(tr);
   });
   container.appendChild(table);
+
+  // Why the file is in or out of the vector search: its model, the selected model, and the state (after the header rows)
+  const c = slot.compat;
+  if (c && (c.kbModel || c.modelId)) {
+    const dim = (m, d) => (m ? `${m}${d ? ` (${d})` : ''}` : '—');
+    const extra = [
+      [slotText('kb_info_file_model', 'Model of this file'), dim(c.kbModel, c.kbDimension)],
+      [slotText('kb_info_selected_model', 'Selected model'), dim(c.modelId, c.modelDimension)],
+      [slotText('kb_info_state', 'State'), slotCompatNote(slot) || slotText('kb_info_state_ok', 'In use')],
+    ];
+    extra.forEach(([label, value]) => {
+      const tr = document.createElement('tr');
+      const th = document.createElement('td');
+      th.style.cssText = 'color: var(--text-muted); padding: 2px 8px 2px 0; white-space: nowrap; vertical-align: top;';
+      th.textContent = label;
+      const td = document.createElement('td');
+      td.style.cssText = 'padding: 2px 0; word-break: break-word;';
+      td.textContent = value;
+      tr.appendChild(th);
+      tr.appendChild(td);
+      table.appendChild(tr);
+    });
+  }
 }
 
 function katakanaToHiragana(src) {
@@ -223,7 +251,8 @@ export async function updateSemanticStateDisplay() {
         profileIconEl.textContent = '';
       }
       if (profileHeaderLabelEl) {
-        profileHeaderLabelEl.textContent = isGuideline ? (t('active_guideline_preset_label')) : 'Preset';
+        // A file with a template but no rules is a Guideline too: one name on screen
+        profileHeaderLabelEl.textContent = t('active_guideline_preset_label');
       }
 
       const btnResetGoal = document.getElementById('btnResetGoal');
@@ -474,6 +503,10 @@ export async function addKnowledgeSlot(customPath) {
       if (res && res.success) {
         if (res.data) setKnowledgeItems(res.data);
         await updateSemanticStateDisplay();
+        // A file that was left out the moment it was added: say so now, with the reason
+        const added = Array.isArray(res.slots) ? res.slots[res.slots.length - 1] : null;
+        const addedNote = added && (added.compat?.state === 'excluded' || added.compat?.state === 'unreadable') ? slotCompatNote(added) : '';
+        if (addedNote) showToast(`${added.name}: ${addedNote}`, 'warning');
         resetVectorSearchResults();
         refreshLinter();
         return res;
@@ -579,6 +612,8 @@ export async function importDictionary(customPaths) {
         refreshLinter();
         return res;
       }
+      // Encrypted files are refused with a reason; say it instead of doing nothing
+      if (res?.encrypted && res.error) showToast(res.error, 'warning');
     } catch (err) {
       console.error("Failed to import dictionary:", err);
     }

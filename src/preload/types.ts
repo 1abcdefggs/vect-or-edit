@@ -66,6 +66,11 @@ export interface TitleBarOverlayOptions {
 export interface EngineStatus {
   binReady: boolean;
   kbReady: boolean;
+  /** The files were read but the engine refused to build the index: vector search is off */
+  kbFailed?: boolean;
+  /** Knowledge files whose vectors are in the index, and those left out or unreadable */
+  kbSlotsUsed?: number;
+  kbSlotsOut?: number;
   count: number;
   fileName?: string;
   profileName?: string;
@@ -82,9 +87,14 @@ export interface SystemLogEntry {
 
 /** How the slot's vectors relate to the selected embedding model (see shared/embeddingSpace.ts) */
 export interface KnowledgeSlotCompat {
-  /** ok: same space; approximate: cut to a shorter length; unverified: old dictionary, same length; unchecked: model not announced yet; excluded: not in the vector index */
-  state: 'ok' | 'approximate' | 'unverified' | 'unchecked' | 'excluded';
-  reason?: 'space-mismatch' | 'dim-mismatch-unknown-space' | 'dim-not-truncatable' | 'dim-mismatch-mixed' | 'truncation-off';
+  /** The details shown on click: the model the file names, its length, and the selected model */
+  kbModel?: string;
+  kbDimension?: number;
+  modelId?: string;
+  modelDimension?: number;
+  /** ok: same space; approximate: cut to a shorter length; unverified: old dictionary, same length; unchecked: model not announced yet; excluded: not in the vector index; unreadable: the file could not be read at all */
+  state: 'ok' | 'approximate' | 'unverified' | 'unchecked' | 'excluded' | 'unreadable';
+  reason?: 'space-mismatch' | 'dim-mismatch-unknown-space' | 'dim-not-truncatable' | 'dim-mismatch-mixed' | 'dim-inconsistent' | 'no-vectors' | 'truncation-off' | 'missing' | 'locked' | 'format';
 }
 
 export interface KnowledgeSlot {
