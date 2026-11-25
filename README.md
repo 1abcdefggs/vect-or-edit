@@ -65,6 +65,37 @@
 
 ## What's New
 
+### v0.3.96 (2026-11-25)
+
+- Scrollbar size and active colour can be set in Settings; the default bar is 18px so hidden content is easy to see.
+- A new welcome document (How to use). An untouched welcome tab follows the display language, file name included.
+- The active editor tab takes the editor background and has a frame of the opposite tone.
+- The right panel: the Vector features heading sits in the top row, and the embedding model is chosen from a dropdown of downloaded models.
+- Knowledge slots show the version each file states, name the model it was built with, and say why a file is left out; the HNSW lamp counts the files in use.
+
+### v0.3.95 (2026-11-24)
+
+- The right panel has a Change button on the embedding model in use; it opens the model list in Settings.
+- Settings: clearer BACK and guide buttons, and "Confirm before closing" moved to the Title Bar tab.
+- The API key setup of the AI chat card follows "Use AI chat".
+
+### v0.3.78 – v0.3.94 (2026-11-23)
+
+- AI chat: choose where it sits (below the editor or as a sidebar tab), stop a reply while it is awaited, save a conversation as Markdown, and pick the model from a quick menu.
+- Cloud model lists for OpenAI and Claude are fetched with your key; API keys use the asynchronous safeStorage.
+- Editor Options: show changed options only, a weight for each option, and a rebuilt layout with 16px text.
+- The document language is detected on open, paste and tab switch, and shown in the status bar (for example JA, auto).
+- Settings: a search box at the top, and right-click on a part of the window opens its settings card.
+- Instant tooltips can be switched on or off, with a distance and line length; the zoom hint has 10% step buttons.
+- Log language setting, and a Models tab in the log panel.
+- Themes: Markdown headings reach 4.5:1 contrast in the four themes that fell short; the minimap is on by default; editor colour pairs apply correctly.
+
+### v0.3.75 – v0.3.77 (2026-11-19)
+
+- Settings: line height as four sample cards, a "Using the tabs" guide, a Collection card, and a setting for whether the right panel is open at start.
+- The Gemini model table shows input and output limits, purposes (Video, Music), series headings and a Latest filter.
+- The Japanese text says エンベディング and 切替え everywhere.
+
 ### v0.3.74 (2026-11-18)
 
 - Settings > Document name: build the name of a new document from date, time, sequence number and fixed text, in any order, with an example.
