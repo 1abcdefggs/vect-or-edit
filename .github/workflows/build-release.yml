@@ -27,8 +27,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci
         env:
-          # .npmrc reads this token for the @1abcdefggs scope on GitHub Packages
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # .npmrc reads this token for the @1abcdefggs scope on GitHub Packages.
+          # GITHUB_TOKEN cannot read a package of another repository (403), so a personal token with read:packages is used.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
 
       - name: Build Application Bundle
         run: npm run build
