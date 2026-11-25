@@ -11,6 +11,8 @@ export const STORAGE_KEYS = {
   KEY_TONE: 'vect_key_tone',
   OVERLAY_COLOR: 'vect_overlay_color',
   TOOLTIP_WIDTH: 'vect_tooltip_width',
+  SCROLLBAR_SCALE: 'vect_scrollbar_scale',
+  SCROLLBAR_ACTIVE: 'vect_scrollbar_active',
   TOOLTIP_GAP: 'vect_tooltip_gap',
   TOOLTIP_ENABLED: 'vect_tooltip_enabled',
   FONT_FAMILY: 'editor_fontFamily',

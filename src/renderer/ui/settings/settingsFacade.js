@@ -15,7 +15,7 @@ import { syncSettingsToBackend } from './settingsState.js';
 import { setSettingRowLocked } from './settingsLocks.js';
 import { showToast } from '../notifications/toastManager.js';
 import { notifyEmbeddingModelsChanged } from '../../search/searchLocalAi.js';
-import { getActiveModelId, getDownloadedModelIds, getEmbeddingModel } from '../../search/embeddingModels.js';
+import { EMBEDDING_MODELS, getActiveModelId, getDownloadedModelIds, getEmbeddingModel } from '../../search/embeddingModels.js';
 import { bindEmbeddingModelEvents, renderEmbeddingModelList } from './embeddingModelList.js';
 import { initEmbeddingSourceController } from './embeddingSourceController.js';
 import settingsLayout from './settings-layout.json';
@@ -41,6 +41,7 @@ import { initSettingsHelpPane } from './settingsHelpPane.js';
 import { createGeminiModelPicker, usableGeminiModels, isValidGeminiModelId, rememberGeminiModels } from './geminiModelPicker.js';
 import { initApiKeyInput } from './apiKeyInputBase.js';
 import { getTooltipWidth, setTooltipWidth } from '../tooltips/tooltipWidth.js';
+import { getScrollbarScale, setScrollbarScale, isScrollbarActive, setScrollbarActive } from '../appearance/scrollbarStyle.js';
 import { getTooltipGap, setTooltipGap } from '../tooltips/tooltipGap.js';
 import { isTooltipEnabled, setTooltipEnabled } from '../tooltips/tooltipEnabled.js';
 import { initSettingsSearch } from './settingsSearch.js';
@@ -503,6 +504,16 @@ export function initSettings(updateEditorCb) {
   document.querySelectorAll('#colorModeSwitch [data-mode]').forEach((seg) => seg.addEventListener('click', () => applyColorMode(seg.dataset.mode)));
   refreshOverlayColorControl();
   renderOverlayColorCards();
+  const scrollbarScaleSelect = document.getElementById('modalScrollbarScaleSelect');
+  if (scrollbarScaleSelect) {
+    scrollbarScaleSelect.value = getScrollbarScale();
+    scrollbarScaleSelect.addEventListener('change', () => setScrollbarScale(scrollbarScaleSelect.value));
+  }
+  const scrollbarActiveSelect = document.getElementById('modalScrollbarActiveSelect');
+  if (scrollbarActiveSelect) {
+    scrollbarActiveSelect.value = isScrollbarActive() ? 'on' : 'off';
+    scrollbarActiveSelect.addEventListener('change', () => setScrollbarActive(scrollbarActiveSelect.value === 'on'));
+  }
   const tooltipWidthSelect = document.getElementById('modalTooltipWidthSelect');
   if (tooltipWidthSelect) {
     tooltipWidthSelect.value = getTooltipWidth();
@@ -1219,12 +1230,26 @@ export function initSettings(updateEditorCb) {
     const name = modelId.split('/').pop();
     const nameEl = document.getElementById('knowledgeEmbeddingModelName');
     if (nameEl) nameEl.textContent = name;
-    const sidebarNameEl = document.getElementById('sidebarEmbeddingModelName');
-    if (sidebarNameEl) sidebarNameEl.textContent = name;
+    // Sidebar: a dropdown of the downloaded models; choosing one switches at once, as the Use button does
+    const sidebarSelect = document.getElementById('sidebarEmbeddingModelSelect');
+    if (sidebarSelect) {
+      const downloaded = getDownloadedModelIds();
+      const choices = EMBEDDING_MODELS.filter(m => downloaded.has(m.id) || m.id === modelId);
+      sidebarSelect.replaceChildren(...choices.map(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.id.split('/').pop();
+        return opt;
+      }));
+      sidebarSelect.value = modelId;
+      sidebarSelect.onchange = () => {
+        if (sidebarSelect.value !== getActiveModelId()) useEmbeddingModel(sidebarSelect.value);
+      };
+    }
     const sidebarDimEl = document.getElementById('sidebarEmbeddingModelDims');
     if (sidebarDimEl) {
       const dim = getEmbeddingModel(modelId)?.dim;
-      sidebarDimEl.textContent = dim ? t('settings_model_dim_value', { dim }) : '';
+      sidebarDimEl.textContent = dim ? String(dim) : '';
     }
   };
   renderKnowledgeModelName();

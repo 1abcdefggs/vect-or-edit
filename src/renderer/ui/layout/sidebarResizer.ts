@@ -6,10 +6,32 @@ export function initSidebarResizer(): void {
   const sidebar = document.getElementById('suggestionSidebar');
   if (!resizer || !sidebar) return;
 
-  // Restore saved width
+  // Restore saved width (or the default when none is saved). This runs once at startup, so the startup sweep
+  // folds the pane to the rail width and opens it to the target; returning to the top page does not sweep.
   const parsed = loadLayoutSize(SIDEBAR_PANE.storageKey);
-  if (parsed !== null && isStoredPaneWidthValid(SIDEBAR_PANE, parsed)) {
-    document.documentElement.style.setProperty(SIDEBAR_PANE.cssVar, `${parsed}px`);
+  const targetWidth = parsed !== null && isStoredPaneWidthValid(SIDEBAR_PANE, parsed) ? parsed : SIDEBAR_PANE.defaultWidth;
+  const STARTUP_SWEEP_ENABLED = true;
+  if (!STARTUP_SWEEP_ENABLED) {
+    document.documentElement.style.setProperty(SIDEBAR_PANE.cssVar, `${targetWidth}px`);
+  } else {
+  const root = document.documentElement;
+  const RAIL_WIDTH = 44;
+  sidebar.classList.add('startup-sweep');
+  root.style.setProperty(SIDEBAR_PANE.cssVar, `${RAIL_WIDTH}px`);
+  // Force a style flush so the rail width is the starting value of the transition; without it the browser
+  // sees only the final width and nothing animates
+  void sidebar.offsetWidth;
+  root.style.setProperty(SIDEBAR_PANE.cssVar, `${targetWidth}px`);
+  const endSweep = () => {
+    sidebar.classList.remove('startup-sweep');
+    if ((window as any).monacoEditorInstance) {
+      (window as any).monacoEditorInstance.layout();
+    }
+  };
+  sidebar.addEventListener('transitionend', (e: TransitionEvent) => {
+    if (e.propertyName === 'width') endSweep();
+  }, { once: true });
+  window.setTimeout(endSweep, 1200);
   }
 
   let isDragging = false;

@@ -21,6 +21,7 @@ import enLocale from '../../locales/en.json';
 // The welcome document in every locale, read from the dictionaries (not hardcoded).
 // Only an exact, unedited copy is swapped on a language change: anything the user typed must never be replaced.
 const WELCOME_TEXTS = [enLocale, jaLocale].map(dict => dict.initial_document_content);
+const WELCOME_TITLES = [enLocale, jaLocale].map(dict => dict.initial_document_title);
 
 export let tabs = [];
 export let activeTabId = null;
@@ -257,6 +258,12 @@ if (typeof window !== 'undefined') {
             isSwappingWelcomeText = false;
           }
           tab.isDirty = false;
+          // The file name follows the text, but only while it is still the untouched welcome name
+          const base = String(tab.title).replace(/\.(md|markdown|txt)$/i, '');
+          if (!tab.filePath && WELCOME_TITLES.includes(base)) {
+            tab.title = withFormatExtension(t('initial_document_title'), formatOfName(tab.title));
+            editorEvents.emit('onStatusBarUpdateNeeded', tab.title);
+          }
           editorEvents.emit('onTabRenderNeeded');
         }
       }

@@ -7,16 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.96] - 2026-11-25
+
 ### Added
+- Scrollbars: two settings on the Appearance tab of the settings page, size (3x default, 2x, 1x, 0.5x of 6px) and active colour (accent colour by default, neutral when off); the bar is 18px by default so hidden content is easy to see (`src/renderer/ui/appearance/scrollbarStyle.js`)
 - Knowledge slots: each row shows the `knowledgeVersion` its file header states (or "version not stated"); two loaded versions of the same dictionary name are flagged in the row (`versionConflicts` in `src/shared/slotCompat.ts`, labels in `en.json` and `ja.json`)
 - Knowledge slots: the compatibility state of every file is decided in one function (`src/shared/slotCompat.ts`, with a table test and a check that the files in use share one length); a file with no vectors now says so (`no-vectors`) instead of giving a length reason
 - Knowledge slots: the info view of a file shows the model it names, the selected model and its state; a file left out at the moment it is added raises a warning toast with the reason; the HNSW lamp shows how many files are in use and how many are left out; the search error names the file's model and the selected model
 - Embedding registry: every model has an explicit `spaceId` (the model id when it had none), so "same space" no longer depends on a default
 
 ### Removed
+- The sidebar sentence "A dictionary can be searched only when it was built in the same embedding space as this model" and its key `sidebar_model_dict_desc`
 - 117 unused keys from `en.json` and `ja.json` (no reference in the source, tests, docs, blueprint or tools; the `settings.*` keys, which the settings and Monaco option pages build from names, and keys named in docs or tests were kept)
 
 ### Changed
+- Welcome document: replaced with the new how-to text in English and Japanese; when the language changes, an untouched welcome tab now also changes its file name (it kept the old language before)
+- Active editor tab: it takes the editor background and text colour, with a frame of the opposite tone (light on dark, dark on light) on the top and both sides
+- Right sidebar: the "Vector features" heading sits between the collapse button and the EMBED switch; the embedding model is chosen from a dropdown of downloaded models; the pane sweeps open at startup; the dimensions show the number only
+- Toast close button is 28px with a clearer border
 - Guideline naming: the screen text now says Guideline where it said Goal or Profile for the same file (the toast after loading, the lamp text, the file dialog title, the unload tooltip in Japanese); the unused key `btn_change_profile` is removed. Internal names (`activeGoal`, `profile_id`) stay
 - Vault: new .venc files start with `VEN2` and give the password to Argon2id as it is, with the app secret as Argon2id's secret input, instead of hashing the password with HMAC-SHA256 first (the code scanning alert `js/insufficient-password-hash`). Files that start with `VENC` still open; an older app cannot open a `VEN2` file
 

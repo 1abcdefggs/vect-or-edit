@@ -37,24 +37,24 @@
   color: var(--sel-on-surface);
 }
 
-/* Tabs keep their edge on one side (underline or top rule); the surface and text are the same tokens */
-.settings-tab-btn.active,
-.editor-tab-item.active {
+/* The settings tabs use the selected surface */
+.settings-tab-btn.active {
   background: var(--sel-surface);
   color: var(--sel-on-surface);
 }
 
+/* The active editor tab shares the editor canvas (so it reads as part of it); the contrast edge is the opposite of the theme
+   (light on dark, dark on light): the selected-surface token drawn as a frame on the top and both sides */
 .editor-tab-item.active {
-  border-top-color: var(--sel-edge);
-}
-
-/* The tab's own buttons sit on the selected surface, so they take the on-surface colour (not the text colour, which is the surface) */
-.editor-tab-item.active {
+  background: var(--editor-bg, var(--bg-primary));
+  color: var(--editor-fg, var(--text-main));
+  border-color: var(--sel-surface);
+  border-top: 2px solid var(--sel-surface);
   --tab-btn-bg: transparent;
-  --tab-btn-fg: var(--sel-on-surface);
-  --tab-btn-border: color-mix(in srgb, var(--sel-on-surface) 55%, transparent);
-  --tab-btn-hover-bg: color-mix(in srgb, var(--sel-on-surface) 22%, transparent);
-  --tab-btn-hover-fg: var(--sel-on-surface);
+  --tab-btn-fg: var(--editor-fg, var(--text-main));
+  --tab-btn-border: color-mix(in srgb, var(--editor-fg, var(--text-main)) 55%, transparent);
+  --tab-btn-hover-bg: color-mix(in srgb, var(--editor-fg, var(--text-main)) 22%, transparent);
+  --tab-btn-hover-fg: var(--editor-fg, var(--text-main));
 }
 
 /* The check mark is the edge colour with the accent's text colour on it (the card surface is not inverted) */

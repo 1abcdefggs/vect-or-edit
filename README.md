@@ -18,11 +18,11 @@
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22.12.0-334155?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-1e293b?style=flat)](https://github.com/1abcdefggs/vect-or-edit/pulls)
 <p align="center">
-  <img src="docs/assets/repository-ui-v0356.gif" alt="VectOrEdit v0.3.56 demo: themes, sidebar, log panel and settings" width="720" />
+  <img src="docs/assets/repository-ui-v0396.gif" alt="VectOrEdit v0.3.96 demo: themes, sidebar, log panel and settings" width="720" />
 </p>
 
 <p align="center">
-  Past versions: <a href="docs/assets/repository-ui-v0312.gif">v0.3.14</a> · <a href="docs/assets/repository-ui-v031.gif">v0.3.1</a> · <a href="docs/assets/repository-ui-v020.gif">v0.2.0</a>
+  Past versions: <a href="docs/assets/repository-ui-v0356.gif">v0.3.56</a> · <a href="docs/assets/repository-ui-v0312.gif">v0.3.14</a> · <a href="docs/assets/repository-ui-v031.gif">v0.3.1</a> · <a href="docs/assets/repository-ui-v020.gif">v0.2.0</a>
 </p>
 
 **VectOrEdit** is a standalone, high-performance desktop editor designed for knowledge management, structured document drafting, and real-time semantic validation. It seamlessly integrates a native Rust-powered vector indexing engine (HNSW) with local transformer embeddings, multi-provider AI connectors, and Monaco Editor.

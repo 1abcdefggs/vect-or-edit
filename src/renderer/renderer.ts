@@ -34,6 +34,7 @@ import { settingsStore } from './core/settingsStore';
 import { enhanceSettingsModalVisibilityControls } from './ui/settings/settingsModalRenderer';
 import { initInstantTooltips } from './ui/tooltips/instantTooltip';
 import { applyTooltipWidth } from './ui/tooltips/tooltipWidth.js';
+import { applyScrollbarStyle } from './ui/appearance/scrollbarStyle.js';
 import { initSelectMenus } from './ui/components/selectMenu';
 import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
 import { initDocumentFormatControl } from './editor/ui/documentFormatControl.js';
@@ -76,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initAllLedTooltips();
   initInstantTooltips();
   applyTooltipWidth();
+  applyScrollbarStyle();
   initSelectMenus();
 
   // 0.6. First-run setup opens now and stays usable while the editor loads behind it
