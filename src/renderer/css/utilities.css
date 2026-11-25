@@ -267,19 +267,28 @@ textarea {
   transform: scale(0.92);
 }
 
-/* Modernized Slim Rounded Scrollbars */
+/* Scrollbars: wide enough to see that content is hidden (a thin bar reads as decoration).
+   One size token for every scrollable area; layout.css uses it too. */
+/* Defaults; ui/appearance/scrollbarStyle.js sets them from the settings (scale 3 = 18px, active colour on) */
+:root {
+  --scrollbar-size: 18px;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.3);
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
+  background: var(--scrollbar-thumb);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

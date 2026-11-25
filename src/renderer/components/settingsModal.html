@@ -88,6 +88,22 @@
             </select>
           </div>
           <div data-setting-row>
+            <div data-setting-text data-label-key="scrollbar_scale_label" data-label-text="Scrollbar size" data-desc-key="scrollbar_scale_desc" data-desc-text="Width of the scrollbars. A wide bar shows that content is hidden."></div>
+            <select id="modalScrollbarScaleSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_scrollbar_scale">
+              <option value="3" data-i18n="scrollbar_scale_3">3x (default)</option>
+              <option value="2" data-i18n="scrollbar_scale_2">2x</option>
+              <option value="1" data-i18n="scrollbar_scale_1">1x</option>
+              <option value="0.5" data-i18n="scrollbar_scale_05">0.5x</option>
+            </select>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="scrollbar_active_label" data-label-text="Active scrollbar colour" data-desc-key="scrollbar_active_desc" data-desc-text="Colour the scrollbar thumb with the accent colour, so it stands out. Off uses a neutral grey."></div>
+            <select id="modalScrollbarActiveSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_scrollbar_active">
+              <option value="on" data-i18n="scrollbar_active_on">On (default)</option>
+              <option value="off" data-i18n="scrollbar_active_off">Off</option>
+            </select>
+          </div>
+          <div data-setting-row>
             <div data-setting-text data-label-key="tooltip_on_label" data-label-text="Tooltips" data-desc-key="tooltip_on_desc" data-desc-text="Show the tooltip when you hover over a button, with no delay. Off uses the standard tooltip of the system instead." data-reason-id="tooltipOffReason" data-reason-ui="set:tooltip-off-reason" data-reason-key="tooltip_off_reason" data-reason-text="Not available while Tooltips is off, because the system's standard tooltip is used."></div>
             <select id="modalTooltipEnabledSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_tooltip_on">
               <option value="on" data-i18n="opt_toggle_on">On</option>

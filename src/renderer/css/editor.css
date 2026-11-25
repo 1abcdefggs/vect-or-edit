@@ -1,4 +1,16 @@
+/* Toolbar labels: below 620px of editor width only the icons stay (the labels overlapped the right-hand group) */
+@container editor-section (width < 620px) {
+  .editor-toolbar .style-label,
+  .editor-toolbar .icon-label-text,
+  .editor-toolbar .ai-switch-pill__name,
+  .editor-toolbar .editor-opt-label {
+    display: none;
+  }
+}
+
 .editor-section {
+  container-type: inline-size;
+  container-name: editor-section;
   flex: 1;
   min-width: 320px;
   display: flex;
@@ -162,10 +174,7 @@
   color: var(--text-main);
 }
 
-/* Surface and text come from selection.css; the top rule is the selection edge */
-.editor-tab-item.active {
-  border-top: 2px solid var(--sel-edge);
-}
+/* Surface, text and frame of the active tab are in selection.css */
 
 .editor-tab-item.is-dirty .tab-dirty-dot {
   display: block;

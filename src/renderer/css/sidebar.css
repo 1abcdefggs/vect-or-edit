@@ -47,6 +47,12 @@ body.resizing-sidebar .workspace-resizer {
   }
 }
 
+/* Startup sweep (ui/layout/sidebarResizer.ts): the pane folds to the rail width, then opens to the saved width */
+.suggestion-sidebar.startup-sweep {
+  min-width: 0;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .suggestion-sidebar.collapsed {
   width: 44px !important;
   min-width: 44px !important;
@@ -117,6 +123,32 @@ body.resizing-sidebar .workspace-resizer {
 
 .sidebar-model-row .settings-btn {
   flex: none;
+}
+
+/* Label and value pairs of the embedding model block (model dropdown, dimensions) */
+.sidebar-model-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  font-size: var(--fs-12);
+  color: var(--text-main);
+}
+
+.sidebar-model-field__label {
+  color: var(--text-muted);
+  min-width: 4.5em;
+}
+
+.sidebar-model-row .sidebar-model-field {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+}
+
+.sidebar-model-row .sidebar-model-field select {
+  min-width: 0;
+  flex: 1;
 }
 
 .sidebar-module-status[hidden] {

@@ -12,8 +12,15 @@
         <span id="headerSidebarToggleIcon" class="material-symbols-outlined" style="color: var(--accent-color, #38bdf8);">right_panel_close</span>
       </button>
 
+      <!-- Umbrella term of the model block and Collection: vector features (decided 2026-11-25); sits between the collapse button and the EMBED switch -->
+      <div class="collection-group-header semantic-module-title" style="margin: 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        <span class="material-symbols-outlined collection-group-icon">memory</span>
+        <span class="module-title-separator semantic-module-sep">|</span>
+        <span data-i18n="sidebar_vector_title">Vector features</span>
+      </div>
+
       <!-- Right-Aligned Action Group: [ Embedding Toggle Pill | Gear Icon ] -->
-      <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+      <div style="display: flex; align-items: center; gap: 6px; margin-left: auto; flex-shrink: 0;">
         <!-- Embedding ON/OFF Status Pill (Shared UI/UX with Editor LLM Button) -->
         <button id="btnSidebarEmbeddingModel" class="ai-chip-pill ai-switch-pill" data-ui="sbr:embedding-toggle"
           role="switch" aria-checked="false" data-i18n-title="tip_embed_toggle">
@@ -60,12 +67,24 @@
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
       <!-- Embedding model in use: Guidelines and Knowledge search with it, so it sits above Collection. The button opens the model list of the settings page -->
       <div class="sidebar-model-info">
+        <div class="collection-group-header semantic-module-title">
+          <span class="material-symbols-outlined collection-group-icon">memory</span>
+          <span class="module-title-separator semantic-module-sep">|</span>
+          <span data-i18n="sidebar_embedding_model_title">Embedding model</span>
+        </div>
         <div class="sidebar-model-row">
-          <p class="sidebar-module-status"><span data-i18n="setting_knowledge_model">Embedding model in use</span>: <span id="sidebarEmbeddingModelName"></span></p>
+          <div class="sidebar-model-field">
+            <span class="sidebar-model-field__label" data-i18n="sidebar_model_label">Model</span>
+            <select id="sidebarEmbeddingModelSelect" class="toolbar-select" data-i18n-title="tip_sidebar_change_embedding_model"></select>
+          </div>
           <button type="button" id="btnSidebarChangeEmbeddingModel" class="settings-btn" data-ui="sbr:embedding-model-change" data-i18n="btn_sidebar_change_model" data-i18n-title="tip_sidebar_change_embedding_model">Change</button>
         </div>
-        <p id="sidebarEmbeddingModelDims" class="sidebar-module-status"></p>
-        <p class="sidebar-module-status" data-i18n="settings_model_dim_desc">Dimensions: the number of values that describe one text. A dictionary can be searched with this model only when it was built in the same embedding space.</p>
+        <div class="sidebar-model-field">
+          <span class="sidebar-model-field__label" data-i18n="sidebar_model_dim_label">Dimensions</span>
+          <span id="sidebarEmbeddingModelDims"></span>
+        </div>
+        <p class="sidebar-module-status" data-i18n="sidebar_model_dim_desc">The number of values that describe one text.</p>
+        <p class="sidebar-module-status" data-i18n="sidebar_model_embedding_desc">How embedding works: the input and each dictionary word are placed as coordinates, cosine similarity gives a similarity score, and the candidates are sorted by it.</p>
       </div>
 
       <!-- Collection: the parent of the Guidelines and Knowledge cards (same name as the settings card) -->

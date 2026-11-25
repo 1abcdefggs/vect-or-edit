@@ -117,12 +117,12 @@
 /* Close control: a visible round button so it reads as clickable on the dark toast */
 .toast-close-btn {
   flex: 0 0 auto;
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   margin-left: 4px;
   background: var(--overlay-hover);
-  border: 1px solid var(--overlay-muted);
+  border: 1px solid var(--overlay-fg);
   color: var(--overlay-fg);
   cursor: pointer;
   font-size: var(--fs-16);

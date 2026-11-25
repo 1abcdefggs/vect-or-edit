@@ -154,8 +154,6 @@ body.ai-standby .header-full-border-line {
   border-bottom: var(--border-width) solid var(--border-color);
   background: var(--header-bg, var(--bg-secondary));
   flex-shrink: 0;
-  max-height: 55vh;
-  overflow-y: auto;
 }
 
 .sidebar-header h3 {
@@ -184,8 +182,8 @@ body.ai-standby .header-full-border-line {
 #knowledgeSlotsList::-webkit-scrollbar,
 .inspector-collapsible-section::-webkit-scrollbar,
 .system-log-body::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
 
 .results-list::-webkit-scrollbar-track,
@@ -202,16 +200,8 @@ body.ai-standby .header-full-border-line {
 #knowledgeSlotsList::-webkit-scrollbar-thumb,
 .inspector-collapsible-section::-webkit-scrollbar-thumb,
 .system-log-body::-webkit-scrollbar-thumb {
-  background: rgba(129, 140, 248, 0.35);
-  border-radius: 4px;
-}
-
-.results-list::-webkit-scrollbar-thumb:hover,
-.sidebar-header::-webkit-scrollbar-thumb:hover,
-#knowledgeSlotsList::-webkit-scrollbar-thumb:hover,
-.inspector-collapsible-section::-webkit-scrollbar-thumb:hover,
-.system-log-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(129, 140, 248, 0.6);
+  background: var(--scrollbar-thumb);
+  border-radius: 6px;
 }
 /* Drag handle on the top edge of the log panel and the chat dock (ui/layout/panelResizer.ts) */
 .panel-resizer {
