@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.112] - 2026-11-27
+
+### Fixed
+
+- Regenerated `src/renderer/generated/jump_targets.json`, which `check-jump-targets` reported as stale
+
 ## [0.3.111] - 2026-11-27
 
 ### Fixed
