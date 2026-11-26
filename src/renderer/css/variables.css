@@ -80,6 +80,12 @@
   --select-text: #edf5ff;
   --select-border: rgba(148, 163, 184, 0.3);
 
+  /* Neural glow line (startup loader): track, sweep colours and glow. The same in both modes */
+  --glow-track: rgba(99, 102, 241, 0.12);
+  --glow-sweep-light: #818cf8;
+  --glow-sweep-core: #66f;
+  --glow-shadow: rgba(129, 140, 248, 0.7);
+
   /* Shared Layout Properties */
   --sidebar-width: 360px;
 }

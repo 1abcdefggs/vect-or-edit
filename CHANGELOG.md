@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.101] - 2026-11-26
+
+### Changed
+
+- Startup loader: the version now sits to the right of the app name on the same line, larger (24px), in the shared brand font
+- Startup loader: version uses the accent text colour (`--accent-text`)
+- Neural glow line colours moved to tokens in `variables.css` (`--glow-*`); values unchanged
+
 ## [0.3.100] - 2026-11-26
 
 ### Removed

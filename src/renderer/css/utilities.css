@@ -296,12 +296,12 @@ textarea {
 }
 
 /* Startup loader (scan animation: light sweeps over the letters, then a thin line below)
-   Fonts are set here only: --startup-logo-font / -weight / -size for the VectOrEdit letters, --startup-status-font for the status line.
-   The text fonts are bundled (css/text-fonts.css, font-display: swap) and may not be ready on the first frame, so keep a system fallback at the end. */
+   Fonts come from the shared tokens: --font-brand for the name and the version (same face as the header), --font-ui for the status line.
+   Only the weight and size of the letters are set here. The text fonts are bundled (css/text-fonts.css, font-display: swap) and may not be ready on the first frame, so the tokens keep a system fallback at the end. */
 .app-startup-loader {
-  --startup-logo-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --startup-logo-weight: 600;
   --startup-logo-size: 4rem;
+  --startup-version-size: var(--fs-24);
   --startup-status-font: var(--font-ui);
   position: fixed;
   inset: 0;
@@ -314,21 +314,21 @@ textarea {
   transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 
-/* The logo and the version share one column: the version sits right under the name, aligned to its right edge */
+/* The name and the version share one line: the version sits to the right of the name, on its baseline */
 .startup-logo-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.35em;
   margin-bottom: 0;
 }
 
 .startup-loader-version {
-  align-self: flex-end;
-  margin: -12px 0 12px;
-  font-family: var(--startup-logo-font);
-  font-size: var(--fs-18);
+  font-family: var(--font-brand);
+  font-size: var(--startup-version-size);
   font-weight: 500;
-  color: var(--text-muted, #94a3b8);
+  color: var(--accent-text);
   white-space: nowrap;
   user-select: none;
 }
@@ -346,7 +346,7 @@ textarea {
 
 .startup-logo,
 .startup-logo span {
-  font-family: var(--startup-logo-font);
+  font-family: var(--font-brand);
   font-weight: var(--startup-logo-weight);
 }
 
