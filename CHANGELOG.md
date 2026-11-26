@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.112] - 2026-11-27
+
+### Changed
+
+- README: What's New covers v0.3.97 to v0.3.111; the past-versions link label for `repository-ui-v0312.gif` reads v0.3.12 (was v0.3.14)
+
 ## [0.3.111] - 2026-11-27
 
 ### Fixed
