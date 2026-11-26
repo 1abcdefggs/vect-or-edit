@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.104] - 2026-11-26
+
+### Changed
+- Renamed the settings card "Text tools" to "Editor toolbar" (ja: エディタツールバー) in the settings page and the help text.
+
 ## [0.3.103] - 2026-11-26
 
 ### Changed

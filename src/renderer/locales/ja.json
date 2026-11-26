@@ -1070,7 +1070,7 @@
   "vis_sys_pipeline_meter": "パイプラインの状態 LED",
   "vis_sys_log_console": "ログパネル",
   "vis_sys_quick_settings": "ログパネルの設定ボタン（歯車）",
-  "grp_editor_text": "テキストツール",
+  "grp_editor_text": "エディタツールバー",
   "setting_text_tools_monaco_desc": "エディタの背景とフォントの見た目。行番号、折り返し、ハイライトは Editor view (Monaco) にあります",
   "setting_text_tools_monaco_jump": "Editor view (Monaco) へ移動",
   "grp_editor_display": "エディタ表示 (Monaco)",

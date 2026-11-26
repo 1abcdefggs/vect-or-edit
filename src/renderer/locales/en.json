@@ -953,7 +953,7 @@
   "vis_sys_pipeline_meter": "Pipeline status LEDs",
   "vis_sys_log_console": "Log panel",
   "vis_sys_quick_settings": "System settings gear",
-  "grp_editor_text": "Text tools",
+  "grp_editor_text": "Editor toolbar",
   "grp_editor_display": "Editor view (Monaco)",
   "setting_text_tools_monaco_desc": "Background and font of the editor. Line numbers, wrapping and highlights are in Editor view (Monaco).",
   "setting_text_tools_monaco_jump": "Go to Editor view (Monaco)",
