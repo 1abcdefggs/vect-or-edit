@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.109] - 2026-11-27
+
+### Fixed
+
+- The right-click menu test no longer strips tags with a regular expression (CodeQL "incomplete multi-character sanitization"; test code only, no effect on the app)
+
 ## [0.3.108] - 2026-11-27
 
 ### Changed

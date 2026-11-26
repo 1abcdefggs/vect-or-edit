@@ -79,7 +79,7 @@ const labelOf = (el: Stub): string => {
     (m) => !/material-symbols|external-action-icon/.test(m[1])
   );
   const plain = spans.map((m) => m[2]).find((s) => s.trim());
-  return plain ?? el.innerHTML.replace(/<[^>]*>/g, '').trim();
+  return plain ?? el.innerHTML.trim();
 };
 
 /** The menu as a list: 'sep' for a line, a string for one entry, an array for a row. */
