@@ -588,6 +588,7 @@
   "sidebar_model_dim_label": "Dimensions",
   "sidebar_model_dim_desc": "The number of values that describe one text.",
   "sidebar_model_embedding_desc": "How embedding works: the input and each dictionary word are placed as coordinates, cosine similarity gives a similarity score, and the candidates are sorted by it.",
+  "sidebar_how_title": "How it works",
   "embedding_card_desc": "Used for the editor's specialized terminology dictionary, HNSW vector search, and real-time intelligence. Writing itself works without a model or a dictionary.",
   "heading_llm_catalog": "API key setup",
   "llm_card_desc": "Used for the AI chat and right-click rewriting. Keys are encrypted by the operating system (Electron safeStorage) and stored only on this device. A copied file cannot be read on another PC or by another user, but other apps run by the same user on this PC may be able to read it.",

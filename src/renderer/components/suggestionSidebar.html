@@ -63,14 +63,24 @@
     </div>
 
     <div class="semantic-control-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
-      <!-- What Vector features do, under the title; a thin rule separates it from the model block -->
-      <p class="sidebar-module-status" data-i18n="sidebar_model_embedding_desc">How embedding works: the input and each dictionary word are placed as coordinates, cosine similarity gives a similarity score, and the candidates are sorted by it.</p>
+      <!-- What Vector features do, under the title: a small heading row with its own minus; a thin rule separates it from the model block -->
+      <section class="sidebar-fold">
+        <div class="sidebar-fold__head">
+          <span class="sidebar-fold__title" data-i18n="sidebar_how_title">How it works</span>
+          <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="true"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
+        </div>
+        <div class="sidebar-fold__body">
+          <p class="sidebar-module-status" data-i18n="sidebar_model_embedding_desc">How embedding works: the input and each dictionary word are placed as coordinates, cosine similarity gives a similarity score, and the candidates are sorted by it.</p>
+        </div>
+      </section>
       <hr class="sidebar-rule">
       <!-- Embedding model in use: Guidelines and Knowledge search with it, so it sits above Collection. The button opens the model list of the settings page -->
-      <div class="sidebar-model-info">
-        <div class="collection-group-header semantic-module-title">
+      <div class="sidebar-model-info sidebar-fold">
+        <div class="collection-group-header semantic-module-title sidebar-fold__head">
           <span data-i18n="sidebar_embedding_model_title">Embedding model</span>
+          <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="true"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
         </div>
+        <div class="sidebar-fold__body">
         <div class="sidebar-model-row">
           <div class="sidebar-model-field">
             <span class="sidebar-model-field__label sidebar-model-field__label--item" data-i18n="sidebar_model_label">Model</span>
@@ -83,17 +93,19 @@
           <span id="sidebarEmbeddingModelDims"></span>
         </div>
         <p class="sidebar-module-status" data-i18n="sidebar_model_dim_desc">The number of values that describe one text.</p>
+        </div>
       </div>
       <hr class="sidebar-rule">
 
       <!-- Collection: the parent of the Guidelines and Knowledge cards (same name as the settings card) -->
-      <section class="collection-group" data-ui="sbr:collection" aria-labelledby="collectionGroupTitle">
-        <div class="collection-group-header semantic-module-title">
+      <section class="collection-group sidebar-fold" data-ui="sbr:collection" aria-labelledby="collectionGroupTitle">
+        <div class="collection-group-header semantic-module-title sidebar-fold__head">
           <span class="material-symbols-outlined collection-group-icon">format_list_bulleted</span>
           <span class="module-title-separator semantic-module-sep">|</span>
           <span id="collectionGroupTitle" data-i18n="sidebar_overview_title">Collection</span>
+          <button type="button" class="semantic-module-toggle" data-i18n-title="tip_module_toggle" data-i18n-aria="tip_module_toggle" aria-expanded="true"><span class="material-symbols-outlined semantic-module-toggle-open" data-svg-icon="minus" aria-hidden="true"></span><span class="material-symbols-outlined semantic-module-toggle-closed" data-svg-icon="unfold" aria-hidden="true"></span></button>
         </div>
-        <div class="collection-group-body">
+        <div class="collection-group-body sidebar-fold__body">
       <!-- 1. Guidelines & Presets Section (Active) (card rules: module-cards.css) -->
       <div id="guidelineModuleCard" data-ui="sbr:guideline-card" class="profile-control-card semantic-module-card has-body">
         <div class="semantic-module-header" data-i18n-title="tip_section_guideline">

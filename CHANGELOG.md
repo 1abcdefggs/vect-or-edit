@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.108] - 2026-11-27
+
+### Changed
+
+- Editor right-click: with no selection, the word under the pointer is selected first, so Copy, Cut and Google act on it and Cut deletes it (`contextMenuText.js`)
+- Right panel: "How it works" (the embedding description), Embedding model and Collection each have a minus at the right of their heading to fold them; the three headings share the same side padding
+- Bottom bar: the log gear is the last item and sits under the right panel gear
+- Editor toolbar: the tone, font and size selects below 570px are hidden even though their wrappers carry an inline display
+- `docs/pointer_rules.csv`: rows for a word (monaco, word, left and right)
+
+### Added
+
+- Tests for the right-click menu structure, the Google search setting and the word right-click
+
+### Fixed
+
+- Windows caption buttons are given the start colours again before the window is shown (attempt to stop a white flash in dark mode; not verified in the app)
+
 ## [0.3.107] - 2026-11-26
 
 ### Added

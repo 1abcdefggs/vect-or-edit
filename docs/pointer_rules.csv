@@ -5,6 +5,8 @@ monaco,selection,left,place_caret_clear_selection,place_caret_clear_selection,ma
 monaco,selection,right,edit_menu_keep_selection,app_menu_selection_kept,match,
 monaco,blank,left,place_caret,place_caret,match,
 monaco,blank,right,app_menu_copy_all_paste_select_all,app_menu_copy_all_paste_select_all,match,Owner decision 20261126: blank space in the editor keeps the app menu (copy all, paste, select all); accepted standard
+monaco,word,left,place_caret,place_caret_and_selection_hint,match,
+monaco,word,right,select_word_then_edit_menu,select_word_then_app_menu,match,Owner decision 20261127: with no selection the word under the pointer is selected first so Copy and Cut and Google act on it
 tab,control,left,run,switch_tab,match,
 tab,control,right,part_menu,tab_menu,match,
 tab,blank,left,clear_focus,clear_focus,match,

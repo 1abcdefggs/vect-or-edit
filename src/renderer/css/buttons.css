@@ -672,6 +672,7 @@ button.btn-phi {
 @container editor-toolbar (max-width: 569px) {
   .editor-toolbar .font-control-integrated-group > select,
   .editor-toolbar .font-control-integrated-group > [data-ui^="edt:"] {
-    display: none;
+    /* !important: the font and size wrappers carry an inline display */
+    display: none !important;
   }
 }

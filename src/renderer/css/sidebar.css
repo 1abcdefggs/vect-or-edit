@@ -108,6 +108,39 @@ body.resizing-sidebar .workspace-resizer {
   line-height: 1.5;
 }
 
+/* A flat section of the right panel with a minus at the right end of its heading (same toggle as the module cards; app/appActionEvents.js) */
+.sidebar-fold__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* The same 2px side padding on every heading, so the minus buttons end on one line (.collection-group-header has it, the plain heading did not) */
+.sidebar-fold > .sidebar-fold__head {
+  padding: 0 2px;
+}
+
+.sidebar-fold__title {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.sidebar-fold.collapsed > .sidebar-fold__body {
+  display: none;
+}
+
+.sidebar-fold .semantic-module-toggle-closed,
+.sidebar-fold.collapsed .semantic-module-toggle-open {
+  display: none;
+}
+
+.sidebar-fold.collapsed .semantic-module-toggle-closed {
+  display: inline-flex;
+}
+
 /* Thin rule between the blocks of the sidebar (description, model, Collection) */
 .sidebar-rule {
   width: 100%;

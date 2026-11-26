@@ -510,6 +510,14 @@
   flex-shrink: 0;
 }
 
+/* The log gear is the last item and sits under the right panel's gear (owner 20261127).
+   Distance of the panel gear from the window edge: workspace padding 12px + panel border 1px + --sidebar-inset;
+   the bar already has 10px of padding, so the gear takes the rest as margin. */
+#nativeBottomBar #btnSystemQuickSettings {
+  order: 99;
+  margin-right: calc(12px + 1px + var(--sidebar-inset, 14px) - 10px);
+}
+
 /* Bottom bar labels use the menu bar's text size and weight (header.css .menu-bar-btn) */
 #nativeBottomBar .bottom-bar-text {
   font-size: var(--fs-12);

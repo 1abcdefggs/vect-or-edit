@@ -1,3 +1,4 @@
+import { resolveContextMenuText } from './contextMenuText.js';
 import { showSelectionPopoverMenu, removeContextMenu, removeSelectionPopover } from '../ui/contextMenuManager.js';
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { readStorage } from '../../core/storage.js';
@@ -78,19 +79,10 @@ export function setupEditorContextMenu(editor, container) {
       e.event.stopPropagation();
     }
     dismissSelectionMenus();
+    // A real selection is used as it is; with none, the word under the pointer is selected first
+    const { text, selectRange } = resolveContextMenuText(editor.getSelection(), e.target?.position, editor.getModel());
+    if (selectRange) editor.setSelection(selectRange);
     const selection = editor.getSelection();
-    let text = '';
-    if (selection && !selection.isEmpty()) {
-      text = editor.getModel()?.getValueInRange(selection)?.trim() || '';
-    } else {
-      const position = e.target?.position;
-      if (position) {
-        const word = editor.getModel()?.getWordAtPosition(position);
-        if (word?.word) {
-          text = word.word;
-        }
-      }
-    }
 
     const mouseEvent = e.event?.browserEvent;
     let posX = mouseEvent ? mouseEvent.pageX : 100;

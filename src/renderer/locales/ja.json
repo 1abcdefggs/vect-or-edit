@@ -705,6 +705,7 @@
   "sidebar_model_dim_label": "次元",
   "sidebar_model_dim_desc": "1つの文章を表す数値の個数",
   "sidebar_model_embedding_desc": "エンベディングの仕組み: 入力と辞書の各語を座標に置き、コサイン類似度で類似度を算出して候補をソートする",
+  "sidebar_how_title": "仕組み",
   "embedding_card_desc": "専門用語の辞書、HNSW ベクトル検索、リアルタイムの補助に使う。文章作成自体は、モデルや辞書がなくてもできる",
   "heading_llm_catalog": "API キーの設定",
   "llm_card_desc": "AI チャットや右クリックの書き換えに使う。キーは OS の機能（Electron safeStorage）で暗号化されて、この端末内にのみ保存される。ファイルを別の PC や別のユーザーへ持ち出しても読めないが、同じ PC の同じユーザーで動く他のアプリからは、読める場合がある",
