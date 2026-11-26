@@ -141,7 +141,7 @@
   position: relative;
   width: 100%;
   height: 2px;
-  background: rgba(99, 102, 241, 0.12);
+  background: var(--glow-track);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -153,8 +153,8 @@
   left: -40%;
   width: 40%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, #818cf8, #66f, transparent);
-  box-shadow: 0 0 8px rgba(129, 140, 248, 0.7);
+  background: linear-gradient(90deg, transparent, var(--glow-sweep-light), var(--glow-sweep-core), transparent);
+  box-shadow: 0 0 8px var(--glow-shadow);
   animation: neuralPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
