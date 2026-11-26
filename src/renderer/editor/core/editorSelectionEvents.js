@@ -2,6 +2,19 @@ import { showSelectionPopoverMenu, removeContextMenu, removeSelectionPopover } f
 import { STORAGE_KEYS, DEFAULTS } from '../../core/constants.js';
 import { readStorage } from '../../core/storage.js';
 
+/**
+ * Opens a closed right panel when text is selected, if the "Open on selection" setting is on (default off).
+ * It only opens; it never closes the panel, and it uses the same toggle button as a click, so the layout updates alike.
+ */
+function openSidebarOnSelection(selection) {
+  if (!selection || selection.isEmpty()) return;
+  if (readStorage(STORAGE_KEYS.SIDEBAR_OPEN_ON_SELECTION) !== 'on') return;
+  const sidebar = document.getElementById('suggestionSidebar');
+  if (sidebar?.classList.contains('collapsed')) {
+    document.getElementById('btnHeaderToggleSidebar')?.click();
+  }
+}
+
 export function setupEditorContextMenu(editor, container) {
   let selectionPopoverTimer = null;
   const dismissSelectionMenus = () => {
@@ -56,6 +69,7 @@ export function setupEditorContextMenu(editor, container) {
     if (e.source !== 'mouse') {
       triggerSelectionPopover('keyboard');
     }
+    openSidebarOnSelection(e.selection);
   });
 
   editor.onContextMenu((e) => {

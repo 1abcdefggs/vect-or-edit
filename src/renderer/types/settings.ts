@@ -71,6 +71,7 @@ export type EditorUiKey =
   | 'edt:document-format'
   | 'edt:document-language'
   | 'edt:markdown-preview'
+  | 'edt:tab-list'
   | 'edt:llm-dock'
   | 'edt:llm-key-config'
   | 'edt:llm-clear-chat'

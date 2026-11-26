@@ -101,7 +101,8 @@ export function buildThemeFromPalette({ base = 'vs-dark', background, foreground
     'editor.background': bg,
     'editor.selectionBackground': mixColors(bg, accent, 0.35),
     'editor.inactiveSelectionBackground': mixColors(bg, fg, 0.12),
-    'editor.selectionHighlightBackground': mixColors(bg, accent, 0.2),
+    // Other matches of the selected text get no fill by default (the outline below keeps them visible)
+    'editor.selectionHighlightBackground': '#00000000',
     'editor.findMatchHighlightBackground': mixColors(bg, '#ffd33d', 0.35),
     'editor.lineHighlightBackground': mixColors(bg, fg, 0.05),
     'editor.lineHighlightBorder': '#00000000',
@@ -110,7 +111,10 @@ export function buildThemeFromPalette({ base = 'vs-dark', background, foreground
     'editorWhitespace.foreground': mixColors(bg, fg, 0.25),
     'editorIndentGuide.background': mixColors(bg, fg, 0.12),
     'editorIndentGuide.activeBackground': mixColors(bg, accent, 0.5),
-    'editor.selectionHighlightBorder': mixColors(bg, accent, 0.3),
+    // Outline of the other matches of the selected text. Needs 3.0 on the editor background (WCAG 1.4.11).
+    // Measured with the default accent #2563eb: 3.17 on #1e1e2e (dark), 5.17 on #ffffff (light).
+    // The old 30% mix measured 1.35 (dark) and 1.55 (light), so it is replaced by the accent itself.
+    'editor.selectionHighlightBorder': accent,
     'sideBar.background': panel,
     'titleBar.activeBackground': header,
     'editorWidget.background': panel,

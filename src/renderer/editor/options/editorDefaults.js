@@ -16,6 +16,8 @@ export const EDITOR_DEFAULTS = Object.freeze({
   folding: true,
   renderWhitespace: 'none',
   renderLineHighlight: 'gutter',
+  // Clicking a word does not tint the other occurrences by default; the user can turn it on in Editor options
+  occurrencesHighlight: 'off',
   scrollBeyondLastLine: false,
   quickSuggestions: false,
   wordBasedSuggestions: 'off',

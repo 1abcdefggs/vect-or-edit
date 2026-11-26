@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.105] - 2026-11-26
+
+### Added
+- Document list button at the right end of the tab row; it lists every open document and switches to the one chosen
+- Settings: "Open on selection" in the Sidebar tab; when the panel is closed, selecting text in the editor opens it (default off)
+
+### Changed
+- Other matches of the selected text no longer get a background fill; the selection and its outline are kept
+- Word occurrence highlight (occurrencesHighlight) is off by default
+
 ## [0.3.104] - 2026-11-26
 
 ### Changed

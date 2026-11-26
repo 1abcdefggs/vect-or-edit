@@ -860,6 +860,14 @@ export function initSettings(updateEditorCb) {
       setAndSync(STORAGE_KEYS.SIDEBAR_START_STATE, modalSidebarStartSelect.value);
     });
   }
+  // Read by editorSelectionEvents.js on each selection, so no restart is needed
+  const modalSidebarOpenOnSelectSelect = document.getElementById('modalSidebarOpenOnSelectSelect');
+  if (modalSidebarOpenOnSelectSelect) {
+    modalSidebarOpenOnSelectSelect.value = readStorage(STORAGE_KEYS.SIDEBAR_OPEN_ON_SELECTION) === 'on' ? 'on' : 'off';
+    modalSidebarOpenOnSelectSelect.addEventListener('change', () => {
+      setAndSync(STORAGE_KEYS.SIDEBAR_OPEN_ON_SELECTION, modalSidebarOpenOnSelectSelect.value);
+    });
+  }
 
   if (modalResultDescLinesSelect) {
     modalResultDescLinesSelect.value = readStorage(STORAGE_KEYS.RESULT_DESC_LINES) === '1' ? '1' : '2';

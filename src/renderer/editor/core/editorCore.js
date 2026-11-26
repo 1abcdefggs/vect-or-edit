@@ -7,6 +7,7 @@ import { setLedStatus, led } from '../../core/statusManager.js';
 import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
+import { setupTabListMenu } from '../tabs/tabListMenu.js';
 import { t, currentLang } from '../../core/i18n.js';
 import { detectDocumentLanguage } from '../options/documentLanguage.js';
 import { bindDocumentLanguage } from '../options/documentLanguageSync.js';
@@ -161,6 +162,7 @@ export async function initEditor() {
   editorEvents.emit('onEditorInitialized');
 
   setupEditorContextMenu(monacoEditorInstance, monacoContainer);
+  setupTabListMenu();
 
   monacoEditorInstance.onDidChangeModelContent(() => {
     editorEvents.emit('onStatusBarUpdateNeeded');
