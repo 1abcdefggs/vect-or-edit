@@ -48,8 +48,11 @@
 .editor-tab-item.active {
   background: var(--editor-bg, var(--bg-primary));
   color: var(--editor-fg, var(--text-main));
-  border-color: var(--sel-surface);
+  /* E7: the sides use the shared border token; no bottom border, and the tab covers the tab bar's bottom line so it opens into the body */
+  border-color: var(--editor-frame-border);
   border-top: 2px solid var(--sel-surface);
+  border-bottom: none;
+  margin-bottom: calc(var(--border-width) * -1);
   --tab-btn-bg: transparent;
   --tab-btn-fg: var(--editor-fg, var(--text-main));
   --tab-btn-border: color-mix(in srgb, var(--editor-fg, var(--text-main)) 55%, transparent);

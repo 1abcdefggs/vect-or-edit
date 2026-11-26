@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.103] - 2026-11-26
+
+### Changed
+
+- Settings gear hover tints the whole area it controls (background tint from `--settings-key-fg`), in addition to the outline
+- Zoom hint popover uses a new `--bg-popover` token instead of the card surface, so it stands apart from the page
+- BG/FG custom colour pickers sit inside the BG/FG control, next to its select, instead of beside the toolbar
+- Settings: the HELP label uses the same bold weight as BACK
+- Settings: the active top tab shows the active colour on its left edge; the label colour is unchanged
+- Settings: the contents list uses the size, weight and capitals of the main card headings
+- Settings: the card fold button uses the active colour
+- Settings: the Tooltips on/off switch comes before the tooltip width in the theme card
+- Settings: the text tools card links to Editor view (Monaco)
+- Settings: the sidebar tab lists the embedding model before the collection
+- Settings: the system log startup choice lists Closed before Open (Open stays the default)
+- Settings: the log time format is a segmented control like the time zone
+- Settings: the area sentence is its own description box at the card description size
+- Settings: the heading icon uses the active colour; the heading text keeps the text colour
+- Settings: the "Save logs" heading is renamed "Log file" (ja: ログファイル)
+- Settings: the File, View and Help menu descriptions list the items the menus contain
+- Settings: the Menu bar rows show the menu descriptions (tip_menu_*), and the App name row has its own description (new key tip_menu_app_name)
+- Settings: the menu descriptions keep the menu name on its own line (pre-line, Menu bar rows only)
+- Editor: the first document tab's left edge lines up with the editor body's left edge (tab bar left padding removed)
+- Settings: every segmented control is pushed to the row's right side, so its last button ends at the same x on each row (shared rule in settings-ui.css)
+- Editor: the active document tab opens into the writing area: no bottom border, the sides use the shared border token, and the writing area has left, right and bottom borders
+- Editor: the status row uses the editor background and the editor text colour, so it reads as part of the writing area
+
 ## [0.3.102] - 2026-11-26
 
 ### Changed

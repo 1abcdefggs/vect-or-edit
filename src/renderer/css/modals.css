@@ -241,11 +241,12 @@
   vertical-align: text-bottom;
 }
 
+/* The area sentence (S3): its own description box at the card-description size (--fs-15), like the Menu bar and THEME descriptions */
 .settings-tab-desc {
-  display: none;
+  display: block;
   margin: 0;
   padding: 6px var(--spacing-md, 16px) 8px;
-  font-size: var(--fs-13);
+  font-size: var(--fs-15);
   line-height: 1.5;
   color: var(--text-muted);
 }
@@ -307,7 +308,10 @@
   border: none;
   border-radius: 4px;
   padding: var(--spacing-xs) 6px;
+  /* The contents list uses the size, weight and capitals of the main card headings (.settings-section-card h4: --fs-18, 600, uppercase in English; Japanese has no case, so it is unchanged) */
   font-size: var(--fs-18);
+  font-weight: 600;
+  text-transform: uppercase;
   color: var(--text-muted);
   text-align: left;
   cursor: pointer;
@@ -474,7 +478,7 @@
   margin: 0 0 var(--spacing-md) 0;
   font-size: var(--fs-13);
   font-weight: 600;
-  /* Accent is reserved for things you can select or operate; a heading is text */
+  /* Accent is reserved for things you can select or operate; a heading is text. Exception (S5, owner decision): the heading icon uses the active colour; the heading text does not */
   color: var(--text-main);
   border-bottom: var(--border-width) solid var(--border-color, rgba(255, 255, 255, 0.06));
   padding-bottom: var(--spacing-sm);

@@ -151,6 +151,17 @@
   min-width: 0;
 }
 
+/* E7: the writing area (Monaco plus the status row) has a frame on its left, right and bottom, in the shared border token; its top edge is the tab bar's bottom line. The side borders sit outside the minimap and the scrollbar */
+#monacoContainer {
+  border-left: var(--border-width) solid var(--editor-frame-border);
+  border-right: var(--border-width) solid var(--editor-frame-border);
+}
+.editor-status-bar {
+  border-left: var(--border-width) solid var(--editor-frame-border);
+  border-right: var(--border-width) solid var(--editor-frame-border);
+  border-bottom: var(--border-width) solid var(--editor-frame-border);
+}
+
 .editor-tab-item {
   display: inline-flex;
   align-items: center;

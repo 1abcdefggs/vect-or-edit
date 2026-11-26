@@ -266,7 +266,8 @@ button.btn-phi {
   align-items: center;
   background: var(--bg-secondary, #080c14);
   border-bottom: var(--border-width) solid var(--border-color);
-  padding: 4px 8px 0 8px;
+  /* No left inset: the first tab's left edge lines up with the editor body's left edge */
+  padding: 4px 8px 0 0;
   gap: 4px;
   overflow-x: auto;
   user-select: none;

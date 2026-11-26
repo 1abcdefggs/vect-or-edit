@@ -29,9 +29,10 @@
 .card-badge--warn { color: #c084fc; background: rgba(168, 85, 247, 0.12); }
 .card-badge--inline { margin-left: 8px; }
 
+/* The heading icon uses the active colour (S5, owner decision); the heading text does not (modals.css) */
 .settings-section-card > h4 .material-symbols-outlined {
   font-size: var(--settings-icon-size);
-  color: var(--text-main);
+  color: var(--accent-color);
 }
 
 /* Show/hide of a card (ui/settings/cardCollapse.js): sits at the right end of its heading */
@@ -47,7 +48,8 @@
   background: transparent;
   border: var(--border-width) solid var(--border-color);
   border-radius: 6px;
-  color: var(--text-muted);
+  /* The fold button uses the active colour, like the BACK button, so it is easy to find (non-text, WCAG 1.4.11: 3.0 or more) */
+  color: var(--accent-color);
   cursor: pointer;
 }
 .settings-section-card > h4 .card-collapse-btn:hover { color: var(--text-main); border-color: var(--accent-color); }
@@ -345,10 +347,14 @@
 .ui-switch:focus-visible, .ui-segmented button:focus-visible { outline: 2px solid var(--accent-color, #38bdf8); outline-offset: 2px; }
 
 /* Segmented buttons: the active one is filled */
+/* Each segment row is right-aligned inside the host, and the host keeps its width (it does not shrink), so the last button ends at the row's right edge on every settings row (S17) */
 .ui-segmented {
   display: inline-flex;
+  flex: 0 0 auto;
+  /* Pushed to the row's right side, next to the info button, so the free space is not split by space-between */
+  margin-left: auto;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   padding: 2px;
   gap: 2px;
   border-radius: 8px;
@@ -622,6 +628,8 @@
   overflow-y: auto;
 }
 
+/* The active tab shows the active colour on its left edge (the selection edge token, width --sel-edge-width). Every tab reserves the same edge, so the labels do not move when the tab changes */
+.settings-tab-btn { border-left: var(--sel-edge-width) solid transparent; }
 .settings-tab-btn.active { border-left-color: var(--sel-edge); }
 
 /* Settings page text sizes: card headings and item names are 18px (--fs-18); descriptions are 16px (--fs-16).
@@ -846,6 +854,8 @@
   background: color-mix(in srgb, var(--accent-color) 14%, transparent);
 }
 .settings-guide-btn .material-symbols-outlined { font-size: var(--icon-size); }
+/* The label matches BACK: bold, like .settings-back-label */
+.settings-guide-btn .settings-guide-label { font-weight: 700; }
 /* .log-panel-btn sets 12px; the guide button takes the tab label size and icon size, like the tabs */
 #settingsModal .settings-guide-btn { font-size: var(--fs-18); }
 /* The guide sits in the top tab row, just before "Back to Editor" */
@@ -1127,3 +1137,6 @@
   padding: var(--spacing-md) var(--spacing-md) 0;
   margin-bottom: var(--spacing-md);
 }
+
+/* Menu bar rows (App name to About): the tip keeps the menu name on its own line and the item list below it */
+[data-setting-text][data-desc-key^="tip_menu_"] .setting-desc { white-space: pre-line; }

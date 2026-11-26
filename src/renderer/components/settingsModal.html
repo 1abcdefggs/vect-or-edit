@@ -43,25 +43,30 @@
           <h4 data-card-heading data-icon="format_list_bulleted" data-key="grp_menu_bar" data-text="Menu bar"></h4>
           <p class="card-section-desc" data-i18n="grp_menu_bar_desc">Select which menus to display. Hidden menu functions remain accessible via keyboard shortcuts and toolbar buttons.</p>
           <div data-setting-row data-vis-target="h_logo">
-            <div data-setting-text data-label-key="vis_h_logo" data-label-text="App name" data-desc-key="vis_logo_desc" data-desc-text="Shows or hides the logo, app name and version in the header."></div>
+            <div data-setting-text data-label-key="vis_h_logo" data-label-text="App name" data-desc-key="tip_menu_app_name" data-desc-text="App name and version"></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_file">
-            <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_file" data-label-text="File" data-desc-key="tip_menu_file" data-desc-text="File
+New File, Open File, Open Workspace, Save As, Close Tab, Close All Tabs, Exit"></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_edit">
-            <div data-setting-text data-label-key="vis_h_menu_edit" data-label-text="Edit" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_edit" data-label-text="Edit" data-desc-key="tip_menu_edit" data-desc-text="Edit
+Undo, Redo, Cut, Copy, Paste, Select All"></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_view">
-            <div data-setting-text data-label-key="vis_h_menu_view" data-label-text="View" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_view" data-label-text="View" data-desc-key="tip_menu_view" data-desc-text="View
+Toggle Suggest Sidebar, Toggle System Logs, Zoom In, Zoom Out, Reset Zoom, Toggle Theme, Toggle Language"></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_window">
-            <div data-setting-text data-label-key="vis_h_menu_window" data-label-text="Window" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_window" data-label-text="Window" data-desc-key="tip_menu_window" data-desc-text="Window
+Minimize, Maximize, Close"></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_help">
-            <div data-setting-text data-label-key="vis_h_menu_help" data-label-text="Help" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_help" data-label-text="Help" data-desc-key="tip_menu_help" data-desc-text="Help
+First-run Setup, Preferences & Settings, Documentation"></div>
           </div>
           <div data-setting-row data-vis-target="h_menu_about">
-            <div data-setting-text data-label-key="vis_h_menu_about" data-label-text="About" data-desc-key="vis_menu_desc" data-desc-text="Shows or hides this menu in the menu bar."></div>
+            <div data-setting-text data-label-key="vis_h_menu_about" data-label-text="About" data-desc-key="tip_menu_about" data-desc-text="Show the version and project details"></div>
           </div>
         </div>
 
@@ -79,6 +84,13 @@
           <div data-setting-row>
             <div data-setting-text data-label-key="overlay_color_label" data-label-text="Popup colour" data-desc-key="overlay_color_desc" data-desc-text="Colour of the popups that appear when you select text (copy and paste), the right-click menu, and the tooltip shown when you hover over a button. Invert shows them on a dark surface in light mode and a light surface in dark mode, so they stand out from the window."></div>
             <div id="modalOverlayColorCards" class="settings-theme-cards popup-color-cards" role="group" data-i18n-aria="overlay_color_label"></div>
+          </div>
+          <div data-setting-row>
+            <div data-setting-text data-label-key="tooltip_on_label" data-label-text="Tooltips" data-desc-key="tooltip_on_desc" data-desc-text="Show the tooltip when you hover over a button, with no delay. Off uses the standard tooltip of the system instead." data-reason-id="tooltipOffReason" data-reason-ui="set:tooltip-off-reason" data-reason-key="tooltip_off_reason" data-reason-text="Not available while Tooltips is off, because the system's standard tooltip is used."></div>
+            <select id="modalTooltipEnabledSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_tooltip_on">
+              <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
           </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="tooltip_width_label" data-label-text="Tooltip width" data-desc-key="tooltip_width_desc" data-desc-text="Line length of the tooltip shown when you hover over a button. Short wraps long text onto two lines; Long lets a line run wider."></div>
@@ -101,13 +113,6 @@
             <select id="modalScrollbarActiveSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_scrollbar_active">
               <option value="on" data-i18n="scrollbar_active_on">On (default)</option>
               <option value="off" data-i18n="scrollbar_active_off">Off</option>
-            </select>
-          </div>
-          <div data-setting-row>
-            <div data-setting-text data-label-key="tooltip_on_label" data-label-text="Tooltips" data-desc-key="tooltip_on_desc" data-desc-text="Show the tooltip when you hover over a button, with no delay. Off uses the standard tooltip of the system instead." data-reason-id="tooltipOffReason" data-reason-ui="set:tooltip-off-reason" data-reason-key="tooltip_off_reason" data-reason-text="Not available while Tooltips is off, because the system's standard tooltip is used."></div>
-            <select id="modalTooltipEnabledSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_tooltip_on">
-              <option value="on" data-i18n="opt_toggle_on">On</option>
-              <option value="off" data-i18n="opt_toggle_off">Off</option>
             </select>
           </div>
           <div data-setting-row>
@@ -295,6 +300,10 @@
               <input type="number" id="modalFontSizeInput" data-stepper class="toolbar-select input-num" min="8" max="72" step="1" value="16" data-i18n-title="tip_font_size_custom">
               <span class="setting-desc">px</span>
             </div>
+          </div>
+          <div class="settings-pointer">
+            <div class="setting-desc" data-i18n="setting_text_tools_monaco_desc">Background and font of the editor. Line numbers, wrapping and highlights are in Editor view (Monaco).</div>
+            <button type="button" class="settings-link settings-link--jump" data-open-settings-tab="tabEditor" data-open-settings-card="grp_editor_display" data-tip-exempt="its text names the target"><span data-i18n="setting_text_tools_monaco_jump">Go to Editor view (Monaco)</span><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
           </div>
         </div>
 
@@ -558,6 +567,38 @@
 
 <div id="panelEmbedding" class="ai-model-panel active">
           <!-- Overview of the two parts below the tabs: a card with a heading and one row each (no control) -->
+            <div id="embeddingConfigCard" class="settings-section-card">
+              <h4 data-card-heading data-icon="menu_book" data-key="heading_embedding_models" data-text="EMBEDDING MODELS"></h4>
+              <div class="setting-desc" data-i18n="embedding_card_desc">Used for the editor's specialized terminology dictionary, HNSW vector search, and real-time intelligence. Models are not required for normal dictionary and text input functionality.</div>
+              <div id="localAiSettingsBlock" class="settings-subpanel">
+                <div class="setting-item-head">
+                  <span id="localAiStatusBadge" class="setting-label status-ok" data-i18n="local_ai_status_standby">Local Embedding: Standby (Offline Mode)</span>
+                  <button id="btnInitLocalAi" class="settings-btn settings-btn--primary" type="button" data-i18n-title="tip_init_local_ai">
+                    <span data-i18n="btn_init_local_ai">Download & Activate Local AI Model</span>
+                  </button>
+                </div>
+                <!-- Embedding model list: rendered from search/embeddingModels.js (Download / Use / Active) -->
+                <div id="embeddingModelList" class="embedding-model-list"></div>
+                <div id="modalAiDownloadProgress" style="display: none;">
+                  <div class="setting-item-head setting-desc">
+                    <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
+                    <span id="modalAiDownloadPct">0%</span>
+                  </div>
+                  <div class="progress-track">
+                    <div id="modalAiDownloadProgressBar" class="progress-fill"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="settings-section-card">
+              <h4 data-card-heading data-icon="cloud_sync" data-key="cloud_emb_title" data-text="Cloud Vector Embedding (API Vectorizer)"></h4>
+              <div class="setting-desc" data-i18n="cloud_emb_desc">Use an external API for semantic search when you need higher accuracy. Local 384-dimension search stays the default. Set the API key in the LLM tab first.</div>
+              <div class="setting-actions">
+                <button type="button" id="btnGoToLlmConfig" class="settings-btn" data-i18n-title="tip_go_llm_config">
+                  <span data-i18n="btn_go_llm_config">Set the API key in the LLM tab</span> →
+                </button>
+              </div>
+            </div>
           <div class="settings-section-card">
             <h4 data-card-heading data-icon="format_list_bulleted" data-key="sidebar_overview_title" data-text="Collection"></h4>
             <div class="setting-desc" data-i18n="sidebar_overview_desc">Guidelines hold the writing rules and formats. Knowledge holds the dictionaries that give suggestions. Both run on the embedding model.</div>
@@ -699,41 +740,9 @@
           </div>
 
           <div id="subpanelEmbLocal" class="ai-model-panel active">
-            <div id="embeddingConfigCard" class="settings-section-card">
-              <h4 data-card-heading data-icon="menu_book" data-key="heading_embedding_models" data-text="EMBEDDING MODELS"></h4>
-              <div class="setting-desc" data-i18n="embedding_card_desc">Used for the editor's specialized terminology dictionary, HNSW vector search, and real-time intelligence. Models are not required for normal dictionary and text input functionality.</div>
-              <div id="localAiSettingsBlock" class="settings-subpanel">
-                <div class="setting-item-head">
-                  <span id="localAiStatusBadge" class="setting-label status-ok" data-i18n="local_ai_status_standby">Local Embedding: Standby (Offline Mode)</span>
-                  <button id="btnInitLocalAi" class="settings-btn settings-btn--primary" type="button" data-i18n-title="tip_init_local_ai">
-                    <span data-i18n="btn_init_local_ai">Download & Activate Local AI Model</span>
-                  </button>
-                </div>
-                <!-- Embedding model list: rendered from search/embeddingModels.js (Download / Use / Active) -->
-                <div id="embeddingModelList" class="embedding-model-list"></div>
-                <div id="modalAiDownloadProgress" style="display: none;">
-                  <div class="setting-item-head setting-desc">
-                    <span id="modalAiDownloadFile" data-i18n="ai_setup_downloading">Downloading...</span>
-                    <span id="modalAiDownloadPct">0%</span>
-                  </div>
-                  <div class="progress-track">
-                    <div id="modalAiDownloadProgressBar" class="progress-fill"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div id="subpanelEmbCloud" class="ai-model-panel">
-            <div class="settings-section-card">
-              <h4 data-card-heading data-icon="cloud_sync" data-key="cloud_emb_title" data-text="Cloud Vector Embedding (API Vectorizer)"></h4>
-              <div class="setting-desc" data-i18n="cloud_emb_desc">Use an external API for semantic search when you need higher accuracy. Local 384-dimension search stays the default. Set the API key in the LLM tab first.</div>
-              <div class="setting-actions">
-                <button type="button" id="btnGoToLlmConfig" class="settings-btn" data-i18n-title="tip_go_llm_config">
-                  <span data-i18n="btn_go_llm_config">Set the API key in the LLM tab</span> →
-                </button>
-              </div>
-            </div>
           </div>
 
       </div>
@@ -866,13 +875,13 @@
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_logs_on_start" data-label-text="Open log panel at startup" data-desc-key="setting_logs_on_start_desc" data-desc-text="Open the log panel when the app starts. Off keeps it closed until you open it."></div>
             <select id="modalLogsOnStartSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_logs_on_start">
-              <option value="open" selected data-i18n="opt_logs_open">Open</option>
               <option value="closed" data-i18n="opt_logs_closed">Closed</option>
+              <option value="open" selected data-i18n="opt_logs_open">Open</option>
             </select>
           </div>
           <div data-setting-row>
             <div data-setting-text data-label-key="setting_log_time_format" data-label-text="Log time format" data-desc-key="setting_log_time_format_desc" data-desc-text="How the time of each log line is shown. The stored time is always the same; only the display changes."></div>
-            <select id="modalLogTimeFormatSelect" class="toolbar-select" data-i18n-title="tip_set_log_time_format">
+            <select id="modalLogTimeFormatSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_log_time_format">
               <option value="h24" selected data-i18n="opt_time_h24">24 hours</option>
               <option value="h12" data-i18n="opt_time_h12">12 hours</option>
               <option value="os" data-i18n="opt_time_os">Follow OS</option>
@@ -894,7 +903,7 @@
             </select>
           </div>
           <div data-setting-row>
-            <div data-setting-text data-label-key="setting_log_save" data-label-text="Save logs" data-desc-key="setting_log_save_desc" data-desc-text="Choose how the log is kept. Ask when exiting asks each time you quit. Always save keeps every session for 30 days. Do not save keeps nothing."></div>
+            <div data-setting-text data-label-key="setting_log_save" data-label-text="Log file" data-desc-key="setting_log_save_desc" data-desc-text="Choose how the log is kept. Ask when exiting asks each time you quit. Always save keeps every session for 30 days. Do not save keeps nothing."></div>
             <select id="modalLogSaveModeSelect" class="toolbar-select" data-ui-control="segmented" data-i18n-title="tip_set_log_save">
               <option value="ask" selected data-i18n="opt_log_save_ask">Ask when exiting</option>
               <option value="always" data-i18n="opt_log_save_always">Always save</option>

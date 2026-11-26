@@ -49,6 +49,13 @@
           <!-- The choices (default, eight pairs, custom) are filled by ui/settings/editorTonePicker.js from editor/core/editorTonePairs.js -->
           <option value="default" selected data-i18n="tone_default">Default</option>
         </select>
+        <!-- Custom colours sit inside the BG/FG control, next to its select (shown only when the tone is custom) -->
+        <div id="quickCustomColorGroup" style="display: none; align-items: center; gap: 4px;">
+        <input type="color" id="quickCustomBgPicker" value="#1e1e2e" data-i18n-title="label_bg"
+          style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+        <input type="color" id="quickCustomFgPicker" value="#cdd6f4" data-i18n-title="label_text"
+          style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
+      </div>
 
         <span style="display: inline-block; width: 1px; height: 16px; background: var(--border-color); opacity: 0.6; margin: 0 4px;"></span>
 
@@ -89,13 +96,6 @@
           <span class="style-label editor-opt-label editor-opt-label--short" style="font-size: var(--fs-12); color: var(--text-main);" data-i18n="monaco_opts_short">Editor opt</span>
           <span class="style-label editor-opt-label editor-opt-label--min" style="font-size: var(--fs-12); color: var(--text-main);" data-i18n="monaco_opts_min">opt</span>
         </button>
-      </div>
-
-      <div id="quickCustomColorGroup" style="display: none; align-items: center; gap: 4px;">
-        <input type="color" id="quickCustomBgPicker" value="#1e1e2e" data-i18n-title="label_bg"
-          style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
-        <input type="color" id="quickCustomFgPicker" value="#cdd6f4" data-i18n-title="label_text"
-          style="width: 22px; height: 22px; padding: 0; border: var(--border-width) solid var(--border-color); border-radius: 4px; cursor: pointer; background: transparent;">
       </div>
     </div>
 
