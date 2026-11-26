@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.102] - 2026-11-26
+
 ### Changed
 
 - Editor minimum width raised from 320px to 400px (`paneLimits.ts` and `editor.css`), so the icon-only toolbar fits without overlap (measured natural width 394px)
+- Toolbar AI chat toggle icon changed from cloud to smart_toy
 
 ### Fixed
 
