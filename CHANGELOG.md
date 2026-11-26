@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.98] - 2026-11-26
+
+### Changed
+- Japanese UI text: labels, tooltips and descriptions end as noun phrases (14 entries)
+
 ## [0.3.97] - 2026-11-26
 
 ### Fixed
