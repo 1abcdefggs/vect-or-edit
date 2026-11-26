@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.111] - 2026-11-27
+
+### Fixed
+
+- Right-click menu: Select All now runs the Monaco action `editor.action.selectAll` (the command `selectAll` does not exist and raised "command 'selectAll' not found")
+- Markdown preview: bulleted and numbered lists get a left padding, so the markers no longer sit outside the preview's left edge
+
 ## [0.3.110] - 2026-11-27
 
 ### Fixed
