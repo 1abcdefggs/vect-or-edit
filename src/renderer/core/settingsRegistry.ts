@@ -63,6 +63,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'edt:document-format': true,
     'edt:document-language': true,
     'edt:markdown-preview': true,
+    'edt:tab-list': true,
     'edt:llm-dock': true,
     'edt:llm-key-config': true,
     'edt:llm-clear-chat': true,
@@ -316,6 +317,12 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     id: 'ed_markdown_preview',
     category: 'editor',
     visibilityKey: 'edt:markdown-preview',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_tab_list',
+    category: 'editor',
+    visibilityKey: 'edt:tab-list',
     controlType: 'none'
   },
   {

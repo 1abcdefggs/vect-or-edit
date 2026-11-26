@@ -124,6 +124,10 @@
   <!-- Chrome-style Multi-Document Tab Bar -->
   <div class="editor-tab-bar" id="editorTabBar" data-ui="edt:tab-bar" style="display: flex; align-items: center; background: var(--bg-card); border-bottom: var(--border-width) solid var(--border-color);">
     <div class="editor-tabs-list" id="editorTabsList" style="flex: 1; display: flex; align-items: center; overflow-x: auto;" data-i18n-title="tip_editor_tabs"></div>
+    <!-- Lists every open document, for when the tab row is scrolled (tabListMenu.js) -->
+    <button type="button" id="btnEditorTabList" class="editor-tab-list-btn" data-ui="edt:tab-list" aria-haspopup="menu" aria-expanded="false" data-i18n-title="tip_editor_tab_list">
+      <span data-svg-icon="chevronDown" aria-hidden="true"></span>
+    </button>
     <!-- The view switch for the active document. Always shown; a Text document shows it disabled with the reason beside it (markdownPreview.js) -->
     <button type="button" id="btnMarkdownPreview" data-ui="edt:markdown-preview" class="toolbar-btn markdown-preview-toggle" aria-pressed="false" data-i18n-title="tip_markdown_preview">
       <span class="markdown-preview-eye" data-svg-icon="eye" aria-hidden="true"></span>

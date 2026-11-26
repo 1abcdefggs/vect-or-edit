@@ -84,7 +84,9 @@ export const STORAGE_KEYS = {
   /** 'off': never cut dictionary or query vectors to a shorter length (docs 04_10); anything else allows it */
   EMBEDDING_TRUNCATION: 'vect_embedding_truncation',
   /** 'closed': the right panel (suggestion sidebar) starts closed; anything else starts it open */
-  SIDEBAR_START_STATE: 'vect_sidebar_start_state'
+  SIDEBAR_START_STATE: 'vect_sidebar_start_state',
+  /** 'on': selecting text in the editor opens a closed right panel; anything else (default) leaves it closed */
+  SIDEBAR_OPEN_ON_SELECTION: 'vect_sidebar_open_on_selection'
 } as const;
 
 export const TIMINGS = {

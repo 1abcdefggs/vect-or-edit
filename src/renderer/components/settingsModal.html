@@ -552,6 +552,13 @@ First-run Setup, Preferences & Settings, Documentation"></div>
               <option value="closed" data-i18n="opt_sidebar_start_closed">Closed at start</option>
             </select>
           </div>
+          <div data-setting-row data-vis-target="sb_panel_toggle">
+            <div data-setting-text data-label-key="setting_sidebar_open_on_select" data-label-text="Open on selection" data-desc-key="setting_sidebar_open_on_select_desc" data-desc-text="When the panel is closed, selecting text in the editor opens it. Off by default, so the editor keeps its width unless you choose this."></div>
+            <select id="modalSidebarOpenOnSelectSelect" class="toolbar-select" data-ui-control="switch" data-i18n-title="tip_set_sidebar_open_on_select">
+              <option value="on" data-i18n="opt_toggle_on">On</option>
+              <option value="off" data-i18n="opt_toggle_off">Off</option>
+            </select>
+          </div>
           <div data-setting-row data-vis-target="sb_embedding_toggle">
             <div data-setting-text data-label-key="setting_embedding_assistant" data-label-text="Embedding model" data-desc-key="setting_embedding_assistant_desc" data-desc-text="Real-time semantic suggestions in the sidebar. It can be turned on or off apart from the LLM. When it is off, suggestions come from dictionary lookup (with help from Gemini while the LLM is on)."
               data-jump-key="setting_embedding_llm_jump" data-jump-text="For AI chat: Editor › AI chat" data-jump-tab="tabEditor" data-jump-card="grp_llm_assistant"></div>
