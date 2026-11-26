@@ -15,6 +15,7 @@ export const STORAGE_KEYS = {
   SCROLLBAR_ACTIVE: 'vect_scrollbar_active',
   TOOLTIP_GAP: 'vect_tooltip_gap',
   TOOLTIP_ENABLED: 'vect_tooltip_enabled',
+  GOOGLE_SEARCH_ENABLED: 'vect_google_search_enabled',
   FONT_FAMILY: 'editor_fontFamily',
   FONT_SIZE: 'editor_fontSize',
   LINE_HEIGHT: 'editor_lineHeight',

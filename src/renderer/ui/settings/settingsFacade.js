@@ -44,6 +44,7 @@ import { getTooltipWidth, setTooltipWidth } from '../tooltips/tooltipWidth.js';
 import { getScrollbarScale, setScrollbarScale, isScrollbarActive, setScrollbarActive } from '../appearance/scrollbarStyle.js';
 import { getTooltipGap, setTooltipGap } from '../tooltips/tooltipGap.js';
 import { isTooltipEnabled, setTooltipEnabled } from '../tooltips/tooltipEnabled.js';
+import { isGoogleSearchEnabled, setGoogleSearchEnabled } from '../../core/externalActions.js';
 import { initSettingsSearch } from './settingsSearch.js';
 
 function setAndSync(key, value) {
@@ -518,6 +519,11 @@ export function initSettings(updateEditorCb) {
   if (tooltipWidthSelect) {
     tooltipWidthSelect.value = getTooltipWidth();
     tooltipWidthSelect.addEventListener('change', () => setTooltipWidth(tooltipWidthSelect.value));
+  }
+  const googleSearchSelect = document.getElementById('modalGoogleSearchSelect');
+  if (googleSearchSelect) {
+    googleSearchSelect.value = isGoogleSearchEnabled() ? 'on' : 'off';
+    googleSearchSelect.addEventListener('change', () => setGoogleSearchEnabled(googleSearchSelect.value === 'on'));
   }
   const tooltipOnSelect = document.getElementById('modalTooltipEnabledSelect');
   // The width and the distance only shape our own tooltip, so they are locked while Tooltips is off

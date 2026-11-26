@@ -22,6 +22,7 @@ import { initChatPlacement } from './ui/ai/chatPlacement.js';
 import { initSystemConsole } from './ui/console/systemConsoleManager.js';
 import { initJumpContextMenu } from './ui/settings/jumpContextMenu.js';
 import { initTextContextMenu } from './ui/components/textContextMenu.js';
+import { initBlankPressFocus } from './ui/components/blankPressFocus.js';
 import { bindAppActionEvents } from './ui/actions/appActionEvents.js';
 import { initZoomControls } from './ui/zoomController.js';
 import { injectLazyUIComponents } from './core/uiLoader';
@@ -187,6 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // The text menus first: a text field gets Cut/Copy/Paste, not the settings jump
   initTextContextMenu();
   initJumpContextMenu();
+  initBlankPressFocus();
   bindAppActionEvents();
   initMonacoOptionsPanel();
   initAutoSaveControls();

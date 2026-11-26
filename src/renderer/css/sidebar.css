@@ -108,6 +108,15 @@ body.resizing-sidebar .workspace-resizer {
   line-height: 1.5;
 }
 
+/* Thin rule between the blocks of the sidebar (description, model, Collection) */
+.sidebar-rule {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: var(--border-width) solid var(--border-color);
+  opacity: 0.6;
+}
+
 .sidebar-model-row {
   display: flex;
   align-items: flex-start;
@@ -138,6 +147,13 @@ body.resizing-sidebar .workspace-resizer {
 .sidebar-model-field__label {
   color: var(--text-muted);
   min-width: 4.5em;
+}
+
+/* An item name (MODEL): capitals and one step larger than the values beside it */
+.sidebar-model-field__label--item {
+  font-size: var(--fs-14);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .sidebar-model-row .sidebar-model-field {
