@@ -62,6 +62,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
     'edt:status-bar': true,
     'edt:document-format': true,
     'edt:document-language': true,
+    'edt:undo': true,
+    'edt:redo': true,
     'edt:markdown-preview': true,
     'edt:tab-list': true,
     'edt:llm-dock': true,
@@ -311,6 +313,18 @@ export const SETTINGS_REGISTRY: SettingItemDef[] = [
     id: 'ed_document_language',
     category: 'editor',
     visibilityKey: 'edt:document-language',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_undo',
+    category: 'editor',
+    visibilityKey: 'edt:undo',
+    controlType: 'none'
+  },
+  {
+    id: 'ed_redo',
+    category: 'editor',
+    visibilityKey: 'edt:redo',
     controlType: 'none'
   },
   {

@@ -27,9 +27,42 @@ export function canUseEmbedding(): boolean {
   return state.embed && state.embedConfigured;
 }
 
+/** Why "Search Knowledge" cannot run, in the order the user fixes it; null when it can. */
+export type KnowledgeSearchBlocker = 'embed_off' | 'no_model' | 'no_dictionary';
+
+/** Pure rule: the Embedding switch is ON, the model is ready and the Knowledge holds a dictionary. */
+export function knowledgeSearchBlockerFor(input: { embed: boolean; embedConfigured: boolean; hasDictionary: boolean }): KnowledgeSearchBlocker | null {
+  if (!input.embed) return 'embed_off';
+  if (!input.embedConfigured) return 'no_model';
+  if (!input.hasDictionary) return 'no_dictionary';
+  return null;
+}
+
+/** The blocker right now (the caller says whether a dictionary is loaded). */
+export function knowledgeSearchBlocker(hasDictionary: boolean): KnowledgeSearchBlocker | null {
+  const state = aiManager.getState();
+  return knowledgeSearchBlockerFor({ embed: state.embed, embedConfigured: state.embedConfigured, hasDictionary });
+}
+
+/** Why "AI Chat & Rewrite" cannot run; null when it can. The AI chat switch comes first, then the provider and key. */
+export type LlmChatBlocker = 'llm_off' | 'no_provider';
+
+/** Pure rule: the AI chat (LLM) switch is ON and a provider with a key is configured. */
+export function llmChatBlockerFor(input: { llm: boolean; llmConfigured: boolean }): LlmChatBlocker | null {
+  if (!input.llm) return 'llm_off';
+  if (!input.llmConfigured) return 'no_provider';
+  return null;
+}
+
+/** The AI chat blocker right now. */
+export function llmChatBlocker(): LlmChatBlocker | null {
+  const state = aiManager.getState();
+  return llmChatBlockerFor({ llm: state.llm, llmConfigured: state.llmConfigured });
+}
+
 /** Which sources may feed the Knowledge results right now. */
 export function knowledgeSources(): KnowledgeSources {
   return { dictionary: true, vector: canUseEmbedding(), llm: canUseLlm() };
 }
 
-export const aiAccess = { canUseLlm, canUseEmbedding, knowledgeSources };
+export const aiAccess = { canUseLlm, canUseEmbedding, knowledgeSources, knowledgeSearchBlocker, llmChatBlocker };

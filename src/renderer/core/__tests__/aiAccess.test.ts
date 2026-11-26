@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aiManager } from '../aiStateManager.js';
-import { canUseLlm, canUseEmbedding, knowledgeSources } from '../aiAccess.js';
+import { canUseLlm, canUseEmbedding, knowledgeSources, knowledgeSearchBlockerFor, llmChatBlockerFor } from '../aiAccess.js';
 
 // LLM and Embedding are independent switches, and every AI feature asks aiAccess before it runs
 describe('aiAccess (LLM / Embedding independence)', () => {
@@ -77,5 +77,27 @@ describe('aiAccess (LLM / Embedding independence)', () => {
       { which: 'embed', from: false, to: true, source: 'sidebar' },
       { which: 'llm', from: true, to: false, source: 'config' }
     ]);
+  });
+});
+
+// "Search Knowledge" needs the Embedding switch ON, a ready model and a dictionary, reported in that order
+describe('knowledgeSearchBlockerFor', () => {
+  it('reports the first missing condition', () => {
+    expect(knowledgeSearchBlockerFor({ embed: false, embedConfigured: false, hasDictionary: false })).toBe('embed_off');
+    expect(knowledgeSearchBlockerFor({ embed: false, embedConfigured: true, hasDictionary: true })).toBe('embed_off');
+    expect(knowledgeSearchBlockerFor({ embed: true, embedConfigured: false, hasDictionary: true })).toBe('no_model');
+    expect(knowledgeSearchBlockerFor({ embed: true, embedConfigured: true, hasDictionary: false })).toBe('no_dictionary');
+  });
+  it('returns null when all three are met', () => {
+    expect(knowledgeSearchBlockerFor({ embed: true, embedConfigured: true, hasDictionary: true })).toBeNull();
+  });
+});
+
+// "AI Chat & Rewrite" needs the AI chat switch ON and a provider with a key
+describe('llmChatBlockerFor', () => {
+  it('reports the switch first, then the provider', () => {
+    expect(llmChatBlockerFor({ llm: false, llmConfigured: true })).toBe('llm_off');
+    expect(llmChatBlockerFor({ llm: true, llmConfigured: false })).toBe('no_provider');
+    expect(llmChatBlockerFor({ llm: true, llmConfigured: true })).toBeNull();
   });
 });

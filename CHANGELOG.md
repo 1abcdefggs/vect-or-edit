@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.106] - 2026-11-26
+
+### Added
+
+- Undo and Redo buttons in the editor tab bar (`edt:undo`, `edt:redo`)
+- Undo and Redo at the top of the editor right-click menu, with or without a selection
+- Right-click menu in text fields (Cut, Copy, Paste, Select All) and on read-only text (Copy, Select All) in the AI chat history, the log and any selected text
+- Select All in the editor right-click menu
+- `docs/pointer_rules.csv`: table of left and right click behaviour (standard vs current) with a Vitest check for omissions and contradictions
+
+### Changed
+
+- Editor right-click menu: Undo and Redo share the first row; Paste is inactive while the clipboard holds no text; the Settings entry opens the Editor tab; the menu opens below the clicked line, at the lower right of a selected word
+- Editor right-click menu: "Reset Layout" is replaced by "Maximize editor width" (the right panel folds to its compact rail) and "Default editor width" (the panel opens at the default width)
+- "AI Chat & Rewrite" is inactive, with the reason in text, while the AI chat switch is OFF or no provider key is set (editor right-click menu and the suggestion pill)
+- "AI Suggest" is now "Search Knowledge" (ja: "ナレッジを検索") in the editor right-click menu, the pill label, the model-unset tip and the welcome document: it searches your own dictionary and does not use an LLM
+- The suggestion pill no longer appears when a selection is released: the trigger mode default is now Right-click (`contextmenu`); a mode the user chose before is kept
+- The other places of the word at the caret get an underline (`--same-word-underline-color`) instead of a background tint; only when the word appears more than once and nothing is selected
+
+### Removed
+
+- The `app:resetUIVisibility` event and its listener, and the `ctx_reset_layout` text: nothing else sent the event
+
+### Fixed
+
+- The editor right-click menu closes on Esc
+- A text field no longer gets the settings jump menu in place of its edit menu
+- Toast close button: solid fill with a contrasting mark, so the × stays visible on the toast
+
 ## [0.3.105] - 2026-11-26
 
 ### Added

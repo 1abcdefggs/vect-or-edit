@@ -9,7 +9,7 @@ export function registerMonacoSuggestAction(editor, monacoRef) {
 
   editor.addAction({
     id: 'action-vector-suggest',
-    label: i18n.suggest_context_menu || 'AI Suggest (Vector Search)',
+    label: i18n.suggest_context_menu || 'Search Knowledge',
     keybindings: [
       monacoRef.KeyMod.Alt | monacoRef.KeyCode.KeyS,
       monacoRef.KeyMod.CtrlCmd | monacoRef.KeyMod.Shift | monacoRef.KeyCode.KeyS

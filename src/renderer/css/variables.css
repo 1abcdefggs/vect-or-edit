@@ -11,6 +11,8 @@
   /* Zoom hint popover surface: the text colour mixed 14% into the card, so it follows each theme. Why 14%: measured on 1920x1040 (GitHub theme) the hint is 1.54 vs the page in dark and 1.30 in light (target 1.25 or more); the zoom icon, which keeps the accent green, measures 3.17 (dark) and 3.66 (light) against the hint, which passes WCAG 1.4.11 non-text contrast (3.0). Text contrast (4.5) does not apply to the icon. */
   --bg-popover: color-mix(in srgb, var(--text-main, #f8fafc) 14%, var(--bg-card));
   --accent-color: #2563eb;
+  /* Underline of the other places of the word at the caret (owner 2026-11-26: accent colour, follows the theme) */
+  --same-word-underline-color: var(--accent-color);
   /* The settings icons that mark an important setting (gear buttons, the setup footer): the inverse of the theme accent by default, so they stand out from the accent-coloured controls. Setting "accent" (data-key-tone) uses the accent itself. */
   --settings-key-fg: var(--settings-key-fg-inverse, color(from var(--accent-color) srgb calc(1 - r) calc(1 - g) calc(1 - b)));
   --accent-hover: #1d4ed8;

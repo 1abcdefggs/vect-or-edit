@@ -128,6 +128,13 @@
     <button type="button" id="btnEditorTabList" class="editor-tab-list-btn" data-ui="edt:tab-list" aria-haspopup="menu" aria-expanded="false" data-i18n-title="tip_editor_tab_list">
       <span data-svg-icon="chevronDown" aria-hidden="true"></span>
     </button>
+    <!-- Undo and Redo for the active document (editorHistoryButtons.js); icon only, the tooltip names the button -->
+    <button type="button" id="btnEditorUndo" data-ui="edt:undo" class="toolbar-btn editor-history-btn" data-i18n-title="tip_menu_undo" data-i18n-aria="menu_edit_undo">
+      <span class="material-symbols-outlined" aria-hidden="true">undo</span>
+    </button>
+    <button type="button" id="btnEditorRedo" data-ui="edt:redo" class="toolbar-btn editor-history-btn" data-i18n-title="tip_menu_redo" data-i18n-aria="menu_edit_redo">
+      <span class="material-symbols-outlined" aria-hidden="true">redo</span>
+    </button>
     <!-- The view switch for the active document. Always shown; a Text document shows it disabled with the reason beside it (markdownPreview.js) -->
     <button type="button" id="btnMarkdownPreview" data-ui="edt:markdown-preview" class="toolbar-btn markdown-preview-toggle" aria-pressed="false" data-i18n-title="tip_markdown_preview">
       <span class="markdown-preview-eye" data-svg-icon="eye" aria-hidden="true"></span>

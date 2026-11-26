@@ -670,6 +670,11 @@ export async function initQuickDictionary() {
   }
 }
 
+/** True while the Knowledge holds at least one dictionary entry. */
+export function hasKnowledgeDictionary() {
+  return allKnowledgeItems.length > 0 || allDictEntries.length > 0;
+}
+
 export function getQuickMatches(query, limit = 5) {
   if (!allKnowledgeItems || allKnowledgeItems.length === 0) {
     if (allDictEntries && allDictEntries.length > 0) {

@@ -16,9 +16,9 @@ export const EDITOR_DEFAULTS = Object.freeze({
   folding: true,
   renderWhitespace: 'none',
   renderLineHighlight: 'gutter',
-  // Clicking a word does not tint the other occurrences by default; the user can turn it on in Editor options
-  occurrencesHighlight: 'off',
   scrollBeyondLastLine: false,
+  // The word at the caret is underlined by sameWordUnderline.js instead of Monaco's background tint
+  occurrencesHighlight: 'off',
   quickSuggestions: false,
   wordBasedSuggestions: 'off',
   formatOnPaste: false,

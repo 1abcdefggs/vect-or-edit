@@ -107,7 +107,8 @@ export const DEFAULTS = {
   LOCAL_EMBEDDING_MODEL: 'Xenova/multilingual-e5-small',
   CLAUDE_MODEL: 'claude-opus-5-5',
   OPENAI_MODEL: 'gpt-4o-mini',
-  SUGGEST_TRIGGER_MODE: 'selection',
+  // No automatic pill on selection (owner 2026-11-26); the suggestion is reached from the right-click menu
+  SUGGEST_TRIGGER_MODE: 'contextmenu',
   AI_PROVIDER: 'local',
   LLM_PROVIDER: 'none',
   LLM_CHAT_PLACEMENT: 'below',

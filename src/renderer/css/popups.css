@@ -17,6 +17,11 @@
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
 }
 
+.tab-context-menu-item:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .tab-context-menu-item {
   display: block;
   width: 100%;
@@ -66,6 +71,27 @@
   width: 100%;
   text-align: left;
   transition: background 0.15s, color 0.15s;
+}
+
+.custom-context-menu-item:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.custom-context-menu-item:disabled:hover {
+  background: transparent;
+  color: var(--overlay-fg);
+}
+
+/* Two entries on one row (Undo | Redo) */
+.custom-context-menu-row {
+  display: flex;
+  gap: 4px;
+}
+
+.custom-context-menu-row .custom-context-menu-item {
+  flex: 1 1 0;
+  justify-content: center;
 }
 
 .custom-context-menu-item:hover {

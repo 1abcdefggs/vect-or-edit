@@ -126,3 +126,21 @@
     padding: 16px;
   }
 }
+
+/* Undo and Redo in the tab bar: icon only, same quiet look as the preview button */
+.toolbar-btn.editor-history-btn {
+  flex-shrink: 0;
+  line-height: 1;
+  border-color: transparent;
+}
+
+.toolbar-btn.editor-history-btn:hover {
+  background: var(--tab-btn-hover-bg);
+  color: var(--tab-btn-hover-fg);
+  border-color: transparent;
+}
+
+.editor-history-btn .material-symbols-outlined {
+  font-size: var(--icon-size);
+  line-height: 1;
+}

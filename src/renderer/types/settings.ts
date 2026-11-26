@@ -70,6 +70,8 @@ export type EditorUiKey =
   | 'edt:status-bar'
   | 'edt:document-format'
   | 'edt:document-language'
+  | 'edt:undo'
+  | 'edt:redo'
   | 'edt:markdown-preview'
   | 'edt:tab-list'
   | 'edt:llm-dock'

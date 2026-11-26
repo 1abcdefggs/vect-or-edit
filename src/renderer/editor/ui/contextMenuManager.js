@@ -19,7 +19,11 @@ export function removeSelectionPopover() {
   if (activeMenuType === 'selection') removeContextMenu();
 }
 
-function calculateMenuPosition(x, y, width, height) {
+/**
+ * Where the menu goes. When it would run past the bottom it flips above `avoidTopY` (the top of the text it must not cover),
+ * or above y when there is no such text.
+ */
+function calculateMenuPosition(x, y, width, height, avoidTopY) {
   let left = x;
   let top = y;
 
@@ -28,14 +32,14 @@ function calculateMenuPosition(x, y, width, height) {
     left = window.innerWidth - width - 15;
   }
   if (top + height > window.innerHeight - 30) {
-    top = Math.max(40, y - height - 10);
+    top = Math.max(40, (avoidTopY ?? y) - height - 10);
   }
   if (top < 40) top = 40;
 
   return { left, top };
 }
 
-export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, triggerType = 'selection') {
+export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, triggerType = 'selection', avoidTopY) {
   removeContextMenu();
   if (triggerType === 'selection' && (!selectedText || !selectedText.trim())) return;
 
@@ -57,10 +61,10 @@ export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, t
   } else {
     menu = buildPatternAMenu({ selectedText, onDismiss: removeContextMenu });
     estWidth = 200;
-    estHeight = 250;
+    estHeight = 320;
   }
 
-  const { left, top } = calculateMenuPosition(x, y, estWidth, estHeight);
+  const { left, top } = calculateMenuPosition(x, y, estWidth, estHeight, avoidTopY);
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
 
@@ -70,6 +74,9 @@ export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, t
 }
 
 if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') removeContextMenu();
+  });
   document.addEventListener('click', (e) => {
     if (activeContextMenu && !activeContextMenu.contains(e.target)) {
       removeContextMenu();

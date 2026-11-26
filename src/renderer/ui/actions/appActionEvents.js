@@ -9,6 +9,8 @@ import { commandManager } from '../../core/commandManager';
 import { icons } from '../../core/icons.js';
 import { readStorage } from '../../core/storage.js';
 import { STORAGE_KEYS } from '../../core/constants.js';
+import { SIDEBAR_PANE } from '../layout/paneLimits.js';
+import { saveLayoutSize } from '../layout/layoutMemory.js';
 
 export function bindAppActionEvents() {
   // Icon slots marked data-svg-icon get their SVG from core/icons.ts (one source for every copy of the icon)
@@ -76,6 +78,18 @@ export function bindAppActionEvents() {
     btnHeaderToggleSidebar.addEventListener('click', () => {
       const isCurrentlyCollapsed = suggestionSidebar.classList.contains('collapsed');
       updateSidebarState(!isCurrentlyCollapsed);
+    });
+
+    // Editor right-click menu: "maximize" folds the panel to its compact rail; "default" opens it at the default width
+    window.addEventListener('app:editorWidth', (e) => {
+      const mode = e.detail?.mode;
+      if (mode === 'maximize') {
+        updateSidebarState(true);
+      } else if (mode === 'default') {
+        document.documentElement.style.setProperty(SIDEBAR_PANE.cssVar, `${SIDEBAR_PANE.defaultWidth}px`);
+        saveLayoutSize(SIDEBAR_PANE.storageKey, SIDEBAR_PANE.defaultWidth);
+        updateSidebarState(false);
+      }
     });
 
     // The settings page chooses whether the panel starts open or closed (Sidebar tab, "Panel top" card)
