@@ -43,7 +43,7 @@ export function bindAppActionEvents() {
   });
 
   // Sidebar section headers (Guidelines, Knowledge) collapse on click; their action buttons do not
-  document.querySelectorAll('.semantic-module-header').forEach((header) => {
+  document.querySelectorAll('.semantic-module-header, .sidebar-fold__head').forEach((header) => {
     header.addEventListener('click', (e) => {
       if (e.target.closest('.semantic-module-actions')) return;
       header.parentElement.classList.toggle('collapsed'); header.querySelector('.semantic-module-toggle')?.setAttribute('aria-expanded', String(!header.parentElement.classList.contains('collapsed')));

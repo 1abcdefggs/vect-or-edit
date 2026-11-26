@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.109] - 2026-11-27
+
+### Fixed
+
+- The right-click menu test no longer strips tags with a regular expression (CodeQL "incomplete multi-character sanitization"; test code only, no effect on the app)
+
+## [0.3.108] - 2026-11-27
+
+### Changed
+
+- Editor right-click: with no selection, the word under the pointer is selected first, so Copy, Cut and Google act on it and Cut deletes it (`contextMenuText.js`)
+- Right panel: "How it works" (the embedding description), Embedding model and Collection each have a minus at the right of their heading to fold them; the three headings share the same side padding
+- Bottom bar: the log gear is the last item and sits under the right panel gear
+- Editor toolbar: the tone, font and size selects below 570px are hidden even though their wrappers carry an inline display
+- `docs/pointer_rules.csv`: rows for a word (monaco, word, left and right)
+
+### Added
+
+- Tests for the right-click menu structure, the Google search setting and the word right-click
+
+### Fixed
+
+- Windows caption buttons are given the start colours again before the window is shown (attempt to stop a white flash in dark mode; not verified in the app)
+
+## [0.3.107] - 2026-11-26
+
+### Added
+
+- A left press on blank space clears the keyboard focus (`blankPressFocus.js`); controls, text fields and the editor keep their own focus
+- Right-click on the editor toolbar background opens the jump menu to the Editor toolbar settings card
+
+### Changed
+
+- Editor right-click menu is rebuilt in one component with a provisional order: Copy | Cut | Paste on one line with a selection (Copy All | Paste | Select All without one), then the search entries, Undo | Redo, Show right panel | Hide right panel on one line, and Settings
+- Undo and Redo (right-click menu and tab bar) are inactive while there is nothing to undo or redo, with the reason in the tooltip
+- "Search with Google" in the editor right-click menu shows an external link icon on its right; a new Editor toolbar setting "Google search" (default On) hides the entry and turns Alt+G off
+- Right-click menu: icons share one size, inactive entries are easier to see, AI Chat | Vector share one line, the right panel is one Show/Hide toggle, Settings is a gear at the bottom right, and dictionary candidates come first for a selected word
+- Right panel: the Vector features and Embedding model headings lose their chip icon and divider, the embedding description moves under Vector features with thin rules between the blocks, and the Model label is capitalised and larger
+- Editor toolbar: below 620px the Save word goes, and below 570px the tone, font and size values go so that only their icons remain (stops the overlap; the full shrink order is still open)
+- `docs/pointer_rules.csv`: the editor blank right-click menu is the accepted standard; the setup screen and the settings page stay out of scope for the jump menu, with notes
+
 ## [0.3.106] - 2026-11-26
 
 ### Added

@@ -64,6 +64,11 @@
     "card": "grp_menu_bar",
     "control": ""
   },
+  "edt:toolbar": {
+    "tab": "tabEditor",
+    "card": "grp_editor_text",
+    "control": ""
+  },
   "edt:save": {
     "tab": "tabEditor",
     "card": "autosave_menu_item",

@@ -60,7 +60,7 @@ export function showSelectionPopoverMenu(x, y, selectedText, onSelectCallback, t
     estHeight = hasMatches ? 70 : 36;
   } else {
     menu = buildPatternAMenu({ selectedText, onDismiss: removeContextMenu });
-    estWidth = 200;
+    estWidth = 280;
     estHeight = 320;
   }
 

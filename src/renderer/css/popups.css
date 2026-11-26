@@ -74,7 +74,7 @@
 }
 
 .custom-context-menu-item:disabled {
-  opacity: 0.45;
+  opacity: 0.6;
   cursor: default;
 }
 
@@ -83,15 +83,56 @@
   color: var(--overlay-fg);
 }
 
-/* Two entries on one row (Undo | Redo) */
+/* Line between the blocks of the editor right-click menu (same tokens as the model quick menu rule) */
+.custom-context-menu-separator {
+  height: var(--border-width);
+  margin: var(--spacing-xs) 0;
+  background: var(--overlay-border);
+}
+
+/* Entries on one row (Copy | Cut | Paste, Undo | Redo) */
 .custom-context-menu-row {
   display: flex;
   gap: 4px;
+  white-space: nowrap;
 }
 
 .custom-context-menu-row .custom-context-menu-item {
   flex: 1 1 0;
   justify-content: center;
+  padding: 8px 8px;
+}
+
+/* A row that holds one icon-only entry (the gear), kept at the right edge */
+.custom-context-menu-row--end {
+  justify-content: flex-end;
+}
+
+.custom-context-menu-row .custom-context-menu-icon-only {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+/* The name between two entries of a row (RIGHT PANEL): a label, not a button */
+.custom-context-menu-row-label {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 0 8px;
+  font-size: var(--fs-11);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--overlay-muted);
+}
+
+/* Left, centre, right: the left entry reads icon then label, the middle one is centred, the right one reads label then icon */
+.custom-context-menu-row .custom-context-menu-item:first-child {
+  justify-content: flex-start;
+}
+
+.custom-context-menu-row .custom-context-menu-item:last-child {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  text-align: right;
 }
 
 .custom-context-menu-item:hover {
@@ -99,9 +140,24 @@
   color: #ffffff;
 }
 
+/* One icon size for the whole menu. The Material glyphs draw smaller inside their box than the SVG icons do, so the glyph box is one step larger. */
+.custom-context-menu {
+  --menu-icon-svg: var(--fs-18);
+  --menu-icon-glyph: var(--fs-20);
+}
+
 .custom-context-menu-item svg {
-  width: 14px;
-  height: 14px;
+  width: var(--menu-icon-svg);
+  height: var(--menu-icon-svg);
+  flex-shrink: 0;
+}
+
+.custom-context-menu-item .material-symbols-outlined {
+  font-size: var(--menu-icon-glyph);
+  width: var(--menu-icon-glyph);
+  height: var(--menu-icon-glyph);
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 /* Suggestion Pill UI (Selection Popup) */
@@ -206,6 +262,12 @@
   margin-top: 4px;
   padding-top: 4px;
   border-top: var(--border-width) solid var(--border-color);
+}
+
+.pill-quick-candidates--top {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
 }
 
 .pill-candidate-chip {

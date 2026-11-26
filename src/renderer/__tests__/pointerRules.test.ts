@@ -13,7 +13,7 @@ const rows = lines.map((line) => Object.fromEntries(line.split(',').map((v, i) =
 
 /** Every place a pointer can land, per region. Completeness is checked against this map. */
 const TARGETS: Record<string, string[]> = {
-  monaco: ['editable_text', 'selection', 'blank'],
+  monaco: ['editable_text', 'selection', 'word', 'blank'],
   tab: ['control', 'blank'],
   header: ['control', 'blank'],
   toolbar: ['control', 'blank'],

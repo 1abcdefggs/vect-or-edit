@@ -4,8 +4,7 @@ import { insertTextIntoEditor } from '../core/editorCore.js';
 import { triggerSearchAndRender } from '../../search/vectorSearch.js';
 import { getQuickMatches, hasKnowledgeDictionary } from '../../search/dictionary.js';
 import { knowledgeSearchBlocker, llmChatBlocker } from '../../core/aiAccess.js';
-import { SIDEBAR_PANE } from '../../ui/layout/paneLimits.js';
-import { openGoogleSearch, openLlmChat } from '../../core/externalActions.js';
+import { isGoogleSearchEnabled, openGoogleSearch, openLlmChat } from '../../core/externalActions.js';
 
 export function createMenuButton({ className, title, innerHTML, onClick }) {
   const btn = document.createElement('button');
@@ -28,11 +27,11 @@ const LLM_REASON_KEYS = {
   no_provider: 'ai_chat_reason_no_provider'
 };
 
-function llmChatInnerHtml(blocker) {
-  const reason = blocker
+function llmChatInnerHtml(blocker, withReason = true) {
+  const reason = blocker && withReason
     ? `<span style="display: block; font-size: var(--fs-11); color: var(--overlay-muted); white-space: normal;">${t(LLM_REASON_KEYS[blocker])}</span>`
     : '';
-  return `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size); color: var(--overlay-accent, #1d4ed8);">chat</span> <span style="display: flex; flex-direction: column; align-items: flex-start;"><span>${t('ctx_llm_chat_rewrite')}</span>${reason}</span>`;
+  return `<span class="material-symbols-outlined" style="font-size: var(--menu-icon-glyph, var(--icon-text-size)); color: var(--overlay-accent, #1d4ed8);">chat</span> <span style="display: flex; flex-direction: column; align-items: flex-start;"><span>${t('ctx_llm_chat_rewrite')}</span>${reason}</span>`;
 }
 
 // "Search Knowledge" needs the Embedding switch ON, a ready model and a dictionary in Knowledge; otherwise the reason is shown in text
@@ -133,161 +132,201 @@ export function buildPillMenu({ selectedText, onSelectCallback, onDismiss }) {
   return { menu, hasMatches: quickMatches && quickMatches.length > 0 };
 }
 
+const symbol = (name) => `<span class="material-symbols-outlined" style="font-size: var(--menu-icon-glyph, var(--icon-text-size));">${name}</span>`;
+
+function appendSeparator(menu) {
+  const separator = document.createElement('div');
+  separator.className = 'custom-context-menu-separator';
+  menu.appendChild(separator);
+}
+
+/** Entries that share one line (Copy | Cut | Paste, Undo | Redo, ...). */
+function appendRow(menu, buttons) {
+  const row = document.createElement('div');
+  row.className = 'custom-context-menu-row';
+  buttons.forEach((btn) => row.appendChild(btn));
+  menu.appendChild(row);
+}
+
+/**
+ * Right-click menu of the editor. One component for both cases; the selection only decides what is shown.
+ * Order (provisional, owner 20261127): Copy | Cut | Paste first, then the search entries (selection only),
+ * then Undo | Redo, then the editor width entries and Settings.
+ */
 export function buildPatternAMenu({ selectedText, onDismiss }) {
   const menu = document.createElement('div');
   menu.className = 'custom-context-menu context-menu-full pattern-a-vertical';
 
   const hasText = !!(selectedText && selectedText.trim());
+  const model = window.monacoEditorInstance?.getModel?.();
 
-  // Undo | Redo share the first row, with or without a selection
-  const historyRow = document.createElement('div');
-  historyRow.className = 'custom-context-menu-row';
-  [{ label: t('menu_edit_undo'), icon: 'undo', command: 'undo' }, { label: t('menu_edit_redo'), icon: 'redo', command: 'redo' }]
-    .forEach(({ label, icon, command }) => {
-      historyRow.appendChild(createMenuButton({
-        className: 'custom-context-menu-item',
-        innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">${icon}</span> <span>${label}</span>`,
-        onClick: () => {
-          onDismiss();
-          const editor = window.monacoEditorInstance;
-          if (!editor) return;
-          editor.focus();
-          editor.trigger('contextmenu', command, null);
-        }
-      }));
-    });
-  menu.appendChild(historyRow);
-  const historySeparator = document.createElement('div');
-  historySeparator.className = 'custom-context-menu-separator';
-  menu.appendChild(historySeparator);
-
-  if (hasText) {
-    const blocker = knowledgeSearchBlocker(hasKnowledgeDictionary());
-    const btnVector = createMenuButton({
-      className: 'custom-context-menu-item custom-context-menu-item-primary',
-      innerHTML: `${icons.search} <span style="display: flex; flex-direction: column; align-items: flex-start;"><span>${t('suggest_context_menu')}</span>${blockerReasonHtml(blocker)}</span>`,
+  // One entry: dismisses the menu, then runs its action. An inactive entry says why in its tooltip.
+  const entry = ({ label, icon, action, disabledReason, primary = false }) => {
+    const btn = createMenuButton({
+      className: primary ? 'custom-context-menu-item custom-context-menu-item-primary' : 'custom-context-menu-item',
+      title: disabledReason || '',
+      innerHTML: `${icon} <span>${label}</span>`,
       onClick: () => {
         onDismiss();
-        triggerSearchAndRender(selectedText);
+        action();
       }
     });
-    if (blocker) btnVector.disabled = true;
-    menu.appendChild(btnVector);
+    if (disabledReason) btn.disabled = true;
+    return btn;
+  };
+  const runEditorCommand = (command) => () => {
+    const editor = window.monacoEditorInstance;
+    if (!editor) return;
+    editor.focus();
+    editor.trigger('contextmenu', command, null);
+  };
 
+  const copyEntry = hasText
+    ? entry({ label: t('menu_edit_copy'), icon: icons.copy, action: () => navigator.clipboard.writeText(selectedText) })
+    : entry({ label: t('ctx_copy_all'), icon: icons.copy, action: () => {
+      const allText = window.monacoEditorInstance?.getValue() || '';
+      if (allText) navigator.clipboard.writeText(allText);
+    } });
+  const cutEntry = entry({ label: t('menu_edit_cut'), icon: icons.cut, action: () => { navigator.clipboard.writeText(selectedText); insertTextIntoEditor(''); } });
+  const pasteEntry = entry({ label: t('menu_edit_paste'), icon: icons.paste, action: async () => { const text = await navigator.clipboard.readText(); if (text) insertTextIntoEditor(text); } });
+  // Paste is active only while the clipboard holds text
+  pasteEntry.disabled = true;
+  navigator.clipboard.readText().then((text) => { pasteEntry.disabled = !text; }).catch(() => { pasteEntry.disabled = false; });
+  const selectAllEntry = entry({ label: t('menu_edit_select_all'), icon: symbol('select_all'), action: runEditorCommand('selectAll') });
+
+  // 0. Dictionary candidates for the selected word, first in the menu (only when the dictionary has a match).
+  // Plain string matching on the loaded dictionary, so it works whether Embedding is on or off.
+  if (hasText && hasKnowledgeDictionary()) {
+    const candidates = getQuickMatches(selectedText) || [];
+    if (candidates.length > 0) {
+      const list = document.createElement('div');
+      list.className = 'pill-quick-candidates pill-quick-candidates--top';
+      candidates.forEach((item) => {
+        const title = item.name || item.title || item.code || '';
+        const desc = item.kana || item.description || item.subtitle || '';
+        list.appendChild(createMenuButton({
+          className: 'pill-candidate-chip',
+          title: t('tip_insert_candidate', { label: `${title} ${desc ? `(${desc})` : ''}`.trim() }),
+          innerHTML: `<span class="chip-title">${title}</span>${desc ? `<span class="chip-desc">${desc}</span>` : ''}`,
+          onClick: () => {
+            onDismiss();
+            insertTextIntoEditor(title);
+          }
+        }));
+      });
+      menu.appendChild(list);
+      appendSeparator(menu);
+    }
+  }
+
+  // 1. Copy | Cut | Paste with a selection; Copy All | Paste | Select All without one
+  appendRow(menu, hasText ? [copyEntry, cutEntry, pasteEntry] : [copyEntry, pasteEntry, selectAllEntry]);
+  appendSeparator(menu);
+
+  // 2. Search entries, only with a selection
+  if (hasText) {
+    // AI Chat | Search Knowledge on one line: the chat sits left and the knowledge search right, as the editor and the panel do in the window
     const llmBlocker = llmChatBlocker();
     const btnLlm = createMenuButton({
       className: 'custom-context-menu-item',
-      innerHTML: llmChatInnerHtml(llmBlocker),
+      title: t('ctx_llm_chat_rewrite'),
+      innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--menu-icon-glyph, var(--icon-text-size)); color: var(--overlay-accent, #1d4ed8);">chat</span> <span>${t('ctx_chat_short')}</span>`,
       onClick: () => {
         onDismiss();
         openLlmChat(selectedText);
       }
     });
-    if (llmBlocker) btnLlm.disabled = true;
-    menu.appendChild(btnLlm);
+    // The two entries are short on purpose (AI Chat | Vector): the full name is the tooltip, and when one is inactive the reason replaces it
+    if (llmBlocker) {
+      btnLlm.disabled = true;
+      btnLlm.title = t(LLM_REASON_KEYS[llmBlocker]);
+    }
 
-    const btnGoogle = createMenuButton({
-      className: 'custom-context-menu-item',
-      innerHTML: `${icons.google} <span>${t('action_google_search')}</span>`,
+    const blocker = knowledgeSearchBlocker(hasKnowledgeDictionary());
+    const btnVector = createMenuButton({
+      className: 'custom-context-menu-item custom-context-menu-item-primary',
+      title: t('suggest_context_menu'),
+      innerHTML: `${icons.search} <span>${t('ctx_vector_short')}</span>`,
       onClick: () => {
         onDismiss();
-        openGoogleSearch(selectedText);
+        triggerSearchAndRender(selectedText);
       }
     });
-    menu.appendChild(btnGoogle);
+    if (blocker) {
+      btnVector.disabled = true;
+      btnVector.title = t(BLOCKER_REASON_KEYS[blocker]);
+    }
+    appendRow(menu, [btnLlm, btnVector]);
 
-    const separator1 = document.createElement('div');
-    separator1.className = 'custom-context-menu-separator';
-    menu.appendChild(separator1);
+    // Offered only while Google search is on in the settings; the arrow tells that it opens the web browser
+    if (isGoogleSearchEnabled()) {
+      const googleEntry = entry({
+        label: t('action_google_search'),
+        icon: icons.google,
+        action: () => openGoogleSearch(selectedText)
+      });
+      googleEntry.title = t('tip_external_link');
+      const where = 'beforeend';
+      const arrow = `<span class="external-action-icon" aria-hidden="true">${icons.externalLink}</span>`;
+      googleEntry.insertAdjacentHTML(where, arrow);
+      menu.appendChild(googleEntry);
+    }
+    menu.appendChild(selectAllEntry);
+    appendSeparator(menu);
   }
 
-  const standardActions = [];
-  if (hasText) {
-    standardActions.push(
-      { label: t('menu_edit_copy'), icon: icons.copy, action: () => navigator.clipboard.writeText(selectedText) },
-      { label: t('menu_edit_cut'), icon: icons.cut, action: () => { navigator.clipboard.writeText(selectedText); insertTextIntoEditor(''); } }
-    );
-  } else {
-    standardActions.push(
-      { label: t('ctx_copy_all'), icon: icons.copy, action: () => {
-        const editor = window.monacoEditorInstance;
-        const allText = editor?.getValue() || '';
-        if (allText) navigator.clipboard.writeText(allText);
-      }}
-    );
-  }
+  // 3. Undo | Redo, inactive while there is nothing to undo or redo
+  appendRow(menu, [
+    entry({
+      label: t('menu_edit_undo'),
+      icon: symbol('undo'),
+      action: runEditorCommand('undo'),
+      disabledReason: model?.canUndo?.() === false ? t('ctx_undo_empty') : ''
+    }),
+    entry({
+      label: t('menu_edit_redo'),
+      icon: symbol('redo'),
+      action: runEditorCommand('redo'),
+      disabledReason: model?.canRedo?.() === false ? t('ctx_redo_empty') : ''
+    })
+  ]);
+  appendSeparator(menu);
 
-  standardActions.push(
-    { label: t('menu_edit_paste'), icon: icons.paste, action: async () => { const text = await navigator.clipboard.readText(); if (text) insertTextIntoEditor(text); } },
-    {
-      label: t('menu_edit_select_all'),
-      icon: '<span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">select_all</span>',
-      action: () => {
-        const editor = window.monacoEditorInstance;
-        editor?.focus();
-        editor?.trigger('contextmenu', 'selectAll', null);
-      }
-    }
-  );
-
-  standardActions.forEach(act => {
-    const btn = createMenuButton({
-      className: 'custom-context-menu-item',
-      innerHTML: `${act.icon} <span>${act.label}</span>`,
-      onClick: () => {
-        onDismiss();
-        act.action();
-      }
-    });
-    menu.appendChild(btn);
-    // Paste is active only while the clipboard holds text
-    if (act.icon === icons.paste) {
-      btn.disabled = true;
-      navigator.clipboard.readText().then((text) => { btn.disabled = !text; }).catch(() => { btn.disabled = false; });
-    }
-  });
-
-  const separator2 = document.createElement('div');
-  separator2.className = 'custom-context-menu-separator';
-  menu.appendChild(separator2);
-
-  // Editor width: maximize it (the right panel folds to its compact rail) or go back to the default width with the panel open
+  // 4. Right panel: Hide folds it to its compact rail (the editor gets the width); Show opens it at the default width
   const sidebar = document.getElementById('suggestionSidebar');
   const panelFolded = !!sidebar?.classList.contains('collapsed');
-  const atDefaultWidth = !panelFolded && Math.abs((sidebar?.getBoundingClientRect().width ?? 0) - SIDEBAR_PANE.defaultWidth) < 2;
-  [{
-      mode: 'maximize',
-      icon: 'width_full',
-      label: t('ctx_editor_width_max'),
-      off: panelFolded
-    }, {
-      mode: 'default',
-      icon: 'width_normal',
-      label: t('ctx_editor_width_default'),
-      off: atDefaultWidth
-    }]
-    .forEach(({ mode, icon, label, off }) => {
-      const btn = createMenuButton({
-        className: 'custom-context-menu-item',
-        innerHTML: `<span class="material-symbols-outlined" style="font-size: var(--icon-text-size);">${icon}</span> <span>${label}</span>`,
-        onClick: () => {
-          onDismiss();
-          window.dispatchEvent(new CustomEvent('app:editorWidth', { detail: { mode } }));
-        }
-      });
-      btn.disabled = off;
-      menu.appendChild(btn);
-    });
+  // One toggle: it names the action that applies now (Hide while the panel is open, Show while it is folded)
+  const panelName = document.createElement('span');
+  panelName.className = 'custom-context-menu-row-label';
+  panelName.textContent = t('ctx_right_panel_label');
+  const panelToggle = entry({
+    label: panelFolded ? t('ctx_panel_show') : t('ctx_panel_hide'),
+    icon: symbol(panelFolded ? 'chevron_left' : 'chevron_right'),
+    action: () => window.dispatchEvent(new CustomEvent('app:editorWidth', {
+      detail: { mode: panelFolded ? 'default' : 'maximize' }
+    }))
+  });
+  const panelFullName = panelFolded ? t('ctx_right_panel_show') : t('ctx_right_panel_hide');
+  panelToggle.title = panelFullName;
+  panelToggle.setAttribute('aria-label', panelFullName);
+  appendRow(menu, [panelName, panelToggle]);
 
-  const btnSettings = createMenuButton({
-    className: 'custom-context-menu-item',
-    innerHTML: `${icons.settings} <span>${t('ctx_open_settings')}</span>`,
+  // Settings: the gear alone at the bottom right; its name is the tooltip and the accessible name
+  const settingsLabel = t('ctx_open_settings');
+  const settingsBtn = createMenuButton({
+    className: 'custom-context-menu-item custom-context-menu-icon-only',
+    title: settingsLabel,
+    innerHTML: icons.settings,
     onClick: () => {
       onDismiss();
       window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabEditor' } }));
     }
   });
-  menu.appendChild(btnSettings);
+  settingsBtn.setAttribute('aria-label', settingsLabel);
+  const settingsRow = document.createElement('div');
+  settingsRow.className = 'custom-context-menu-row custom-context-menu-row--end';
+  settingsRow.appendChild(settingsBtn);
+  menu.appendChild(settingsRow);
 
   return menu;
 }

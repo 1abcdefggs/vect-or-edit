@@ -88,7 +88,20 @@ export function createWindow(preloadPath: string, rendererUrl: string, indexPath
 
   bindLoggerToWindow(mainWindowInstance);
 
+  // The caption buttons (minimize, maximize, close) can paint in the system colour for a moment before the first frame.
+  // Apply the start colours again right before the window is shown, so a dark app does not flash white there.
+  const applyStartupOverlay = () => {
+    if (process.platform !== 'win32' || !mainWindowInstance || mainWindowInstance.isDestroyed()) return;
+    try {
+      mainWindowInstance.setTitleBarOverlay({ color: startup.overlay, symbolColor: startup.symbol, height: 38 });
+    } catch (err) {
+      console.warn('[Window] Could not apply the start colours of the title bar:', err);
+    }
+  };
+  applyStartupOverlay();
+
   mainWindowInstance.once('ready-to-show', () => {
+    applyStartupOverlay();
     if (mainWindowInstance && !mainWindowInstance.isVisible()) {
       mainWindowInstance.show();
     }

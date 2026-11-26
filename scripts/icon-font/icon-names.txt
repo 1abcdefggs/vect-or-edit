@@ -65,6 +65,4 @@ visibility
 visibility_off
 vpn_key
 warning
-width_full
-width_normal
 zoom_in

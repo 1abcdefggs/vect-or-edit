@@ -659,3 +659,20 @@ button.btn-phi {
     display: none;
   }
 }
+
+/* Stop the overlap first (owner 20261127): the last steps of the shrink order, icons only.
+   Below 620px the Save word goes; below 570px the values of the style group (tone, font, size) go and their icons stay.
+   Provisional thresholds: the measured overlap starts near 570px (decision_toolbar_shrink_priority). The full order is still open. */
+@container editor-toolbar (max-width: 619px) {
+  #btnSaveLabel {
+    display: none;
+  }
+}
+
+@container editor-toolbar (max-width: 569px) {
+  .editor-toolbar .font-control-integrated-group > select,
+  .editor-toolbar .font-control-integrated-group > [data-ui^="edt:"] {
+    /* !important: the font and size wrappers carry an inline display */
+    display: none !important;
+  }
+}
