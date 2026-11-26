@@ -628,6 +628,11 @@ button.btn-phi {
   min-width: 0;
 }
 
+/* The size wrapper never shrinks below its select, so the select cannot spill over the Editor Options button */
+.editor-toolbar .font-control-integrated-group > [data-ui="edt:font-size"] {
+  flex: 0 0 auto;
+}
+
 /* The size value (16px) keeps a readable width before the labels give way; the font name takes the free width (see the group rule above) */
 .editor-toolbar select.editor-toolbar-select#fontSizeSelect {
   flex: 0 0 auto;
