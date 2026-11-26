@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  Past versions: <a href="docs/assets/repository-ui-v0356.gif">v0.3.56</a> · <a href="docs/assets/repository-ui-v0312.gif">v0.3.14</a> · <a href="docs/assets/repository-ui-v031.gif">v0.3.1</a> · <a href="docs/assets/repository-ui-v020.gif">v0.2.0</a>
+  Past versions: <a href="docs/assets/repository-ui-v0356.gif">v0.3.56</a> · <a href="docs/assets/repository-ui-v0312.gif">v0.3.12</a> · <a href="docs/assets/repository-ui-v031.gif">v0.3.1</a> · <a href="docs/assets/repository-ui-v020.gif">v0.2.0</a>
 </p>
 
 **VectOrEdit** is a standalone, high-performance desktop editor designed for knowledge management, structured document drafting, and real-time semantic validation. It seamlessly integrates a native Rust-powered vector indexing engine (HNSW) with local transformer embeddings, multi-provider AI connectors, and Monaco Editor.
@@ -66,6 +66,16 @@
 ---
 
 ## What's New
+
+### v0.3.97 – v0.3.111 (2026-11-26 – 2026-11-27)
+
+- Editor right-click menu rebuilt in one component: Copy, Cut and Paste on one line, Undo and Redo, Select All, Search Knowledge (was "AI Suggest"), the right panel as one Show/Hide toggle, and "Search with Google" with a setting to hide it. With no selection, the word under the pointer is selected first.
+- Undo and Redo buttons in the tab bar and a document list button at the right end of the tab row. Text fields and read-only text get their own edit menu.
+- The suggestion pill no longer appears on selection by default (trigger mode: Right-click). A new setting "Open on selection" opens the right panel when text is selected.
+- The right panel: Embedding model, Collection and "How it works" can be folded; the editor keeps at least 416px, and the toolbar no longer overlaps at narrow widths.
+- Settings: the card "Text tools" is "Editor toolbar", the gear tints the area it controls, and many labels, orders and alignments were tidied.
+- A left press on blank space clears the keyboard focus. Markdown preview lists get a left padding.
+- Locale files: 34 missing keys added and 119 unused keys removed; Japanese UI text ends as noun phrases.
 
 ### v0.3.96 (2026-11-25)
 
