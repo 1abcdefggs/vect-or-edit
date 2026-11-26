@@ -9,7 +9,10 @@ export function initSidebarResizer(): void {
   // Restore saved width (or the default when none is saved). This runs once at startup, so the startup sweep
   // folds the pane to the rail width and opens it to the target; returning to the top page does not sweep.
   const parsed = loadLayoutSize(SIDEBAR_PANE.storageKey);
-  const targetWidth = parsed !== null && isStoredPaneWidthValid(SIDEBAR_PANE, parsed) ? parsed : SIDEBAR_PANE.defaultWidth;
+  const savedWidth = parsed !== null && isStoredPaneWidthValid(SIDEBAR_PANE, parsed) ? parsed : SIDEBAR_PANE.defaultWidth;
+  // The width the user chose. A window resize clamps the applied width to it, so a later, wider window restores it.
+  let preferredWidth = savedWidth;
+  const targetWidth = clampPaneWidth(SIDEBAR_PANE, preferredWidth, window.innerWidth);
   const STARTUP_SWEEP_ENABLED = true;
   if (!STARTUP_SWEEP_ENABLED) {
     document.documentElement.style.setProperty(SIDEBAR_PANE.cssVar, `${targetWidth}px`);
@@ -62,6 +65,7 @@ export function initSidebarResizer(): void {
         resizer.classList.remove('is-dragging');
         document.body.classList.remove('resizing-sidebar');
         const finalWidth = sidebar.getBoundingClientRect().width;
+        preferredWidth = finalWidth;
         saveLayoutSize(SIDEBAR_PANE.storageKey, finalWidth);
         if ((window as any).monacoEditorInstance) {
           (window as any).monacoEditorInstance.layout();
@@ -73,5 +77,15 @@ export function initSidebarResizer(): void {
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+  });
+
+  // Keeps the editor's minimum when the window shrinks (rule 8). Not saved: the chosen width comes back on a wider window.
+  window.addEventListener('resize', () => {
+    if (isDragging) return;
+    const applied = clampPaneWidth(SIDEBAR_PANE, preferredWidth, window.innerWidth);
+    document.documentElement.style.setProperty(SIDEBAR_PANE.cssVar, `${applied}px`);
+    if ((window as any).monacoEditorInstance) {
+      (window as any).monacoEditorInstance.layout();
+    }
   });
 }

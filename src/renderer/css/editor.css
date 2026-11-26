@@ -12,7 +12,7 @@
   container-type: inline-size;
   container-name: editor-section;
   flex: 1;
-  min-width: 320px;
+  min-width: 400px;
   display: flex;
   flex-direction: column;
   background: var(--bg-card);

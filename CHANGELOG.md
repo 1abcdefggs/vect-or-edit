@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Editor minimum width raised from 320px to 400px (`paneLimits.ts` and `editor.css`), so the icon-only toolbar fits without overlap (measured natural width 394px)
+
+### Fixed
+
+- Sidebar width is clamped when the window is resized, so the editor keeps its minimum (the cap now also reserves the splitter and the row padding)
+
 ## [0.3.101] - 2026-11-26
 
 ### Changed
