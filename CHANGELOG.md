@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.99] - 2026-11-26
+
+### Removed
+
+- Locale keys left from the removed update dialog: update_available_title, tip_update_close, tip_update_later, tip_update_open_release
+
 ## [0.3.98] - 2026-11-26
 
 ### Changed
