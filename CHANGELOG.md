@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.97] - 2026-11-26
+
+### Fixed
+- Locale files: add the 34 keys used by the scrollbar settings, slot compatibility, dictionary version and sidebar texts, which v0.3.96 shipped without
+
+### Changed
+- Locale files: update the current wording of 4 English and 51 Japanese values, including the welcome document text
+
+### Removed
+- Locale files: remove 119 locale keys that no source file references
+
 ## [0.3.96] - 2026-11-25
 
 ### Added
