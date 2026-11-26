@@ -114,16 +114,17 @@
   transform: translate(-50%, -10px) !important;
 }
 
-/* Close control: a visible round button so it reads as clickable on the dark toast */
+/* Close control: a solid round button so it reads as clickable on the toast */
 .toast-close-btn {
   flex: 0 0 auto;
   width: 28px;
   height: 28px;
   padding: 0;
   margin-left: 4px;
-  background: var(--overlay-hover);
+  /* Solid fill: the mark stays readable whatever sits behind the toast, in both window modes */
+  background: var(--overlay-fg);
   border: 1px solid var(--overlay-fg);
-  color: var(--overlay-fg);
+  color: var(--overlay-bg);
   cursor: pointer;
   font-size: var(--fs-16);
   font-weight: 600;
@@ -137,8 +138,8 @@
 
 .toast-close-btn:hover,
 .toast-close-btn:focus-visible {
-  color: var(--overlay-bg);
-  background: var(--overlay-fg);
+  color: var(--overlay-fg);
+  background: var(--overlay-hover);
   border-color: var(--overlay-fg);
   outline: none;
 }

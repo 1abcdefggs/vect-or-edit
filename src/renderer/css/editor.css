@@ -717,3 +717,11 @@
   border-radius: 6px 6px 0 0;
   pointer-events: none;
 }
+
+/* Other places of the word at the caret (editor/ui/sameWordUnderline.js): an underline, never a background tint */
+.monaco-editor .same-word-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--same-word-underline-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}

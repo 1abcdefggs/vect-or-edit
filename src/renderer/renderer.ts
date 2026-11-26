@@ -21,6 +21,7 @@ import { initAiControls } from './ui/ai/aiToolbarController.js';
 import { initChatPlacement } from './ui/ai/chatPlacement.js';
 import { initSystemConsole } from './ui/console/systemConsoleManager.js';
 import { initJumpContextMenu } from './ui/settings/jumpContextMenu.js';
+import { initTextContextMenu } from './ui/components/textContextMenu.js';
 import { bindAppActionEvents } from './ui/actions/appActionEvents.js';
 import { initZoomControls } from './ui/zoomController.js';
 import { injectLazyUIComponents } from './core/uiLoader';
@@ -37,6 +38,7 @@ import { applyTooltipWidth } from './ui/tooltips/tooltipWidth.js';
 import { applyScrollbarStyle } from './ui/appearance/scrollbarStyle.js';
 import { initSelectMenus } from './ui/components/selectMenu';
 import { initMarkdownPreview } from './editor/ui/markdownPreview.js';
+import { initEditorHistoryButtons } from './editor/ui/editorHistoryButtons.js';
 import { initDocumentFormatControl } from './editor/ui/documentFormatControl.js';
 import { initDocumentLanguageControl } from './editor/ui/documentLanguageControl.js';
 import { initMonacoOptionsPanel } from './editor/options/monacoOptionsPanel.js';
@@ -100,10 +102,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       e.preventDefault();
       window.dispatchEvent(new CustomEvent('app:openSettings', { detail: { tab: 'tabAppearance' } }));
     }
-  });
-
-  window.addEventListener('app:resetUIVisibility', () => {
-    settingsStore.resetVisibility();
   });
 
   // 1. Initialize UI Layout & Elements
@@ -177,6 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 4. Background Services & Controllers
   initMarkdownPreview();
+  initEditorHistoryButtons();
   initDocumentFormatControl();
   initDocumentLanguageControl();
   initQuickDictionary();
@@ -185,6 +184,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   initChatPlacement();
   initZoomControls();
   initSystemConsole();
+  // The text menus first: a text field gets Cut/Copy/Paste, not the settings jump
+  initTextContextMenu();
   initJumpContextMenu();
   bindAppActionEvents();
   initMonacoOptionsPanel();

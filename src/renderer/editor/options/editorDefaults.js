@@ -19,6 +19,10 @@ export const EDITOR_DEFAULTS = Object.freeze({
   // Clicking a word does not tint the other occurrences by default; the user can turn it on in Editor options
   occurrencesHighlight: 'off',
   scrollBeyondLastLine: false,
+  // Selecting text only selects it; Monaco's same-word background tint confused users (owner 2026-11-26)
+  selectionHighlight: false,
+  // The word at the caret is underlined by sameWordUnderline.js instead of Monaco's background tint
+  occurrencesHighlight: 'off',
   quickSuggestions: false,
   wordBasedSuggestions: 'off',
   formatOnPaste: false,

@@ -8,6 +8,7 @@ import { editorEvents } from './editorEvents.js';
 import { bindPlaceholderEvents } from './editorPlaceholder.js';
 import { setupEditorContextMenu } from './editorSelectionEvents.js';
 import { setupTabListMenu } from '../tabs/tabListMenu.js';
+import { initSameWordUnderline } from '../ui/sameWordUnderline.js';
 import { t, currentLang } from '../../core/i18n.js';
 import { detectDocumentLanguage } from '../options/documentLanguage.js';
 import { bindDocumentLanguage } from '../options/documentLanguageSync.js';
@@ -163,6 +164,7 @@ export async function initEditor() {
 
   setupEditorContextMenu(monacoEditorInstance, monacoContainer);
   setupTabListMenu();
+  initSameWordUnderline(monacoEditorInstance);
 
   monacoEditorInstance.onDidChangeModelContent(() => {
     editorEvents.emit('onStatusBarUpdateNeeded');

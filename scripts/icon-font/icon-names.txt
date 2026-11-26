@@ -41,6 +41,7 @@ menu_book
 monitor_heart
 neurology
 palette
+redo
 restart_alt
 right_panel_close
 right_panel_open
@@ -49,6 +50,7 @@ rule_folder
 save
 save_as
 search
+select_all
 settings
 smart_toy
 style
@@ -58,8 +60,11 @@ terminal
 text_fields
 text_format
 tune
+undo
 visibility
 visibility_off
 vpn_key
 warning
+width_full
+width_normal
 zoom_in

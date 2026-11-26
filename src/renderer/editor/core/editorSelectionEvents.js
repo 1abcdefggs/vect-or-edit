@@ -107,6 +107,25 @@ export function setupEditorContextMenu(editor, container) {
       posY = containerRect.top + scrolledPos.top + 32;
     }
 
-    showSelectionPopoverMenu(posX, posY, text || '', null, 'context');
+    // The menu opens just below the line that was clicked (below the last line of a selection or word), never over the text
+    let avoidTopY;
+    if (text || e.target?.position) {
+      const containerRect = container.getBoundingClientRect();
+      // Wrapped lines have several rows, so the rows are read from the exact start and end positions
+      const hasSelection = selection && !selection.isEmpty();
+      const word = hasSelection ? null : editor.getModel()?.getWordAtPosition(targetPos);
+      const startPos = hasSelection ? selection.getStartPosition() : { lineNumber: targetPos.lineNumber, column: word?.startColumn ?? targetPos.column };
+      const endPos = hasSelection ? selection.getEndPosition() : { lineNumber: targetPos.lineNumber, column: word?.endColumn ?? targetPos.column };
+      const top = editor.getScrolledVisiblePosition(startPos);
+      const bottom = editor.getScrolledVisiblePosition(endPos);
+      if (top && bottom) {
+        avoidTopY = containerRect.top + top.top;
+        posY = containerRect.top + bottom.top + bottom.height + 4;
+        // Over a selection or word the menu starts at the lower right of that text
+        if (text) posX = containerRect.left + bottom.left;
+      }
+    }
+
+    showSelectionPopoverMenu(posX, posY, text || '', null, 'context', avoidTopY);
   });
 }
