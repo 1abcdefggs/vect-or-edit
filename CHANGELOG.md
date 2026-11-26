@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.100] - 2026-11-26
+
+### Removed
+
+- The hidden 'Managed by the app' group from Editor Options; its 13 locked options stay marked `managed` in the review sheet
+
 ## [0.3.99] - 2026-11-26
 
 ### Removed

@@ -159,8 +159,9 @@ describe('monaco option overrides', () => {
 });
 
 describe('monaco option layout', () => {
-  it('places every control under a sub-heading of its group with a weight from 0 to 3', () => {
-    const bad = controls.filter((c) => c.sub === null || !model.SUB_ORDER[c.group]?.includes(c.sub) || ![0, 1, 2, 3].includes(c.weight));
+  it('places every shown control under a sub-heading of its group with a weight from 0 to 3', () => {
+    // The panel hides locked controls other than LOCK_SETTINGS (monacoOptionsPanel.js:330); only the shown ones need a sub-heading.
+    const bad = controls.filter((c) => (!c.lock || c.lock === model.LOCK_SETTINGS) && (c.sub === null || !model.SUB_ORDER[c.group]?.includes(c.sub) || ![0, 1, 2, 3].includes(c.weight)));
     expect(bad.map((c) => c.path)).toEqual([]);
   });
 

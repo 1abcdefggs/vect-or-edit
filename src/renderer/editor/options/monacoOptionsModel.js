@@ -65,11 +65,11 @@ const GROUP_RULES = [
   ['display', /^(minimap|rulers|guides|folding|glyphMargin|lineDecorations|lineNumbersMinChars|renderFinalNewline|renderControlCharacters|renderLineHighlight|renderWhitespace|renderValidationDecorations|showFoldingControls|showUnused|showDeprecated|foldingHighlight|foldingImportsByDefault|foldingMaximumRegions|foldingStrategy|unfoldOnClickAfterEndOfLine|letterSpacing|fontLigatures|fontVariations|fontWeight|disableMonospaceOptimizations|disableLayerHinting|roundedSelection|stickyScroll|bracketPairColorization|extraEditorClassName|placeholder|lineHeight|fontSize|fontFamily|wordWrap|lineNumbers|experimentalWhitespaceRendering|showDeprecated|hideUnchanged|accessibilityPageSize|allowVariableLineHeights|effectiveExperimentalEditContext|experimentalEditContextEnabled|experimental)/]
 ];
 
-export const GROUP_ORDER = ['display', 'cursor', 'editing', 'suggest', 'find', 'scroll', 'accessibility', 'managed', 'advanced'];
+export const GROUP_ORDER = ['display', 'cursor', 'editing', 'suggest', 'find', 'scroll', 'accessibility', 'advanced'];
 
 /**
  * Sub-headings inside each group, in display order. The headings, the weight and the sub-heading of every option come from
- * monacoOptions.layout.json, generated from the editor options review sheet (kept outside the repository).
+ * monacoOptions.layout.json, generated from the editor options review sheet (monacoOptions.review.csv, in the repository).
  * An option the layout does not list (a new Monaco option) keeps the old name-prefix group below and has no sub-heading.
  * Weight 0 means no writer needs to judge the option; the panel folds those rows away and the search still finds them.
  */
@@ -81,7 +81,6 @@ export const SUB_ORDER = {
   find: ['find'],
   scroll: ['scrollbar', 'overview'],
   accessibility: ['assist'],
-  managed: ['managed'],
   advanced: []
 };
 

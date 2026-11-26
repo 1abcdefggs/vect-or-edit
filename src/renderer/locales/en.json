@@ -1700,7 +1700,6 @@
   "setting_llm_to_embedding_jump": "Go to Sidebar › Embedding model",
   "vis_sb_collection": "Collection heading",
   "tip_monaco_opts_back": "Close Editor options and return to the list",
-  "monaco_group_managed": "Managed by the app",
   "monaco_sub_font": "Font",
   "monaco_sub_linenumbers": "Line numbers & margin",
   "monaco_sub_wrap": "Word wrap",

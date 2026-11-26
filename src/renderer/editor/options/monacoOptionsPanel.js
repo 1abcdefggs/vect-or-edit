@@ -325,7 +325,8 @@ async function ensureBuilt() {
   try {
     const [{ controls }, overrides] = await Promise.all([loadControls(), getOverrides()]);
     // Only what a writer can change, or what the settings page owns (shown read-only). The options the app fixes
-    // and the ones one input cannot express (the "managed" group of the layout) are not listed; MONACO_OPTIONS.md lists them.
+    // and the ones one input cannot express are not listed; MONACO_OPTIONS.md lists them. Locked options keep section "managed"
+    // in the review sheet as a marker; the layout ignores that value, so they are placed by name and filtered out here.
     state.controls = controls.filter((c) => !c.lock || c.lock === LOCK_SETTINGS);
     state.overrides = overrides;
     refreshSnapshot();

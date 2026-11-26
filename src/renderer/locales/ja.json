@@ -1816,7 +1816,6 @@
   "setting_llm_to_embedding_jump": "サイドバー › エンベディングモデルへ",
   "vis_sb_collection": "Collection の見出し",
   "tip_monaco_opts_back": "エディタオプションを閉じて、欄の一覧へ戻る",
-  "monaco_group_managed": "アプリ管理",
   "monaco_sub_font": "フォント",
   "monaco_sub_linenumbers": "行番号と余白",
   "monaco_sub_wrap": "折り返し",
