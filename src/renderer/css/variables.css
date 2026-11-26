@@ -6,6 +6,10 @@
   --header-height: 38px;
   --editor-fg: #f8fafc;
   --bg-card: rgba(17, 24, 39, 0.82);
+  /* Editor frame (E7): the side and bottom frame of the writing area and the active tab's sides. #808080 (relative luminance 0.216) gives non-text contrast 3.6-4.2 against the dark surfaces (tab bar #1f2428, status row #24292e, editor #1e1e2e) and 3.7-4.0 against the light surfaces (#f6f8fa, #ffffff), so the frame passes WCAG 1.4.11 (3.0) in both themes. Measured with computed colours at 1920x1040 and 800x600. */
+  --editor-frame-border: #808080;
+  /* Zoom hint popover surface: the text colour mixed 14% into the card, so it follows each theme. Why 14%: measured on 1920x1040 (GitHub theme) the hint is 1.54 vs the page in dark and 1.30 in light (target 1.25 or more); the zoom icon, which keeps the accent green, measures 3.17 (dark) and 3.66 (light) against the hint, which passes WCAG 1.4.11 non-text contrast (3.0). Text contrast (4.5) does not apply to the icon. */
+  --bg-popover: color-mix(in srgb, var(--text-main, #f8fafc) 14%, var(--bg-card));
   --accent-color: #2563eb;
   /* The settings icons that mark an important setting (gear buttons, the setup footer): the inverse of the theme accent by default, so they stand out from the accent-coloured controls. Setting "accent" (data-key-tone) uses the accent itself. */
   --settings-key-fg: var(--settings-key-fg-inverse, color(from var(--accent-color) srgb calc(1 - r) calc(1 - g) calc(1 - b)));
@@ -104,6 +108,10 @@
   --header-fg: #123;
   --editor-fg: #123;
   --bg-card: rgba(255, 255, 255, 0.94);
+  /* Editor frame (E7): the side and bottom frame of the writing area and the active tab's sides. #808080 (relative luminance 0.216) gives non-text contrast 3.6-4.2 against the dark surfaces (tab bar #1f2428, status row #24292e, editor #1e1e2e) and 3.7-4.0 against the light surfaces (#f6f8fa, #ffffff), so the frame passes WCAG 1.4.11 (3.0) in both themes. Measured with computed colours at 1920x1040 and 800x600. */
+  --editor-frame-border: #808080;
+  /* Zoom hint popover surface: the text colour mixed 14% into the card, so it follows each theme. Why 14%: measured on 1920x1040 (GitHub theme) the hint is 1.54 vs the page in dark and 1.30 in light (target 1.25 or more); the zoom icon, which keeps the accent green, measures 3.17 (dark) and 3.66 (light) against the hint, which passes WCAG 1.4.11 non-text contrast (3.0). Text contrast (4.5) does not apply to the icon. */
+  --bg-popover: color-mix(in srgb, var(--text-main, #0f172a) 14%, var(--bg-card));
   --text-main: #0f172a;
   --text-muted: #475569;
   --text-subtle: #64748b; /* quieter than text-muted: notes that must stay readable but not look active */

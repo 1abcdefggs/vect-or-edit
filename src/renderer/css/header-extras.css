@@ -157,7 +157,8 @@
   padding: 2px 10px;
   border: var(--border-width) solid var(--border-color);
   border-radius: var(--radius-sm, 6px);
-  background: var(--bg-card);
+  /* A popover surface from variables.css (--bg-popover), not the page surface: the page and --bg-card are the same colour */
+  background: var(--bg-popover);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   color: var(--accent-color, #38bdf8);
   z-index: 60;

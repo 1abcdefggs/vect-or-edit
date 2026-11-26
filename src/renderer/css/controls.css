@@ -30,6 +30,8 @@
   .editor-llm-chat-dock:has(#btnLlmQuickSettings:hover)) {
   outline: var(--border-width) solid var(--settings-key-fg);
   outline-offset: calc(var(--border-width) * -1);
+  /* A tint over the whole area, in a background layer, so the area's own shadows stay as they are */
+  background-image: linear-gradient(color-mix(in srgb, var(--settings-key-fg) 10%, transparent), color-mix(in srgb, var(--settings-key-fg) 10%, transparent));
 }
 
 .gear-btn {

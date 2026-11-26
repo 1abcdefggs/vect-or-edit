@@ -20,7 +20,7 @@
       "icon": "right_panel_close",
       "labelKey": "tab_ai_search",
       "titleKey": "tip_tab_ai",
-      "cards": ["grp_sidebar_top","sidebar_overview_title","grp_sidebar_guidelines","grp_sidebar_knowledge","heading_embedding_models","cloud_emb_title"],
+      "cards": ["grp_sidebar_top","heading_embedding_models","cloud_emb_title","sidebar_overview_title","grp_sidebar_guidelines","grp_sidebar_knowledge"],
       "nested": { "sidebar_overview_title": ["grp_sidebar_guidelines", "grp_sidebar_knowledge"] }
     },
     {
