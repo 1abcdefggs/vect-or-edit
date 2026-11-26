@@ -180,6 +180,12 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
     editor.focus();
     editor.trigger('contextmenu', command, null);
   };
+  const runEditorAction = (actionId) => () => {
+    const editor = window.monacoEditorInstance;
+    if (!editor) return;
+    editor.focus();
+    editor.getAction(actionId)?.run();
+  };
 
   const copyEntry = hasText
     ? entry({ label: t('menu_edit_copy'), icon: icons.copy, action: () => navigator.clipboard.writeText(selectedText) })
@@ -192,7 +198,7 @@ export function buildPatternAMenu({ selectedText, onDismiss }) {
   // Paste is active only while the clipboard holds text
   pasteEntry.disabled = true;
   navigator.clipboard.readText().then((text) => { pasteEntry.disabled = !text; }).catch(() => { pasteEntry.disabled = false; });
-  const selectAllEntry = entry({ label: t('menu_edit_select_all'), icon: symbol('select_all'), action: runEditorCommand('selectAll') });
+  const selectAllEntry = entry({ label: t('menu_edit_select_all'), icon: symbol('select_all'), action: runEditorAction('editor.action.selectAll') });
 
   // 0. Dictionary candidates for the selected word, first in the menu (only when the dictionary has a match).
   // Plain string matching on the loaded dictionary, so it works whether Embedding is on or off.
