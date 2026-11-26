@@ -19,13 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Selecting text no longer tints the same words elsewhere: `selectionHighlight` is off by default
 - Editor right-click menu: Undo and Redo share the first row; Paste is inactive while the clipboard holds no text; the Settings entry opens the Editor tab; the menu opens below the clicked line, at the lower right of a selected word
 - Editor right-click menu: "Reset Layout" is replaced by "Maximize editor width" (the right panel folds to its compact rail) and "Default editor width" (the panel opens at the default width)
 - "AI Chat & Rewrite" is inactive, with the reason in text, while the AI chat switch is OFF or no provider key is set (editor right-click menu and the suggestion pill)
 - "AI Suggest" is now "Search Knowledge" (ja: "ナレッジを検索") in the editor right-click menu, the pill label, the model-unset tip and the welcome document: it searches your own dictionary and does not use an LLM
 - The suggestion pill no longer appears when a selection is released: the trigger mode default is now Right-click (`contextmenu`); a mode the user chose before is kept
-- The word at the caret is no longer tinted: `occurrencesHighlight` is off by default; other places of the same word get an underline instead (`--same-word-underline-color`), only when the word appears more than once and nothing is selected
+- The other places of the word at the caret get an underline (`--same-word-underline-color`) instead of a background tint; only when the word appears more than once and nothing is selected
 
 ### Removed
 
