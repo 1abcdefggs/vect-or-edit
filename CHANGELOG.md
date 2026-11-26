@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.110] - 2026-11-27
+
+### Fixed
+
+- Editor toolbar: the font size select no longer spills over the Editor Options button (3px at a toolbar width of 648px)
+- Editor toolbar: the editor keeps at least 416px (was 400px, `EDITOR_MIN_WIDTH`), so Editor Options and the AI chat switch no longer overlap in the icons-only state (measured need: 412px)
+
 ## [0.3.109] - 2026-11-27
 
 ### Fixed

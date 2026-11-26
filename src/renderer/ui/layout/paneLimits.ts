@@ -26,8 +26,11 @@ export const SIDEBAR_PANE: HorizontalPaneLimits = {
   maxViewportRatio: 0.65
 };
 
-/** The main editor keeps at least this width (CSS: .editor-section min-width). */
-export const EDITOR_MIN_WIDTH = 400;
+/**
+ * The main editor keeps at least this width (CSS: .editor-section min-width).
+ * Measured 2026-11-27: the toolbar in its icons-only state needs 412px (10px padding each side included), plus 4px to spare.
+ */
+export const EDITOR_MIN_WIDTH = 416;
 
 /** Width of the splitter between the editor and a side pane (CSS: .workspace-resizer, buttons.css). */
 export const PANE_RESIZER_WIDTH = 8;

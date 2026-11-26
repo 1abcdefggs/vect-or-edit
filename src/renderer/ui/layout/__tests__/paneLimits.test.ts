@@ -23,23 +23,23 @@ describe('paneLimits', () => {
   });
 
   it('caps the pane at the viewport ratio and the fixed maximum, whichever is smaller', () => {
-    expect(maxPaneWidth(SIDEBAR_PANE, 1000)).toBe(568);
+    expect(maxPaneWidth(SIDEBAR_PANE, 1000)).toBe(552);
     expect(maxPaneWidth(SIDEBAR_PANE, 3000)).toBe(800);
   });
 
   it('clamps a width to the range for the current window', () => {
     expect(clampPaneWidth(SIDEBAR_PANE, 100, 1280)).toBe(320);
     expect(clampPaneWidth(SIDEBAR_PANE, 900, 1280)).toBe(800);
-    expect(clampPaneWidth(SIDEBAR_PANE, 500, 800)).toBe(368);
+    expect(clampPaneWidth(SIDEBAR_PANE, 500, 800)).toBe(352);
     expect(clampPaneWidth(SIDEBAR_PANE, 200, 800)).toBe(320);
   });
 
   it('leaves the editor its minimum, the splitter and the row padding when the window narrows', () => {
-    // 800 - 400 (editor) - 8 (splitter) - 2 x 12 (row padding) = 368 is the room left, below the sidebar's 520 ratio cap
-    expect(maxPaneWidth(SIDEBAR_PANE, 800)).toBe(368);
-    expect(clampPaneWidth(SIDEBAR_PANE, 800, 800)).toBe(368);
+    // 800 - 416 (editor) - 8 (splitter) - 2 x 12 (row padding) = 352 is the room left, below the sidebar's 520 ratio cap
+    expect(maxPaneWidth(SIDEBAR_PANE, 800)).toBe(352);
+    expect(clampPaneWidth(SIDEBAR_PANE, 800, 800)).toBe(352);
     // A window too narrow for the sidebar minimum: the editor's room wins
-    expect(clampPaneWidth(SIDEBAR_PANE, 360, 600)).toBe(168);
+    expect(clampPaneWidth(SIDEBAR_PANE, 360, 600)).toBe(152);
   });
 
   it('keeps the row padding in the CSS equal to WORKSPACE_PADDING_X', () => {
@@ -53,7 +53,7 @@ describe('paneLimits', () => {
   });
 
   it('keeps a restored wide width once the window is wide enough again', () => {
-    expect(clampPaneWidth(SIDEBAR_PANE, 800, 800)).toBe(368);
+    expect(clampPaneWidth(SIDEBAR_PANE, 800, 800)).toBe(352);
     expect(clampPaneWidth(SIDEBAR_PANE, 800, 1280)).toBe(800);
   });
 
